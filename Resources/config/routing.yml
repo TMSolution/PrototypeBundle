@@ -1,0 +1,3 @@
+core_prototype_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: CorePrototypeBundle:Default:index }
