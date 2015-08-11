@@ -33,7 +33,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Core\\Prototype\\": ""
+            "Core\\PrototypeBundle\\": ""
         }
     },
     "minimum-stability": "dev"
