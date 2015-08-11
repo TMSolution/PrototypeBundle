@@ -52,7 +52,7 @@ class GridDefaultController extends DefaultController {
         } else {
 
             $grid->resetSessionData();             
-            $view = $this->templates['lists'];
+            $view = $this->templates['list'];
         }
         return $grid->getGridResponse($view, [
                     'entityName' => $this->getEntityName(),

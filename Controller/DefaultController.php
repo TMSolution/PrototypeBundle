@@ -29,12 +29,12 @@ class DefaultController extends BaseController
     
     //element praktycznie zawsze zmieniany, konfiguracja na zewnątrz
     protected $templates = [
-        'create' => 'CorePrototypeBundle:Body:new.html.twig',
-        'list' => 'CorePrototypeBundle:Body:list.html.twig',
-        'ajax_list' => 'CorePrototypeBaseBundle:Body:solidgrid.html.twig',
-        'update' => 'CorePrototypeBundle:Body:update.html.twig',
-        'read' => 'CorePrototypeBundle:Body:read.html.twig',
-        'error' => 'CorePrototypeBundle:Body:error.html.twig',
+        'create' => 'CorePrototypeBundle:Element:new.html.twig',
+        'list' => 'CorePrototypeBundle:Element:list.html.twig',
+        'ajax_list' => 'CorePrototypeBaseBundle:Element:solidgrid.html.twig',
+        'update' => 'CorePrototypeBundle:Element:update.html.twig',
+        'read' => 'CorePrototypeBundle:Element:read.html.twig',
+        'error' => 'CorePrototypeBundle:Element:error.html.twig',
     ];
 
     /**

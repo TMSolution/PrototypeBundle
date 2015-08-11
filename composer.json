@@ -5,6 +5,15 @@
     "keywords": ["prototype", "bundle"],
     "homepage": "https://github.com/TMSolution/MenuBundle",
     "license": "MIT",
+     "repositories": [
+   {
+            "type": "vcs",
+            "url":  "https://github.com/TMSolution/DataGridBundle.git"
+        },{
+            "type": "vcs",
+            "url":  "https://github.com/TMSolution/ModelBundle.git"
+        }
+    ],    
     "authors": [
         {
             "name": "Mariusz Piela",
@@ -17,7 +26,9 @@
     ],
     "require": {
         "php": ">=5.3.2",
-        "symfony/framework-bundle": "2.*"
+        "symfony/framework-bundle": "2.*",
+        "tmsolution/model-bundle": "dev-master",
+        "tmsolution/datagrid-bundle": "dev-master"
         
     },
     "autoload": {
