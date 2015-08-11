@@ -1,7 +1,7 @@
 services:
     prototype.classmapperservice:
         class: "Core\PrototypeBundle\Service\ClassMapper"
-        arguments: ["@service_container","%objectMapper%"]
+        arguments: ["@service_container"]
         
     prototype.eventlistener.classmapper:
       class: Core\BaseBundle\EventListener\ClassMapperListener
