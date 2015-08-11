@@ -1,3 +1,24 @@
-Yello
-{{ block("core_prototype_test")}}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
 
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+        <!-- Latest compiled and minified JavaScript -->
+
+    </head>
+    <body>
+        <div class="container">
+        {% block content %}
+            {% block container %}
+                {% block body %}
+                {% endblock body%}    
+            {% endblock container%}    
+        {% endblock content%}  
+        </div>
+    </body>
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+   
+</html>

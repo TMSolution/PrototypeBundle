@@ -1,3 +1,8 @@
 core_prototype_homepage:
-    path:     /hello/{name}
+    path:     /hellotest/{name}
     defaults: { _controller: CorePrototypeBundle:Default:index }
+    
+tm_solution_defaultcontroller:
+    resource: "@CorePrototypeBundle/Resources/config/routing/defaultcontroller.yml"
+    prefix:   /proto
+    type: be_simple_i18n

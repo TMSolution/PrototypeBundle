@@ -1,0 +1,10 @@
+{% extends 'CorePrototypeBundle:Container:list.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+        {% block grid %}
+        {{ grid(grid,'TMSolutionDataGridBundle::blocks_js.jquery.html.twig') }}{# empty Twig template #}
+    {% endblock %}
+        </div>
+    </div>
+{% endblock %}

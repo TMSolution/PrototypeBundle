@@ -1,0 +1,51 @@
+{% extends 'CorePrototypeBundle:Container:read.html.twig'  %}
+
+{% block body %}
+
+    <table class="record_properties table table-hover table-striped">
+        <tbody>
+            {% for key,property in properties %}
+
+
+                {% if property is iterable %}
+                    <tr>
+                        <td><strong>{{key|trans}}</strong></td>
+                        <td>
+                            <ul>
+                                {% for item in property%}
+                                    <li>
+                                        {% if item %}{{item}}{% else %}-{% endif %}
+                                    </li>   
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr> 
+                {% else %}
+
+                    <tr>
+                        <td><strong>{{key|trans}}</strong></td>
+                        <td>{% if property %}{{property}}{% else %}-{% endif %}</td>
+                    </tr>
+                {% endif %}    
+
+
+            {% endfor %}    
+
+        </tbody>
+    </table>
+    <div>
+        <a href="{{ path(listActionName, { 'entityName': entityName})}}" class=" prevButton btn btn-default">
+            {{ "Back"|trans}}
+        </a>
+        <span class="pull-right">   
+            <a href="{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn btn-danger">
+              {{ "Delete"|trans}} 
+               
+            </a>
+            <a href="{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn btn-success">
+                {{ "Edit"|trans}}
+            </a>
+        </span>
+    </div>
+
+</div>{% endblock body %}
