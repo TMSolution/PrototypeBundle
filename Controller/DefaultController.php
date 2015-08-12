@@ -93,7 +93,7 @@ class DefaultController extends BaseController
         $updateForm->handleRequest($request);
 
         if ($updateForm->isValid()) {
-            $model->update($entity);
+            $model->update($entity,true);
             return $this->redirect($this->generateUrl($this->getRoutePrefix() . '_read', ['entityName' => $this->getEntityName(), 'id' => $id]));
         }
 
