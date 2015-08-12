@@ -12,6 +12,9 @@
         },{
             "type": "vcs",
             "url":  "https://github.com/TMSolution/ModelBundle.git"
+        },{
+            "type": "vcs",
+            "url":  "https://github.com/TMSolution/ClassMapperBundle.git"
         }
     ],    
     "authors": [
@@ -27,6 +30,8 @@
     "require": {
         "php": ">=5.3.2",
         "symfony/framework-bundle": "2.*",
+        "besimple/i18n-routing-bundle": "~2.3",
+        "tmsolution/classmapper-bundle": "1.*",
         "tmsolution/model-bundle": "1.*",
         "tmsolution/datagrid-bundle": "1.*"
         
