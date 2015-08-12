@@ -21,7 +21,7 @@ class ClassMapperListener
         $request = $this->container->get('request_stack')->getCurrentRequest();
         if ($request->attributes->get('entityName')) {
             $objectName = $this->container->get("prototype.classmapperservice")->getEntityClass($request->attributes->get('entityName'), $request->getLocale());
-            $request->attributes->set('objectName', $objectName);
+            $request->attributes->set('prototype.objectName', $objectName);
         } else {
             
          

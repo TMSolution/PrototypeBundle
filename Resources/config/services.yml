@@ -1,11 +1,11 @@
 services:
     prototype.classmapperservice:
         class: 'Core\PrototypeBundle\Service\ClassMapper'
-        arguments: ["@service_container",%objectMapper%]
+        arguments: ["@service_container",%prototype_objectMapper%]
         
     prototype.eventlistener.classmapper:
       class: 'Core\PrototypeBundle\EventListener\ClassMapperListener'
       arguments: [@service_container]
       tags:
-         - { name: kernel.event_listener, priority: 61, event: kernel.controller, method: onKernelController}
+         - { name: kernel.event_listener, priority: 62, event: kernel.controller, method: onKernelController}
                   
