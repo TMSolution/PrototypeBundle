@@ -302,7 +302,7 @@ class DefaultController extends BaseController
      */
     protected function getFormType($objectName, $class = null)
     {
-        $formTypeFactory = $this->get("formtype_factory");
+        $formTypeFactory = $this->get("prototype_formtype_factory");
         $formType = $formTypeFactory->getFormType($objectName, $class);
         return $formType;
     }

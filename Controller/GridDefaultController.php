@@ -43,6 +43,7 @@ class GridDefaultController extends DefaultController {
         $source->initQueryBuilder($businessQueryBuilder);
         $grid->setSource($source);
         $this->addGridExport($grid);
+        
         $this->configureGrid($grid);
         
  
