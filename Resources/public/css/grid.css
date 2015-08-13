@@ -1,0 +1,13 @@
+.table-responsive{
+    overflow-x: inherit;
+}
+
+.grid th:nth-child(2){
+    width:90%;
+}
+
+.grid-search-action{
+    clear:both; 
+    text-align: center;
+    margin-bottom: 10px;
+}
