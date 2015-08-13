@@ -39,14 +39,19 @@ class GridDefaultController extends DefaultController {
         $model = $this->getModel($this->getEntityClass());
         $grid = $this->get('grid');
         $source = new Entity($model);
-        $businessQueryBuilder = $model->getQueryBuilder();
-        $source->initQueryBuilder($businessQueryBuilder);
+        //$businessQueryBuilder = $model->getQueryBuilder();
+        //$source->initQueryBuilder($businessQueryBuilder);
         $grid->setSource($source);
-        $this->addGridExport($grid);
         
-        $this->configureGrid($grid);
-        
- 
+        $gridConfigServiceName = 'grid.' . str_replace('\\Entity\\', '.', $this->getEntityClass());
+        if ($this->has($gridConfigServiceName)) {
+            $grid=$this->get($gridConfigServiceName)->configure($grid);
+        }
+        else{
+            $this->addGridExport($grid);
+            $this->configureGrid($grid);
+        }
+
         //spróbować to wsadzić do grida
         if ($this->getRequest()->isXmlHttpRequest()) {
             $view = $this->templates['ajax_list'];
