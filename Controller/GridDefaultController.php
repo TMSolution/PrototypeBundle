@@ -43,16 +43,33 @@ class GridDefaultController extends DefaultController {
         //$source->initQueryBuilder($businessQueryBuilder);
         $grid->setSource($source);
         
+        $this->buildGrid($grid);
+        $view=  $this->configureView($grid);
+        
+        
+
+        
+        return $grid->getGridResponse($view, [
+                    'entityName' => $this->getEntityName(),
+                    'newActionName' => $this->getAction('new'),
+                    'routeName' => $this->getRoutePrefix() . '_new'
+        ]);
+    }
+    
+    
+    protected function buildGrid($grid)
+    {
         $gridConfigServiceName = 'grid.' . str_replace('\\Entity\\', '.', $this->getEntityClass());
         if ($this->has($gridConfigServiceName)) {
-            $grid=$this->get($gridConfigServiceName)->configure($grid);
+            $grid=$this->get($gridConfigServiceName)->buildGrid($grid);
         }
-        else{
-            $this->addGridExport($grid);
-            $this->configureGrid($grid);
-        }
-
-        //spróbować to wsadzić do grida
+        
+    }
+    
+    
+    protected function configureView($grid)
+    {
+        
         if ($this->getRequest()->isXmlHttpRequest()) {
             $view = $this->templates['ajax_list'];
         } else {
@@ -60,11 +77,8 @@ class GridDefaultController extends DefaultController {
             $grid->resetSessionData();             
             $view = $this->templates['list'];
         }
-        return $grid->getGridResponse($view, [
-                    'entityName' => $this->getEntityName(),
-                    'newActionName' => $this->getAction('new'),
-                    'routeName' => $this->getRoutePrefix() . '_new'
-        ]);
+        
+        return $view;
     }
 
     
