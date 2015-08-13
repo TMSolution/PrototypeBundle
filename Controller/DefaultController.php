@@ -31,7 +31,7 @@ class DefaultController extends BaseController
     protected $templates = [
         'create' => 'CorePrototypeBundle:Element:new.html.twig',
         'list' => 'CorePrototypeBundle:Element:list.html.twig',
-        'ajax_list' => 'CorePrototypeBaseBundle:Element:solidgrid.html.twig',
+        'ajax_list' => 'CorePrototypeBundle:Element:list.ajax.html.twig',
         'update' => 'CorePrototypeBundle:Element:update.html.twig',
         'read' => 'CorePrototypeBundle:Element:read.html.twig',
         'error' => 'CorePrototypeBundle:Element:error.html.twig',

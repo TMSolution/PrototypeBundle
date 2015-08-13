@@ -1,10 +1,26 @@
 {% extends 'CorePrototypeBundle:Container:list.html.twig' %}
-{% block body %}
+{% block element %}
     <div class="row">
         <div class="col-md-12 col-sm-12">
-        {% block grid %}
-        {{ grid(grid,'TMSolutionDataGridBundle::blocks_js.jquery.html.twig') }}{# empty Twig template #}
-    {% endblock %}
+            {% block gridFilter %}
+                {{ grid_search(grid) }}
+            {% endblock %}
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            {% block grid %}
+                {{ grid(grid,'TMSolutionDataGridBundle::blocks_js.jquery.html.twig') }}{# empty Twig template #}
+            {% endblock %}
+        </div>
+    </div>
+
 {% endblock %}
+
+{% block js %}
+
+    {{ parent() }}
+    {{ grid_scripts(grid) }}
+
+{% endblock js %}        
