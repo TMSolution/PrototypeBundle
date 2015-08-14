@@ -5,18 +5,6 @@
     "keywords": ["prototype", "bundle"],
     "homepage": "https://github.com/TMSolution/MenuBundle",
     "license": "MIT",
-     "repositories": [
-   {
-            "type": "vcs",
-            "url":  "https://github.com/TMSolution/DataGridBundle.git"
-        },{
-            "type": "vcs",
-            "url":  "https://github.com/TMSolution/ModelBundle.git"
-        },{
-            "type": "vcs",
-            "url":  "https://github.com/TMSolution/ClassMapperBundle.git"
-        }
-    ],    
     "authors": [
         {
             "name": "Mariusz Piela",
