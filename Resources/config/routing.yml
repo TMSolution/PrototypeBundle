@@ -1,7 +1,3 @@
-core_prototype_homepage:
-    path:     /hellotest/{name}
-    defaults: { _controller: CorePrototypeBundle:Default:index }
-    
 core_prototype_defaultcontroller:
     resource: "@CorePrototypeBundle/Resources/config/routing/defaultcontroller.yml"
     prefix:   /proto
