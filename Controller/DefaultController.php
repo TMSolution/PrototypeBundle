@@ -29,7 +29,7 @@ class DefaultController extends BaseController
     
     //element praktycznie zawsze zmieniany, konfiguracja na zewnątrz
     protected $templates = [
-        'create' => 'CorePrototypeBundle:Element:new.html.twig',
+        'create' => 'CorePrototypeBundle:Element:create.html.twig',
         'list' => 'CorePrototypeBundle:Element:list.html.twig',
         'ajax_list' => 'CorePrototypeBundle:Element:list.ajax.html.twig',
         'update' => 'CorePrototypeBundle:Element:update.html.twig',
