@@ -11,4 +11,5 @@ services:
            
     prototype_config_test:
         class: Core\PrototypeBundle\Service\Config
-        arguments: [ %prototype_config_params%, { twig_container_list: jakis_alternatywny_twig }]
+        arguments: [ %prototype_config_params%]
+        #arguments: [ %prototype_config_params%, { twig_container_list: jakis_alternatywny_twig }]
