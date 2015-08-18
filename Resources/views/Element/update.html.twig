@@ -1,4 +1,4 @@
-{% extends 'CorePrototypeBundle:Container:update.html.twig' %}
+{% extends {% extends config.get("twig_container_update") %} %}
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 {% block element %}
 <div class="row">

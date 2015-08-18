@@ -47,7 +47,8 @@ class GridDefaultController extends DefaultController {
         return $grid->getGridResponse($view, [
                     'entityName' => $this->getEntityName(),
                     'newActionName' => $this->getAction('new'),
-                    'routeName' => $this->getRoutePrefix() . '_new'
+                    'routeName' => $this->getRoutePrefix() . '_new',
+                    'config'=>$this->getConfig()
         ]);
     }
     

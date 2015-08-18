@@ -24,7 +24,8 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('core_prototype');
         $rootNode->children()
-       
+       ->scalarNode('twig_base_index')->defaultValue('CorePrototypeBundle:Base:index.html.twig')->end()
+                
         ->scalarNode('twig_element_create')->defaultValue('CorePrototypeBundle:Element:create.html.twig')->end()
         ->scalarNode('twig_element_list')->defaultValue('CorePrototypeBundle:Element:list.html.twig')->end()
         ->scalarNode('twig_element_ajaxlist')->defaultValue('CorePrototypeBundle:Element:list.ajax.html.twig')->end()

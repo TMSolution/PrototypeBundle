@@ -1,4 +1,4 @@
-{% extends 'CorePrototypeBundle:Container:create.html.twig' %}
+{% extends config.get("twig_container_create") %}
 {% block content -%}
     {{ form_start(form) }}
 
