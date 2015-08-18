@@ -26,23 +26,18 @@ use Core\PrototypeBundle\Controller\DefaultController;
  */
 class GridDefaultController extends DefaultController {
 
-    protected $hiddenGridFilters = ['id'];
- 
-    
+  
     /**
-     * Read action.
+     * List action.
      * 
      * @return Response
      */
-    public function listAction() {
+    public function listAction($config) {
         
         $model = $this->getModel($this->getEntityClass());
         $grid = $this->get('grid');
         $source = new Entity($model);
-        //$businessQueryBuilder = $model->getQueryBuilder();
-        //$source->initQueryBuilder($businessQueryBuilder);
         $grid->setSource($source);
-        
         $this->buildGrid($grid);
         $view=  $this->configureView($grid);
         
@@ -72,41 +67,15 @@ class GridDefaultController extends DefaultController {
     {
         
         if ($this->getRequest()->isXmlHttpRequest()) {
-            $view = $this->templates['ajax_list'];
+            $view = $this->getConfig()->get('twig_element_ajaxlist');
         } else {
 
             $grid->resetSessionData();             
-            $view = $this->templates['list'];
+            $view = $this->getConfig()->get('twig_element_list');
         }
         
         return $view;
     }
-
-    
-
-    /**
-     * Grid configuration.
-     * 
-     * @author Łukasz Wawrzyniak <lukasz.wawrzyniak@tmsolution.pl>
-     * @param \TMSolution\DataGridBundle\Grid\Grid $grid
-     * @return \TMSolution\DataGridBundle\Grid\Grid
-     */
-    protected function configureGrid(\TMSolution\DataGridBundle\Grid\Grid $grid, $filterColumns = 3, $order = 'desc') {
-        $grid->setDefaultOrder('id', $order);
-        $grid->setNumberPresentedFilterColumn($filterColumns);
-        if (!empty($this->hiddenGridFilters)) {
-            $grid->setHideFilters($this->hiddenGridFilters);
-        }
-        if (!empty($this->gridColumns)) {
-            $grid->setVisibleColumns($this->gridColumns);
-            $grid->setColumnsOrder($this->gridColumns);
-        }
-        /* @TODO nie dziala, trzeba naprawić ! */
-        $grid->setActionsColumnSize(50);
-
-        return $grid;
-    }
-   
 
 
     /**
@@ -137,18 +106,10 @@ class GridDefaultController extends DefaultController {
         }
         return $actionObject;
     }
+    
+    
+  
 
-    /**
-     * Adds grid export
-     * @author Łukasz Wawrzyniak <lukasz.wawrzyniak@tmsolution.pl>
-     * @param \TMSolution\DataGridBundle\Grid\Grid $grid
-     * @return \TMSolution\DataGridBundle\Grid\Grid
-     */
-    protected function addGridExport(\TMSolution\DataGridBundle\Grid\Grid $grid) {
-        $grid->addExport(new ExcelExport('Excel Eksport'));
-        $grid->addExport(new CSVExport('CSV Eksport'));
-        $grid->addExport(new XMLExport('XML Eksport'));
-        return $grid;
-    }
+    
 
 }

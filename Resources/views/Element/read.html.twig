@@ -1,7 +1,6 @@
 {% extends 'CorePrototypeBundle:Container:read.html.twig'  %}
 
 {% block element %}
-ala ma kota
     <table class="record_properties table table-hover table-striped">
         <tbody>
             {% for key,property in properties %}
@@ -34,15 +33,15 @@ ala ma kota
         </tbody>
     </table>
     <div>
-        <a href="{{ path(listActionName, { 'entityName': entityName})}}" class=" prevButton btn btn-default">
+        <a href="{{ path(listActionName, { 'entityName': entityName})}}" class=" prevButton btn">
             {{ "Back"|trans}}
         </a>
         <span class="pull-right">   
-            <a href="{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn btn-danger">
+            <a href="{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn">
               {{ "Delete"|trans}} 
                
             </a>
-            <a href="{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn btn-success">
+            <a href="{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn">
                 {{ "Edit"|trans}}
             </a>
         </span>

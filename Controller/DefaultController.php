@@ -26,15 +26,28 @@ class DefaultController extends BaseController
     protected $routePrefix = null;
     protected $entityName;
     protected $routeName;
+    protected $configLoaded=false;
     
     //element praktycznie zawsze zmieniany, konfiguracja na zewnątrz
-    protected $templates = [
-        'create' => 'CorePrototypeBundle:Element:create.html.twig',
-        'list' => 'CorePrototypeBundle:Element:list.html.twig',
-        'ajax_list' => 'CorePrototypeBundle:Element:list.ajax.html.twig',
-        'update' => 'CorePrototypeBundle:Element:update.html.twig',
-        'read' => 'CorePrototypeBundle:Element:read.html.twig',
-        'error' => 'CorePrototypeBundle:Element:error.html.twig',
+    protected $config = [
+    /*
+        //twig templates for Elements
+        'twig_element_create' => 'CorePrototypeBundle:Element:create.html.twig',
+        'twig_element_list' => 'CorePrototypeBundle:Element:list.html.twig',
+        'twig_element_ajax_list' => 'CorePrototypeBundle:Element:list.ajax.html.twig',
+        'twig_element_update' => 'CorePrototypeBundle:Element:update.html.twig',
+        'twig_element_read' => 'CorePrototypeBundle:Element:read.html.twig',
+        'twig_element_error' => 'CorePrototypeBundle:Element:error.html.twig',
+        //twig templates for Containers
+        'twig_container_create' => 'CorePrototypeBundle:Container:create.html.twig',
+        'twig_container_list' => 'CorePrototypeBundle:Container:list.html.twig',
+        'twig_container_update' => 'CorePrototypeBundle:Container:update.html.twig',
+        'twig_container_read' => 'CorePrototypeBundle:Container:read.html.twig',
+        'twig_container_error' => 'CorePrototypeBundle:Container:error.html.twig',
+        //grid service 
+        'grid_service' => null,
+        //form ttype class
+        'formtype_class' => null*/
     ];
 
     /**
@@ -59,7 +72,7 @@ class DefaultController extends BaseController
             return $this->redirect($this->generateUrl($this->getRoutePrefix() . '_read', ['entityName' => $this->getEntityName(), 'id' => $entity->getId()]));
         }
 
-        return $this->render($this->templates['create'], [
+        return $this->render($this->getConfig()->get('twig_element_create'), [
                     'entity' => $entity,
                     'form' => $form->createView(),
         ]);
@@ -71,10 +84,10 @@ class DefaultController extends BaseController
      * @return Response
      * @throws \BadMethodCallException Not implemented yet
      */
-    public function listAction()
+   /* public function listAction()
     {
         throw new \BadMethodCallException("Not implemented yet");
-    }
+    }*/
 
     /**
      * Create action.
@@ -97,7 +110,7 @@ class DefaultController extends BaseController
             return $this->redirect($this->generateUrl($this->getRoutePrefix() . '_read', ['entityName' => $this->getEntityName(), 'id' => $id]));
         }
 
-        return $this->render($this->templates['update'], array(
+        return $this->render($this->getConfig()->get('twig_element_update'), array(
                     'entity' => $entity,
                     'form' => $updateForm->createView(),
                     'entityName' => $this->getEntityName(),
@@ -137,7 +150,7 @@ class DefaultController extends BaseController
         $entity = $model->findOneById($id);
         $editForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
 
-        return $this->render($this->templates['update'], [
+        return $this->render($this->getConfig()->get('twig_element_update'), [
                     'entity' => $entity,
                     'form' => $editForm->createView(),
                     'entityName' => $this->getEntityName(),
@@ -156,7 +169,7 @@ class DefaultController extends BaseController
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->findOneById($id);
 
-        return $this->render($this->templates['read'], array(
+        return $this->render($this->getConfig()->get('twig_element_read'), array(
                     'entity' => $entity,
                     'entityName' => $this->getEntityName(),
                     'editActionName' => $this->getAction('edit'),
@@ -216,7 +229,7 @@ class DefaultController extends BaseController
         $entity = $this->getModel($this->getEntityClass())->getEntity();
         $formType = $this->getFormType($this->getEntityClass(), null);
         $form = $this->makeForm($formType, $entity, 'POST', $this->getEntityName(), $this->getAction('create'));
-        return $this->render($this->templates['create'], array(
+        return $this->render($this->getConfig()->get('twig_element_create'), array(
                     'entity' => $entity,
                     'form' => $form->createView(),
                     'entityName' => $this->getEntityName(),
@@ -382,6 +395,20 @@ class DefaultController extends BaseController
     {
         return $this->getRoutePrefix() . "_" . $actionName;
     }
+    
+   
+    protected function getConfig()
+    {
+      if(false==$this->configLoaded)
+      {   
+          $this->get("prototype_config")->merge($this->config); 
+          $this->configLoaded=true;
+      } 
+      return $this->get("prototype_config");
+      
+    } 
+        
+    
     
     
 

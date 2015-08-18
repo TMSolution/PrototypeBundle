@@ -2,3 +2,7 @@ services:
     prototype_formtype_factory:
         class: Core\PrototypeBundle\Form\Type\FormTypeFactory
         arguments: [@service_container]
+        
+    prototype_config:
+        class: Core\PrototypeBundle\Service\Config
+        arguments: [%prototype_config_params%]    
