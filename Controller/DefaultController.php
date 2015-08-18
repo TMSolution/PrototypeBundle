@@ -114,13 +114,14 @@ class DefaultController extends BaseController
      */
     public function deleteAction($id)
     {
-
+        
         $model = $this->getModel($this->getEntityClass());
+        //dump($model);
         $entity = $model->findOneById($id);
         if (null != $entity) {
             $model->delete($entity, true);
         }
-        return $this->redirect($this->generateUrl($this->getRoutePrefix() . '_read', ['entityName' => $this->getEntityName()]));
+        return $this->redirect($this->generateUrl($this->getRoutePrefix() . '_list', ['entityName' => $this->getEntityName()]));
     }
 
     /**

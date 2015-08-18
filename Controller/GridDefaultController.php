@@ -60,6 +60,7 @@ class GridDefaultController extends DefaultController {
     protected function buildGrid($grid)
     {
         $gridConfigServiceName = 'grid.' . str_replace('\\Entity\\', '.', $this->getEntityClass());
+      
         if ($this->has($gridConfigServiceName)) {
             $grid=$this->get($gridConfigServiceName)->buildGrid($grid);
         }
