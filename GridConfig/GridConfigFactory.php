@@ -29,7 +29,7 @@ class GridConfigFactory {
 
     protected function createGridConfig($entityName) {
         $metadata = $this->manager->getClassMetadata($entityName);
-        $gridConfigName = str_replace('\\Entity\\', '\\Grid\\', $metadata->name);
+        $gridConfigName = str_replace('\\Entity\\', '\\GridConfig\\', $metadata->name);
         return new $gridConfigName($this->container);
     }
 
