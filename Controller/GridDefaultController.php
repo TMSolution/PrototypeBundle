@@ -32,7 +32,7 @@ class GridDefaultController extends DefaultController {
      * 
      * @return Response
      */
-    public function listAction($config) {
+    public function listAction() {
         
         $model = $this->getModel($this->getEntityClass());
         $grid = $this->get('grid');

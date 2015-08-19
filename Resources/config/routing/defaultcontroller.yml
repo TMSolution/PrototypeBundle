@@ -4,7 +4,6 @@ core_prototype_defaultcontroller_list:
     methods:  [GET]
     defaults: 
          _controller: "CorePrototypeBundle:GridDefault:list"
-         config: prototype_config_test  
          
 
 #swieta nazwa - nie wolno jej zmieniać    
