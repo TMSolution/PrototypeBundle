@@ -24,6 +24,27 @@ use UnexpectedValueException;
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
 class GenerateFormTypeCommand extends ContainerAwareCommand {
+    
+    
+    protected $types = [
+        "string" => "text",
+        "text" => "text",
+        "blob" => "text",
+        "integer" => "number",
+        "smallint" => "number",
+        "bigint" => "number",
+        "decimal" => "number",
+        "float" => "number",
+        "duble" => "number",
+        "boolean" => "number",
+        "datetime" => "datetime",
+        "datetimetz" => "datetime",
+        "date" => "datetime",
+        "time" => "datetime",
+        "array" => "array",
+        "simple_array" => "array",
+        "json_array" => "array",
+    ];
 
     protected function configure() {
         $this->setName('generate:view:update')
@@ -93,7 +114,7 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
     protected function getFormTypeNamespaceName($entityName)
     {   
        
-         $entityNameArr=explode("\\", str_replace("Entity", "Form\\Type", $entityName));
+         $entityNameArr=explode("\\", str_replace("Entity", "Form", $entityName));
          unset($entityNameArr[count($entityNameArr)-1]);
          return implode("\\",$entityNameArr);
         
@@ -114,7 +135,15 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
         $templating = $this->getContainer()->get('templating');
         $formTypeNamespaceName=$this->getFormTypeNamespaceName($entityName);
         $formTypeName=  strtolower(str_replace('/', '_', $entityNamespace));
+        
+        
+        foreach($fieldsInfo as $key=>$field){
+            
+            $fieldsInfo[$key]['formType']=$this->types[$field['type']];
+        }
 
+        dump($fieldsInfo);
+        
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:update.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
