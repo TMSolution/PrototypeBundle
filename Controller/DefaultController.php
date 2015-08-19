@@ -43,7 +43,7 @@ class DefaultController extends BaseController {
               'twig_container_read' => 'CorePrototypeBundle:Container:read.html.twig',
               'twig_container_error' => 'CorePrototypeBundle:Container:error.html.twig',
               //grid service
-              'grid_service' => null,
+              'grid_config_service' => null,
               //form ttype class
               'formtype_class' => null */
     ];
@@ -303,8 +303,15 @@ class DefaultController extends BaseController {
      * @return Symfony\Component\Form\Extension\Core\Type\FormType FormType
      */
     protected function getFormType($objectName, $class = null) {
-        $formTypeFactory = $this->get("prototype_formtype_factory");
-        $formType = $formTypeFactory->getFormType($objectName, $class);
+
+        $formTypeClass = $this->getConfig()->get("formtype_class");
+        if (!empty($formTypeClass)) {
+            $formType = new $formTypeClass;
+        } else {
+            $formTypeFactory = $this->get("prototype_formtype_factory");
+            $formType = $formTypeFactory->getFormType($objectName, $class);
+        }
+
         return $formType;
     }
 
@@ -397,6 +404,7 @@ class DefaultController extends BaseController {
     }
 
     protected function getConfig() {
+
 
         if (false == $this->configService) {
 
