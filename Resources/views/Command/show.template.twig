@@ -1,2 +1,53 @@
-{# empty Twig template #}
-Jacek ma psa
+{{ "{% extends config.get('twig_container_read') %}" }}
+
+{{ "{% block element %}" }}
+    <table class="record_properties table table-hover table-striped">
+        <tbody>
+            {% for field, fieldParam in fieldsInfo %}
+
+              {{ "{% if property is iterable %}" }}
+                    <tr>
+                        <td><strong>{{field|trans}}</strong></td>
+                        <td>
+                            <ul>
+                                {{ "{% for item in property%} "}
+                                    <li>
+                                       {{ " {% if item %}{{item}}{% else %}-{% endif %}" }}
+                                    </li>   
+                                {{ "{% endfor %}" }}
+                            </ul>
+                        </td>
+                    </tr> 
+                {{ "{% else %}" }}
+
+                    <tr>
+                        <td><strong>{{field|trans}}</strong></td>
+                        <td>{{ "{% if properties[field] %}{{properties[field]}}{% else %}-{% endif %}" }}</td>
+                    </tr>
+                {{ "{% endif %}" }}    
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+    <div>
+        <a href={{ ""{{ path(listActionName, { 'entityName': entityName})}}" }}" class=" prevButton btn">
+            {{ "{{ "Back"|trans}}" }}
+        </a>
+        <span class="pull-right">   
+            <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
+               {{ " {{ "Delete"|trans}} " }}
+
+            </a>
+            <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
+                {{ "{{ "Edit"|trans}}" }}
+            </a>
+        </span>
+    </div>
+
+
+
+
+
+
+{{ "{% endblock element %}" }}
