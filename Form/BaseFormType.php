@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Core\PrototypeBundle\Form\Type;
+namespace Core\PrototypeBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 

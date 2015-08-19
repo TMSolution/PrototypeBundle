@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\PrototypeBundle\Form\Type;
+namespace Core\PrototypeBundle\Form;
 
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

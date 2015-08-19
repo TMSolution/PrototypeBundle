@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\PrototypeBundle\Form\Type;
+namespace Core\PrototypeBundle\Form;
 
 class FormTypeFactory {
 
@@ -37,7 +37,7 @@ class FormTypeFactory {
         $metadata = $this->manager->getClassMetadata($entityName);
 
 
-        $formTypeName = str_replace('\\Entity\\', '\\Form\\Type\\', $metadata->name . 'Type');
+        $formTypeName = str_replace('\\Entity\\', '\\Form\\', $metadata->name . 'Type');
         if (class_exists($formTypeName) === false) {
             $formType = new FormType($class, $metadata);
            $formType->setContainer($this->container);
