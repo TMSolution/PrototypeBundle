@@ -1,15 +1,17 @@
 services:
     prototype_formtype_factory:
-        class: Core\PrototypeBundle\Form\Type\FormTypeFactory
+        class: Core\PrototypeBundle\Form\FormTypeFactory
         arguments: [@service_container]
-        
+
+    prototype_grid_config_factory:
+        class: Core\PrototypeBundle\GridConfig\GridConfigFactory
+        arguments: [@service_container]   
+           
     prototype_config:
         class: Core\PrototypeBundle\Service\Config
         arguments: [%prototype_config_params%] 
         
-        
-           
-    prototype_config_test:
-        class: Core\PrototypeBundle\Service\Config
-        arguments: [ %prototype_config_params%]
+   # prototype_config_test:
+    #    class: Core\PrototypeBundle\Service\Config
+     #   arguments: [ %prototype_config_params%]
         #arguments: [ %prototype_config_params%, { twig_container_list: jakis_alternatywny_twig }]
