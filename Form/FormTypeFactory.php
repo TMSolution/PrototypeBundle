@@ -35,20 +35,13 @@ class FormTypeFactory {
 
     protected function createFormType($entityName, $class) {
         $metadata = $this->manager->getClassMetadata($entityName);
-
-
         $formTypeName = str_replace('\\Entity\\', '\\Form\\', $metadata->name . 'Type');
-        if (class_exists($formTypeName) === false) {
+        if (false === class_exists($formTypeName) ) {
             $formType = new FormType($class, $metadata);
-           $formType->setContainer($this->container);
-            $formType->setTranslator($this->container->get('translator'));
             return $formType;
         }
-
-
+        
         $formType = new $formTypeName($class, $params = array());
-        $formType->setContainer($this->container);
-        $formType->setTranslator($this->container->get('translator'));
         return $formType;
     }
 
