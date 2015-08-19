@@ -36,14 +36,15 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
         "decimal" => "number",
         "float" => "number",
         "duble" => "number",
-        "boolean" => "number",
-        "datetime" => "datetime",
-        "datetimetz" => "datetime",
-        "date" => "datetime",
-        "time" => "datetime",
+        "boolean" => "boolean",
+        "datetime" => "text",
+        "datetimetz" => "text",
+        "date" => "text",
+        "time" => "text",
         "array" => "array",
         "simple_array" => "array",
         "json_array" => "array",
+        "object" => "array",
     ];
 
     protected function configure() {
@@ -134,7 +135,7 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
         $formTypeNamespaceName=$this->getFormTypeNamespaceName($entityName);
-        $formTypeName=  strtolower(str_replace('/', '_', $entityNamespace));
+        $formTypeName=  strtolower(str_replace('\\', '_', $entityNamespace));
         
         
         foreach($fieldsInfo as $key=>$field){
@@ -142,8 +143,7 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
             $fieldsInfo[$key]['formType']=$this->types[$field['type']];
         }
 
-        dump($fieldsInfo);
-        
+       
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:update.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
