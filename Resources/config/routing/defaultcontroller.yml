@@ -3,8 +3,7 @@ core_prototype_defaultcontroller_list:
     locales:  { en: "/{entityName}/list", pl: "/{entityName}/lista" } 
     methods:  [GET]
     defaults: 
-         _controller: "CorePrototypeBundle:GridDefault:list"
-         config: prototype_config_test  
+         _controller: "CorePrototypeBundle:GridDefault:list"  
          
 
 #swieta nazwa - nie wolno jej zmieniać    
