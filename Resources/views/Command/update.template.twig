@@ -34,7 +34,9 @@ class {{objectName}}Type extends BaseFormType
                 'class' => 'css class name',
             ]
         ]){% if loop.last %};{% endif %}
+        
         {% endfor %}
+        
     }
 
 
