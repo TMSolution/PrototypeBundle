@@ -42,6 +42,16 @@ class {{objectName}}Type extends AbstractType
                 //    'class' => 'css class name',
                 //]   
              ])
+            {% elseif fieldParam.formType=='datetime' %}->add('{{field}}', '{{fieldParam.formType}}', [
+                //'label' => 'Label name',
+                //'widget' => 'widget name',
+                //'required' => true,
+                //'format' => 'yyyy-MM-dd',
+                //'attr' => [
+                //    'placeholder' => 'placeholder text',
+                //    'class' => 'css class name',
+                //]   
+             ]) 
             {% else %}->add('{{field}}', '{{fieldParam.formType}}', [
                 //'label' => 'Label name',
                 //'widget' => 'widget name',
