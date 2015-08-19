@@ -24,7 +24,7 @@ class {{objectName}}Type extends AbstractType
     {
         
         $builder
-        {% for field, fieldParam in fieldsInfo %}{% if fieldParam.formType=='text' %}->add('{{field}}', '{{fieldParam.formType}}', [
+        {% for field, fieldParam in fieldsInfo %}{% if field !='id' %}{% if fieldParam.formType=='text' %}->add('{{field}}', '{{fieldParam.formType}}', [
                 //'label' => 'Label name',
                 //'widget' => 'widget name',
                 //'required' => true,
@@ -52,6 +52,28 @@ class {{objectName}}Type extends AbstractType
                 //    'class' => 'css class name',
                 //]   
              ]) 
+            {% elseif fieldParam.formType=='array' %}->add('{{field}}', 'choice', [
+                //'label' => 'Label name',
+                //'widget' => 'widget name',
+                //'required' => true,
+                //'choices' => array(
+                //    'param1' => 'value1',
+                //    'param2' => 'value2',
+                //    'param3' => 'value3'
+                //),
+                //'attr' => [
+                //    'placeholder' => 'placeholder text',
+                //    'class' => 'css class name',
+                //]   
+             ]) 
+            {% elseif fieldParam.formType=='boolean' %}->add('{{field}}', 'checkbox', [
+                //'label' => 'Label name',
+                //'widget' => 'widget name',
+                //'required' => true,
+                //'attr' => [
+                //    'class' => 'css class name',
+                //]   
+             ]) 
             {% else %}->add('{{field}}', '{{fieldParam.formType}}', [
                 //'label' => 'Label name',
                 //'widget' => 'widget name',
@@ -62,7 +84,7 @@ class {{objectName}}Type extends AbstractType
                 //]   
              ])
         {% endif %}{% if loop.last %};{% endif %}
-        
+        {% endif %}
         {% endfor %}
         
     }
@@ -88,3 +110,7 @@ class {{objectName}}Type extends AbstractType
     }
 
 }
+
+
+
+
