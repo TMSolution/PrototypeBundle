@@ -23,7 +23,7 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateShowViewCommand extends ContainerAwareCommand {
+class GenerateReadViewCommand extends ContainerAwareCommand {
 
     protected function configure() {
         $this->setName('generate:view:read')
@@ -63,21 +63,16 @@ class GenerateShowViewCommand extends ContainerAwareCommand {
         
         
        $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
-       $directory=$this->replaceLast("Entity", "Resources".DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR.$objectName, $directory);
+       $directory=$this->replaceLast("Entity", "Resources".DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR.$objectName.DIRECTORY_SEPARATOR."Element", $directory);
       
         if (is_dir($directory) == false) {
-            if (mkdir($directory) == false) {
+            if (mkdir($directory,0777,true) == false) {
                 throw new UnexpectedValueException("Creating directory failed: ".$directory);
             }
         }
         
-        $directoryElement=$directory.DIRECTORY_SEPARATOR.'Element';
-        if (is_dir($directoryElement) == false) {
-            if (mkdir($directoryElement) == false) {
-                throw new UnexpectedValueException("Creating directory failed: ".$directoryElement);
-            }
-        }
-        return $directoryElement;
+       
+        return $directory;
     }
 
     protected function calculateFileName($entityReflection) {
