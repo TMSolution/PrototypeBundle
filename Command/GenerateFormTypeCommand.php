@@ -44,7 +44,7 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
         "array" => "array",
         "simple_array" => "array",
         "json_array" => "array",
-        "object" => "array",
+        "object" => "entity",
     ];
 
     protected function configure() {
@@ -137,6 +137,8 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
         $formTypeNamespaceName=$this->getFormTypeNamespaceName($entityName);
         $formTypeName=  strtolower(str_replace('\\', '_', $entityNamespace));
         
+        
+     
         
         foreach($fieldsInfo as $key=>$field){
             

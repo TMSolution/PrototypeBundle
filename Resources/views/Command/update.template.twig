@@ -65,7 +65,22 @@ class {{objectName}}Type extends AbstractType
                 //    'placeholder' => 'placeholder text',
                 //    'class' => 'css class name',
                 //]   
-             ]) 
+             ])
+            {% elseif fieldParam.formType=='entity' %}->add('{{field}}', 'entity', [
+                'class' => '{{fieldParam.object_name}}',
+                //'label' => 'Label name',
+                //'widget' => 'widget name',
+                //'required' => true,
+                //'choices' => array(
+                //    'param1' => 'value1',
+                //    'param2' => 'value2',
+                //    'param3' => 'value3'
+                //),
+                //'attr' => [
+                //    'placeholder' => 'placeholder text',
+                //    'class' => 'css class name',
+                //]   
+             ])
             {% elseif fieldParam.formType=='boolean' %}->add('{{field}}', 'checkbox', [
                 //'label' => 'Label name',
                 //'widget' => 'widget name',
