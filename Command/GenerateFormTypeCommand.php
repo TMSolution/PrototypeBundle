@@ -44,7 +44,7 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
         "array" => "array",
         "simple_array" => "array",
         "json_array" => "array",
-        "object" => "entity",
+        "object" => "entity"
     ];
 
     protected function configure() {
