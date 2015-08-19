@@ -392,7 +392,7 @@ class DefaultController extends BaseController {
 
             $config = $this->get("prototype_config");
         }
-        dump($config);
+       // dump($config);
         return $config;
     }
 

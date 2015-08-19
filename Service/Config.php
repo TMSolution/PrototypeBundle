@@ -11,7 +11,7 @@ class Config {
         if (empty($config)) {
             $this->config = $defaultConfig;
         } else {
-            dump($config);
+ 
             $this->config = array_merge($defaultConfig, $config);
         }
     }

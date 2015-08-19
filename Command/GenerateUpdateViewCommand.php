@@ -26,7 +26,7 @@ use UnexpectedValueException;
 class GenerateShowViewCommand extends ContainerAwareCommand {
 
     protected function configure() {
-        $this->setName('generate:view:show')
+        $this->setName('generate:view:update')
                 ->setDescription('Generate widget and template')
                 ->addArgument(
                         'entity', InputArgument::REQUIRED, 'Insert entity class name'
@@ -67,10 +67,17 @@ class GenerateShowViewCommand extends ContainerAwareCommand {
       
         if (is_dir($directory) == false) {
             if (mkdir($directory) == false) {
-                throw new UnexpectedValueException("Creating directory failed");
+                throw new UnexpectedValueException("Creating directory failed: ".$directory);
             }
         }
-        return $directory;
+        
+        $directoryElement=$directory.DIRECTORY_SEPARATOR.'Element';
+        if (is_dir($directoryElement) == false) {
+            if (mkdir($directoryElement) == false) {
+                throw new UnexpectedValueException("Creating directory failed: ".$directoryElement);
+            }
+        }
+        return $directoryElement;
     }
 
     protected function calculateFileName($entityReflection) {
@@ -105,11 +112,11 @@ class GenerateShowViewCommand extends ContainerAwareCommand {
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
         $directory=$this->createDirectory($classPath,$entityNamespace,$objectName);
-        $fileName=$directory.DIRECTORY_SEPARATOR."show.html.twig";
+        $fileName=$directory.DIRECTORY_SEPARATOR."update.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
        
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:show.template.twig", [
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:update.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
             "objectName" => $objectName,

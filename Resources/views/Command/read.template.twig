@@ -5,12 +5,13 @@
         <tbody>
             {% for field, fieldParam in fieldsInfo %}
 
+              <!-- Field {{field}} -->  
               {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
                     <tr>
                         <td><strong>{{field|trans}}</strong></td>
                         <td>
                             <ul>
-                                {{ "{% for item in property%} "}}
+                                {{ "{% for item in properties."}}{{field}}{{" %} "}}
                                     <li>
                                        {{ " {% if item %}{{item}}{% else %}-{% endif %}" }}
                                     </li>   
