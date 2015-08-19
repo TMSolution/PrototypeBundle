@@ -23,10 +23,10 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateShowViewCommand extends ContainerAwareCommand {
+class GenerateReadViewCommand extends ContainerAwareCommand {
 
     protected function configure() {
-        $this->setName('generate:view:show')
+        $this->setName('generate:view:read')
                 ->setDescription('Generate widget and template')
                 ->addArgument(
                         'entity', InputArgument::REQUIRED, 'Insert entity class name'
@@ -63,13 +63,15 @@ class GenerateShowViewCommand extends ContainerAwareCommand {
         
         
        $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
-       $directory=$this->replaceLast("Entity", "Resources".DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR.$objectName, $directory);
+       $directory=$this->replaceLast("Entity", "Resources".DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR.$objectName.DIRECTORY_SEPARATOR."Element", $directory);
       
         if (is_dir($directory) == false) {
-            if (mkdir($directory) == false) {
-                throw new UnexpectedValueException("Creating directory failed");
+            if (mkdir($directory,0777,true) == false) {
+                throw new UnexpectedValueException("Creating directory failed: ".$directory);
             }
         }
+        
+       
         return $directory;
     }
 
@@ -105,11 +107,11 @@ class GenerateShowViewCommand extends ContainerAwareCommand {
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
         $directory=$this->createDirectory($classPath,$entityNamespace,$objectName);
-        $fileName=$directory.DIRECTORY_SEPARATOR."show.html.twig";
+        $fileName=$directory.DIRECTORY_SEPARATOR."read.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
        
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:show.template.twig", [
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:read.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
             "objectName" => $objectName,
