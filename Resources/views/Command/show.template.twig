@@ -5,12 +5,12 @@
         <tbody>
             {% for field, fieldParam in fieldsInfo %}
 
-              {{ "{% if property is iterable %}" }}
+              {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
                     <tr>
                         <td><strong>{{field|trans}}</strong></td>
                         <td>
                             <ul>
-                                {{ "{% for item in property%} "}
+                                {{ "{% for item in property%} "}}
                                     <li>
                                        {{ " {% if item %}{{item}}{% else %}-{% endif %}" }}
                                     </li>   
@@ -22,7 +22,7 @@
 
                     <tr>
                         <td><strong>{{field|trans}}</strong></td>
-                        <td>{{ "{% if properties[field] %}{{properties[field]}}{% else %}-{% endif %}" }}</td>
+                        <td>{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</td>
                     </tr>
                 {{ "{% endif %}" }}    
 
@@ -31,16 +31,16 @@
         </tbody>
     </table>
     <div>
-        <a href={{ ""{{ path(listActionName, { 'entityName': entityName})}}" }}" class=" prevButton btn">
-            {{ "{{ "Back"|trans}}" }}
+        <a href="{{ "{{ path(listActionName, { 'entityName': entityName})}}" }}" class=" prevButton btn">
+            {{ "{{ 'Back'|trans}}" }}
         </a>
         <span class="pull-right">   
             <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
-               {{ " {{ "Delete"|trans}} " }}
+               {{ "{{ 'Delete'|trans}} " }}
 
             </a>
             <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
-                {{ "{{ "Edit"|trans}}" }}
+                {{ "{{ 'Edit'|trans}}" }}
             </a>
         </span>
     </div>
