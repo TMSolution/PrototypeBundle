@@ -98,9 +98,7 @@ class {{objectName}}Type extends AbstractType
                 //    'class' => 'css class name',
                 //]   
              ])
-        {% endif %}{% if loop.last %};{% endif %}
-        {% endif %}
-        {% endfor %}
+        {% endif %}{% if loop.last %};{% endif %}{% endif %}{% endfor %}
         
     }
 
