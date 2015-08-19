@@ -23,7 +23,7 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateShowViewCommand extends ContainerAwareCommand {
+class GenerateUpdateViewCommand extends ContainerAwareCommand {
 
     protected function configure() {
         $this->setName('generate:view:update')
@@ -63,21 +63,16 @@ class GenerateShowViewCommand extends ContainerAwareCommand {
         
         
        $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
-       $directory=$this->replaceLast("Entity", "Resources".DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR.$objectName, $directory);
+       $directory=$this->replaceLast("Entity", "Form".DIRECTORY_SEPARATOR."Type", $directory);
       
         if (is_dir($directory) == false) {
-            if (mkdir($directory) == false) {
+            if (mkdir($directory,0777,true) == false) {
                 throw new UnexpectedValueException("Creating directory failed: ".$directory);
             }
         }
         
-        $directoryElement=$directory.DIRECTORY_SEPARATOR.'Element';
-        if (is_dir($directoryElement) == false) {
-            if (mkdir($directoryElement) == false) {
-                throw new UnexpectedValueException("Creating directory failed: ".$directoryElement);
-            }
-        }
-        return $directoryElement;
+      
+        return $directory;
     }
 
     protected function calculateFileName($entityReflection) {
@@ -112,7 +107,7 @@ class GenerateShowViewCommand extends ContainerAwareCommand {
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
         $directory=$this->createDirectory($classPath,$entityNamespace,$objectName);
-        $fileName=$directory.DIRECTORY_SEPARATOR."update.html.twig";
+        $fileName=$directory.DIRECTORY_SEPARATOR.$objectName."Type.php";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
        
@@ -124,7 +119,7 @@ class GenerateShowViewCommand extends ContainerAwareCommand {
             ]);
         
         file_put_contents($fileName, $renderedConfig);
-        $output->writeln("Show view generated");
+        $output->writeln("Update view generated");
     }
 
    
