@@ -28,6 +28,7 @@ class DefaultController extends BaseController {
     protected $configService;
     //element praktycznie zawsze zmieniany, konfiguracja na zewnątrz
     protected $config = [
+        
             /*
               //twig templates for Elements
               'twig_element_create' => 'CorePrototypeBundle:Element:create.html.twig',
