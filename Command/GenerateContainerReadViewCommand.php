@@ -110,6 +110,9 @@ class GenerateContainerReadViewCommand extends ContainerAwareCommand {
         $fileName=$directory.DIRECTORY_SEPARATOR."read.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
+        
+        var_dump($fieldsInfo);
+        
        
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:container.read.template.twig", [
             "namespace" => $entityNamespace,
