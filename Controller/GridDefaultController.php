@@ -10,8 +10,6 @@
 
 namespace Core\PrototypeBundle\Controller;
 
-
-
 use APY\DataGridBundle\Grid\Export\ExcelExport;
 use APY\DataGridBundle\Grid\Export\CSVExport;
 use APY\DataGridBundle\Grid\Export\XMLExport;
@@ -26,57 +24,57 @@ use Core\PrototypeBundle\Controller\DefaultController;
  */
 class GridDefaultController extends DefaultController {
 
-  
     /**
      * List action.
      * 
      * @return Response
      */
     public function listAction() {
-        
+
         $model = $this->getModel($this->getEntityClass());
         $grid = $this->get('grid');
         $source = new Entity($model);
         $grid->setSource($source);
         $this->buildGrid($grid);
-        $view=  $this->configureView($grid);
-        
-        
+        $view = $this->configureView($grid);
 
-        
+
+
+
         return $grid->getGridResponse($view, [
                     'entityName' => $this->getEntityName(),
                     'newActionName' => $this->getAction('new'),
                     'routeName' => $this->getRoutePrefix() . '_new',
-                    'config'=>$this->getConfig()
+                    'config' => $this->getConfig()
         ]);
     }
-    
-    
-    protected function buildGrid($grid)
-    {
+
+    protected function buildGrid($grid) {
         //@todo sprawdź czy jest ustawiony w configu
-        $gridConfig=$this->get("prototype_grid_config_factory")->getGridConfig($this->getEntityClass());
+
+        $gridConfigServiceName = $this->getConfig()->get("grid_config_service");
+        if ($gridConfigServiceName && $this->has($gridConfigServiceName)) {
+            $gridConfig = $this->get($gridConfigServiceName);
+        } else {
+            $gridConfig = $this->get("prototype_grid_config_factory")->getGridConfig($this->getEntityClass());
+        }
         if ($gridConfig) {
-            $gridConfig->buildGrid($grid);
+            $gridConfig->buildGrid($grid,$this->getRoutePrefix());
         }
     }
-    
-    
-    protected function configureView($grid)
-    {
-        
+
+    protected function configureView($grid) {
+
         if ($this->getRequest()->isXmlHttpRequest()) {
             $view = $this->getConfig()->get('twig_element_ajaxlist');
         } else {
 
-            $grid->resetSessionData();             
+            $grid->resetSessionData();
             $view = $this->getConfig()->get('twig_element_list');
         }
-        
+
         return $view;
     }
-
 
     /**
      * 
@@ -88,7 +86,6 @@ class GridDefaultController extends DefaultController {
         $actionObject->setRouteParameters(['entityName' => $entityName ? $entityName : $this->getEntityName(), 'id']);
         return $actionObject;
     }
-
 
     /**
      * Sets route parameters for grid actions without ID
@@ -106,10 +103,5 @@ class GridDefaultController extends DefaultController {
         }
         return $actionObject;
     }
-    
-    
-  
-
-    
 
 }

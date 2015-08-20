@@ -1,12 +1,9 @@
 #swieta nazwa - nie wolno jej zmieniać PO CO TO?
 core_prototype_defaultcontroller_list:
     locales:  { en: "/{entityName}/list", pl: "/{entityName}/lista" } 
-    methods:  [GET]
     defaults: 
          _controller: "CorePrototypeBundle:GridDefault:list"
-         config: 
-         
-
+       
 #swieta nazwa - nie wolno jej zmieniać    
 core_prototype_defaultcontroller_read:
     locales:  { en: "/{entityName}/read/{id}", pl:"/{entityName}/pobierz/{id}"}

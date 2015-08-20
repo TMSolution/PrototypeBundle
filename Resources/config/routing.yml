@@ -1,4 +1,0 @@
-core_prototype_defaultcontroller:
-    resource: "@CorePrototypeBundle/Resources/config/routing/defaultcontroller.yml"
-    prefix:   /proto
-    type: be_simple_i18n

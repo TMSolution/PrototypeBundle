@@ -389,8 +389,10 @@ class DefaultController extends BaseController {
     protected function loadConfig() {
 
         $configService = $this->getRequest()->attributes->get("config");
+        dump($configService);
         if ($configService) {
             if ($this->has($configService)) {
+                 dump('wszedłem');
                 $config = $this->get($configService);
             } else {
                 throw new \Exception("Config Service name was found, but service dosen't exists");
@@ -409,6 +411,7 @@ class DefaultController extends BaseController {
         if (false == $this->configService) {
 
             $this->configService = $this->loadConfig();
+            dump($this->configService);
             $this->configService->merge($this->config);
         }
         return $this->configService;

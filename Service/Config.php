@@ -18,7 +18,7 @@ class Config {
 
     public function merge(array $config) {
 
-        $this->config = array_merge($config, $this->config);
+        $this->config = array_merge($this->config,$config);
     }
 
     public function get($property) {
