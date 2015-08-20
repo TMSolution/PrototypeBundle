@@ -10,31 +10,96 @@ namespace  {{formTypeNamespace}};
 
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Core\BaseBundle\Form\Type\BaseFormType;
-use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\AbstractType;
 
 /**
  * FormType  for '{{entityName}}'.
  *
  * Generated with {@see TMSolution\PrototypeBundle\Command\GenerateFormTypeCommand}.
  */
-class {{objectName}}Type extends BaseFormType
+class {{objectName}}Type extends AbstractType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         
         $builder
-        {% for field, fieldParam in fieldsInfo %}->add('billPeriod', null, [
-            'label' => 'Label name',
-            'widget' => 'widget name',
-            'required' => true,
-            'attr' => [
-                'placeholder' => 'placeholder text',
-                'class' => 'css class name',
-            ]
-        ]){% if loop.last %};{% endif %}
-        {% endfor %}
+        {% for field, fieldParam in fieldsInfo %}{% if field !='id' %}{% if fieldParam.formType=='text' %}->add('{{field}}', '{{fieldParam.formType}}', [
+                //'label' => 'Label name',
+                //'widget' => 'widget name',
+                //'required' => true,
+                //'attr' => [
+                //    'placeholder' => 'placeholder text',
+                //    'class' => 'css class name',
+                //]
+             ])
+            {% elseif fieldParam.formType=='number' %}->add('{{field}}', '{{fieldParam.formType}}', [
+                //'label' => 'Label name',
+                //'widget' => 'widget name',
+                //'required' => true,
+                //'attr' => [
+                //    'placeholder' => 'placeholder text',
+                //    'class' => 'css class name',
+                //]   
+             ])
+            {% elseif fieldParam.formType=='datetime' %}->add('{{field}}', '{{fieldParam.formType}}', [
+                //'label' => 'Label name',
+                //'widget' => 'widget name',
+                //'required' => true,
+                //'format' => 'yyyy-MM-dd',
+                //'attr' => [
+                //    'placeholder' => 'placeholder text',
+                //    'class' => 'css class name',
+                //]   
+             ]) 
+            {% elseif fieldParam.formType=='array' %}->add('{{field}}', 'choice', [
+                //'label' => 'Label name',
+                //'widget' => 'widget name',
+                //'required' => true,
+                //'choices' => array(
+                //    'param1' => 'value1',
+                //    'param2' => 'value2',
+                //    'param3' => 'value3'
+                //),
+                //'attr' => [
+                //    'placeholder' => 'placeholder text',
+                //    'class' => 'css class name',
+                //]   
+             ])
+            {% elseif fieldParam.formType=='entity' %}->add('{{field}}', 'entity', [
+                'class' => '{{fieldParam.object_name}}',
+                //'label' => 'Label name',
+                //'widget' => 'widget name',
+                //'required' => true,
+                //'choices' => array(
+                //    'param1' => 'value1',
+                //    'param2' => 'value2',
+                //    'param3' => 'value3'
+                //),
+                //'attr' => [
+                //    'placeholder' => 'placeholder text',
+                //    'class' => 'css class name',
+                //]   
+             ])
+            {% elseif fieldParam.formType=='boolean' %}->add('{{field}}', 'checkbox', [
+                //'label' => 'Label name',
+                //'widget' => 'widget name',
+                //'required' => true,
+                //'attr' => [
+                //    'class' => 'css class name',
+                //]   
+             ]) 
+            {% else %}->add('{{field}}', '{{fieldParam.formType}}', [
+                //'label' => 'Label name',
+                //'widget' => 'widget name',
+                //'required' => true,
+                //'attr' => [
+                //    'placeholder' => 'placeholder text',
+                //    'class' => 'css class name',
+                //]   
+             ])
+        {% endif %}{% if loop.last %};{% endif %}{% endif %}{% endfor %}
+        
     }
 
 
@@ -58,3 +123,7 @@ class {{objectName}}Type extends BaseFormType
     }
 
 }
+
+
+
+

@@ -23,7 +23,29 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateUpdateViewCommand extends ContainerAwareCommand {
+class GenerateFormTypeCommand extends ContainerAwareCommand {
+    
+    
+    protected $types = [
+        "string" => "text",
+        "text" => "text",
+        "blob" => "text",
+        "integer" => "number",
+        "smallint" => "number",
+        "bigint" => "number",
+        "decimal" => "number",
+        "float" => "number",
+        "duble" => "number",
+        "boolean" => "boolean",
+        "datetime" => "text",
+        "datetimetz" => "text",
+        "date" => "text",
+        "time" => "text",
+        "array" => "array",
+        "simple_array" => "array",
+        "json_array" => "array",
+        "object" => "entity"
+    ];
 
     protected function configure() {
         $this->setName('generate:view:update')
@@ -49,21 +71,14 @@ class GenerateUpdateViewCommand extends ContainerAwareCommand {
         return $classPath;
     }
     
-    protected function getGridConfigNamespaceName($entityName)
-    {   
-       
-         $entityNameArr=explode("\\", str_replace("Entity", "Grid", $entityName));
-         unset($entityNameArr[count($entityNameArr)-1]);
-         return implode("\\",$entityNameArr);
-        
-    }
+
     
 
     protected function createDirectory($classPath,$entityNamespace,$objectName) {
         
         
        $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
-       $directory=$this->replaceLast("Entity", "Form".DIRECTORY_SEPARATOR."Type", $directory);
+       $directory=$this->replaceLast("Entity", "Form", $directory);
       
         if (is_dir($directory) == false) {
             if (mkdir($directory,0777,true) == false) {
@@ -96,6 +111,15 @@ class GenerateUpdateViewCommand extends ContainerAwareCommand {
         }
         return $subject;
     }
+    
+    protected function getFormTypeNamespaceName($entityName)
+    {   
+       
+         $entityNameArr=explode("\\", str_replace("Entity", "Form", $entityName));
+         unset($entityNameArr[count($entityNameArr)-1]);
+         return implode("\\",$entityNameArr);
+        
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
 
@@ -110,12 +134,25 @@ class GenerateUpdateViewCommand extends ContainerAwareCommand {
         $fileName=$directory.DIRECTORY_SEPARATOR.$objectName."Type.php";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
+        $formTypeNamespaceName=$this->getFormTypeNamespaceName($entityName);
+        $formTypeName=  strtolower(str_replace('\\', '_', $entityNamespace));
+        
+        
+     
+        
+        foreach($fieldsInfo as $key=>$field){
+            
+            $fieldsInfo[$key]['formType']=$this->types[$field['type']];
+        }
+
        
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:update.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
             "objectName" => $objectName,
-            "fieldsInfo" => $fieldsInfo
+            "fieldsInfo" => $fieldsInfo,
+            "formTypeNamespace" => $formTypeNamespaceName,
+            "formTypeName" => $formTypeName
             ]);
         
         file_put_contents($fileName, $renderedConfig);
