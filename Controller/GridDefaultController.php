@@ -49,15 +49,20 @@ class GridDefaultController extends DefaultController {
         ]);
     }
 
+    
+    protected function getGridConfig(){
+        
+             $configurator = $this->get("prototype.grid.configurator.service");
+             $config=$configurator->getService($this->getRouteName(),$this->getEntityClass());
+             return $config;
+      }
+     
+    
+    
     protected function buildGrid($grid) {
         //@todo sprawdź czy jest ustawiony w configu
-
-        $gridConfigServiceName = $this->getConfig()->get("grid_config_service");
-        if ($gridConfigServiceName && $this->has($gridConfigServiceName)) {
-            $gridConfig = $this->get($gridConfigServiceName);
-        } else {
-            $gridConfig = $this->get("prototype_grid_config_factory")->getGridConfig($this->getEntityClass());
-        }
+        
+        $gridConfig = $this->getGridConfig();
         if ($gridConfig) {
             $gridConfig->buildGrid($grid,$this->getRoutePrefix());
         }

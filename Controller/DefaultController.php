@@ -28,7 +28,7 @@ class DefaultController extends BaseController {
     protected $configService;
     //element praktycznie zawsze zmieniany, konfiguracja na zewnątrz
     protected $config = [
-        
+
             /*
               //twig templates for Elements
               'twig_element_create' => 'CorePrototypeBundle:Element:create.html.twig',
@@ -48,6 +48,8 @@ class DefaultController extends BaseController {
               //form ttype class
               'formtype_class' => null */
     ];
+
+ 
 
     /**
      * Create action.
@@ -388,30 +390,18 @@ class DefaultController extends BaseController {
 
     protected function loadConfig() {
 
-        $configService = $this->getRequest()->attributes->get("config");
-       
-        if ($configService) {
-            if ($this->has($configService)) {
-               
-                $config = $this->get($configService);
-            } else {
-                throw new \Exception("Config Service name was found, but service dosen't exists");
-            }
-        } else {
-
-            $config = $this->get("prototype_config");
-        }
-    
-        return $config;
+             $configurator = $this->get("prototype.configurator.service");
+             $config=$configurator->getService($this->getRouteName(),$this->getEntityClass());
+             return $config;
     }
 
     protected function getConfig() {
 
-
+       
         if (false == $this->configService) {
 
             $this->configService = $this->loadConfig();
-            
+
             $this->configService->merge($this->config);
         }
         return $this->configService;
