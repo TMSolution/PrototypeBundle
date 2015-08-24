@@ -39,8 +39,6 @@ class Configuration implements ConfigurationInterface
         ->scalarNode('twig_container_update')->defaultValue('CorePrototypeBundle:Container:update.html.twig')->end()
         ->scalarNode('twig_container_read')->defaultValue('CorePrototypeBundle:Container:read.html.twig')->end()
         ->scalarNode('twig_container_error')->defaultValue('CorePrototypeBundle:Container:error.html.twig')->end()
-        
-        ->scalarNode('grid_config_service')->defaultValue('')->end()
         ->scalarNode('formtype_class')->defaultValue('')->end();
                 
         return $treeBuilder;
