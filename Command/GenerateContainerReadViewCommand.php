@@ -26,7 +26,7 @@ use UnexpectedValueException;
 class GenerateContainerReadViewCommand extends ContainerAwareCommand {
 
     protected function configure() {
-        $this->setName('generate:twig:container:read')
+        $this->setName('prototype:generate:twig:container:read')
                 ->setDescription('Generate container twig for read action.')
                 ->addArgument(
                         'entity', InputArgument::REQUIRED, 'Insert entity class name'
