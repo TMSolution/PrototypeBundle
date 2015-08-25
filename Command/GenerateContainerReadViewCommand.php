@@ -102,9 +102,8 @@ class GenerateContainerReadViewCommand extends ContainerAwareCommand {
             $field=$fieldsInfo[$key];
             if (array_key_exists("association", $field) &&  in_array($field["association"],$associationTypes)) {
                 $associations[$key]=$field;
-                $associations["objectName"]=$this->getContainer()->getEntityName();
-                
-                
+                $associations[$key]["object_name"]=str_replace('\\','\\\\',$field["object_name"]);
+               
             }
         }
         
