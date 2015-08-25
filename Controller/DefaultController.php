@@ -31,18 +31,18 @@ class DefaultController extends BaseController {
 
             /*
               //twig templates for Elements
-              'twig_element_create' => 'CorePrototypeBundle:Element:create.html.twig',
-              'twig_element_list' => 'CorePrototypeBundle:Element:list.html.twig',
-              'twig_element_ajax_list' => 'CorePrototypeBundle:Element:list.ajax.html.twig',
-              'twig_element_update' => 'CorePrototypeBundle:Element:update.html.twig',
-              'twig_element_read' => 'CorePrototypeBundle:Element:read.html.twig',
-              'twig_element_error' => 'CorePrototypeBundle:Element:error.html.twig',
+              'twig_element_create' => 'CorePrototypeBundle:Default/Element:create.html.twig',
+              'twig_element_list' => 'CorePrototypeBundle:Default/Element:list.html.twig',
+              'twig_element_ajax_list' => 'CorePrototypeBundle:Default/Element:list.ajax.html.twig',
+              'twig_element_update' => 'CorePrototypeBundle:Default/Element:update.html.twig',
+              'twig_element_read' => 'CorePrototypeBundle:Default/Element:read.html.twig',
+              'twig_element_error' => 'CorePrototypeBundle:Default/Element:error.html.twig',
               //twig templates for Containers
-              'twig_container_create' => 'CorePrototypeBundle:Container:create.html.twig',
-              'twig_container_list' => 'CorePrototypeBundle:Container:list.html.twig',
-              'twig_container_update' => 'CorePrototypeBundle:Container:update.html.twig',
-              'twig_container_read' => 'CorePrototypeBundle:Container:read.html.twig',
-              'twig_container_error' => 'CorePrototypeBundle:Container:error.html.twig',
+              'twig_container_create' => 'CorePrototypeBundle:Default/Container:create.html.twig',
+              'twig_container_list' => 'CorePrototypeBundle:Default/Container:list.html.twig',
+              'twig_container_update' => 'CorePrototypeBundle:Default/Container:update.html.twig',
+              'twig_container_read' => 'CorePrototypeBundle:Default/Container:read.html.twig',
+              'twig_container_error' => 'CorePrototypeBundle:Default/Container:error.html.twig',
               //grid service
               'grid_config_service' => null,
               //form ttype class
