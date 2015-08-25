@@ -1,7 +1,21 @@
 {{ '{% extends config.get("twig_base_index") %}' }}
-{{'{% block content %}'}}
-    <h1>Mam tak samo jak ty</h1>
-   {{ '{% block element %}'}}
+{{'{% block content %}'}}    
+<div>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#{{objectName|lower|trans}}-show-tab" aria-controls="{{objectName|lower|trans}}-show-tab" role="tab" data-toggle="tab">{{objectName|lower|trans}}</a></li>
+    {% for  name,association in associations %}
+    <li role="presentation"><a href="#{{objectName|lower|trans}}-{{name}}-tab" aria-controls="{{objectName|lower|trans}}-{{name}}-tab" role="tab" data-toggle="tab" data-route="association_default_controller_list.en" data-route-params='{ "productId": {{"{{entity.id}}"}}, "entityName":"{{"entity-name"}}" }'   data-route-target="#{{"data-route-target"}}" >{{association}}</a></li>
+    {% endfor %}
+  </ul>
 
-    {{ '{% endblock %}' }}
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="{{objectName|lower}}-show-tab" > {{ '{% block element %}'}}{{ '{% endblock %}' }}</div>
+    {% for name,association in associations %}
+    <div role="tabpanel" class="tab-pane" id="{{objectName|lower}}-{{name}}-tab" data-route="{{"routename"}}" ></div>
+    {% endfor %}
+  </div>
+
+</div>
 {{ '{% endblock content %}' }}

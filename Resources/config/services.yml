@@ -23,9 +23,9 @@ services:
         tags:
             -  { name: prototype.config }
     
-    prototype.grid.config:
-        class: TMSolution\DataGridBundle\GridBuilder\GridBuilder
-        arguments: [%prototype_config_params%]        
-        tags:
-            -  { name: prototype.grid.config }     
+#    prototype.grid.config:
+#        class: TMSolution\DataGridBundle\GridBuilder\GridBuilder
+#        arguments: [%prototype_config_params%]        
+#        tags:
+#            -  { name: prototype.grid.config }     
    
