@@ -115,8 +115,8 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand {
         $fileName=$directory.DIRECTORY_SEPARATOR.$objectName."Type.php";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
-        $formTypeNamespaceName=$this->getFormTypeNamespaceName($entityName);
-        $formTypeName=  strtolower(str_replace('\\', '_', $entityNamespace));
+       // $formTypeNamespaceName=$this->getFormTypeNamespaceName($entityName);
+       // $formTypeName=  strtolower(str_replace('\\', '_', $entityNamespace));
         
         
      
@@ -127,13 +127,13 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand {
         }
 
        
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:formtype.template.twig", [
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:update.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
             "objectName" => $objectName,
             "fieldsInfo" => $fieldsInfo,
-            "formTypeNamespace" => $formTypeNamespaceName,
-            "formTypeName" => $formTypeName
+           // "formTypeNamespace" => $formTypeNamespaceName,
+            //"formTypeName" => $formTypeName
             ]);
         
         file_put_contents($fileName, $renderedConfig);
