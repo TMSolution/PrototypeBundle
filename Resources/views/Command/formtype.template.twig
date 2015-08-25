@@ -44,14 +44,26 @@ class {{objectName}}Type extends AbstractType
              ])
             {% elseif fieldParam.formType=='datetime' %}->add('{{field}}', '{{fieldParam.formType}}', [
                 //'label' => 'Label name',
-                //'widget' => 'widget name',
+                'widget' => 'single_text',
                 //'required' => true,
-                //'format' => 'yyyy-MM-dd',
-                //'attr' => [
-                //    'placeholder' => 'placeholder text',
-                //    'class' => 'css class name',
-                //]   
+                'format' => 'dd.MM.yyyy',
+                'attr' => [
+                    'placeholder' => '',
+                    'class' => 'datepicker',
+                    'data-provide' => 'datepicker'
+                ]   
              ]) 
+            {% elseif fieldParam.formType=='date' %}->add('{{field}}', '{{fieldParam.formType}}', [
+                //'label' => 'Label name',
+                'widget' => 'single_text',
+                //'required' => true,
+                'format' => 'dd.MM.yyyy',
+                'attr' => [
+                    'placeholder' => '',
+                    'class' => 'datepicker',
+                    'data-provide' => 'datepicker'
+                ]   
+             ])  
             {% elseif fieldParam.formType=='array' %}->add('{{field}}', 'choice', [
                 //'label' => 'Label name',
                 //'widget' => 'widget name',
