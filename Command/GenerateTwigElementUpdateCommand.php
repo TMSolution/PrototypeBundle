@@ -52,14 +52,21 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand {
         return $classPath;
     }
     
-
+    protected function getGridConfigNamespaceName($entityName)
+    {   
+       
+         $entityNameArr=explode("\\", str_replace("Entity", "Grid", $entityName));
+         unset($entityNameArr[count($entityNameArr)-1]);
+         return implode("\\",$entityNameArr);
+        
+    }
     
 
     protected function createDirectory($classPath,$entityNamespace,$objectName) {
         
         
        $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
-       $directory=$this->replaceLast("Entity", "Form", $directory);
+       $directory=$this->replaceLast("Entity", "Resources".DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR.$objectName.DIRECTORY_SEPARATOR."Element", $directory);
       
         if (is_dir($directory) == false) {
             if (mkdir($directory,0777,true) == false) {
@@ -67,7 +74,7 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand {
             }
         }
         
-      
+       
         return $directory;
     }
 
@@ -92,15 +99,6 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand {
         }
         return $subject;
     }
-    
-    protected function getFormTypeNamespaceName($entityName)
-    {   
-       
-         $entityNameArr=explode("\\", str_replace("Entity", "Form", $entityName));
-         unset($entityNameArr[count($entityNameArr)-1]);
-         return implode("\\",$entityNameArr);
-        
-    }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
 
@@ -112,32 +110,19 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand {
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
         $directory=$this->createDirectory($classPath,$entityNamespace,$objectName);
-        $fileName=$directory.DIRECTORY_SEPARATOR.$objectName."Type.php";
+        $fileName=$directory.DIRECTORY_SEPARATOR."update.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
-       // $formTypeNamespaceName=$this->getFormTypeNamespaceName($entityName);
-       // $formTypeName=  strtolower(str_replace('\\', '_', $entityNamespace));
-        
-        
-     
-        
-        foreach($fieldsInfo as $key=>$field){
-            
-            $fieldsInfo[$key]['formType']=$this->types[$field['type']];
-        }
-
        
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:element.update.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
             "objectName" => $objectName,
-            "fieldsInfo" => $fieldsInfo,
-           // "formTypeNamespace" => $formTypeNamespaceName,
-            //"formTypeName" => $formTypeName
+            "fieldsInfo" => $fieldsInfo
             ]);
         
         file_put_contents($fileName, $renderedConfig);
-        $output->writeln("Update view generated");
+        $output->writeln("Twig element update generated");
     }
 
    

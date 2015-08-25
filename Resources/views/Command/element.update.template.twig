@@ -1,129 +1,28 @@
-<?php 
-/**
- * Copyright (c) 2015, TMSolution
- * All rights reserved.
- *
- * For the full copyright and license information, please view
- * the file LICENSE.md that was distributed with this source code.
- */
-namespace  {{formTypeNamespace}};
+{{ "{% extends config.get('twig_container_update') %}" }}
 
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Form\AbstractType;
+{{ "{% block element %}" }}
 
-/**
- * FormType  for '{{entityName}}'.
- *
- * Generated with {@see TMSolution\PrototypeBundle\Command\GenerateFormTypeCommand}.
- */
-class {{objectName}}Type extends AbstractType
-{
+{{ "{{ form_start(form) }}" }}
+{{ "{{ form_errors(form) }}" }}
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        
-        $builder
-        {% for field, fieldParam in fieldsInfo %}{% if field !='id' %}{% if fieldParam.formType=='text' %}->add('{{field}}', '{{fieldParam.formType}}', [
-                //'label' => 'Label name',
-                //'widget' => 'widget name',
-                //'required' => true,
-                //'attr' => [
-                //    'placeholder' => 'placeholder text',
-                //    'class' => 'css class name',
-                //]
-             ])
-            {% elseif fieldParam.formType=='number' %}->add('{{field}}', '{{fieldParam.formType}}', [
-                //'label' => 'Label name',
-                //'widget' => 'widget name',
-                //'required' => true,
-                //'attr' => [
-                //    'placeholder' => 'placeholder text',
-                //    'class' => 'css class name',
-                //]   
-             ])
-            {% elseif fieldParam.formType=='datetime' %}->add('{{field}}', '{{fieldParam.formType}}', [
-                //'label' => 'Label name',
-                //'widget' => 'widget name',
-                //'required' => true,
-                //'format' => 'yyyy-MM-dd',
-                //'attr' => [
-                //    'placeholder' => 'placeholder text',
-                //    'class' => 'css class name',
-                //]   
-             ]) 
-            {% elseif fieldParam.formType=='array' %}->add('{{field}}', 'choice', [
-                //'label' => 'Label name',
-                //'widget' => 'widget name',
-                //'required' => true,
-                //'choices' => array(
-                //    'param1' => 'value1',
-                //    'param2' => 'value2',
-                //    'param3' => 'value3'
-                //),
-                //'attr' => [
-                //    'placeholder' => 'placeholder text',
-                //    'class' => 'css class name',
-                //]   
-             ])
-            {% elseif fieldParam.formType=='entity' %}->add('{{field}}', 'entity', [
-                'class' => '{{fieldParam.object_name}}',
-                //'label' => 'Label name',
-                //'widget' => 'widget name',
-                //'required' => true,
-                //'choices' => array(
-                //    'param1' => 'value1',
-                //    'param2' => 'value2',
-                //    'param3' => 'value3'
-                //),
-                //'attr' => [
-                //    'placeholder' => 'placeholder text',
-                //    'class' => 'css class name',
-                //]   
-             ])
-            {% elseif fieldParam.formType=='boolean' %}->add('{{field}}', 'checkbox', [
-                //'label' => 'Label name',
-                //'widget' => 'widget name',
-                //'required' => true,
-                //'attr' => [
-                //    'class' => 'css class name',
-                //]   
-             ]) 
-            {% else %}->add('{{field}}', '{{fieldParam.formType}}', [
-                //'label' => 'Label name',
-                //'widget' => 'widget name',
-                //'required' => true,
-                //'attr' => [
-                //    'placeholder' => 'placeholder text',
-                //    'class' => 'css class name',
-                //]   
-             ])
-        {% endif %}{% if loop.last %};{% endif %}{% endif %}{% endfor %}
-        
-    }
+{% for field, fieldParam in fieldsInfo %}
+    <!-- {{field}} -->
+    <div class="form-group">
+        {{ "{{ form_label(form." }}{{field}}{{ ") }}" }}
+        {{ "{{ form_widget(form." }}{{field}}{{ ") }}" }}
+    </div>
+{% endfor %}
 
+<div>
+    <span class="pull-right">   
+        <a href="{{ "{{ path(listActionName, { 'entityName': entityName})}}" }}" class=" prevButton btn">
+            {{ "{{ 'Back'|trans}}" }}
+        </a>
+        <a href="{{ "{{ path(updateActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
+            {{ "{{ 'Update'|trans}} " }}
 
-    /**
-     * @param OptionsResolverInterface $resolver
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array(
-            "data_class" => "{{entityName}}",
-            'csrf_protection' => false,
-        ));
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return '{{formTypeName}}';
-    }
-
-}
-
-
-
-
+        </a>
+    </span>
+</div>
+{{ "{{ form_end(form) }}" }}
+{{ "{% endblock element %}" }}
