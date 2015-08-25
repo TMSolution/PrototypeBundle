@@ -23,33 +23,11 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateFormTypeCommand extends ContainerAwareCommand {
-    
-    
-    protected $types = [
-        "string" => "text",
-        "text" => "text",
-        "blob" => "text",
-        "integer" => "number",
-        "smallint" => "number",
-        "bigint" => "number",
-        "decimal" => "number",
-        "float" => "number",
-        "duble" => "number",
-        "boolean" => "boolean",
-        "datetime" => "text",
-        "datetimetz" => "text",
-        "date" => "text",
-        "time" => "text",
-        "array" => "array",
-        "simple_array" => "array",
-        "json_array" => "array",
-        "object" => "entity"
-    ];
+class GenerateTwigElementReadCommand extends ContainerAwareCommand {
 
     protected function configure() {
-        $this->setName('prototype:generate:formtype')
-                ->setDescription('Generate formtype for entity')
+        $this->setName('prototype:generate:twig:element:read')
+                ->setDescription('Generate twig element read template.')
                 ->addArgument(
                         'entity', InputArgument::REQUIRED, 'Insert entity class name'
         );
@@ -71,14 +49,21 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
         return $classPath;
     }
     
-
+    protected function getGridConfigNamespaceName($entityName)
+    {   
+       
+         $entityNameArr=explode("\\", str_replace("Entity", "Grid", $entityName));
+         unset($entityNameArr[count($entityNameArr)-1]);
+         return implode("\\",$entityNameArr);
+        
+    }
     
 
     protected function createDirectory($classPath,$entityNamespace,$objectName) {
         
         
        $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
-       $directory=$this->replaceLast("Entity", "Form", $directory);
+       $directory=$this->replaceLast("Entity", "Resources".DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR.$objectName.DIRECTORY_SEPARATOR."Element", $directory);
       
         if (is_dir($directory) == false) {
             if (mkdir($directory,0777,true) == false) {
@@ -86,7 +71,7 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
             }
         }
         
-      
+       
         return $directory;
     }
 
@@ -111,15 +96,6 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
         }
         return $subject;
     }
-    
-    protected function getFormTypeNamespaceName($entityName)
-    {   
-       
-         $entityNameArr=explode("\\", str_replace("Entity", "Form", $entityName));
-         unset($entityNameArr[count($entityNameArr)-1]);
-         return implode("\\",$entityNameArr);
-        
-    }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
 
@@ -131,32 +107,19 @@ class GenerateFormTypeCommand extends ContainerAwareCommand {
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
         $directory=$this->createDirectory($classPath,$entityNamespace,$objectName);
-        $fileName=$directory.DIRECTORY_SEPARATOR.$objectName."Type.php";
+        $fileName=$directory.DIRECTORY_SEPARATOR."read.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
-        $formTypeNamespaceName=$this->getFormTypeNamespaceName($entityName);
-        $formTypeName=  strtolower(str_replace('\\', '_', $entityNamespace));
-        
-        
-     
-        
-        foreach($fieldsInfo as $key=>$field){
-            
-            $fieldsInfo[$key]['formType']=$this->types[$field['type']];
-        }
-
        
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:formtype.template.twig", [
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:read.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
             "objectName" => $objectName,
-            "fieldsInfo" => $fieldsInfo,
-            "formTypeNamespace" => $formTypeNamespaceName,
-            "formTypeName" => $formTypeName
+            "fieldsInfo" => $fieldsInfo
             ]);
         
         file_put_contents($fileName, $renderedConfig);
-        $output->writeln("Update view generated");
+        $output->writeln("Show view generated");
     }
 
    

@@ -23,11 +23,14 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateReadViewCommand extends ContainerAwareCommand {
+class GenerateTwigElementUpdateCommand extends ContainerAwareCommand {
+    
+    
+   
 
     protected function configure() {
-        $this->setName('generate:view:read')
-                ->setDescription('Generate widget and template')
+        $this->setName('prototype:generate:twig:element:update')
+                ->setDescription('Generate twig element update template.')
                 ->addArgument(
                         'entity', InputArgument::REQUIRED, 'Insert entity class name'
         );
@@ -49,21 +52,14 @@ class GenerateReadViewCommand extends ContainerAwareCommand {
         return $classPath;
     }
     
-    protected function getGridConfigNamespaceName($entityName)
-    {   
-       
-         $entityNameArr=explode("\\", str_replace("Entity", "Grid", $entityName));
-         unset($entityNameArr[count($entityNameArr)-1]);
-         return implode("\\",$entityNameArr);
-        
-    }
+
     
 
     protected function createDirectory($classPath,$entityNamespace,$objectName) {
         
         
        $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
-       $directory=$this->replaceLast("Entity", "Resources".DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR.$objectName.DIRECTORY_SEPARATOR."Element", $directory);
+       $directory=$this->replaceLast("Entity", "Form", $directory);
       
         if (is_dir($directory) == false) {
             if (mkdir($directory,0777,true) == false) {
@@ -71,7 +67,7 @@ class GenerateReadViewCommand extends ContainerAwareCommand {
             }
         }
         
-       
+      
         return $directory;
     }
 
@@ -96,6 +92,15 @@ class GenerateReadViewCommand extends ContainerAwareCommand {
         }
         return $subject;
     }
+    
+    protected function getFormTypeNamespaceName($entityName)
+    {   
+       
+         $entityNameArr=explode("\\", str_replace("Entity", "Form", $entityName));
+         unset($entityNameArr[count($entityNameArr)-1]);
+         return implode("\\",$entityNameArr);
+        
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
 
@@ -107,19 +112,32 @@ class GenerateReadViewCommand extends ContainerAwareCommand {
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
         $directory=$this->createDirectory($classPath,$entityNamespace,$objectName);
-        $fileName=$directory.DIRECTORY_SEPARATOR."read.html.twig";
+        $fileName=$directory.DIRECTORY_SEPARATOR.$objectName."Type.php";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
+        $formTypeNamespaceName=$this->getFormTypeNamespaceName($entityName);
+        $formTypeName=  strtolower(str_replace('\\', '_', $entityNamespace));
+        
+        
+     
+        
+        foreach($fieldsInfo as $key=>$field){
+            
+            $fieldsInfo[$key]['formType']=$this->types[$field['type']];
+        }
+
        
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:read.template.twig", [
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:formtype.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
             "objectName" => $objectName,
-            "fieldsInfo" => $fieldsInfo
+            "fieldsInfo" => $fieldsInfo,
+            "formTypeNamespace" => $formTypeNamespaceName,
+            "formTypeName" => $formTypeName
             ]);
         
         file_put_contents($fileName, $renderedConfig);
-        $output->writeln("Show view generated");
+        $output->writeln("Update view generated");
     }
 
    
