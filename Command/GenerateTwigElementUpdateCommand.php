@@ -127,7 +127,7 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand {
         }
 
        
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:update.template.twig", [
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:element.update.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
             "objectName" => $objectName,
