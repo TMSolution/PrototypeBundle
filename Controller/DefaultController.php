@@ -401,6 +401,8 @@ class DefaultController extends BaseController {
         if (false == $this->configService) {
 
             $this->configService = $this->loadConfig();
+            
+  
 
             $this->configService->merge($this->config);
         }
