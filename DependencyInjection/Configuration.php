@@ -26,21 +26,19 @@ class Configuration implements ConfigurationInterface
         $rootNode->children()
        ->scalarNode('twig_base_index')->defaultValue('CorePrototypeBundle:Base:index.html.twig')->end()
                 
-        ->scalarNode('twig_element_create')->defaultValue('CorePrototypeBundle:Element:create.html.twig')->end()
-        ->scalarNode('twig_element_list')->defaultValue('CorePrototypeBundle:Element:list.html.twig')->end()
-        ->scalarNode('twig_element_ajaxlist')->defaultValue('CorePrototypeBundle:Element:list.ajax.html.twig')->end()
-        ->scalarNode('twig_element_update')->defaultValue('CorePrototypeBundle:Element:update.html.twig')->end()
-        ->scalarNode('twig_element_read')->defaultValue('CorePrototypeBundle:Element:read.html.twig')->end()
-        ->scalarNode('twig_element_error')->defaultValue('CorePrototypeBundle:Element:error.html.twig')->end()
+        ->scalarNode('twig_element_create')->defaultValue('CorePrototypeBundle:Default\Element:create.html.twig')->end()
+        ->scalarNode('twig_element_list')->defaultValue('CorePrototypeBundle:Default\Element:list.html.twig')->end()
+        ->scalarNode('twig_element_ajaxlist')->defaultValue('CorePrototypeBundle:Default\Element:list.ajax.html.twig')->end()
+        ->scalarNode('twig_element_update')->defaultValue('CorePrototypeBundle:Default\Element:update.html.twig')->end()
+        ->scalarNode('twig_element_read')->defaultValue('CorePrototypeBundle:Default\Element:read.html.twig')->end()
+        ->scalarNode('twig_element_error')->defaultValue('CorePrototypeBundle:Default\Element:error.html.twig')->end()
         
-        ->scalarNode('twig_container_create')->defaultValue('CorePrototypeBundle:Container:create.html.twig')->end()
-        ->scalarNode('twig_container_list')->defaultValue('CorePrototypeBundle:Container:list.html.twig')->end()
-        ->scalarNode('twig_container_ajaxlist')->defaultValue('CorePrototypeBundle:Container:list.ajax.html.twig')->end()
-        ->scalarNode('twig_container_update')->defaultValue('CorePrototypeBundle:Container:update.html.twig')->end()
-        ->scalarNode('twig_container_read')->defaultValue('CorePrototypeBundle:Container:read.html.twig')->end()
-        ->scalarNode('twig_container_error')->defaultValue('CorePrototypeBundle:Container:error.html.twig')->end()
-        
-        ->scalarNode('grid_config_service')->defaultValue('')->end()
+        ->scalarNode('twig_container_create')->defaultValue('CorePrototypeBundle:Default\Container:create.html.twig')->end()
+        ->scalarNode('twig_container_list')->defaultValue('CorePrototypeBundle:Default\Container:list.html.twig')->end()
+        ->scalarNode('twig_container_ajaxlist')->defaultValue('CorePrototypeBundle:Default\Container:list.ajax.html.twig')->end()
+        ->scalarNode('twig_container_update')->defaultValue('CorePrototypeBundle:Default\Container:update.html.twig')->end()
+        ->scalarNode('twig_container_read')->defaultValue('CorePrototypeBundle:Default\Container:read.html.twig')->end()
+        ->scalarNode('twig_container_error')->defaultValue('CorePrototypeBundle:Default\sContainer:error.html.twig')->end()
         ->scalarNode('formtype_class')->defaultValue('')->end();
                 
         return $treeBuilder;

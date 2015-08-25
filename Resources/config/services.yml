@@ -7,11 +7,25 @@ services:
         class: Core\PrototypeBundle\GridConfig\GridConfigFactory
         arguments: [@service_container]   
            
-    prototype_config:
+    prototype.configurator.service:
+        class: Core\PrototypeBundle\Service\Configurator
+        arguments: [@service_container] 
+    
+   
+    prototype.grid.configurator.service:
+        class: Core\PrototypeBundle\Service\GridConfigurator
+        arguments: [@service_container] 
+   
+   
+    prototype.config:
         class: Core\PrototypeBundle\Service\Config
-        arguments: [%prototype_config_params%] 
-        
-   # prototype_config_test:
-    #    class: Core\PrototypeBundle\Service\Config
-     #   arguments: [ %prototype_config_params%]
-        #arguments: [ %prototype_config_params%, { twig_container_list: jakis_alternatywny_twig }]
+        arguments: [%prototype_config_params%]        
+        tags:
+            -  { name: prototype.config }
+    
+    prototype.grid.config:
+        class: TMSolution\DataGridBundle\GridBuilder\GridBuilder
+        arguments: [%prototype_config_params%]        
+        tags:
+            -  { name: prototype.grid.config }     
+   
