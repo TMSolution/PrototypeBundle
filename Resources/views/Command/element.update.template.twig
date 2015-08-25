@@ -1,28 +1,36 @@
 {{ "{% extends config.get('twig_container_update') %}" }}
+{{ "{% form_theme form 'bootstrap_3_layout.html.twig' %}" }}
 
 {{ "{% block element %}" }}
-
+<div class="row">
 {{ "{{ form_start(form) }}" }}
+ <div class="col-md-12 col-sm-12">
 {{ "{{ form_errors(form) }}" }}
 
 {% for field, fieldParam in fieldsInfo %}
+{% if field!='id'%}
+    
     <!-- {{field}} -->
     <div class="form-group">
         {{ "{{ form_label(form." }}{{field}}{{ ") }}" }}
         {{ "{{ form_widget(form." }}{{field}}{{ ") }}" }}
     </div>
+    {% endif %}
 {% endfor %}
+ 
+</div>
+
 
 <div>
     <span class="pull-right">   
         <a href="{{ "{{ path(listActionName, { 'entityName': entityName})}}" }}" class=" prevButton btn">
             {{ "{{ 'Back'|trans}}" }}
         </a>
-        <a href="{{ "{{ path(updateActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
-            {{ "{{ 'Update'|trans}} " }}
-
-        </a>
+        <div class="button-row button-rows ">          
+            <button class="btn btn-success pull-right btn-bottom" type="submit" >{{ "{{ 'Save'|trans}}" }}</button>
+        </div>
     </span>
 </div>
 {{ "{{ form_end(form) }}" }}
+</div>
 {{ "{% endblock element %}" }}

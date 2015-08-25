@@ -2,35 +2,38 @@
 
 namespace Core\PrototypeBundle\Service;
 
-class AbstractConfigurator {
+class AbstractConfigurator
+{
 
     protected $services = [];
 
-    public function getService($route, $entity) {
+    public function getService($route, $entity)
+    {
 
-       
+
         //for most precise config
         $service = null;
+        $curentKey = $route . '.' . $entity;
 
 
+        if (array_key_exists($curentKey, $this->services)) {
 
-        if (array_key_exists($route . '.' . $entity, $this->services)) {
-
-            $service = $this->services[$route . '.' . $entity];
+            $service = $this->services[$curentKey];
         }
 
         //for route based config
         if (!$service) {
 
-          
+
             $serviceArr = array_filter($this->services, function($k) use ($route, $entity) {
 
-                if (strstr($route . '.', $k)) {
+                if ($route . '.' == $k) {
+
                     return $this->services[$k];
                 }
             }, ARRAY_FILTER_USE_KEY);
-           
-       
+
+
             $service = array_shift($serviceArr);
         }
 
@@ -39,7 +42,8 @@ class AbstractConfigurator {
 
             $serviceArr = array_filter($this->services, function($k) use ($route, $entity) {
 
-                if (strstr('.' . $entity, $k)) {
+                if ('.' . $entity == $k) {
+
                     return $this->services[$k];
                 }
             }, ARRAY_FILTER_USE_KEY);
@@ -53,18 +57,18 @@ class AbstractConfigurator {
                 $service = $this->services['.'];
             }
         }
-        
+
 
         return $service;
-
-        
     }
 
-    public function __construct($container) {
+    public function __construct($container)
+    {
         $this->container = $container;
     }
 
-    public function addService($service, $route, $entity) {
+    public function addService($service, $route, $entity)
+    {
 
         $this->services[$route . '.' . $entity] = $service;
     }
