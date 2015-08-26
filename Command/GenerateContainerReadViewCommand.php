@@ -95,17 +95,18 @@ class GenerateContainerReadViewCommand extends ContainerAwareCommand {
 
     protected function getAssociatedObjects($fieldsInfo) {
         
-        var_dump($fieldsInfo);
         $associations=[];
         foreach ($fieldsInfo as $key => $value) {
 
-            $associations=["OneToMany","ManyToMany","OneToOne"];
-            if (array_key_exists("association", $fieldsInfo[$key]) &&  in_array($fieldsInfo[$key],$associations)) {
-            
-                echo $key.',';
-                $associations[$key]=$fieldsInfo[$key];
+            $associationTypes=["OneToMany","ManyToMany","OneToOne"];
+            $field=$fieldsInfo[$key];
+            if (array_key_exists("association", $field) &&  in_array($field["association"],$associationTypes)) {
+                $associations[$key]=$field;
+                $associations[$key]["object_name"]=str_replace('\\','\\\\',$field["object_name"]);
+               
             }
         }
+        
         return $associations;
     }
 

@@ -5,7 +5,7 @@
   <ul class="nav nav-tabs" role="tablist">
       <li role="presentation" class="active"><a href="#{{objectName|lower|trans}}-show-tab" aria-controls="{{objectName|lower|trans}}-show-tab" role="tab" data-toggle="tab">{{objectName|lower|trans}}</a></li>
     {% for  name,association in associations %}
-    <li role="presentation"><a href="#{{objectName|lower|trans}}-{{name}}-tab" aria-controls="{{objectName|lower|trans}}-{{name}}-tab" role="tab" data-toggle="tab" data-route="association_default_controller_list.en" data-route-params='{ "productId": {{"{{entity.id}}"}}, "entityName":"{{"entity-name"}}" }'   data-route-target="#{{"data-route-target"}}" >{{association}}</a></li>
+    <li role="presentation" class="lazy-loaded-tab" ><a href="#{{objectName|lower|trans}}-{{name}}-tab" aria-controls="{{objectName|lower|trans}}-{{name}}-tab" role="tab" data-toggle="tab" data-route="association_default_controller_list.en" data-route-params='{ "parentid": {{"{{entity.id}}"}}, "entityName": "{{ '{{classmapperservice.getEntityName(' }}"{{association.object_name}}"{{ ')}}'|raw }}" }'  data-route-target="#{{"data-route-target"}}" >{{name|trans}}</a></li>
     {% endfor %}
   </ul>
 
@@ -13,9 +13,15 @@
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="{{objectName|lower}}-show-tab" > {{ '{% block element %}'}}{{ '{% endblock %}' }}</div>
     {% for name,association in associations %}
-    <div role="tabpanel" class="tab-pane" id="{{objectName|lower}}-{{name}}-tab" data-route="{{"routename"}}" ></div>
+    <div role="tabpanel" class="tab-pane" id="{{objectName|lower}}-{{name}}-tab"  ></div>
     {% endfor %}
   </div>
 
 </div>
 {{ '{% endblock content %}' }}
+
+
+{{ '{% block js %}' }}
+       {{ '{{ parent() }}' }}
+        <script src="{{ '{{asset("bundles/coreprototype/js/lazyLoadedTab.js")}}'}}"></script>
+{{ '{% endblock %}' }}
