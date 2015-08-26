@@ -30,7 +30,7 @@ class GridDefaultController extends DefaultController
      * 
      * @return Response
      */
-    public function gridAction()
+    public function listAction()
     {
 
 
@@ -40,9 +40,10 @@ class GridDefaultController extends DefaultController
         $grid = $this->get('grid');
         $source = new Entity($model);
         $grid->setSource($source);
+        $grid->resetSessionData();
         $this->buildGrid($grid);
-        $view = $this->configureView($grid);
-
+        $grid->setId($routePrefix.'_'.$entityName);
+        $grid->setRouteUrl($this->generateUrl($routePrefix."_ajaxlist",$grid->getRouteParameters() ));
         //config parameters for render and event broadcast
         $params = [
             'entityName' => $entityName,
@@ -56,11 +57,40 @@ class GridDefaultController extends DefaultController
         $event->setParams($params);
         $event->setModel($model);
         $event->setGrid($grid);
-        
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'grid.success', $event);
-
-        return $grid->getGridResponse($view, $params);
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'list', $event);
+        return $grid->getGridResponse($this->getConfig()->get('twig_element_list'), $params);
     }
+    
+    public function ajaxlistAction()
+    {
+
+        $entityName = $this->getEntityName();
+        $routePrefix = $this->getRoutePrefix();
+        $model = $this->getModel($this->getEntityClass());
+        $grid = $this->get('grid');
+        $source = new Entity($model);
+        $grid->setSource($source);
+        $this->buildGrid($grid);
+        $grid->setId($routePrefix.'_'.$entityName);
+        $grid->setRouteUrl($this->generateUrl($routePrefix."_ajaxlist",$grid->getRouteParameters() ));
+        //config parameters for render and event broadcast
+        $params = [
+            'entityName' => $entityName,
+            'newActionName' => $this->getAction('new'),
+            'routeName' => $routePrefix . '_new',
+            'config' => $this->getConfig()
+        ];
+
+        //Create event broadcast.
+        $event = $this->get('prototype.event');
+        $event->setParams($params);
+        $event->setModel($model);
+        $event->setGrid($grid);
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'ajaxlist', $event);
+        return $grid->getGridResponse($this->getConfig()->get('twig_element_ajaxlist'), $params);
+    }
+    
+    
 
     protected function getGridConfig()
     {
@@ -84,19 +114,6 @@ class GridDefaultController extends DefaultController
         }
     }
 
-    protected function configureView($grid)
-    {
-
-        if ($this->getRequest()->isXmlHttpRequest()) {
-            $view = $this->getConfig()->get('twig_element_ajaxlist');
-        } else {
-
-            $grid->resetSessionData();
-            $view = $this->getConfig()->get('twig_element_list');
-        }
-
-        return $view;
-    }
 
     /**
      * 

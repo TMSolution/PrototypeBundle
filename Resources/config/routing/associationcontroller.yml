@@ -3,7 +3,13 @@ core_prototype_associationcontroller_list:
     defaults: { _controller: "CorePrototypeBundle:GridDefault:list" }
     options:
         expose: true
-       
+        
+core_prototype_associationcontroller_ajaxlist:
+    locales:  { en: "/{entityName}/ajaxlist/{parentName}/{parentId}", pl: "/{entityName}/listaajax/{parentName}/{parentId}" } 
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:ajaxlist" }
+    options:
+        expose: true
+        
 core_prototype_associationcontroller_read:
     locales:  { en: "/{entityName}/read/{id}/{parentName}/{parentId}", pl:"/{entityName}/pobierz/{id}/{parentName}/{parentId}"}
     defaults: { _controller: "CorePrototypeBundle:GridDefault:read" } 
