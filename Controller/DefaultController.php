@@ -129,7 +129,7 @@ class DefaultController extends BaseController
         $event->setList($list);
 
         //$this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.failure', $event);
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.success', $event);
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create', $event);
 
 
 
@@ -209,7 +209,7 @@ class DefaultController extends BaseController
             $model->delete($entity, true);
         }
 
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'delete.success', $event);
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'delete', $event);
         //$this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'delete.failure', $event);
         return $this->redirect($this->generateUrl($routePrefix . '_list', $params));
     }
@@ -245,7 +245,7 @@ class DefaultController extends BaseController
         $event->setModel($model);
         $event->setForm($editForm);
 
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'edit.success', $event);
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'edit', $event);
 
         return $this->render($this->getConfig()->get('twig_element_update'), $params);
     }
@@ -278,7 +278,7 @@ class DefaultController extends BaseController
         $event->setParams($params);
         $event->setModel($model);
 
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'read.success', $event);
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'read', $event);
 
         return $this->render($this->getConfig()->get('twig_element_read'), $params);
     }
@@ -350,7 +350,7 @@ class DefaultController extends BaseController
         $event->setModel($model);
         $event->setForm($form);
 
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'new.success', $event);
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'new', $event);
 
 
         return $this->render($this->getConfig()->get('twig_element_create'), $params);
