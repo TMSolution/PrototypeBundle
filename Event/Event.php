@@ -10,21 +10,22 @@ class Event extends DispatcherEvent
     protected $params;
     protected $model;
     protected $form;
+    protected $list;
+    protected $grid;
+    
 
     public function __construct()
     {
         $this->params = $params;
     }
-    
+
     public function getParams()
     {
-        if($this->params){
+        if ($this->params) {
             return $this->params;
-        }
-        else{
+        } else {
             throw new \Exception('Parameter "params" has not been set.');
         }
-        
     }
 
     public function setParams(&$params)
@@ -34,10 +35,9 @@ class Event extends DispatcherEvent
 
     public function getModel()
     {
-        if($this->model){
+        if ($this->model) {
             return $this->model;
-        }
-        else{
+        } else {
             throw new \Exception('Parameter "model" has not been set.');
         }
     }
@@ -49,10 +49,9 @@ class Event extends DispatcherEvent
 
     public function getForm()
     {
-        if($this->form){
+        if ($this->form) {
             return $this->form;
-        }
-        else{
+        } else {
             throw new \Exception('Parameter "form" has not been set.');
         }
     }
@@ -60,6 +59,34 @@ class Event extends DispatcherEvent
     public function setForm($model)
     {
         $this->form = $form;
+    }
+
+    public function getList()
+    {
+        if ($this->list) {
+            return $this->list;
+        } else {
+            throw new \Exception('Parameter "list" has not been set.');
+        }
+    }
+
+    public function setList($list)
+    {
+        $this->list = $list;
+    }
+
+    public function getGrid()
+    {
+        if ($this->grid) {
+            return $this->grid;
+        } else {
+            throw new \Exception('Parameter "grid" has not been set.');
+        }
+    }
+
+    public function setGrid($grid)
+    {
+        $this->grid = $grid;
     }
 
 }
