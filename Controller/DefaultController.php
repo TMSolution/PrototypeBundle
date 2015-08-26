@@ -238,12 +238,16 @@ class DefaultController extends BaseController
             'updateActionName' => $this->getAction('update'),
             'config' => $this->getConfig()
         ];
-
+        
+        
+        
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($model);
         $event->setForm($editForm);
+
+        dump($params);
 
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'edit', $event);
 
