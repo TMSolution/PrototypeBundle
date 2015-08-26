@@ -230,28 +230,29 @@ class DefaultController extends BaseController
 
         $editForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
 
-        $params = [
+        $params = $this->get('prototype.controler.params');
+        $params->setValues([
             'entity' => $entity,
             'form' => $editForm->createView(),
             'entityName' => $this->getEntityName(),
             'listActionName' => $this->getAction('list'),
             'updateActionName' => $this->getAction('update'),
             'config' => $this->getConfig()
-        ];
-        
-        
-        
+        ]);
+
+
+
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($model);
         $event->setForm($editForm);
 
-        dump($params);
+
 
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'edit', $event);
-
-        return $this->render($this->getConfig()->get('twig_element_update'), $params);
+        dump($params);
+        return $this->render($this->getConfig()->get('twig_element_update'), $params->getArray());
     }
 
     /**
