@@ -129,14 +129,14 @@ class GenerateContainerReadViewCommand extends ContainerAwareCommand {
 
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:container.read.template.twig", [
             "namespace" => $entityNamespace,
-            "entityName" => $entityName,
+            "entityName" => str_replace('\\','\\\\',$entityName),
             "objectName" => $objectName,
             "fieldsInfo" => $fieldsInfo,
             "associations" => $associations
         ]);
 
         file_put_contents($fileName, $renderedConfig);
-        $output->writeln("Show view generated");
+        $output->writeln("Twig:containter:read generated");
     }
 
 }
