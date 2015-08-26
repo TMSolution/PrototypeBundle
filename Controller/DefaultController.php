@@ -12,13 +12,15 @@ namespace Core\PrototypeBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
+use Core\PrototypeBundle\Event\Event;
 
 /**
  * Default controller.
  * 
  * @copyright (c) 2014-current, TMSolution
  */
-class DefaultController extends BaseController {
+class DefaultController extends BaseController
+{
 
     protected $objectName = null;
     protected $routePrefix = null;
@@ -49,8 +51,6 @@ class DefaultController extends BaseController {
               'formtype_class' => null */
     ];
 
- 
-
     /**
      * Create action.
      * 
@@ -58,25 +58,46 @@ class DefaultController extends BaseController {
 
       )
      */
-    public function createAction() {
+    public function createAction()
+    {
 
         $request = $this->getRequest();
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->getEntity();
-        $formType = $this->getFormType($this->getEntityClass(), null);
-        $form = $this->makeForm($formType, $entity, 'POST', $this->getEntityName(), $this->getAction('create'));
+        $entityName = $this->getEntityName();
+        $routePrefix = $this->getRoutePrefix();
 
+        $formType = $this->getFormType($this->getEntityClass(), null);
+        $form = $this->makeForm($formType, $entity, 'POST', $entityName, $this->getAction('create'));
         $form->handleRequest($request);
+
+        //config parameters for render and event broadcast
+        $params = [
+            'entity' => $entity,
+            'form' => $form->createView(),
+            'config' => $this->getConfig()
+        ];
+
+        //Create event broadcast.
+        $event = $this->get('prototype.event');
+        $event->setParams($params);
+        $event->setModel($model);
+        $event->setForm($form);
+
         if ($form->isValid()) {
             $entity = $model->create($entity, true);
-            return $this->redirect($this->generateUrl($this->getRoutePrefix() . '_read', ['entityName' => $this->getEntityName(), 'id' => $entity->getId()]));
+
+
+            $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.success', $event);
+
+            return $this->redirect($this->generateUrl($routePrefix . '_read', ['entityName' => $entityName, 'id' => $entity->getId()]));
         }
 
-        return $this->render($this->getConfig()->get('twig_element_create'), [
-                    'entity' => $entity,
-                    'form' => $form->createView(),
-                    'config' => $this->getConfig()
-        ]);
+        //Event broadcast
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.failure', $event);
+
+        //Render
+        return $this->render($this->getConfig()->get('twig_element_create'), $params);
     }
 
     /**
@@ -85,10 +106,35 @@ class DefaultController extends BaseController {
      * @return Response
      * @throws \BadMethodCallException Not implemented yet
      */
-    /* public function listAction()
-      {
-      throw new \BadMethodCallException("Not implemented yet");
-      } */
+    public function listAction()
+    {
+
+        $entityName = $this->getEntityName();
+        $routePrefix = $this->getRoutePrefix();
+        $model = $this->getModel($this->getEntityClass());
+        $entity = $model->getEntity();
+        $list = null;
+
+
+        //config parameters for render and event broadcast
+        $params = [
+            'entity' => $entity,
+            'config' => $this->getConfig()
+        ];
+
+        //Create event broadcast.
+        $event = $this->get('prototype.event');
+        $event->setParams($params);
+        $event->setModel();
+        $event->setList($list);
+
+        //$this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.failure', $event);
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.success', $event);
+
+
+
+        throw new \BadMethodCallException("Not implemented yet");
+    }
 
     /**
      * Create action.
@@ -96,28 +142,43 @@ class DefaultController extends BaseController {
      * @param id Entity id
      * @return Response
      */
-    public function updateAction($id) {
+    public function updateAction($id)
+    {
 
         $request = $this->getRequest();
         $formType = $this->getFormType($this->getEntityClass(), null);
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->findOneById($id);
+        $entityName = $this->getEntityName();
+        $routePrefix = $this->getRoutePrefix();
+
         $updateForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
         $updateForm->handleRequest($request);
 
+        //config parameters for render and event broadcast
+        $params = [
+            'entity' => $entity,
+            'form' => $updateForm->createView(),
+            'entityName' => $this->getEntityName(),
+            'listActionName' => $this->getAction('list'),
+            'updateActionName' => $this->getAction('update'),
+            'config' => $this->getConfig()
+        ];
+
+        //Create event broadcast.
+        $event = $this->get('prototype.event');
+        $event->setParams($params);
+        $event->setModel($model);
+        $event->setForm($updateForm);
+
         if ($updateForm->isValid()) {
             $model->update($entity, true);
-            return $this->redirect($this->generateUrl($this->getRoutePrefix() . '_read', ['entityName' => $this->getEntityName(), 'id' => $id]));
+            $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'update.success', $event);
+            return $this->redirect($this->generateUrl($routePrefix . '_read', ['entityName' => $entityName, 'id' => $id]));
         }
 
-        return $this->render($this->getConfig()->get('twig_element_update'), array(
-                    'entity' => $entity,
-                    'form' => $updateForm->createView(),
-                    'entityName' => $this->getEntityName(),
-                    'listActionName' => $this->getAction('list'),
-                    'updateActionName' => $this->getAction('update'),
-                    'config' => $this->getConfig()
-        ));
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'update.failure', $event);
+        return $this->render($this->getConfig()->get('twig_element_update'), $params);
     }
 
     /**
@@ -126,14 +187,31 @@ class DefaultController extends BaseController {
      * @param id Entity id
      * @return Response
      */
-    public function deleteAction($id) {
+    public function deleteAction($id)
+    {
 
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->findOneById($id);
+        $entityName = $this->getEntityName();
+        $routePrefix = $this->getRoutePrefix();
+
+        //config parameters for render and event broadcast
+        $params = [
+            'entityName' => $this->getEntityName()
+        ];
+
+        //Create event broadcast.
+        $event = $this->get('prototype.event');
+        $event->setParams($params);
+        $event->setModel($model);
+
         if (null != $entity) {
             $model->delete($entity, true);
         }
-        return $this->redirect($this->generateUrl($this->getRoutePrefix() . '_list', ['entityName' => $this->getEntityName()]));
+
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'delete.success', $event);
+        //$this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'delete.failure', $event);
+        return $this->redirect($this->generateUrl($routePrefix . '_list', $params));
     }
 
     /**
@@ -142,20 +220,34 @@ class DefaultController extends BaseController {
      * @param id Entity id
      * @return Response
      */
-    public function editAction($id) {
+    public function editAction($id)
+    {
         $formType = $this->getFormType($this->getEntityClass(), null);
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->findOneById($id);
+        $entityName = $this->getEntityName();
+        $routePrefix = $this->getRoutePrefix();
+
         $editForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
 
-        return $this->render($this->getConfig()->get('twig_element_update'), [
-                    'entity' => $entity,
-                    'form' => $editForm->createView(),
-                    'entityName' => $this->getEntityName(),
-                    'listActionName' => $this->getAction('list'),
-                    'updateActionName' => $this->getAction('update'),
-                    'config' => $this->getConfig()
-        ]);
+        $params = [
+            'entity' => $entity,
+            'form' => $editForm->createView(),
+            'entityName' => $this->getEntityName(),
+            'listActionName' => $this->getAction('list'),
+            'updateActionName' => $this->getAction('update'),
+            'config' => $this->getConfig()
+        ];
+
+        //Create event broadcast.
+        $event = $this->get('prototype.event');
+        $event->setParams($params);
+        $event->setModel($model);
+        $event->setForm($editForm);
+
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'edit.success', $event);
+
+        return $this->render($this->getConfig()->get('twig_element_update'), $params);
     }
 
     /**
@@ -164,22 +256,35 @@ class DefaultController extends BaseController {
      * @param $id Entity id
      * @return Response
      */
-    public function readAction($id) {
+    public function readAction($id)
+    {
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->findOneById($id);
+        $entityName = $this->getEntityName();
+        $routePrefix = $this->getRoutePrefix();
 
-        return $this->render($this->getConfig()->get('twig_element_read'), array(
-                    'entity' => $entity,
-                    'entityName' => $this->getEntityName(),
-                    'editActionName' => $this->getAction('edit'),
-                    'listActionName' => $this->getAction('list'),
-                    'deleteActionName' => $this->getAction('delete'),
-                    'properties' => $this->prepareProperties($model, $entity),
-                    'config' => $this->getConfig()
-        ));
+        $params = [
+            'entity' => $entity,
+            'entityName' => $entityName,
+            'editActionName' => $this->getAction('edit'),
+            'listActionName' => $this->getAction('list'),
+            'deleteActionName' => $this->getAction('delete'),
+            'properties' => $this->prepareProperties($model, $entity),
+            'config' => $this->getConfig()
+        ];
+
+        //Create event broadcast.
+        $event = $this->get('prototype.event');
+        $event->setParams($params);
+        $event->setModel($model);
+
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'read.success', $event);
+
+        return $this->render($this->getConfig()->get('twig_element_read'), $params);
     }
 
-    protected function prepareProperties($model, $entity) {
+    protected function prepareProperties($model, $entity)
+    {
 
         $properties = [];
         foreach ($model->getMetadata()->fieldMappings as $field) {
@@ -221,17 +326,34 @@ class DefaultController extends BaseController {
      * 
      * @return Response
      */
-    public function newAction() {
+    public function newAction()
+    {
         $entity = $this->getModel($this->getEntityClass())->getEntity();
+        $model = $this->getModel($this->getEntityClass());
+        $entityName = $this->getEntityName();
+        $routePrefix = $this->getRoutePrefix();
+
         $formType = $this->getFormType($this->getEntityClass(), null);
         $form = $this->makeForm($formType, $entity, 'POST', $this->getEntityName(), $this->getAction('create'));
-        return $this->render($this->getConfig()->get('twig_element_create'), array(
-                    'entity' => $entity,
-                    'form' => $form->createView(),
-                    'entityName' => $this->getEntityName(),
-                    'listActionName' => $this->getAction('list'),
-                    'config' => $this->getConfig()
-        ));
+
+        $params = [
+            'entity' => $entity,
+            'form' => $form->createView(),
+            'entityName' => $entityName,
+            'listActionName' => $this->getAction('list'),
+            'config' => $this->getConfig()
+        ];
+
+        //Create event broadcast.
+        $event = $this->get('prototype.event');
+        $event->setParams($params);
+        $event->setModel($model);
+        $event->setForm($form);
+
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'new.success', $event);
+
+
+        return $this->render($this->getConfig()->get('twig_element_create'), $params);
     }
 
     /**
@@ -239,7 +361,8 @@ class DefaultController extends BaseController {
      * 
      * @return Symfony\Component\DependencyInjection\ContainerInterface Dependency container
      */
-    protected function getContainer() {
+    protected function getContainer()
+    {
         return $this->get('service_container');
     }
 
@@ -248,7 +371,8 @@ class DefaultController extends BaseController {
      * 
      * @return string
      */
-    protected function getEntityClass() {
+    protected function getEntityClass()
+    {
         if (null == $this->objectName) {
             $this->objectName = $this->getRequest()->attributes->get('objectName');
         }
@@ -260,7 +384,8 @@ class DefaultController extends BaseController {
      * 
      * @return string
      */
-    protected function getEntityName() {
+    protected function getEntityName()
+    {
         if (null == $this->entityName) {
             $this->entityName = $this->getRequest()->attributes->get('entityName');
         }
@@ -274,7 +399,8 @@ class DefaultController extends BaseController {
      * @param string $managerName
      * @return Core\BaseBundle\Model
      */
-    protected function getModel($objectName, $managerName = null) {
+    protected function getModel($objectName, $managerName = null)
+    {
         if ($managerName) {
             $factory = "model_factory_" . $managerName;
         } else {
@@ -290,7 +416,8 @@ class DefaultController extends BaseController {
      * 
      * @return Core\BaseBundle\Model Default model for this controller
      */
-    protected function getDefaultModel() {
+    protected function getDefaultModel()
+    {
         $modelFactory = $this->get("model_factory");
         $model = $modelFactory->getModel($this->getEntityClass());
 
@@ -304,7 +431,8 @@ class DefaultController extends BaseController {
      * @param string $class Entity class
      * @return Symfony\Component\Form\Extension\Core\Type\FormType FormType
      */
-    protected function getFormType($objectName, $class = null) {
+    protected function getFormType($objectName, $class = null)
+    {
 
         $formTypeClass = $this->getConfig()->get("formtype_class");
         if (!empty($formTypeClass)) {
@@ -331,7 +459,8 @@ class DefaultController extends BaseController {
      * @param string $url
      * @return Symfony\Component\Form\Extension\Core\Type\FormType
      */
-    protected function makeForm($formType, $entity, $method, $entityName, $action, $id = null, $class = null, $url = null) {
+    protected function makeForm($formType, $entity, $method, $entityName, $action, $id = null, $class = null, $url = null)
+    {
         if ($url && !$id) {
             $url = $this->generateUrl($url);
         } elseif ($url && $id) {
@@ -360,7 +489,8 @@ class DefaultController extends BaseController {
      * 
      * @return string Current route
      */
-    protected function getRouteName() {
+    protected function getRouteName()
+    {
         if (null == $this->routeName) {
             $this->routeName = $this->getRequest()->attributes->get('_route');
         }
@@ -372,7 +502,8 @@ class DefaultController extends BaseController {
      * 
      * @return string Current route
      */
-    protected function getRoutePrefix() {
+    protected function getRoutePrefix()
+    {
         $routeStringArray = explode("_", $this->getRouteName());
         $this->routePrefix = implode("_", array_slice($routeStringArray, 0, -1));
         return $this->routePrefix;
@@ -384,25 +515,28 @@ class DefaultController extends BaseController {
      * @param string $actionName Custom action name
      * @return string Custom route
      */
-    protected function getAction($actionName) {
+    protected function getAction($actionName)
+    {
         return $this->getRoutePrefix() . "_" . $actionName;
     }
 
-    protected function loadConfig() {
+    protected function loadConfig()
+    {
 
-             $configurator = $this->get("prototype.configurator.service");
-             $config=$configurator->getService($this->getRouteName(),$this->getEntityClass());
-             return $config;
+        $configurator = $this->get("prototype.configurator.service");
+        $config = $configurator->getService($this->getRouteName(), $this->getEntityClass());
+        return $config;
     }
 
-    protected function getConfig() {
+    protected function getConfig()
+    {
 
-       
+
         if (false == $this->configService) {
 
             $this->configService = $this->loadConfig();
-            
-  
+
+
 
             $this->configService->merge($this->config);
         }

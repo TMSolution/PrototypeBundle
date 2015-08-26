@@ -1,4 +1,7 @@
 services:
+    prototype.event:
+        class: Core\PrototypeBundle\Event\Event
+        
     prototype_formtype_factory:
         class: Core\PrototypeBundle\Form\FormTypeFactory
         arguments: [@service_container]
