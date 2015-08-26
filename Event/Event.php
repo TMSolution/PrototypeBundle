@@ -14,11 +14,6 @@ class Event extends DispatcherEvent
     protected $grid;
     
 
-    public function __construct()
-    {
-        $this->params = $params;
-    }
-
     public function getParams()
     {
         if ($this->params) {
@@ -56,7 +51,7 @@ class Event extends DispatcherEvent
         }
     }
 
-    public function setForm($model)
+    public function setForm($form)
     {
         $this->form = $form;
     }
