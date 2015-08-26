@@ -3,17 +3,17 @@
 <div>
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active"><a href="#{{objectName|lower|trans}}-show-tab" aria-controls="{{objectName|lower|trans}}-show-tab" role="tab" data-toggle="tab">{{objectName|lower|trans}}</a></li>
+      <li role="presentation" class="active"><a href="#{{objectName|lower}}-show-tab" aria-controls="{{objectName|lower}}-show-tab" role="tab" data-toggle="tab">{{"{{ "}}"{{objectName|lower}}"{{"|trans }}"}}</a></li>
     {% for  name,association in associations %}
-    <li role="presentation" class="lazy-loaded-tab" ><a href="#{{objectName|lower|trans}}-{{name}}-tab" aria-controls="{{objectName|lower|trans}}-{{name}}-tab" role="tab" data-toggle="tab" data-route="association_default_controller_list.en" data-route-params='{ "parentid": {{"{{entity.id}}"}}, "entityName": "{{ '{{classmapperservice.getEntityName(' }}"{{association.object_name}}"{{ ')}}'|raw }}" }'  data-route-target="#{{"data-route-target"}}" >{{name|trans}}</a></li>
+    <li role="presentation"  ><a class="lazy-loaded-tab" href="#{{objectName|lower}}-{{name}}-tab" aria-controls="{{objectName|lower}}-{{name}}-tab" role="tab" data-toggle="tab" data-route="core_prototype_associationcontroller_list.{{"{{app.request.getLocale()}}"}}" data-route-params='{ "parentName":"{{ '{{classmapperservice.getEntityName(' }}"{{entityName}}"{{ ')}}' }}" , "parentId": "{{"{{entity.id}}"}}", "entityName": "{{ '{{classmapperservice.getEntityName(' }}"{{association.object_name}}"{{ ')}}' }}" }'  data-route-target="" >{{"{{ "}}"{{name|lower}}"{{"|trans}}"}}</a></li>
     {% endfor %}
   </ul>
 
   <!-- Tab panes -->
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="{{objectName|lower}}-show-tab" > {{ '{% block element %}'}}{{ '{% endblock %}' }}</div>
+    <div role="tabpanel" class="tab-pane active tab-panel-container" id="{{objectName|lower}}-show-tab" > {{ '{% block element %}'}}{{ '{% endblock %}' }}</div>
     {% for name,association in associations %}
-    <div role="tabpanel" class="tab-pane" id="{{objectName|lower}}-{{name}}-tab"  ></div>
+    <div role="tabpanel" class="tab-pane  tab-panel-container" id="{{objectName|lower}}-{{name}}-tab"  ></div>
     {% endfor %}
   </div>
 

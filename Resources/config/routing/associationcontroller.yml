@@ -1,0 +1,41 @@
+core_prototype_associationcontroller_list:
+    locales:  { en: "/{entityName}/list/{parentName}/{parentId}", pl: "/{entityName}/lista/{parentName}/{parentId}" } 
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:list" }
+    options:
+        expose: true
+       
+core_prototype_associationcontroller_read:
+    locales:  { en: "/{entityName}/read/{id}/{parentName}/{parentId}", pl:"/{entityName}/pobierz/{id}/{parentName}/{parentId}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:read" } 
+    options:
+        expose: true    
+
+core_prototype_associationcontroller_new:
+    locales:  { en: "/{entityName}/new/{parentName}/{parentId}", pl:"/{entityName}/nowy/{parentName}/{parentId}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:new" }   
+    options:
+        expose: true
+
+core_prototype_associationcontroller_create:
+    locales:  { en: "/{entityName}/create/{parentName}/{parentId}", pl: "/{entityName}/utworz/{parentName}/{parentId}" }
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:create" }   
+    options:
+        expose: true       
+
+core_prototype_associationcontroller_delete:
+    locales:  { en: "/{entityName}/delete/{id}/{parentName}/{parentId}", pl:"/{entityName}/usun/{id}/{parentName}/{parentId}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:delete" }       
+    options:
+        expose: true
+
+core_prototype_associationcontroller_edit:
+    locales:  { en: "/{entityName}/edit/{id}/{parentName}/{parentId}", pl:"/{entityName}/edytuj/{id}/{parentName}/{parentId}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:edit" }
+    options:
+        expose: true
+        
+core_prototype_associationcontroller_update:
+    locales:  { en: "/{entityName}/update/{id}/{parentName}/{parentId}", pl:"/{entityName}/aktualizuj/{id}/{parentName}/{parentId}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:update" }   
+    options:
+        expose: true
