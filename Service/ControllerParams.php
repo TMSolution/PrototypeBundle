@@ -7,7 +7,7 @@ class ControllerParams implements \ArrayAccess, \Countable
 
     protected $_values = array();
     
-    public function setValues(array $_values)
+    public function setArray(array $_values)
     {
         $this->_values = $_values;
         
