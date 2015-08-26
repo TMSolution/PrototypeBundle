@@ -72,11 +72,12 @@ class DefaultController extends BaseController
         $form->handleRequest($request);
 
         //config parameters for render and event broadcast
-        $params = [
+        $params = $this->get('prototype.controler.params');
+        $params->setArray([
             'entity' => $entity,
             'form' => $form->createView(),
             'config' => $this->getConfig()
-        ];
+        ]);
 
         //Create event broadcast.
         $event = $this->get('prototype.event');
@@ -97,7 +98,7 @@ class DefaultController extends BaseController
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.failure', $event);
 
         //Render
-        return $this->render($this->getConfig()->get('twig_element_create'), $params);
+        return $this->render($this->getConfig()->get('twig_element_create'), $params->getArray());
     }
 
     /**
@@ -117,10 +118,11 @@ class DefaultController extends BaseController
 
 
         //config parameters for render and event broadcast
-        $params = [
+        $params = $this->get('prototype.controler.params');
+        $params->setArray([
             'entity' => $entity,
             'config' => $this->getConfig()
-        ];
+        ]);
 
         //Create event broadcast.
         $event = $this->get('prototype.event');
@@ -156,14 +158,15 @@ class DefaultController extends BaseController
         $updateForm->handleRequest($request);
 
         //config parameters for render and event broadcast
-        $params = [
+        $params = $this->get('prototype.controler.params');
+        $params->setArray([
             'entity' => $entity,
             'form' => $updateForm->createView(),
             'entityName' => $this->getEntityName(),
             'listActionName' => $this->getAction('list'),
             'updateActionName' => $this->getAction('update'),
             'config' => $this->getConfig()
-        ];
+        ]);
 
         //Create event broadcast.
         $event = $this->get('prototype.event');
@@ -178,7 +181,7 @@ class DefaultController extends BaseController
         }
 
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'update.failure', $event);
-        return $this->render($this->getConfig()->get('twig_element_update'), $params);
+        return $this->render($this->getConfig()->get('twig_element_update'), $params->getArray());
     }
 
     /**
@@ -196,9 +199,10 @@ class DefaultController extends BaseController
         $routePrefix = $this->getRoutePrefix();
 
         //config parameters for render and event broadcast
-        $params = [
+        $params = $this->get('prototype.controler.params');
+        $params->setArray([
             'entityName' => $this->getEntityName()
-        ];
+        ]);
 
         //Create event broadcast.
         $event = $this->get('prototype.event');
@@ -211,7 +215,7 @@ class DefaultController extends BaseController
 
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'delete', $event);
         //$this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'delete.failure', $event);
-        return $this->redirect($this->generateUrl($routePrefix . '_list', $params));
+        return $this->redirect($this->generateUrl($routePrefix . '_list', $params->getArray()));
     }
 
     /**
@@ -231,7 +235,7 @@ class DefaultController extends BaseController
         $editForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
 
         $params = $this->get('prototype.controler.params');
-        $params->setValues([
+        $params->setArray([
             'entity' => $entity,
             'form' => $editForm->createView(),
             'entityName' => $this->getEntityName(),
@@ -268,7 +272,8 @@ class DefaultController extends BaseController
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
 
-        $params = [
+        $params = $this->get('prototype.controler.params');
+        $params->setArray([
             'entity' => $entity,
             'entityName' => $entityName,
             'editActionName' => $this->getAction('edit'),
@@ -276,7 +281,7 @@ class DefaultController extends BaseController
             'deleteActionName' => $this->getAction('delete'),
             'properties' => $this->prepareProperties($model, $entity),
             'config' => $this->getConfig()
-        ];
+        ]);
 
         //Create event broadcast.
         $event = $this->get('prototype.event');
@@ -285,7 +290,7 @@ class DefaultController extends BaseController
 
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'read', $event);
 
-        return $this->render($this->getConfig()->get('twig_element_read'), $params);
+        return $this->render($this->getConfig()->get('twig_element_read'), $params->getArray());
     }
 
     protected function prepareProperties($model, $entity)
@@ -341,13 +346,14 @@ class DefaultController extends BaseController
         $formType = $this->getFormType($this->getEntityClass(), null);
         $form = $this->makeForm($formType, $entity, 'POST', $this->getEntityName(), $this->getAction('create'));
 
-        $params = [
+        $params = $this->get('prototype.controler.params');
+        $params->setArray([
             'entity' => $entity,
             'form' => $form->createView(),
             'entityName' => $entityName,
             'listActionName' => $this->getAction('list'),
             'config' => $this->getConfig()
-        ];
+        ]);
 
         //Create event broadcast.
         $event = $this->get('prototype.event');
@@ -358,7 +364,7 @@ class DefaultController extends BaseController
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'new', $event);
 
 
-        return $this->render($this->getConfig()->get('twig_element_create'), $params);
+        return $this->render($this->getConfig()->get('twig_element_create'), $params->getArray());
     }
 
     /**
