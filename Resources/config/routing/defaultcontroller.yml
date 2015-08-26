@@ -4,6 +4,13 @@ core_prototype_defaultcontroller_list:
     defaults: { _controller: "CorePrototypeBundle:GridDefault:list" }
     options:
         expose: true
+        
+#swieta nazwa - nie wolno jej zmieniać PO CO TO?
+core_prototype_defaultcontroller_ajaxlist:
+    locales:  { en: "/{entityName}/ajaxlist", pl: "/{entityName}/listaajax" } 
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:ajaxlist" }
+    options:
+        expose: true        
        
 #swieta nazwa - nie wolno jej zmieniać    
 core_prototype_defaultcontroller_read:

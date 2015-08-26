@@ -125,7 +125,7 @@ class DefaultController extends BaseController
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
-        $event->setModel();
+        //$event->setModel();
         $event->setList($list);
 
         //$this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.failure', $event);
