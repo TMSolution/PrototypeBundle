@@ -23,9 +23,10 @@ class Event extends DispatcherEvent
         }
     }
 
-    public function setParams(&$params)
+    public function setParams($params)
     {
         $this->params = $params;
+               
     }
 
     public function getModel()
