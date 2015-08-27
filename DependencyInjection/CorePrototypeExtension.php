@@ -24,5 +24,6 @@ class CorePrototypeExtension extends Extension
         $container->setParameter('prototype_config_params',$config );
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+        $loader->load('testservices.yml');
     }
 }

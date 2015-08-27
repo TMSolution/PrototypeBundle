@@ -1,0 +1,42 @@
+services:
+    
+    #Wyższy numer - ważniejszy routing
+    
+    #1. dla jednej konkretnej encji, dla wszystkich routingów // nie ma większego sensu go stosować
+    prototype.test.config1:
+        class: Core\PrototypeBundle\Service\Config
+        arguments: [%prototype_config_params%]        
+        tags:
+            -  { name: prototype.config,  entity: 'PrototypeBundle\Entity\Test' }         
+   
+    #2. dla  routingu zaczynającego się od - przesłania 1      
+    prototype.test.config2:
+        class: Core\PrototypeBundle\Service\Config
+        arguments: [%prototype_config_params%]        
+        tags:
+            -  { name: prototype.config, route: core_prototype_testcontroller* }
+            
+    
+    #3.dla  routingu zaczynającego się od core_prototype_testcontroller, dla konkretnej encji - przesłania 2
+    prototype.test.config3:
+        class: Core\PrototypeBundle\Service\Config
+        arguments: [%prototype_config_params%]        
+        tags:
+            -  { name: prototype.config, route: core_prototype_testcontroller*, entity: 'PrototypeBundle\Entity\Test' }              
+                      
+    #4. dla jednego routignu, dla wszystkich routingów - przesłania 3
+    prototype.test.list.config4:
+        class: Core\PrototypeBundle\Service\Config
+        arguments: [%prototype_config_params%]        
+        tags:
+            -  { name: prototype.config, route: core_prototype_testcontroller_list }
+    
+    
+    #dla jednego routignu, dla konkrtnej encji - przesłania 4
+    prototype.test.config5:
+        class: Core\PrototypeBundle\Service\Config
+        arguments: [%prototype_config_params%]        
+        tags:
+            -  { name: prototype.config, route: core_prototype_testcontroller_list, entity: 'PrototypeBundle\Entity\Test' }                                
+                      
+             

@@ -1,0 +1,25 @@
+{% extends config.get("twig_container_create") %}
+{% block content -%}
+    {{ form_start(form) }}
+
+    {{ form_errors(form) }}
+
+    {% for child in form.children %}
+        {{ form_row(child) }}
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="button-row button-rows">
+                <button onclick="history.go(-1)" class="btn btn-default pull-left btn-bottom" type="button">{{ "Cancel"|trans }}</button>
+            </div>
+            <div class="button-row button-rows ">          
+                <button class="btn btn-success pull-right btn-bottom" type="submit" >Zapisz</button>
+            </div>
+        </div>
+    </div>
+    
+
+    {{ form_end(form) }} 
+
+{% endblock %}

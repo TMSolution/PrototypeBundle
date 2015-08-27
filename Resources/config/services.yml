@@ -1,3 +1,7 @@
+parameters:
+    prototype.association.config.params: 
+          twig_element_read: 'CorePrototypeBundle:Association\Element:read.html.twig'
+
 services:
     prototype.event:
         class: Core\PrototypeBundle\Event\Event
@@ -29,9 +33,16 @@ services:
         tags:
             -  { name: prototype.config }
     
-#    prototype.grid.config:
-#        class: TMSolution\DataGridBundle\GridBuilder\GridBuilder
-#        arguments: [%prototype_config_params%]        
-#        tags:
-#            -  { name: prototype.grid.config }     
+  
+    prototype.association.config:
+        class: Core\PrototypeBundle\Service\Config
+        arguments: [%prototype_config_params%,%prototype.association.config.params%]        
+        tags:
+            -  { name: prototype.config, route: core_prototype_associationcontroller_* }
+            
+    prototype.association.gridconfig:
+        class: Core\PrototypeBundle\GridConfig\AssciationGridConfig
+        arguments: [%prototype_config_params%,%prototype.association.config.params%]        
+        tags:
+            -  { name: prototype.config, route: core_prototype_associationcontroller_* }        
    

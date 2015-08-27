@@ -29,7 +29,7 @@ class ConfigPass implements CompilerPassInterface {
  
                 $route = null;
                 if (array_key_exists('route', $attributes)) {
-                    $route = $attributes['route'];
+                    $route = str_replace("*","",$attributes['route']);
                 }
 
                 $entity = null;
