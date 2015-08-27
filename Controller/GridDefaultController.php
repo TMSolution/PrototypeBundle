@@ -44,21 +44,25 @@ class GridDefaultController extends DefaultController
         $this->buildGrid($grid);
         $grid->setId($routePrefix.'_'.$entityName);
         $grid->setRouteUrl($this->generateUrl($routePrefix."_ajaxlist",$grid->getRouteParameters() ));
+        
         //config parameters for render and event broadcast
-        $params = [
+        $params = $this->get('prototype.controler.params');
+        $params->setArray([
             'entityName' => $entityName,
             'newActionName' => $this->getAction('new'),
             'routeName' => $routePrefix . '_new',
             'config' => $this->getConfig()
-        ];
+        ]);
 
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($model);
         $event->setGrid($grid);
+        
+        
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'list', $event);
-        return $grid->getGridResponse($this->getConfig()->get('twig_element_list'), $params);
+        return $grid->getGridResponse($this->getConfig()->get('twig_element_list'), $params->getArray());
     }
     
     public function ajaxlistAction()
