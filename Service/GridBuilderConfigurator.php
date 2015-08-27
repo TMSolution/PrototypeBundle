@@ -2,7 +2,7 @@
 
 namespace Core\PrototypeBundle\Service;
 
-class GridConfigurator extends AbstractConfigurator {
+class GridBuilderConfigurator extends AbstractConfigurator {
 
     
     

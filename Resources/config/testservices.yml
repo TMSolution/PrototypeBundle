@@ -14,7 +14,7 @@ services:
         class: Core\PrototypeBundle\Service\Config
         arguments: [%prototype_config_params%]        
         tags:
-            -  { name: prototype.config, route: core_prototype_testcontroller* }
+            -  { name: prototype.config, route: core_prototype_testcontroller }
             
     
     #3.dla  routingu zaczynającego się od core_prototype_testcontroller, dla konkretnej encji - przesłania 2
@@ -22,7 +22,7 @@ services:
         class: Core\PrototypeBundle\Service\Config
         arguments: [%prototype_config_params%]        
         tags:
-            -  { name: prototype.config, route: core_prototype_testcontroller*, entity: 'PrototypeBundle\Entity\Test' }              
+            -  { name: prototype.config, route: core_prototype_testcontroller, entity: 'PrototypeBundle\Entity\Test' }              
                       
     #4. dla jednego routignu, dla wszystkich routingów - przesłania 3
     prototype.test.list.config4:

@@ -71,8 +71,8 @@ class AbstractConfigurator {
     }
 
     public function getService($route, $entity) {
-
-
+        dump(get_class($this));
+        dump($this->services);
         //get best fit route
         $bestSuitedServices = $this->getBestSuitedServices($this->calculateBestSuitedServiceName($route));
 
@@ -107,22 +107,30 @@ class AbstractConfigurator {
             }, ARRAY_FILTER_USE_KEY);
 
             if (count($serviceArr)) {
+                $keys = array_keys($serviceArr);
+                $this->setChosen($keys[0]);
                 return $serviceArr[$keys[0]];
             }
         }
 
         //use universal config
+       
+        if(count($this->services)){
         $this->setChosen($this->divider);
+     
         return $this->services[$this->divider];
+        
+        }
     }
 
 
     public function __construct($container) {
+       
         $this->container = $container;
     }
 
     public function addService($service, $route, $entity) {
-
+       
         $this->services[$route . $this->divider . $entity] = $service;
     }
 

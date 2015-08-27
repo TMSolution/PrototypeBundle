@@ -21,7 +21,8 @@ class ConfigPass implements CompilerPassInterface {
         $taggedServices = $container->findTaggedServiceIds(
                 'prototype.config'
         );
-
+        
+        
         foreach ($taggedServices as $id => $tags) {
             
           
@@ -29,14 +30,15 @@ class ConfigPass implements CompilerPassInterface {
  
                 $route = null;
                 if (array_key_exists('route', $attributes)) {
-                    $route = str_replace("*","",$attributes['route']);
+                    $route = $attributes['route'];
                 }
 
                 $entity = null;
                 if (array_key_exists('entity', $attributes)) {
                     $entity = $attributes['entity'];
                 }
-
+               
+               
                 $definition->addMethodCall(
                 'addService',
                 array(new Reference($id),$route,$entity)
