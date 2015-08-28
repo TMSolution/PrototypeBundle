@@ -37,7 +37,7 @@ Services:
       servicename: prototype.gridbuilder
 ```
 
-If you enter the specified url, the `readAction` method of the `GridDefaultController` is called. In order to work properly, it needs a number of different services, which are listed in the `Services` section of the example above. Here, you can verify which services will be loaded, whereas they are configured in the appropriate `services.yml` file. It is possible that a service will not be used, in case it's not needed. 
+If you enter the specified url, the `readAction` method of the `GridDefaultController` is called. In order to work properly, it needs a number of different services, which are listed in the `Services` section, like in the example above. Here, you can verify which services will be loaded, whereas they are configured in the appropriate `services.yml` file. It is possible that a service will not be used, in case it's not needed. 
 You can also verify a phrase built from *route* and *entity* tags, which are matched and used to find the best suited service.
 
 In *Services* section, you can configure names of services which will be used to evoke a specific action mapped onto the route matching the specified url. You can also verify a phrase built from *route* and *entity* tags, which are matched and used to find the best suited service.
