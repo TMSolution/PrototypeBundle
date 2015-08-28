@@ -36,3 +36,4 @@ Services:
       phrase: *
       servicename: prototype.gridbuilder
 ```
+In Services section you can verify names of services witch will be used to doing action mapped by route matching specified url.
