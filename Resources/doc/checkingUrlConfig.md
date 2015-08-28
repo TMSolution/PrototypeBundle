@@ -7,7 +7,7 @@
 
 ### Description
 
-Command *prototype:show:url:config* was created to verify information about configuration for specified url adress.
+Command *prototype:show:url:config* verifies information about configuration for a specified url adress.
 
 ### Usage
 
@@ -36,4 +36,4 @@ Services:
       phrase: *
       servicename: prototype.gridbuilder
 ```
-In *Services* section you can verify names of services witch will be used to doing action mapped by route matching specified url. You can also verify phrase builded from *route* and *entity* pair of tags, witch were matched to find best suited service.
+In *Services* section, you can configure names of services which will be used to evoke a specific action mapped onto the route matching the specified url. You can also verify a phrase built from *route* and *entity* tags, which are matched and used to find the best suited service.
