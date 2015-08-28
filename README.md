@@ -24,7 +24,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new Core\PrototypeBundle()
+        new Core\PrototypeBundle\CorePrototypeBundle()
     );
 }
 ```
