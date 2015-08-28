@@ -36,4 +36,4 @@ Services:
       phrase: *
       servicename: prototype.gridbuilder
 ```
-In *Services* section you can verify names of services witch will be used to doing action mapped by route matching specified url.
+In *Services* section you can verify names of services witch will be used to doing action mapped by route matching specified url. You can also verify phrase builded from *route* and *entity* pair of tags, witch were matched to find best suited service.
