@@ -7,15 +7,16 @@
 
 ### Description
 
+Command *prototype:show:url:config* was created to verify information about configuration for specified url adress.
 
-### Use
+### Usage
 
-In order to install the bundle, add: 
 
 ```
 // sample usage
 php app/console prototype:show:url:config /panel/category/read/2
 ```
+will return 
 
 ```
 //return 
