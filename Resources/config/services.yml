@@ -50,5 +50,5 @@ services:
         class: Core\PrototypeBundle\GridConfig\AssociationGridConfig
         arguments: [@service_container]        
         tags:
-            -  { name: prototype.gridbuilder, route: core_prototype_associationcontroller_* }        
+            -  { name: prototype.gridbuilder, route: core_prototype_associationcontroller_ }        
    

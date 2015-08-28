@@ -41,7 +41,7 @@ class ConfigPass implements CompilerPassInterface {
                
                 $definition->addMethodCall(
                 'addService',
-                array(new Reference($id),$route,$entity)
+                array(new Reference($id),$route,$entity,$id)
                 );
             }
         }

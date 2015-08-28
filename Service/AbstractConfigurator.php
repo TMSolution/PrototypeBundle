@@ -5,9 +5,11 @@ namespace Core\PrototypeBundle\Service;
 class AbstractConfigurator {
 
     protected $namesOfServices = [];
-    protected $services = [];
+    protected $servicesConfigs = [];
     protected $chosen = null;
+    protected $chosenService= null;
     protected $divider = "*";
+    
 
     protected function getRouteName($serviceName) {
         $serviceNameArr = explode($this->divider, $serviceName);
@@ -38,22 +40,22 @@ class AbstractConfigurator {
     }
 
     protected function getBestSuitedServices($bestSuitedRouteName) {
-        $services = [];
+        $servicesConfigs = [];
 
         foreach ($this->getNamesOfServices() as $serviceName) {
             if (strstr($serviceName, $bestSuitedRouteName)) {
-                $services[$serviceName] = $this->services[$serviceName];
+                $servicesConfigs[$serviceName] = $this->servicesConfigs[$serviceName];
             };
         }
 
-        return $services;
+        return $servicesConfigs;
     }
 
     public function getNamesOfServices() {
 
         if (!$this->namesOfServices) {
 
-            $this->namesOfServices = array_keys($this->services);
+            $this->namesOfServices = array_keys($this->servicesConfigs);
         }
         return $this->namesOfServices;
     }
@@ -69,56 +71,58 @@ class AbstractConfigurator {
         }
         return $this->chosen;
     }
+    
+    
+    protected function calculateService($servicesConfigs)
+    {
+            $keys = array_keys($servicesConfigs);
+            $serviceName=$keys[0];
+            $servisConfig=$servicesConfigs[$serviceName];
+            $this->setChosen($servisConfig);
+            return $servisConfig["service"];      
+    }
 
     public function getService($route, $entity) {
-        dump(get_class($this));
-        dump($this->services);
-        //get best fit route
-        $bestSuitedServices = $this->getBestSuitedServices($this->calculateBestSuitedServiceName($route));
+    
+         $bestSuitedServicesConfigs = $this->getBestSuitedServices($this->calculateBestSuitedServiceName($route));
 
         //there is services for route
-        if (count($bestSuitedServices)) {
+        if (count($bestSuitedServicesConfigs)) {
 
             // check configuration for entity
-            $serviceArr = array_filter($bestSuitedServices, function($k) use ($route, $entity) {
+            $serviceConfigArr = array_filter($bestSuitedServicesConfigs, function($k) use ($route, $entity) {
                 if (strstr($k, $entity)) {
-                    $this->setChosen($k);
-                    return $this->services[$k];
+                   
+                    return $this->servicesConfigs[$k];
                 }
             }, ARRAY_FILTER_USE_KEY);
 
-            if (count($serviceArr)) {
-                return array_shift($serviceArr);
+            if (count($serviceConfigArr)) {
+                return array_shift($serviceConfigArr["service"]);
             }
             //if there is no configuration for entity, but route exists
-            $keys = array_keys($bestSuitedServices);
-            $this->setChosen($keys[0]);
-            return $bestSuitedServices[$keys[0]];
+            return $this->calculateService($bestSuitedServicesConfigs);
         }
         //there is no service for this route
         else {
             //maybe is service for entity exists
-            $serviceArr = array_filter($this->services, function($k) use ($route, $entity) {
+            $serviceConfigArr = array_filter($this->servicesConfigs, function($k) use ($route, $entity) {
 
                 if ($this->divider . $entity == $k) {
-                    $this->setChosen($k);
-                    return $this->services[$k];
+                
+                    return $this->servicesConfigs[$k];
                 }
             }, ARRAY_FILTER_USE_KEY);
 
-            if (count($serviceArr)) {
-                $keys = array_keys($serviceArr);
-                $this->setChosen($keys[0]);
-                return $serviceArr[$keys[0]];
+            if (count($serviceConfigArr)) {
+                return $this->calculateService($serviceConfigArr);
             }
         }
 
         //use universal config
-       
-        if(count($this->services)){
-        $this->setChosen($this->divider);
-     
-        return $this->services[$this->divider];
+        if(count($this->servicesConfigs)){
+        $this->setChosen($this->servicesConfigs[$this->divider]);
+        return $this->servicesConfigs[$this->divider]["service"];
         
         }
     }
@@ -129,9 +133,10 @@ class AbstractConfigurator {
         $this->container = $container;
     }
 
-    public function addService($service, $route, $entity) {
+    public function addService($service, $route, $entity,$id) {
        
-        $this->services[$route . $this->divider . $entity] = $service;
+        $phrase=$route . $this->divider . $entity;
+        $this->servicesConfigs[$route . $this->divider . $entity] =["phrase"=>$phrase, "route"=>$route, "entity"=>$entity, "serviceid"=>$id,"service"=> $service];
     }
 
 }
