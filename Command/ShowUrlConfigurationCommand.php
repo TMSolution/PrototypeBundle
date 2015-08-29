@@ -35,7 +35,7 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
 
     protected function getRouteInfo($input, $output) {
 
-        $output->writeln("Url confgiuration: ");
+        $output->writeln("Url configuration: ");
         $route = $this->getContainer()->get('router')->match($input->getArgument('url'));
         $output->writeln("  url: <info>" . $input->getArgument('url')."</info>");
         $output->writeln("  route: <info>" . $route["_route"]."</info>");
@@ -47,7 +47,7 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
         
         $output->writeln("");
         $output->writeln("Services: ");
-       
+        $output->writeln("");
         $configuratorService=$this->getContainer()->get('prototype.configurator.service');
         $namesOfServices=$configuratorService->getNamesOfServices();
         $service=$configuratorService->getService($route["_route"], $entityName);
@@ -57,7 +57,7 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
         $namesOfServices=$configuratorService->getNamesOfServices();
         $service=$configuratorService->getService($route["_route"], $entityName);
         $this->printServiceInfo("Grid builder config",$configuratorService,$output);
-         
+        
         
     }
     
@@ -68,7 +68,8 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
         $output->writeln("  ".$name.": " );
         $output->writeln("      phrase: <info>" .$serviceConfig['phrase']."</info>" );
         $output->writeln("      servicename: <comment>" .$serviceConfig['serviceid']."</comment>" );
-    
+        $output->writeln("      class: <comment>" .get_class($serviceConfig['service'])."</comment>" );
+        $output->writeln("" );
         
     }
 

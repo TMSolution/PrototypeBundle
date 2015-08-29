@@ -97,11 +97,19 @@ class AbstractConfigurator {
                 }
             }, ARRAY_FILTER_USE_KEY);
 
+            //dump($bestSuitedServicesConfigs);
+            
             if (count($serviceConfigArr)) {
-                return array_shift($serviceConfigArr["service"]);
+                
+                $serviceConfig=array_shift($serviceConfigArr);
+               // dump($serviceConfig);
+                $this->setChosen($serviceConfig);
+                return $serviceConfig["service"];
             }
+            
+            
             //if there is no configuration for entity, but route exists
-            return $this->calculateService($bestSuitedServicesConfigs);
+           return $this->calculateService($bestSuitedServicesConfigs);
         }
         //there is no service for this route
         else {

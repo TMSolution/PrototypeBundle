@@ -33,6 +33,7 @@
         </tbody>
     </table>
     <div>
+        {#
         <a href="{{ path(listActionName, { 'entityName': entityName})}}" class=" prevButton btn">
             {{ "Back"|trans}}
         </a>
@@ -44,7 +45,7 @@
             <a href="{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn">
                 {{ "Edit"|trans}}
             </a>
-        </span>
+        </span>#}
     </div>
 
 {% endblock element %}
