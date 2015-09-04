@@ -2,7 +2,8 @@ $(function () {
 //jakas tam klasa tabowa
     $('.lazy-loaded-tab').one("click", function () {
 
-
+     
+      //  window.location.hash = $(this).attr("href");
         if ($(this).data("route-target"))
         {
 
@@ -14,20 +15,24 @@ $(function () {
             var context = $(this).attr("href");
         }
        
-       console.log(context);
-       console.log($(this).data("route"));
-       console.log($(this).data("route-params"));
+        var state=$(this).attr("href").substr(1);
+      
         $.ajax({
             url: Routing.generate($(this).data("route"), $(this).data("route-params")),
         }).done(function (data) {
 
-            $(context).html(data);
+      
+        history.pushState({ "aaa": "costam" }, "nowa", window.location.href+"/"+state);      
+        $(context).html(data);
        
         });
 
-
+    
 
     })
+    
+    
+    
 
 
 });

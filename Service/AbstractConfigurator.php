@@ -27,6 +27,7 @@ class AbstractConfigurator {
             $routeName = $this->getRouteName($serviceName);
             if ($routeName) {
                 if (\mb_substr($route, 0, mb_strlen($routeName)) == $routeName) {
+                   // dump(\mb_substr($route, 0, mb_strlen($routeName)));
                     $score = similar_text($route, $routeName);
                     if ($score > $bestScore) {
                         $bestScore = $score;
@@ -85,19 +86,19 @@ class AbstractConfigurator {
     public function getService($route, $entity) {
     
          $bestSuitedServicesConfigs = $this->getBestSuitedServices($this->calculateBestSuitedServiceName($route));
-
+   
         //there is services for route
         if (count($bestSuitedServicesConfigs)) {
 
             // check configuration for entity
-            $serviceConfigArr = array_filter($bestSuitedServicesConfigs, function($k) use ($route, $entity) {
-                if (strstr($k, $entity)) {
+            $serviceConfigArr = array_filter($bestSuitedServicesConfigs, function($config,$key) use ($route, $entity) {
+               
+                if (strstr($route,$config['route'])) {
                    
-                    return $this->servicesConfigs[$k];
+                    return $this->servicesConfigs[$key];
                 }
-            }, ARRAY_FILTER_USE_KEY);
+            }, ARRAY_FILTER_USE_BOTH);
 
-            //dump($bestSuitedServicesConfigs);
             
             if (count($serviceConfigArr)) {
                 

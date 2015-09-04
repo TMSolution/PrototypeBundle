@@ -33,19 +33,19 @@
         </tbody>
     </table>
     <div>
-        {#
-        <a href="{{ path(listActionName, { 'entityName': entityName})}}" class=" prevButton btn">
+        
+        <a href="{{ path(listActionName, routeParams) }} " class=" prevButton btn">
             {{ "Back"|trans}}
         </a>
         <span class="pull-right">   
-            <a href="{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn">
+            <a href="{{ path(deleteActionName, routeParams) }}" class="btn">
               {{ "Delete"|trans}} 
                
             </a>
-            <a href="{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn">
+            <a href="{{ path(editActionName, routeParams) }}" class="btn">
                 {{ "Edit"|trans}}
             </a>
-        </span>#}
+        </span>
     </div>
 
 {% endblock element %}

@@ -52,8 +52,8 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
         $namesOfServices=$configuratorService->getNamesOfServices();
         $service=$configuratorService->getService($route["_route"], $entityName);
         $this->printServiceInfo("Base config(twig)",$configuratorService,$output);
-        exit();
-        
+        $this->showTwigConfig($service->getConfig(),$output);
+        $output->writeln("" );
         $configuratorService=$this->getContainer()->get('prototype.gridbuilder.configurator.service');
         $namesOfServices=$configuratorService->getNamesOfServices();
         $service=$configuratorService->getService($route["_route"], $entityName);
@@ -62,18 +62,27 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
         
     }
     
+    protected function showTwigConfig($config,$output)
+    {
+        $output->writeln("      configuration details:" );
+        foreach ($config as $name =>$path)
+        {
+            $output->writeln("              <info>$name:</info> <comment>$path</comment>" );
+
+        }
+
+    }
+    
     
     protected function printServiceInfo($name,$service,$output)
     {
-        $serviceConfig=$service->getChosen();
+        $serviceArray=$service->getChosen();
         $output->writeln("  ".$name.": " );
-        $output->writeln("      phrase: <info>" .$serviceConfig['phrase']."</info>" );
-        $output->writeln("      servicename: <comment>" .$serviceConfig['serviceid']."</comment>" );
-        $output->writeln("      class: <comment>" .get_class($serviceConfig['service'])."</comment>" );
-        
-        dump($serviceConfig->getConfig());
-        $output->writeln("" );
-        
+        $output->writeln("      phrase: <info>" .$serviceArray['phrase']."</info>" );
+        $output->writeln("      servicename: <comment>" .$serviceArray['serviceid']."</comment>" );
+        $output->writeln("      class: <comment>" .get_class($serviceArray['service'])."</comment>" );
+
+      
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {

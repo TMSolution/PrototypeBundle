@@ -1,4 +1,10 @@
 {% extends config.get("twig_base_index") %}
-
-{% block content %}
-{% endblock %}
+{% block content %}  
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h2>New {{ entityName |capitalize  }}:</h2>
+        </div>
+    </div>
+    {% block element %}
+    {% endblock element %}
+{% endblock content %}

@@ -1,47 +1,55 @@
 core_prototype_associationcontroller_list:
-    locales:  { en: "/{entityName}/list/{parentName}/{parentId}", pl: "/{entityName}/lista/{parentName}/{parentId}" } 
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:list" }
+    locales:  { en: "/{entityName}/list/{parentName}/{parentId}/{state}", pl: "/{entityName}/lista/{parentName}/{parentId}/{state}" } 
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:list", state: "" }
+    requirements: {"state": ".+", "parentId": "\d+" }
     options:
         expose: true
         
 core_prototype_associationcontroller_ajaxlist:
-    locales:  { en: "/{entityName}/ajaxlist/{parentName}/{parentId}", pl: "/{entityName}/listaajax/{parentName}/{parentId}" } 
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:ajaxlist" }
+    locales:  { en: "/{entityName}/ajaxlist/{parentName}/{parentId}/{state}", pl: "/{entityName}/listaajax/{parentName}/{parentId}/{state}" } 
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:ajaxlist", state: "" }
+    requirements: {"state": ".+", "parentId": "\d+" }
     options:
         expose: true
         
 core_prototype_associationcontroller_read:
-    locales:  { en: "/{entityName}/read/{id}/{parentName}/{parentId}", pl:"/{entityName}/pobierz/{id}/{parentName}/{parentId}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:read" } 
+    locales:  { en: "/{entityName}/read/{id}/{parentName}/{parentId}/{state}", pl:"/{entityName}/pobierz/{id}/{parentName}/{parentId}/{state}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:read", state: "" } 
+    requirements: {"state": ".+", "parentId": "\d+" }
     options:
         expose: true    
 
 core_prototype_associationcontroller_new:
-    locales:  { en: "/{entityName}/new/{parentName}/{parentId}", pl:"/{entityName}/nowy/{parentName}/{parentId}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:new" }   
+    locales:  { en: "/{entityName}/new/{parentName}/{parentId}/{state}", pl:"/{entityName}/nowy/{parentName}/{parentId}/{state}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:new", state: "" }   
+    requirements: {"state": ".+", "parentId": "\d+" }
     options:
         expose: true
 
 core_prototype_associationcontroller_create:
-    locales:  { en: "/{entityName}/create/{parentName}/{parentId}", pl: "/{entityName}/utworz/{parentName}/{parentId}" }
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:create" }   
+    locales:  { en: "/{entityName}/create/{parentName}/{parentId}/{state}", pl: "/{entityName}/utworz/{parentName}/{parentId}/{state}" }
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:create", state: "" }   
+    requirements: {"state": ".+", "parentId": "\d+" }
     options:
         expose: true       
 
 core_prototype_associationcontroller_delete:
-    locales:  { en: "/{entityName}/delete/{id}/{parentName}/{parentId}", pl:"/{entityName}/usun/{id}/{parentName}/{parentId}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:delete" }       
+    locales:  { en: "/{entityName}/delete/{id}/{parentName}/{parentId}/{state}", pl:"/{entityName}/usun/{id}/{parentName}/{parentId}/{state}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:delete", state: "" }       
+    requirements: {"state": ".+", "parentId": "\d+" }
     options:
         expose: true
 
 core_prototype_associationcontroller_edit:
-    locales:  { en: "/{entityName}/edit/{id}/{parentName}/{parentId}", pl:"/{entityName}/edytuj/{id}/{parentName}/{parentId}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:edit" }
+    locales:  { en: "/{entityName}/edit/{id}/{parentName}/{parentId}/{state}", pl:"/{entityName}/edytuj/{id}/{parentName}/{parentId}/{state}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:edit", state: "" }
+    requirements: {"state": ".+", "parentId": "\d+" }
     options:
         expose: true
         
 core_prototype_associationcontroller_update:
-    locales:  { en: "/{entityName}/update/{id}/{parentName}/{parentId}", pl:"/{entityName}/aktualizuj/{id}/{parentName}/{parentId}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:update" }   
+    locales:  { en: "/{entityName}/update/{id}/{parentName}/{parentId}/{state}", pl:"/{entityName}/aktualizuj/{id}/{parentName}/{parentId}/{state}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:update", state: "" }   
+    requirements: {"state": ".+", "parentId": "\d+" }
     options:
         expose: true

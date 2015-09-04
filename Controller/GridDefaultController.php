@@ -22,18 +22,16 @@ use Core\PrototypeBundle\Controller\DefaultController;
  * 
  * @copyright (c) 2014-current, TMSolution
  */
-class GridDefaultController extends DefaultController
-{
+class GridDefaultController extends DefaultController {
 
     /**
      * List action.
      * 
      * @return Response
      */
-    public function listAction()
-    {
+    public function listAction() {
 
-
+        dump($this->getEntityClass());
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
         $model = $this->getModel($this->getEntityClass());
@@ -42,31 +40,33 @@ class GridDefaultController extends DefaultController
         $grid->setSource($source);
         $grid->resetSessionData();
         $this->buildGrid($grid);
-        $grid->setId($routePrefix.'_'.$entityName);
-        $grid->setRouteUrl($this->generateUrl($routePrefix."_ajaxlist",$grid->getRouteParameters() ));
-        
+        $grid->setId($routePrefix . '_' . $entityName);
+        dump($grid->getId());
+        $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxlist", $grid->getRouteParameters()));
+
         //config parameters for render and event broadcast
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entityName' => $entityName,
             'newActionName' => $this->getAction('new'),
             'routeName' => $routePrefix . '_new',
-            'config' => $this->getConfig()
+            'config' => $this->getConfig(),
+            'routeParams' => $this->getRouteParams()
         ]);
 
+        
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($model);
         $event->setGrid($grid);
-        
-        dump($routePrefix . '.' . $entityName . '.' . 'list');
+
+      
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'list', $event);
         return $grid->getGridResponse($this->getConfig()->get('twig_element_list'), $params->getArray());
     }
-    
-    public function ajaxlistAction()
-    {
+
+    public function ajaxlistAction() {
 
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
@@ -75,16 +75,20 @@ class GridDefaultController extends DefaultController
         $source = new Entity($model);
         $grid->setSource($source);
         $this->buildGrid($grid);
-        $grid->setId($routePrefix.'_'.$entityName);
-        $grid->setRouteUrl($this->generateUrl($routePrefix."_ajaxlist",$grid->getRouteParameters() ));
+        $grid->setId($routePrefix . '_' . $entityName);
+        dump($grid->getId());
+        $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxlist", $grid->getRouteParameters()));
         //config parameters for render and event broadcast
+          
         $params = [
             'entityName' => $entityName,
             'newActionName' => $this->getAction('new'),
             'routeName' => $routePrefix . '_new',
-            'config' => $this->getConfig()
+            'config' => $this->getConfig(),
+            'routeParams' => $this->getRouteParams()
         ];
-
+        
+        
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
@@ -93,12 +97,9 @@ class GridDefaultController extends DefaultController
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'ajaxlist', $event);
         return $grid->getGridResponse($this->getConfig()->get('twig_element_ajaxlist'), $params);
     }
-    
-    
 
-    protected function getGridConfig()
-    {
-                        
+    protected function getGridConfig() {
+
         $configurator = $this->get("prototype.gridbuilder.configurator.service");
         $gridConfig = $configurator->getService($this->getRouteName(), $this->getEntityClass());
         if (!$gridConfig) {
@@ -108,8 +109,7 @@ class GridDefaultController extends DefaultController
         return $gridConfig;
     }
 
-    protected function buildGrid($grid)
-    {
+    protected function buildGrid($grid) {
         //@todo sprawdź czy jest ustawiony w configu
 
         $gridConfig = $this->getGridConfig();
@@ -118,15 +118,13 @@ class GridDefaultController extends DefaultController
         }
     }
 
-
     /**
      * 
      * @param RowAction $actionObject
      * @param type $entityName
      * @return RowAction
      */
-    protected function setGridActionRouteParameters(RowAction $actionObject, $entityName = null)
-    {
+    protected function setGridActionRouteParameters(RowAction $actionObject, $entityName = null) {
         $actionObject->setRouteParameters(['entityName' => $entityName ? $entityName : $this->getEntityName(), 'id']);
         return $actionObject;
     }
@@ -139,8 +137,7 @@ class GridDefaultController extends DefaultController
      * @param string $entityName
      * @return \TMSolution\DataGridBundle\Grid\Action\RowAction
      */
-    protected function setGridActionRouteParametersWithout(\TMSolution\DataGridBundle\Grid\Action\RowAction $actionObject, $action, $entityName = null)
-    {
+    protected function setGridActionRouteParametersWithout(\TMSolution\DataGridBundle\Grid\Action\RowAction $actionObject, $action, $entityName = null) {
         if ($entityName === null) {
             $actionObject->setRouteParameters(array('entityName' => $entityName, 'action' => $action, 'id'));
         } else {
@@ -148,5 +145,7 @@ class GridDefaultController extends DefaultController
         }
         return $actionObject;
     }
+
+    
 
 }

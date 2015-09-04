@@ -1,5 +1,9 @@
 {% extends config.get("twig_container_create") %}
-{% block content -%}
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+{% block element -%}
+  
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
     {{ form_start(form) }}
 
     {{ form_errors(form) }}
@@ -7,7 +11,8 @@
     {% for child in form.children %}
         {{ form_row(child) }}
     {% endfor %}
-
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12 col-sm-12">
             <div class="button-row button-rows">
@@ -22,4 +27,4 @@
 
     {{ form_end(form) }} 
 
-{% endblock %}
+{% endblock  element%}

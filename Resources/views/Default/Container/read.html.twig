@@ -1,6 +1,27 @@
 {% extends config.get("twig_base_index") %}
 {% block content %}
-        {% block element %}
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <h2>Show {{ entityName |capitalize  }}:</h2>
+        </div>
+    </div>
+    {% block element %}
 
-        {% endblock %}
+    {% endblock %}
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <a href="{{ path(listActionName, { 'entityName': entityName})}}" class=" prevButton btn">
+                {{ "Back"|trans}}
+            </a>
+            <span class="pull-right">   
+                <a href="{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn">
+                    {{ "Delete"|trans}} 
+
+                </a>
+                <a href="{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn">
+                    {{ "Edit"|trans}}
+                </a>
+            </span>
+        </div>
+    </div>
 {% endblock content %}

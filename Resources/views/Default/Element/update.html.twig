@@ -1,8 +1,10 @@
 {% extends config.get("twig_container_update") %} 
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 {% block element %}
-<div class="row">
-   
+    
+       
+    <div class="row">
+    <div class="col-md-12 col-sm-12">
     {{ form_start(form) }}
  <div class="col-md-12 col-sm-12">
     {{ form_errors(form) }}
@@ -29,6 +31,6 @@
     
 
     {{ form_end(form) }} 
-  
+    </div>
 </div>
 {% endblock %}

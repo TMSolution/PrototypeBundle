@@ -44,7 +44,7 @@ class AssociationGridConfig extends GridBuilder {
 
     protected function findParentFieldName($model, $parentEntity) {
         $fieldsInfo = $model->getFieldsInfo();
-        dump($fieldsInfo);
+       
         foreach ($fieldsInfo as $fieldName => $fieldInfo) {
             if ($fieldInfo["is_object"] == true && $fieldInfo["object_name"] == $parentEntity && in_array($fieldInfo["association"], ["ManyToOne", "OneToOne", "ManyToMany"])) {
 
@@ -66,18 +66,22 @@ class AssociationGridConfig extends GridBuilder {
 
     protected function manipulateQuery($grid) {
 
+        
+        
           $parentId=$this->request->get("parentId");
           $tableAlias = $grid->getSource()->getTableAlias();
           $parentFieldName=$this->getParentFieldNameFromRequest();
+        
+        
           $queryBuilderFn = function ($queryBuilder) use($tableAlias,$parentFieldName,$parentId) {
-         
+       
           $queryBuilder->leftJoin("$tableAlias.$parentFieldName","_$parentFieldName");
           $queryBuilder->Where("_$parentFieldName.id=:$parentFieldName");        
-          $queryBuilder->setParameter(":$parentFieldName", (int)$parentId);        
-             
+          $queryBuilder->setParameter("$parentFieldName", (int)$parentId);        
+          
           };
           $grid->getSource()->manipulateQuery($queryBuilderFn);
-
+          
          
     }
 
@@ -99,20 +103,26 @@ class AssociationGridConfig extends GridBuilder {
 
     protected function configureRowButton($grid, $routePrefix) {
         
+          /*@todo, aftert test - add to oryginal data-grid command generator */
+        
+          $parametersArr=$this->request->attributes->all();
+          $parameters=["id"];
+          $parameters=  array_merge($parameters,$parametersArr["_route_params"]);
           
-          $parentId=$this->request->get("parentId");
+          
+         $parentId=$this->request->get("parentId");
           $parentName=$this->request->get("parentName");
           
           $rowAction = new RowAction('glyphicon glyphicon-eye-open', $routePrefix.'_read', false, null, ['id' => 'button-id', 'class' => 'button-class', 'data-original-title' => 'Show']);
-          $rowAction->setRouteParameters(['entityName' => 'product','id','parentName'=>$parentName,'parentId'=>$parentId ]);
+          $rowAction->setRouteParameters($parameters);
           $grid->addRowAction($rowAction);
 
           $rowAction = new RowAction('glyphicon glyphicon-edit', $routePrefix.'_update', false, null, ['id' => 'button-id', 'class' => 'button-class', 'data-original-title' => 'Edit']);
-          $rowAction->setRouteParameters(['entityName' => 'product','id','parentName'=>$parentName,'parentId'=>$parentId ]);
+          $rowAction->setRouteParameters($parameters);
           $grid->addRowAction($rowAction);
 
           $rowAction = new RowAction('glyphicon glyphicon-remove', $routePrefix.'_delete', false, null, ['id' => 'button-id', 'class' => 'button-class', 'data-original-title' => 'Delete']);
-          $rowAction->setRouteParameters(['entityName' => 'product','id','parentName'=>$parentName,'parentId'=>$parentId ]);
+          $rowAction->setRouteParameters($parameters);
           $grid->addRowAction($rowAction);
          
     }
