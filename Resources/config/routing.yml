@@ -1,0 +1,10 @@
+prototype_associationcontroller:
+    resource: "@CorePrototypeBundle/Resources/config/routing/associationcontroller.yml"
+    prefix:   /panel
+    type: be_simple_i18n
+    
+
+prototype_defaultcontroller:
+    resource: "@CorePrototypeBundle/Resources/config/routing/defaultcontroller.yml"
+    prefix:   /panel
+    type: be_simple_i18n
