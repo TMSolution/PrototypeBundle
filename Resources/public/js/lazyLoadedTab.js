@@ -22,7 +22,8 @@ $(function () {
         }).done(function (data) {
 
       
-        history.pushState({ "aaa": "costam" }, "nowa", window.location.href+"/"+state);      
+        history.pushState({ "aaa": "costam" }, "nowa", window.location.href+"/"+state);    
+        
         $(context).html(data);
        
         });
