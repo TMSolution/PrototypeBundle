@@ -4,15 +4,13 @@
         settings: {
             basePath: null
         },
-        basePath: function (basePath, value) {
-
+        basePath: function (value) {
             if(value){
-                this.settings.basePath = basePath;    
+                this.settings.basePath = value;    
             }
             else {
                 return this.settings.basePath
             }
-            
         },
         loadTarget: function(){
             
@@ -22,7 +20,6 @@
         },
         init: function () {
             
-
         }
 
     }
