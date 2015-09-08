@@ -4,10 +4,20 @@
         settings: {
             basePath: null
         },
-        setBasePath: function (basePath) {
+        basePath: function (basePath, value) {
 
-            this.settings.basePath = basePath;
-            console.debug(this.settings.basePath);
+            if(value){
+                this.settings.basePath = basePath;    
+            }
+            else {
+                return this.settings.basePath
+            }
+            
+        },
+        loadTarget: function(){
+            
+        },
+        loadUrl: function(){
             
         },
         init: function () {
