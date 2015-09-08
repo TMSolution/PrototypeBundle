@@ -1,7 +1,7 @@
 {% extends config.get("twig_container_read") %}
 
 {% block element %}
-   
+
     <div class="row">
         <div class="col-md-12 col-sm-12">
 
@@ -36,7 +36,23 @@
 
                 </tbody>
             </table>
-        </div> </div>       
-       
+        </div> </div> 
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <button onclick="history.go(-1)" class=" prevButton btn btn-default">
+                {{ "Back"|trans}}
+            </button>
+            <span class="pull-right">   
+                <a href="{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn">
+                    {{ "Delete"|trans}} 
 
-    {% endblock element %}
+                </a>
+                <a href="{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn">
+                    {{ "Edit"|trans}}
+                </a>
+            </span>
+        </div>
+    </div>   
+
+
+{% endblock element %}

@@ -34,9 +34,9 @@
     </table>
     <div>
         
-        <a href="{{ path(listActionName, routeParams) }} " class=" prevButton btn">
+        <button  onclick="history.go(-1)" class=" prevButton btn btn-default">
             {{ "Back"|trans}}
-        </a>
+        </button>
         <span class="pull-right">   
             <a href="{{ path(deleteActionName, routeParams) }}" class="btn">
               {{ "Delete"|trans}} 

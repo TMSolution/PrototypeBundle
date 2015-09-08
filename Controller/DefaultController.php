@@ -27,7 +27,7 @@ class DefaultController extends BaseController {
     protected $routeName;
     protected $configLoaded = false;
     protected $configService;
-    protected $state = null;
+    protected $states = null;
     //element praktycznie zawsze zmieniany, konfiguracja na zewnątrz
     protected $config = [
 
@@ -77,7 +77,7 @@ class DefaultController extends BaseController {
             'form' => $form->createView(),
             'config' => $this->getConfig(),
             'routeParams' => $this->getRouteParams(),
-            'state' => $this->getState()
+            'states' => $this->getStates()
         ]);
 
         //Create event broadcast.
@@ -168,7 +168,7 @@ class DefaultController extends BaseController {
             'updateActionName' => $this->getAction('update'),
             'config' => $this->getConfig(),
             'routeParams' => $this->getRouteParams(),
-            'state' => $this->getState()
+            'states' => $this->getStates()
         ]);
 
         //Create event broadcast.
@@ -243,7 +243,7 @@ class DefaultController extends BaseController {
             'updateActionName' => $this->getAction('update'),
             'config' => $this->getConfig(),
             'routeParams' => $this->getRouteParams(),
-            'state' => $this->getState()
+            'states' => $this->getStates()
         ]);
 
         //Create event broadcast.
@@ -279,14 +279,14 @@ class DefaultController extends BaseController {
             'properties' => $this->prepareProperties($model, $entity),
             'config' => $this->getConfig(),
             'routeParams' => $this->getRouteParams(),
-            'state' => $this->getState()
+            'states' => $this->getStates()
         ]);
 
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($model);
-
+       
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'read', $event);
 
         return $this->render($this->getConfig()->get('twig_element_read'), $params->getArray());
@@ -350,7 +350,7 @@ class DefaultController extends BaseController {
             'entityName' => $entityName,
             'listActionName' => $this->getAction('list'),
             'config' => $this->getConfig(),
-            'state' => $this->getState()
+            'states' => $this->getStates()
                 
         ]);
 
@@ -479,20 +479,7 @@ class DefaultController extends BaseController {
         if (empty($class)) {
             $class = 'form-horizontal';
         }
-        /*
-          if ($url && !$id) {
-          $url = $this->generateUrl($url);
-          } elseif ($url && $id) {
-          $url = $this->generateUrl($action, ['id' => $id]);
-          } elseif (empty($id)) {
-          $url = $this->generateUrl($action, array('entityName' => $entityName));
-          } else {
-          //@todo: moze byc z tym problem
-          $url = $this->generateUrl($action, array('entityName' => $entityName, 'id' => $id));
-          }
-          if (empty($class)) {
-          $class = 'form-horizontal';
-          } */
+       
 
         $form = $this->createForm($formType, $entity, array(
             'action' => $url, //$this->generateUrl('user_create'),
@@ -563,18 +550,25 @@ class DefaultController extends BaseController {
         return $parameters;
     }
 
-    protected function getState() {
+    protected function getStates() {
         $params = $this->getRouteParams();
-        if ($this->state == null) {
+        if ($this->states == null) {
 
-            $state = explode("/", $params["state"]);
-            if ($state["0"] == null) {
-                $this->state = [];
+            $states = explode("/", $params["states"]);
+            if ($states["0"] == null) {
+                $this->states = [];
             } else {
-                $this->state = $state;
+                $this->states = $states;
             }
         }
-        return $this->state;
+        return $this->states;
+    }
+    
+    protected function getBasePath()
+    {
+        $params=$this->getRouteParams();
+        $params["states"]=null;
+        return $this->generateUrl($this->getRouteName(),$params );
     }
 
 }

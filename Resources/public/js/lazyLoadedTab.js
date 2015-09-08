@@ -1,34 +1,44 @@
 $(function () {
 //jakas tam klasa tabowa
-    $('.lazy-loaded-tab').one("click", function () {
 
 
-        //window.location.hash = $(this).attr("href");
-        if ($(this).data("route-target"))
+    //@todo plugin needed
+     lazyLoad = function (element,registerAsState)
+    {
+        if (element.data("route-target"))
         {
 
-            var context = $(this).data("route-target");
+            var context = element.data("route-target");
 
         }
         else
         {
-            var context = $(this).attr("href");
+            var context = element.attr("href");
         }
 
-        var state = $(this).attr("href").substr(1);
+        var state = element.attr("href").substr(1);
 
         $.ajax({
-            url: Routing.generate($(this).data("route"), $(this).data("route-params")),
+            url: Routing.generate(element.data("route"), element.data("route-params")),
         }).done(function (data) {
 
-
-            history.pushState({"aaa": "costam"}, "nowa", window.location.href + "/" + state);
-
+            if(element.parents()){
+                    
+            history.pushState({}, "nowa", window.location.href + "/" + state);
+        }
             $(context).html(data);
 
         });
 
 
+
+    }
+
+
+ 
+    $('.lazy-loaded-tab').one("click", function () {
+
+            lazyLoad($(this),true);
 
     })
 
