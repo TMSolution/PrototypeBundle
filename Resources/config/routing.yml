@@ -1,3 +1,8 @@
+prototype_ajaxcontroller:
+    resource: "@CorePrototypeBundle/Resources/config/routing/ajaxcontroller.yml"
+    prefix:   /panel
+    type: be_simple_i18n
+
 prototype_associationcontroller:
     resource: "@CorePrototypeBundle/Resources/config/routing/associationcontroller.yml"
     prefix:   /panel

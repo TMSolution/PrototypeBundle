@@ -5,6 +5,7 @@ parameters:
     
     prototype.association.config.parameters:
         twig_element_read: 'CorePrototypeBundle:Association\Element:read.html.twig'
+        
       
         
 services:
@@ -65,3 +66,8 @@ services:
         tags:
             -  { name: prototype.gridbuilder, route: core_prototype_associationcontroller_ }        
    
+    prototype.ajax.config:
+        class: Core\PrototypeBundle\Service\Config
+        arguments: [@prototype.config,%prototype.association.config.list.parameters%]        
+        tags:
+            -  { name: prototype.config, route: core_prototype_ajaxcontroller_ }
