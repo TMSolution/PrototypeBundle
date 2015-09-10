@@ -33,8 +33,7 @@ doctrine:schema:create
 classmapper:generate:friendlynames 
 jako parametry należy podać nazwę bundle'a lub bundle'i, w celu wygenerowania przyjaznych nazw encji, np. PhantomBundle
 Do pliku app/config/config.yml dodać następujący wpis do bloku imports:
-    - { resource: classmapper.yml }
-    - 
+    { resource: classmapper.yml }
 6. Do pliku config.yml w bloku twig dodać następujący wpis:
 twig:
     debug:            "%kernel.debug%"
