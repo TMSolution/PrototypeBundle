@@ -438,15 +438,17 @@ class DefaultController extends BaseController {
      */
     protected function getFormType($objectName, $class = null) {
 
-        $formTypeClass = $this->getConfig()->get("formtype_class");
-        if (!empty($formTypeClass)) {
-            $formType = new $formTypeClass;
-        } else {
-            $formTypeFactory = $this->get("prototype_formtype_factory");
-            $formType = $formTypeFactory->getFormType($objectName, $class);
+        $configurator = $this->get("prototype.formtype.configurator.service");
+        $formType = $configurator->getService($this->getRouteName(), $this->getEntityClass());
+        $formType->setClass($class);
+        $formType->setMetadata($this->getModel($this->getEntityClass())->getMetadata());
+        
+        if (!$formType) {
+           $formTypeFactory = $this->get("prototype_formtype_factory");
+           $formType = $formTypeFactory->getFormType($objectName, $class);
         }
-
         return $formType;
+        
     }
 
     /**
