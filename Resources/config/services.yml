@@ -20,7 +20,7 @@ services:
         arguments: [@service_container]
 
     prototype_grid_config_factory:
-        class: Core\PrototypeBundle\GridConfig\GridConfigFactory
+        class: Core\PrototypeBundle\Config\GridConfigFactory
         arguments: [@service_container]   
            
     prototype.configurator.service:
@@ -61,7 +61,7 @@ services:
 
             
     prototype.gridconfig.associationgridbuilder:
-        class: Core\PrototypeBundle\GridConfig\AssociationGridConfig
+        class: Core\PrototypeBundle\Config\AssociationGridConfig
         arguments: [@service_container]        
         tags:
             -  { name: prototype.gridbuilder, route: core_prototype_associationcontroller_ }        
