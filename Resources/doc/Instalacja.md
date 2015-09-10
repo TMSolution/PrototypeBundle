@@ -9,6 +9,7 @@
 Poniżej opisano kolejne kroki, w celu właściwej instalacji narzędzi do budowania aplikacji.
 1. Na wstępie należy utworzyć nowy projekt symfony.
 2. Do projektu należy podłączyć PrototypeBundle – do pliku composer.json w bloku dodać następujący wpis
+//require in composer.json
 "require": {
         "tmsolution/prototype-bundle": "dev-master"
 }
