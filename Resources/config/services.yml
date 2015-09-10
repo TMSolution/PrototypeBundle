@@ -23,30 +23,37 @@ services:
         class: Core\PrototypeBundle\Config\GridConfigFactory
         arguments: [@service_container]   
            
+############################################################    
     prototype.configurator.service:
         class: Core\PrototypeBundle\Service\Configurator
         arguments: [@service_container] 
-    
-   
-    prototype.gridbuilder.configurator.service:
-        class: Core\PrototypeBundle\Service\GridBuilderConfigurator
-        arguments: [@service_container] 
-   
    
     prototype.config:
         class: Core\PrototypeBundle\Service\Config
         arguments: [%prototype_config_params%]        
         tags:
-            -  { name: prototype.config }
-    
+            -  { name: prototype.config }  
+############################################################    
+    prototype.gridbuilder.configurator.service:
+        class: Core\PrototypeBundle\Service\GridBuilderConfigurator
+        arguments: [@service_container] 
+    #niezgrabna 
     prototype.gridbuilder:
         class: TMSolution\DataGridBundle\GridBuilder\GridBuilder
         arguments: [%prototype_config_params%]        
         tags:
             -  { name: prototype.gridbuilder }
+################################################################               
+    prototype.formtype.configurator.service:
+        class: Core\PrototypeBundle\Service\FormTypeConfigurator
+        arguments: [@service_container] 
     
-  
-  
+    prototype.formtype:
+        class: Core\PrototypeBundle\Form\FormType
+        arguments: []        
+        tags:
+            -  { name: prototype.formtype }  
+################################################################
     prototype.association.list.config:
         class: Core\PrototypeBundle\Service\Config
         arguments: [@prototype.config,%prototype.association.config.list.parameters%]        
