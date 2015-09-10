@@ -8,13 +8,14 @@
 
 Poniżej opisano kolejne kroki, w celu właściwej instalacji narzędzi do budowania aplikacji.
 1. Na wstępie należy utworzyć nowy projekt symfony.
+
 2. Do projektu należy podłączyć PrototypeBundle – do pliku composer.json w bloku dodać następujący wpis
-//require in composer.json
 "require": {
         "tmsolution/prototype-bundle": "dev-master"
 }
 oraz dołączyć PhantomBundle – należy sklonować z TMSolution GitHub – do src swojego projektu.
 *Jeśli nie masz dostępu do konta TMSolution skopiuj projekt na swój komputer.
+
 3. W pliku AppKernel muszą pojawić się następujące wpisy:
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new APY\DataGridBundle\APYDataGridBundle(),
@@ -24,13 +25,16 @@ oraz dołączyć PhantomBundle – należy sklonować z TMSolution GitHub – do
             new Core\ClassMapperBundle\CoreClassMapperBundle(),
             new Core\PrototypeBundle\CorePrototypeBundle(),
             new PhantomBundle\PhantomBundle(), 
+
 4. Następnie należy przeprowadzić proces tworzenia schematu bazy danych za pomocą komendy:
 doctrine:schema:create
+
 5. W kolejnym kroku należy wygenerować plik classmapper za pomocą komendy:
 classmapper:generate:friendlynames 
 jako parametry należy podać nazwę bundle'a lub bundle'i, w celu wygenerowania przyjaznych nazw encji, np. PhantomBundle
 Do pliku app/config/config.yml dodać następujący wpis do bloku imports:
     - { resource: classmapper.yml }
+    - 
 6. Do pliku config.yml w bloku twig dodać następujący wpis:
 twig:
     debug:            "%kernel.debug%"
