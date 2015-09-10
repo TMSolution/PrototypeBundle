@@ -26,7 +26,7 @@ oraz dołączyć PhantomBundle – należy sklonować z TMSolution GitHub – do
 4. Następnie należy przeprowadzić proces tworzenia schematu bazy danych za pomocą komendy:
 doctrine:schema:create
 5. W kolejnym kroku należy wygenerować plik classmapper za pomocą komendy:
-classmapper:generate:friendlynames
+classmapper:generate:friendlynames 
 jako parametry należy podać nazwę bundle'a lub bundle'i, w celu wygenerowania przyjaznych nazw encji, np. PhantomBundle
 Do pliku app/config/config.yml dodać następujący wpis do bloku imports:
     - { resource: classmapper.yml }
