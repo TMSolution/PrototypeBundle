@@ -15,13 +15,22 @@ class FormType extends BaseFormType
     /**
      * @param string $class The Group class name
      */
-    public function __construct($class = null, $metadata)
+    public function __construct($class = null, $metadata=null)
     {
         $this->class = $class;
         $this->metadata = $metadata;
     }
 
+
+    public function setClass($class)
+    {
+        $this->class = $class;
+    }
     
+    public function setMetadata($metadata)
+    {
+        $this->metadata = $metadata;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
