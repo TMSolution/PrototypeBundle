@@ -22,7 +22,7 @@ oraz dołączyć PhantomBundle – należy sklonować z TMSolution GitHub – do
             new Core\ModelBundle\CoreModelBundle(),
             new Core\ClassMapperBundle\CoreClassMapperBundle(),
             new Core\PrototypeBundle\CorePrototypeBundle(),
-            new PhantomBundle\PhantomBundle(),
+            new PhantomBundle\PhantomBundle(), 
 4. Następnie należy przeprowadzić proces tworzenia schematu bazy danych za pomocą komendy:
 doctrine:schema:create
 5. W kolejnym kroku należy wygenerować plik classmapper za pomocą komendy:
