@@ -1,22 +1,26 @@
 {% extends config.get("twig_container_update") %} 
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 {% block element %}
-    
-       
+
     <div class="row">
-    <div class="col-md-12 col-sm-12">
-    {{ form_start(form) }}
- <div class="col-md-12 col-sm-12">
-    {{ form_errors(form) }}
+        <div class="col-md-12 col-sm-12">
+            {{ form_start(form,{ 'attr': {'class': ''} }) }}
 
-    {% for child in form.children %}
-        
-        {{ form_row(child) }}
+            {{ form_errors(form) }}
 
-    {% endfor %}
-  </div>
-    {# konieczność przygotowania tłumaczeń  #}
- 
+            {% for child in form.children %}
+
+                {{ form_row(child) }}
+
+            {% endfor %}
+
+            {# konieczność przygotowania tłumaczeń  #}
+
+            {{ form_end(form) }} 
+        </div>
+
+    </div>
+    <div class="row">
         <div class="col-md-12 col-sm-12">
             <div class="form-group">
                 <div class="button-row button-rows">
@@ -27,10 +31,6 @@
                 </div>
             </div>
         </div>
-  
-    
 
-    {{ form_end(form) }} 
     </div>
-</div>
 {% endblock %}
