@@ -46,9 +46,11 @@ twig:
 Budowanie aplikacji.
 
 1. Zainstalować assety według komendy: php app/console assets:install
+
 2. Kolejno należy wygenerować configi dla grida następującą komendą:
 datagrid:generate:grid:config
 w parametrach podać ścieżkę do encji, np. PhantomBundle/Entity/Product, gdzie Product to nazwa encji
+
 3. W folderze app/config/routing umioeścić następujący wpis:
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml" 
