@@ -77,7 +77,7 @@ oraz plik bower.json o następującej zawartości:
 Oba pliki umieścić w głównym katalogu projektu.
 5. Następnie należy wpisać komendę bower install w konsoli. Więcej o instalacji bower dla symfony w linku: http://symfony.com/doc/current/cookbook/frontend/bower.html
 
-6. W  pasku adresu można podgladac efekt powstania formularza na podstawie stworzonej encji:
+W  pasku adresu można podgladac efekt powstania formularza na podstawie stworzonej encji:
 http://localhost/testowyProjekt/web/app_dev.php/panel/product/list
 panel/product - gdzie product to nazwa 
 
