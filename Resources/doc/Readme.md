@@ -11,13 +11,13 @@ To install the application tools follow the steps:
 Create the new symfony project. 
 Add PrototypeBundle using composer.json, add the line below
 ```
-"require": {
+"require":  {
         "tmsolution/prototype-bundle": "dev-master"
-}
+            }
 ```
 and then clone the PhantomBundle if you have access to the TMSolution account, otherwise fork the bundle on your own github account.
 
-In the AppKernel file add below lines
+In the AppKernel.php file add below lines:
 ```
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new APY\DataGridBundle\APYDataGridBundle(),
@@ -26,14 +26,22 @@ In the AppKernel file add below lines
             new Core\ModelBundle\CoreModelBundle(),
             new Core\ClassMapperBundle\CoreClassMapperBundle(),
             new Core\PrototypeBundle\CorePrototypeBundle(),
-            new PhantomBundle\PhantomBundle(), 
+            new PhantomBundle\PhantomBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 ```
 
-4. Następnie należy przeprowadzić proces tworzenia schematu bazy danych za pomocą komendy:
+In the next step create a database scheama is needed. Follow the command below:
+```
 doctrine:schema:create
+```
 
-5. W kolejnym kroku należy wygenerować plik classmapper za pomocą komendy:
-classmapper:generate:friendlynames 
+Generate a classmapper file with command:
+``
+classmapper:generate:friendlynames
+```
+Paramater is the name of bundle or bundle's.
+
+ 
 jako parametry należy podać nazwę bundle'a lub bundle'i, w celu wygenerowania przyjaznych nazw encji, np. PhantomBundle
 Do pliku app/config/config.yml dodać następujący wpis do bloku imports:
     { resource: classmapper.yml }
