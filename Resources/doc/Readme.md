@@ -112,7 +112,7 @@ More about a correctly installation you can find here: http://symfony.com/doc/cu
 
 In the toolbar use e.g:
 ```
-http://localhost/testowyProjekt/web/app_dev.php/panel/product/list
+http://localhost/testproject/web/app_dev.php/panel/product/list
 ```
 where product is the name of entity 
 
