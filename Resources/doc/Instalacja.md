@@ -8,9 +8,9 @@
 
 Poniżej opisano kolejne kroki, w celu właściwej instalacji narzędzi do budowania aplikacji.
 
-1. Utworzyć nowy projekt Symfony.
+1.Utworzyć nowy projekt Symfony.
 
-2. Do projektu należy podłączyć PrototypeBundle:
+2.Do projektu należy podłączyć PrototypeBundle:
 ```
 #composer.json
 "require": {
@@ -21,7 +21,7 @@ oraz dołączyć PhantomBundle –  sklonuj z TMSolution GitHub – do src swoje
 
 **Jeśli nie masz dostępu do konta TMSolution sforkuj projekt na swoje konto github**
 
-3. W pliku AppKernel dodaj następujące wpisy:
+3.W pliku AppKernel dodaj następujące wpisy:
 ```
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new APY\DataGridBundle\APYDataGridBundle(),
@@ -34,18 +34,18 @@ oraz dołączyć PhantomBundle –  sklonuj z TMSolution GitHub – do src swoje
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 ```
 
-4. Stwórz schemat bazy danych za pomocą komendy:
+4.Stwórz schemat bazy danych za pomocą komendy:
 ```
 doctrine:schema:create
 ```
 
-5. Wygeneruj plik classmapper za pomocą komendy:
+5.Wygeneruj plik classmapper za pomocą komendy:
 ```
 classmapper:generate:friendlynames
 ```
 jako parametry należy podać nazwę bundle'a lub bundle'i, w celu wygenerowania przyjaznych nazw encji, np. PhantomBundle
 
-6. Doodaj następujące wpisy:
+6.Doodaj następujące wpisy:
  do bloku imports:
 ```
 #config.yml
@@ -61,18 +61,18 @@ do bloku twig:
 
 #### Budowanie aplikacji.
 
-1. Zainstaluj assety według komendy: 
+1.Zainstaluj assety według komendy: 
 ```
 php app/console assets:install
 ```
 
-2. Wygeneruj configi dla grida następującą komendą:
+2.Wygeneruj configi dla grida następującą komendą:
 ```
 datagrid:generate:grid:config
 ```
 w parametrach podać ścieżkę do encji, np. PhantomBundle/Entity/Product, gdzie Product to nazwa encji
 
-3. W pliku app/config/routing umieść następujący wpis:
+3.W pliku app/config/routing umieść następujący wpis:
 ```
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml" 
@@ -84,7 +84,7 @@ core_prototype:
     prefix:   /
 ```
 
-4. Stwórz plik .bowerrc o następującej zawartości (format pliku: bowerrc)
+4.Stwórz plik .bowerrc o następującej zawartości (format pliku: bowerrc)
 ```
 {
     "directory": "web/assets/vendor/"
@@ -105,7 +105,7 @@ oraz plik bower.json o następującej zawartości:
 
 Oba pliki umieść w głównym katalogu projektu.
 
-5. Wpisz komendę  w konsoli:
+5.Wpisz komendę  w konsoli:
 ```
 bower install
 ```
