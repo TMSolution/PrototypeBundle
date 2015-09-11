@@ -18,7 +18,7 @@ Poniżej opisano kolejne kroki, w celu właściwej instalacji narzędzi do budow
            }
 ```
 oraz dołączyć PhantomBundle – należy sklonować z TMSolution GitHub – do src swojego projektu.
-*Jeśli nie masz dostępu do konta TMSolution sforkuj projekt na swoje konto github.
+**Jeśli nie masz dostępu do konta TMSolution sforkuj projekt na swoje konto github**
 
 W pliku AppKernel muszą pojawić się następujące wpisy:
 ```
