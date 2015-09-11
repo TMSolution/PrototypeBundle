@@ -20,7 +20,7 @@ To install the application tools follow the steps:
 and then clone the PhantomBundle 
 ***if you have access to the TMSolution account, otherwise fork the bundle on your own github account***
 
-3. In the AppKernel.php file add below lines:
+3.In the AppKernel.php file add below lines:
 ```
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new APY\DataGridBundle\APYDataGridBundle(),
@@ -33,18 +33,18 @@ and then clone the PhantomBundle
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 ```
 
-4. In the next step  database schema is needed. Please create it follow the command below:
+4.In the next step  database schema is needed. Please create it follow the command below:
 ```
 doctrine:schema:create
 ```
 
-5. Generate a classmapper file with command:
+5.Generate a classmapper file with command:
 ```
 classmapper:generate:friendlynames
 ```
 Paramater is the name of bundle or bundle's.
 
-6. Add the line below to the import block:
+6.Add the line below to the import block:
 ```
 #config.yml
     { resource: classmapper.yml }
@@ -61,19 +61,19 @@ and in the twig block in config.yml  add the command below:
 
 ###Building application process###
 
-1. Assets install with the command:
+1.Assets install with the command:
 ```
  php app/console assets:install
 ```
 
-2. Generate the configs for grid use the command below:
+2.Generate the configs for grid use the command below:
 ```
 datagrid:generate:grid:config
 ```
 as a parameters fill the path to the entity, e.g. PhantomBundle/Entity/Product,where Product is the name of entity.
 
 
-3. In the file app/config/routing add the lines below:
+3.In the file app/config/routing add the lines below:
 ```
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml" 
@@ -85,7 +85,7 @@ core_prototype:
     prefix:   /
 ```
 
-4. Create two files:
+4.Create two files:
 .bowerrc (type of file bowerrc)
 with the content:
 ```
@@ -108,7 +108,7 @@ with the content:
 ```
 This files have to be  in the main folder of project.
 
-5. The last step require run a command below:
+5.The last step require run a command below:
 ```
 bower install
 ```
