@@ -25,6 +25,7 @@ oraz dołączyć PhantomBundle – należy sklonować z TMSolution GitHub – do
             new Core\ClassMapperBundle\CoreClassMapperBundle(),
             new Core\PrototypeBundle\CorePrototypeBundle(),
             new PhantomBundle\PhantomBundle(), 
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 
 4. Następnie należy przeprowadzić proces tworzenia schematu bazy danych za pomocą komendy:
 doctrine:schema:create

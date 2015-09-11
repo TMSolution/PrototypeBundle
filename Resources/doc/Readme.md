@@ -53,25 +53,41 @@ and in the twig block add the command below:
 
 Building application process
 
-1. Zainstalować assety według komendy: php app/console assets:install
+Please assets install with ther command:
+```
+ php app/console assets:install
+```
 
-2. Kolejno należy wygenerować configi dla grida następującą komendą:
+Generate the configs for grid use the command below:
+```
 datagrid:generate:grid:config
-w parametrach podać ścieżkę do encji, np. PhantomBundle/Entity/Product, gdzie Product to nazwa encji
+```
+as a parameters fill the path to the entity, e.g. PhantomBundle/Entity/Product,where Product is the name of entity.
 
-3. W folderze app/config/routing umioeścić następujący wpis:
+
+In the file app/config/routing add the lines below:
+```
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml" 
-oraz
+```
+and
+```
 core_prototype:
     resource: "@CorePrototypeBundle/Resources/config/routing.yml"
     prefix:   /
+```
 
-4.  Następnie należy stworzyć plik .bowerrc o następującej zawartości (format pliku: bowerrc)
+At the end create two files,
+.bowerrc (type bowerrc)
+with the content:
+```
 {
     "directory": "web/assets/vendor/"
 }
-oraz plik bower.json o następującej zawartości:
+```
+bower.json 
+with the content:
+```
 {
   "name": "app-name",
   "version": "0.0.1",
@@ -81,11 +97,19 @@ oraz plik bower.json o następującej zawartości:
       },
   "private": true
 }
+```
+This files have to be  in the main folder of project.
 
-Oba pliki umieścić w głównym katalogu projektu.
-5. Następnie należy wpisać komendę bower install w konsoli. Więcej o instalacji bower dla symfony w linku: http://symfony.com/doc/current/cookbook/frontend/bower.html
+The last step require run a command below:
+```
+bower install
+```
+More about a correctly installation you can find here: http://symfony.com/doc/current/cookbook/frontend/bower.html
 
-W  pasku adresu można podgladac efekt powstania formularza na podstawie stworzonej encji:
+
+In the toolbar use e.g:
+```
 http://localhost/testowyProjekt/web/app_dev.php/panel/product/list
-panel/product - gdzie product to nazwa 
+```
+where prouct is the name of entity 
 
