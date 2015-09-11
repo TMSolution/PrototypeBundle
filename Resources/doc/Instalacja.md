@@ -10,8 +10,9 @@ Poniżej opisano kolejne kroki, w celu właściwej instalacji narzędzi do budow
 
 1. Utworzyć nowy projekt symfony.
 
-2. Do projektu należy podłączyć PrototypeBundle – do pliku composer.json w bloku dodać następujący wpis:
+2. Do projektu należy podłączyć PrototypeBundle:
 ```
+#composer.json
 "require": {
         "tmsolution/prototype-bundle": "dev-master"
            }
