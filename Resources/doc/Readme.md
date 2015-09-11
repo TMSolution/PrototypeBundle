@@ -8,16 +8,19 @@
 
 To install the application tools follow the steps:
 
-Create a new symfony project. 
-Add the PrototypeBundle using composer.json, add the line below
+1.Create a new Symfony project. 
+
+2.Add the PrototypeBundle using the line below
 ```
+#composer.json
 "require":  {
         "tmsolution/prototype-bundle": "dev-master"
             }
 ```
-and then clone the PhantomBundle if you have access to the TMSolution account, otherwise fork the bundle on your own github account.
+and then clone the PhantomBundle 
+***if you have access to the TMSolution account, otherwise fork the bundle on your own github account***
 
-In the AppKernel.php file add below lines:
+3. In the AppKernel.php file add below lines:
 ```
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new APY\DataGridBundle\APYDataGridBundle(),
@@ -30,23 +33,25 @@ In the AppKernel.php file add below lines:
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 ```
 
-In the next step  database schema is needed. Please create it follow the command below:
+4. In the next step  database schema is needed. Please create it follow the command below:
 ```
 doctrine:schema:create
 ```
 
-Generate a classmapper file with command:
+5. Generate a classmapper file with command:
 ```
 classmapper:generate:friendlynames
 ```
 Paramater is the name of bundle or bundle's.
 
- In the file config.yml on the path: app/config/config.yml, add the line below to the import block:
+6. Add the line below to the import block:
 ```
+#config.yml
     { resource: classmapper.yml }
 ```
 and in the twig block in config.yml  add the command below:
 ```
+#config.yml
     globals:
         classmapperservice: "@classmapperservice"
 ```
@@ -54,21 +59,21 @@ and in the twig block in config.yml  add the command below:
 
 
 
-Building application process
+###Building application process###
 
-Please assets install with the command:
+1. Assets install with the command:
 ```
  php app/console assets:install
 ```
 
-Generate the configs for grid use the command below:
+2. Generate the configs for grid use the command below:
 ```
 datagrid:generate:grid:config
 ```
 as a parameters fill the path to the entity, e.g. PhantomBundle/Entity/Product,where Product is the name of entity.
 
 
-In the file app/config/routing add the lines below:
+3. In the file app/config/routing add the lines below:
 ```
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml" 
@@ -80,7 +85,7 @@ core_prototype:
     prefix:   /
 ```
 
-At the end create two files:
+4. Create two files:
 .bowerrc (type of file bowerrc)
 with the content:
 ```
@@ -103,7 +108,7 @@ with the content:
 ```
 This files have to be  in the main folder of project.
 
-The last step require run a command below:
+5. The last step require run a command below:
 ```
 bower install
 ```
