@@ -3,8 +3,9 @@
 {% block element %}
 
     <div class="row">
+        {{ form_start(form) }}
         <div class="col-md-12 col-sm-12">
-            {{ form_start(form,{ 'attr': {'class': ''} }) }}
+
 
             {{ form_errors(form) }}
 
@@ -16,11 +17,9 @@
 
             {# konieczność przygotowania tłumaczeń  #}
 
-            {{ form_end(form) }} 
+
         </div>
 
-    </div>
-    <div class="row">
         <div class="col-md-12 col-sm-12">
             <div class="form-group">
                 <div class="button-row button-rows">
@@ -31,6 +30,7 @@
                 </div>
             </div>
         </div>
+        {{ form_end(form) }}
 
     </div>
 {% endblock %}
