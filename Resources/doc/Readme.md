@@ -41,7 +41,7 @@ classmapper:generate:friendlynames
 ```
 Paramater is the name of bundle or bundle's.
 
- In the file config.yml on the path: app/config/config.yml, add the line below:
+ In the file config.yml on the path: app/config/config.yml, add the line below to the import block:
 ```
     { resource: classmapper.yml }
 ```
