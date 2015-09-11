@@ -1,32 +1,36 @@
 {% extends config.get("twig_container_list") %}
 {% block element %}
     
-    <div class="row">
-        <div class="col-md-12 col-sm-12">
-            <a class="btn btn-default pull-right" href="{{ path(newActionName, routeParams)}}" ><i class="glyphicon glyphicon-plus"></i> {{ "Add"|trans }}</a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 col-sm-12">
-            {% block gridFilter %}
-                {{ grid_search(grid) }}
-            {% endblock %}
-        </div>
-    </div>
+<table class="table table-responsive table-striped">
+<tr>
+{# sorting of properties based on query components #}
+    <th>{{ knp_pagination_sortable(pagination, 'Id', 'a.id') }}</th>
+    <th{% if pagination.isSorted('a.name') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Name', 'a.name') }}</th>
+   
+</tr>
 
-    <div class="row">
-        <div class="col-md-12 col-sm-12">
-            {% block grid %}
-                {{ grid(grid,'TMSolutionDataGridBundle::blocks_js.jquery.html.twig') }}{# empty Twig template #}
-            {% endblock %}
-        </div>
-    </div>
+{# table body #}
+{% for article in pagination %}
+<tr {% if loop.index is odd %}class="color"{% endif %}>
+    <td>{{ article.id }}</td>
+    <td>{{ article.name }}</td>
+</tr>
+{% endfor %}
+</table>
+{# display navigation #}
+
+<div class="count pull-left">
+    Number of elements: {{ pagination.getTotalItemCount }}
+</div>
+<div class="navigation pull-right">
+    {{ knp_pagination_render(pagination) }}
+</div>
 
 {% endblock %}
 
 {% block js %}
 
     {{ parent() }}
-    {{ grid_scripts(grid) }}
+    
 
 {% endblock js %}        

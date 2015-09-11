@@ -60,7 +60,7 @@ class DefaultController extends BaseController {
      */
     public function createAction() {
 
-        $request = $this->getRequest();
+        $request = $this->get('request');
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->getEntity();
         $entityName = $this->getEntityName();
@@ -74,6 +74,7 @@ class DefaultController extends BaseController {
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
+            'entityName' => $this->getEntityName(),
             'form' => $form->createView(),
             'config' => $this->getConfig(),
             'routeParams' => $this->getRouteParams(),
@@ -113,31 +114,47 @@ class DefaultController extends BaseController {
      */
     public function listAction() {
 
-        $entityName = $this->getEntityName();
-        $routePrefix = $this->getRoutePrefix();
-        $model = $this->getModel($this->getEntityClass());
-        $entity = $model->getEntity();
-        $list = null;
+        
+          $entityName = $this->getEntityName();
+          $routePrefix = $this->getRoutePrefix();
+          $model = $this->getModel($this->getEntityClass());
+          $entity = $model->getEntity();
+          $queryBuilder = $model->getQueryBuilder('a');
+          $query=$queryBuilder->getQuery();
+          //query
+          //pageNumber
+          //limit per page
+          
+          
+          
+          $paginator = $this->get('knp_paginator');
+            $pagination = $paginator->paginate(
+                $query, $this->get('request')->query->getInt('page', 1)/* page number */, 10/* limit per page */
+            );
+            
+          //config parameters for render and event broadcast
+          $params = $this->get('prototype.controler.params');
+          $params->setArray([
+          'entity' => $entity,
+          'config' => $this->getConfig(),
+          'pagination' => $pagination,
+          'entityName' => $this->getEntityName(),
+          ]);
+
+          //Create event broadcast.
+          $event = $this->get('prototype.event');
+          $event->setParams($params);
+          $event->setModel($model);
+          //$event->setList($list);
+          //$this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.failure', $event);
+          $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'list', $event);
 
 
-        //config parameters for render and event broadcast
-        $params = $this->get('prototype.controler.params');
-        $params->setArray([
-            'entity' => $entity,
-            'config' => $this->getConfig()
-        ]);
+        //  throw new \BadMethodCallException("Not implemented yet");
+      
 
-        //Create event broadcast.
-        $event = $this->get('prototype.event');
-        $event->setParams($params);
-        $event->setModel();
-        //$event->setList($list);
-        //$this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.failure', $event);
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create', $event);
-
-
-
-        throw new \BadMethodCallException("Not implemented yet");
+        // parameters to template
+        return $this->render($this->getConfig()->get('twig_element_list'), $params->getArray());
     }
 
     /**
@@ -148,7 +165,7 @@ class DefaultController extends BaseController {
      */
     public function updateAction($id) {
 
-        $request = $this->getRequest();
+        $request = $this->get('request');
         $formType = $this->getFormType($this->getEntityClass(), null);
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->findOneById($id);
@@ -163,12 +180,14 @@ class DefaultController extends BaseController {
         $params->setArray([
             'entity' => $entity,
             'form' => $updateForm->createView(),
+            
             'entityName' => $this->getEntityName(),
             'listActionName' => $this->getAction('list'),
             'updateActionName' => $this->getAction('update'),
             'config' => $this->getConfig(),
             'routeParams' => $this->getRouteParams(),
             'states' => $this->getStates()
+        
         ]);
 
         //Create event broadcast.
@@ -237,13 +256,14 @@ class DefaultController extends BaseController {
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
-            'form' => $editForm->createView(),
+            
             'entityName' => $this->getEntityName(),
             'listActionName' => $this->getAction('list'),
             'updateActionName' => $this->getAction('update'),
             'config' => $this->getConfig(),
             'routeParams' => $this->getRouteParams(),
-            'states' => $this->getStates()
+            'states' => $this->getStates(),
+            'form' => $editForm->createView(),
         ]);
 
         //Create event broadcast.
@@ -272,11 +292,11 @@ class DefaultController extends BaseController {
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
+            'properties' => $this->prepareProperties($model, $entity),
             'entityName' => $entityName,
             'editActionName' => $this->getAction('edit'),
             'listActionName' => $this->getAction('list'),
             'deleteActionName' => $this->getAction('delete'),
-            'properties' => $this->prepareProperties($model, $entity),
             'config' => $this->getConfig(),
             'routeParams' => $this->getRouteParams(),
             'states' => $this->getStates()
@@ -286,7 +306,7 @@ class DefaultController extends BaseController {
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($model);
-       
+
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'read', $event);
 
         return $this->render($this->getConfig()->get('twig_element_read'), $params->getArray());
@@ -351,7 +371,6 @@ class DefaultController extends BaseController {
             'listActionName' => $this->getAction('list'),
             'config' => $this->getConfig(),
             'states' => $this->getStates()
-                
         ]);
 
         //Create event broadcast.
@@ -382,7 +401,7 @@ class DefaultController extends BaseController {
      */
     protected function getEntityClass() {
         if (null == $this->objectName) {
-            $this->objectName = $this->getRequest()->attributes->get('objectName');
+            $this->objectName = $this->get('request')->attributes->get('objectName');
         }
         return $this->objectName;
     }
@@ -394,7 +413,7 @@ class DefaultController extends BaseController {
      */
     protected function getEntityName() {
         if (null == $this->entityName) {
-            $this->entityName = $this->getRequest()->attributes->get('entityName');
+            $this->entityName = $this->get('request')->attributes->get('entityName');
         }
         return $this->entityName;
     }
@@ -440,15 +459,15 @@ class DefaultController extends BaseController {
 
         $configurator = $this->get("prototype.formtype.configurator.service");
         $formType = $configurator->getService($this->getRouteName(), $this->getEntityClass());
+        if($formType){
         $formType->setClass($class);
         $formType->setMetadata($this->getModel($this->getEntityClass())->getMetadata());
-        
+        }
         if (!$formType) {
-           $formTypeFactory = $this->get("prototype_formtype_factory");
-           $formType = $formTypeFactory->getFormType($objectName, $class);
+            $formTypeFactory = $this->get("prototype_formtype_factory");
+            $formType = $formTypeFactory->getFormType($objectName, $class);
         }
         return $formType;
-        
     }
 
     /**
@@ -470,23 +489,21 @@ class DefaultController extends BaseController {
 
         if ($url && !$id) {
             $url = $this->generateUrl($url);
-        } elseif ($url && $id) {
+        } 
+        /*elseif ($url && $id) {
             $url = $this->generateUrl($action, $params);
         } elseif (empty($id)) {
             $url = $this->generateUrl($action, $params);
-        } else {
+        }*/ 
+         else {
+         
             //@todo: moze byc z tym problem
             $url = $this->generateUrl($action, $params);
         }
-        if (empty($class)) {
-            $class = 'form-horizontal';
-        }
-       
-
+        
         $form = $this->createForm($formType, $entity, array(
             'action' => $url, //$this->generateUrl('user_create'),
-            'method' => $method,
-            'attr' => array('class' => $class),
+            'method' => $method
         ));
 
         return $form;
@@ -499,7 +516,7 @@ class DefaultController extends BaseController {
      */
     protected function getRouteName() {
         if (null == $this->routeName) {
-            $this->routeName = $this->getRequest()->attributes->get('_route');
+            $this->routeName = $this->get('request')->attributes->get('_route');
         }
         return $this->routeName;
     }
@@ -547,7 +564,7 @@ class DefaultController extends BaseController {
     }
 
     protected function getRouteParams() {
-        $parametersArr = $this->getRequest()->attributes->all();
+        $parametersArr = $this->get('request')->attributes->all();
         $parameters = $parametersArr["_route_params"];
         return $parameters;
     }
@@ -565,12 +582,16 @@ class DefaultController extends BaseController {
         }
         return $this->states;
     }
+
+    protected function getBasePath() {
+        $params = $this->getRouteParams();
+        $params["states"] = null;
+        return $this->generateUrl($this->getRouteName(), $params);
+    }
     
-    protected function getBasePath()
+    protected function setBaseTwigParams()
     {
-        $params=$this->getRouteParams();
-        $params["states"]=null;
-        return $this->generateUrl($this->getRouteName(),$params );
+        
     }
 
 }
