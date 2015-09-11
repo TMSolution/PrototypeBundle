@@ -17,10 +17,11 @@ Poniżej opisano kolejne kroki, w celu właściwej instalacji narzędzi do budow
         "tmsolution/prototype-bundle": "dev-master"
            }
 ```
-oraz dołączyć PhantomBundle – należy sklonować z TMSolution GitHub – do src swojego projektu.
+oraz dołączyć PhantomBundle –  sklonuj z TMSolution GitHub – do src swojego projektu.
+
 **Jeśli nie masz dostępu do konta TMSolution sforkuj projekt na swoje konto github**
 
-W pliku AppKernel muszą pojawić się następujące wpisy:
+3. W pliku AppKernel dodaj następujące wpisy:
 ```
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new APY\DataGridBundle\APYDataGridBundle(),
@@ -33,41 +34,43 @@ W pliku AppKernel muszą pojawić się następujące wpisy:
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 ```
 
-Następnie należy przeprowadzić proces tworzenia schematu bazy danych za pomocą komendy:
+4. Przeprowadź proces tworzenia schematu bazy danych za pomocą komendy:
 ```
 doctrine:schema:create
 ```
 
-W kolejnym kroku należy wygenerować plik classmapper za pomocą komendy:
+5. Wygeneruj plik classmapper za pomocą komendy:
 ```
 classmapper:generate:friendlynames
 ```
 jako parametry należy podać nazwę bundle'a lub bundle'i, w celu wygenerowania przyjaznych nazw encji, np. PhantomBundle
 
-Do pliku app/config/config.yml dodać następujący wpis do bloku imports:
+5. Do pliku app/config/config.yml dodać następujący wpisy:
+ do bloku imports:
 ```
     { resource: classmapper.yml }
 ```
-Do pliku config.yml w bloku twig dodać następujący wpis:
+do bloku twig:
 ```
     globals:
         classmapperservice: "@classmapperservice"
 ```
 
+
 #### Budowanie aplikacji.
 
-Zainstalować assety według komendy: 
+1. Zainstaluj assety według komendy: 
 ```
 php app/console assets:install
 ```
 
-Kolejno należy wygenerować configi dla grida następującą komendą:
+2. Wygeneruj configi dla grida następującą komendą:
 ```
 datagrid:generate:grid:config
 ```
 w parametrach podać ścieżkę do encji, np. PhantomBundle/Entity/Product, gdzie Product to nazwa encji
 
-W pliku app/config/routing umioeścić następujący wpis:
+3. W pliku app/config/routing umieść następujący wpis:
 ```
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml" 
@@ -79,7 +82,7 @@ core_prototype:
     prefix:   /
 ```
 
-4.  Następnie należy stworzyć plik .bowerrc o następującej zawartości (format pliku: bowerrc)
+4. Stwórz plik .bowerrc o następującej zawartości (format pliku: bowerrc)
 ```
 {
     "directory": "web/assets/vendor/"
@@ -98,8 +101,12 @@ oraz plik bower.json o następującej zawartości:
 }
 ```
 
-Oba pliki umieścić w głównym katalogu projektu.
-Następnie należy wpisać komendę bower install w konsoli. Więcej o instalacji bower dla symfony w linku: http://symfony.com/doc/current/cookbook/frontend/bower.html
+5. Oba pliki umieść w głównym katalogu projektu.
+Następnie należy wpisać komendę  w konsoli:
+```
+bower install
+```
+ Więcej o instalacji bower dla symfony w linku: http://symfony.com/doc/current/cookbook/frontend/bower.html
 
 W  pasku adresu należy wpisać:
 http://localhost/testowyProjekt/web/app_dev.php/panel/product/list
