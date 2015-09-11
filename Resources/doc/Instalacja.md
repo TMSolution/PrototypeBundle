@@ -113,6 +113,8 @@ bower install
  Więcej o instalacji bower dla symfony w linku: http://symfony.com/doc/current/cookbook/frontend/bower.html
 
 W  pasku adresu należy wpisać:
+```
 http://localhost/testowyProjekt/web/app_dev.php/panel/product/list
+```
 panel/product - gdzie product to nazwa encji
 
