@@ -41,19 +41,17 @@ classmapper:generate:friendlynames
 ```
 Paramater is the name of bundle or bundle's.
 
- 
-jako parametry należy podać nazwę bundle'a lub bundle'i, w celu wygenerowania przyjaznych nazw encji, np. PhantomBundle
-Do pliku app/config/config.yml dodać następujący wpis do bloku imports:
+ In the file config.yml on the path: app/config/config.yml, add the line below:
+```
     { resource: classmapper.yml }
-6. Do pliku config.yml w bloku twig dodać następujący wpis:
-twig:
-    debug:            "%kernel.debug%"
-    strict_variables: "%kernel.debug%"
+```
+and in the twig block add the command below:
+```
     globals:
         classmapperservice: "@classmapperservice"
+```
 
-
-Budowanie aplikacji.
+Building application process
 
 1. Zainstalować assety według komendy: php app/console assets:install
 
