@@ -7,7 +7,7 @@
 ### Proces instalacji narzędzi do tworzenia aplikacji
 
 Poniżej opisano kolejne kroki, w celu właściwej instalacji narzędzi do budowania aplikacji.
-* Na wstępie należy utworzyć nowy projekt symfony.
+1. Na wstępie należy utworzyć nowy projekt symfony.
 
 Do projektu należy podłączyć PrototypeBundle – do pliku composer.json w bloku dodać następujący wpis:
 ```
