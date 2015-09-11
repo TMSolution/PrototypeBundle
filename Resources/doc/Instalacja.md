@@ -7,10 +7,11 @@
 ### Proces instalacji narzędzi do tworzenia aplikacji
 
 Poniżej opisano kolejne kroki, w celu właściwej instalacji narzędzi do budowania aplikacji.
-Na wstępie należy utworzyć nowy projekt symfony.
+1. Utworzyć nowy projekt Symfony.
 
-Do projektu należy podłączyć PrototypeBundle – do pliku composer.json w bloku dodać następujący wpis:
+Do projektu należy podłączyć PrototypeBundle:
 ```
+#composer.json
 "require": {
         "tmsolution/prototype-bundle": "dev-master"
            }
@@ -52,7 +53,7 @@ Do pliku config.yml w bloku twig dodać następujący wpis:
         classmapperservice: "@classmapperservice"
 ```
 
-Budowanie aplikacji.
+#### Budowanie aplikacji.
 
 Zainstalować assety według komendy: 
 ```
