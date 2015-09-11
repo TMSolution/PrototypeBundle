@@ -21,8 +21,9 @@ oraz dołączyć PhantomBundle –  sklonuj z TMSolution GitHub – do src swoje
 
 **Jeśli nie masz dostępu do konta TMSolution sforkuj projekt na swoje konto github**
 
-3.W pliku AppKernel dodaj następujące wpisy:
+3.Dodaj następujące wpisy:
 ```
+#AppKernel.php
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new APY\DataGridBundle\APYDataGridBundle(),
             new BeSimple\I18nRoutingBundle\BeSimpleI18nRoutingBundle(),

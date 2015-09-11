@@ -20,8 +20,9 @@ To install the application tools follow the steps:
 and then clone the PhantomBundle 
 ***if you have access to the TMSolution account, otherwise fork the bundle on your own github account***
 
-3.In the AppKernel.php file add below lines:
+3.Add the lines below:
 ```
+#AppKernel.php
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new APY\DataGridBundle\APYDataGridBundle(),
             new BeSimple\I18nRoutingBundle\BeSimpleI18nRoutingBundle(),
