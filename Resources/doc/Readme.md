@@ -8,8 +8,8 @@
 
 To install the application tools follow the steps:
 
-Create the new symfony project. 
-Add PrototypeBundle using composer.json, add the line below
+Create a new symfony project. 
+Add the PrototypeBundle using composer.json, add the line below
 ```
 "require":  {
         "tmsolution/prototype-bundle": "dev-master"
@@ -30,7 +30,7 @@ In the AppKernel.php file add below lines:
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 ```
 
-In the next step create a database scheama is needed. Follow the command below:
+In the next step  database schema is needed. Please create it follow the command below:
 ```
 doctrine:schema:create
 ```
@@ -45,15 +45,18 @@ Paramater is the name of bundle or bundle's.
 ```
     { resource: classmapper.yml }
 ```
-and in the twig block add the command below:
+and in the twig block in config.yml  add the command below:
 ```
     globals:
         classmapperservice: "@classmapperservice"
 ```
 
+
+
+
 Building application process
 
-Please assets install with ther command:
+Please assets install with the command:
 ```
  php app/console assets:install
 ```
@@ -77,8 +80,8 @@ core_prototype:
     prefix:   /
 ```
 
-At the end create two files,
-.bowerrc (type bowerrc)
+At the end create two files:
+.bowerrc (type of file bowerrc)
 with the content:
 ```
 {
@@ -111,5 +114,5 @@ In the toolbar use e.g:
 ```
 http://localhost/testowyProjekt/web/app_dev.php/panel/product/list
 ```
-where prouct is the name of entity 
+where product is the name of entity 
 
