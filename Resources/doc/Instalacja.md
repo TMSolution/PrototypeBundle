@@ -60,7 +60,7 @@ do bloku twig:
 ```
 
 
-#### Budowanie aplikacji.
+#### Budowanie aplikacji####
 
 1.Zainstaluj assety według komendy: 
 ```
