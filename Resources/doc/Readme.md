@@ -36,7 +36,7 @@ doctrine:schema:create
 ```
 
 Generate a classmapper file with command:
-``
+```
 classmapper:generate:friendlynames
 ```
 Paramater is the name of bundle or bundle's.
