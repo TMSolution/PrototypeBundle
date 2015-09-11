@@ -8,7 +8,7 @@
 
 Poniżej opisano kolejne kroki, w celu właściwej instalacji narzędzi do budowania aplikacji.
 
-1. Utworzyć nowy projekt symfony.
+1. Utworzyć nowy projekt Symfony.
 
 2. Do projektu należy podłączyć PrototypeBundle:
 ```
