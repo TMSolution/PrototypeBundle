@@ -34,7 +34,7 @@ oraz dołączyć PhantomBundle –  sklonuj z TMSolution GitHub – do src swoje
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 ```
 
-4. Przeprowadź proces tworzenia schematu bazy danych za pomocą komendy:
+4. Stwórz schemat bazy danych za pomocą komendy:
 ```
 doctrine:schema:create
 ```
@@ -45,13 +45,15 @@ classmapper:generate:friendlynames
 ```
 jako parametry należy podać nazwę bundle'a lub bundle'i, w celu wygenerowania przyjaznych nazw encji, np. PhantomBundle
 
-5. Do pliku app/config/config.yml dodać następujący wpisy:
+6. Doodaj następujące wpisy:
  do bloku imports:
 ```
+#config.yml
     { resource: classmapper.yml }
 ```
 do bloku twig:
 ```
+#config.yml
     globals:
         classmapperservice: "@classmapperservice"
 ```
@@ -101,8 +103,9 @@ oraz plik bower.json o następującej zawartości:
 }
 ```
 
-5. Oba pliki umieść w głównym katalogu projektu.
-Następnie należy wpisać komendę  w konsoli:
+Oba pliki umieść w głównym katalogu projektu.
+
+5. Wpisz komendę  w konsoli:
 ```
 bower install
 ```
