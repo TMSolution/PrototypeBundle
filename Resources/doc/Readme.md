@@ -33,7 +33,10 @@ and then clone the PhantomBundle
             new PhantomBundle\PhantomBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 ```
-
+and then run the command:
+```
+composer update
+```
 4.In the next step  database schema is needed. Please create it follow the command below:
 ```
 doctrine:schema:create
