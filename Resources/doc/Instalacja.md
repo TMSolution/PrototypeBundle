@@ -34,7 +34,7 @@ oraz dołączyć PhantomBundle –  sklonuj z TMSolution GitHub – do src swoje
             new PhantomBundle\PhantomBundle(), 
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 ```
-A nastpnie wykonaj komende:
+A nastepnie wykonaj komende:
 ```
 composer update
 ```
