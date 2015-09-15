@@ -1,16 +1,17 @@
 {% extends config.get("twig_container_create") %}
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 {% block element %}
+  
     <div class="row">
         <div class="col-md-12 col-sm-12">
             {# added the line for disable html validation #}
-    {{ form_start(form, { 'attr': {'class': '','novalidate': 'novalidate' }}) }}
+            {{ form_start(form, { 'attr': {'class': '','novalidate': 'novalidate' }}) }}
 
-    {{ form_errors(form) }}
+            {{ form_errors(form) }}
 
-    {% for child in form.children %}
-        {{ form_row(child) }}
-    {% endfor %}
+            {% for child in form.children %}
+                {{ form_row(child) }}
+            {% endfor %}
         </div>
     </div>
     <div class="row">
@@ -23,8 +24,14 @@
             </div>
         </div>
     </div>
-    
+
 
     {{ form_end(form) }} 
 
 {% endblock  element%}
+
+{% block js %}
+    
+    {{parent()}}
+     <script>  {{ form_jquery_validation(form) }} </script>
+{% endblock %}
