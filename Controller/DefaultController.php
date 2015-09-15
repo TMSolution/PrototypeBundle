@@ -66,7 +66,7 @@ class DefaultController extends BaseController {
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
 
-        $formType = $this->getFormType($this->getEntityClass(), null);
+        $formType = $this->getFormType($this->getEntityClass(), null,$model);
         $form = $this->makeForm($formType, $entity, 'POST', $entityName, $this->getAction('create'));
         $form->handleRequest($request);
 
@@ -166,8 +166,9 @@ class DefaultController extends BaseController {
     public function updateAction($id) {
 
         $request = $this->get('request');
-        $formType = $this->getFormType($this->getEntityClass(), null);
+        
         $model = $this->getModel($this->getEntityClass());
+        $formType = $this->getFormType($this->getEntityClass(), null,$model);
         $entity = $model->findOneById($id);
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
@@ -245,8 +246,9 @@ class DefaultController extends BaseController {
      * @return Response
      */
     public function editAction($id) {
-        $formType = $this->getFormType($this->getEntityClass(), null);
+       
         $model = $this->getModel($this->getEntityClass());
+        $formType = $this->getFormType($this->getEntityClass(), null,$model);
         $entity = $model->findOneById($id);
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
@@ -360,7 +362,7 @@ class DefaultController extends BaseController {
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
 
-        $formType = $this->getFormType($this->getEntityClass(), null);
+        $formType = $this->getFormType($this->getEntityClass(), null,$model);
         $form = $this->makeForm($formType, $entity, 'POST', $this->getEntityName(), $this->getAction('create'));
 
         $params = $this->get('prototype.controler.params');
@@ -427,7 +429,7 @@ class DefaultController extends BaseController {
      */
     protected function getModel($objectName, $managerName = null) {
         if ($managerName) {
-            $factory = "model_factory_" . $managerName;
+            $factory = "model_factory" . $managerName;
         } else {
             $factory = "model_factory";
         }
@@ -464,8 +466,9 @@ class DefaultController extends BaseController {
         $formType->setMetadata($this->getModel($this->getEntityClass())->getMetadata());
         }
         if (!$formType) {
+            
             $formTypeFactory = $this->get("prototype_formtype_factory");
-            $formType = $formTypeFactory->getFormType($objectName, $class);
+            $formType = $formTypeFactory->getFormType($objectName, $class,$this->getModel($objectName));
         }
         return $formType;
     }

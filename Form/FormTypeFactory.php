@@ -18,7 +18,7 @@ class FormTypeFactory {
     
     
 
-    public function getFormType($entityName, $class) {
+    public function getFormType($entityName, $class,$model) {
 
         //var_dump($entityName);
 
@@ -26,18 +26,18 @@ class FormTypeFactory {
             return $this->formTypeList[$entityName];
         }
 
-        $formType = $this->createFormType($entityName, $class);
+        $formType = $this->createFormType($entityName, $class,$model);
 
         $this->formTypeList[$entityName] = $formType;
 
         return $formType;
     }
 
-    protected function createFormType($entityName, $class) {
+    protected function createFormType($entityName, $class,$model) {
         $metadata = $this->manager->getClassMetadata($entityName);
         $formTypeName = str_replace('\\Entity\\', '\\Form\\', $metadata->name . 'Type');
         if (false === class_exists($formTypeName) ) {
-            $formType = new FormType($class, $metadata);
+            $formType = new FormType($class, $metadata,$model);
             return $formType;
         }
         
