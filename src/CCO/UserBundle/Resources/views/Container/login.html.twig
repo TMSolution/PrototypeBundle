@@ -19,7 +19,7 @@
                 </div>
             </div>
             <hr/>
-            <div style="text-align:center">lub</div>
+            <div style="text-align:center"><strong>lub</strong></div>
             <hr/>
             
             <h1>Zarejestruj się</h1>
@@ -36,4 +36,6 @@
     $('#fos_user_registration_form_plainPassword_first').pwstrength({
         ui: { showVerdictsInsideProgressBar: true }
     });</script>
+    
+     {#<script>  {{ form_jquery_validation(form) }} </script>#}
 {% endblock js%}    
