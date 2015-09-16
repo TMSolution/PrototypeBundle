@@ -1,0 +1,11 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST" class="fos_user_registration_register">
+    {{ form_widget(form) }}
+    <div>
+        <button style="display:block; width:180px; margin:0px auto;" class="btn btn-lg btn-block btn-social btn-reddit" type="submit"  value="{{ 'registration.submit'|trans }}" >
+        
+        <i class="fa fa-openid"></i> {{ 'registration.submit'|trans }}
+        </button>
+    </div>
+</form>
