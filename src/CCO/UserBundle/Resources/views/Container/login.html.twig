@@ -1,0 +1,39 @@
+{% extends 'Base/index.html.twig' %}
+{% block content %}  
+    <div>
+        <a class="front-logo" title="Callcenteronline" tabindex="-1" ng-href="/" href="/"></a>
+        <hr/>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6" >
+                    <a class="btn btn-lg btn-block btn-social btn-facebook">
+                        <i class="fa fa-facebook"></i> Zaloguj się przez Facebook
+                    </a>
+                </div>
+                
+                <div class="col-md-6" >     
+                    <a class="btn btn-lg btn-block btn-social btn-google">
+                        <i class="fa fa-google"></i> Zaloguj się przez Google
+                    </a>      
+                </div>
+            </div>
+            <hr/>
+            <div style="text-align:center">lub</div>
+            <hr/>
+            
+            <h1>Zarejestruj się</h1>
+                {% block element %}
+                {% endblock element %}
+        </div>
+    </div>
+
+{% endblock content %}
+{% block js %}
+    {{parent()}}
+    <script src="{{ asset('assets/vendor/pwstrength-bootstrap/dist/pwstrength-bootstrap-1.2.7.min.js') }}"></script>
+    <script> 
+    $('#fos_user_registration_form_plainPassword_first').pwstrength({
+        ui: { showVerdictsInsideProgressBar: true }
+    });</script>
+{% endblock js%}    

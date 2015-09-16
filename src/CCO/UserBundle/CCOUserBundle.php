@@ -8,6 +8,7 @@ class CCOUserBundle extends Bundle
 {
     
     public function getParent() {
+        
         return "FOSUserBundle";
     }
     

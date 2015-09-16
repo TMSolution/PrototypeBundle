@@ -1,0 +1,6 @@
+{% extends 'CCOUserBundle:Container:login.html.twig' %}
+
+{% block element %}
+    {% form_theme form 'bootstrap_3_layout.html.twig' %}
+{{ block("fos_user_content") }}
+{% endblock element %}      

@@ -1,0 +1,17 @@
+
+.front-logo
+{
+    display:block;
+    background-image:url("../img/logo.png");
+    width:400px;
+    height: 99px;
+    margin:0px auto;
+   
+}
+
+
+.fos_user_registration_register .progress
+{
+    height: 5px;
+    border-radius:0px;
+}
