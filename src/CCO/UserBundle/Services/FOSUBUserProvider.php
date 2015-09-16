@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Services;
+namespace CCO\UserBundle\Services;
 
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseClass;

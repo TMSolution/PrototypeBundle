@@ -31,6 +31,7 @@ class AppKernel extends Kernel
             #konfiguracja autoryzacji
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new CCO\UserBundle\CCOUserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -1,3 +1,7 @@
+cco_user:
+    resource: "@CCOUserBundle/Resources/config/routing.yml"
+    prefix:   /
+
 
 core_prototype:
     resource: "@CorePrototypeBundle/Resources/config/routing.yml"
