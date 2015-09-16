@@ -50,13 +50,13 @@ class FormType extends BaseFormType {
         //get length, it works
         //dump(array_values($test)[1]["length"]);exit;
         foreach ($this->model->getFieldsinfo() as $key => $object) {
+
+            //for block to display 'id' in form creating process
             $builder->add($key);
+            if ($key == "id") {
+                $builder->add('id', 'hidden');
+            }
         }
-//        for($i=0; $i++; $i<count($test)){
-//            if(array_values($test)[$i]) == integer){
-//                echo('dupa');
-//            }
-//        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver) {

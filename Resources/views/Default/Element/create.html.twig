@@ -1,7 +1,6 @@
 {% extends config.get("twig_container_create") %}
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 {% block element %}
-  
     <div class="row">
         <div class="col-md-12 col-sm-12">
             {# added the line for disable html validation #}
@@ -27,7 +26,6 @@
 
 
     {{ form_end(form) }} 
-
 {% endblock  element%}
 
 {% block js %}
