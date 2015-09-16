@@ -1,0 +1,36 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+    my_user_provider.class: AppBundle\Services\FOSUBUserProvider
+
+services:
+    
+    prototype.gridconfig.new:
+        class: 'AppBundle\GridConfig\ProductCategory'
+        arguments: [@service_container]        
+        tags:
+            -  { name: prototype.gridbuilder, entity: 'AppBundle\Entity\ProductCategory' } 
+               
+    prototype.gridconfig.product:
+        class: 'AppBundle\GridConfig\Product'
+        arguments: [@service_container]        
+        tags:
+            -  { name: prototype.gridbuilder, entity: 'AppBundle\Entity\Product' } 
+   
+    app.config.nazwa_controllera23:
+        class: Core\PrototypeBundle\Service\Config
+        arguments: [%prototype_config_params%,{ twig_container_read: "AppBundle:ProductCategory\Container:read.html.twig"}]        
+        tags:
+            -  { name: prototype.config, entity: 'AppBundle\Entity\ProductCategory'  }    
+
+#    app.config.nazwa_controllera231:
+#        class: Core\PrototypeBundle\Service\Config
+#        arguments: [%prototype_config_params%,%prototype.association.config.parameters%]        
+#        tags:
+#            -  { name: prototype.config, route: core_prototype_associationcontroller_read , entity: 'AppBundle\Entity\Product'  }         
+        
+         #danvbe/UserBundle/Resources/services.yml
+    my_user_provider:
+        class: "%my_user_provider.class%"
+        #this is the place where the properties are passed to the UserProvider - see config.yml
+        arguments: [@fos_user.user_manager,{facebook: facebook_id, google: google_id}]

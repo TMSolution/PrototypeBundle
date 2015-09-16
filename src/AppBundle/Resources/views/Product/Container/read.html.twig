@@ -1,0 +1,23 @@
+{% extends config.get("twig_base_index") %}
+{% block content %}    
+<div>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#product-show-tab" aria-controls="product-show-tab" role="tab" data-toggle="tab">{{ "product"|trans }}</a></li>
+        <li role="presentation"  ><a class="lazy-loaded-tab" href="#product-params-tab" aria-controls="product-params-tab" role="tab" data-toggle="tab" data-route="core_prototype_associationcontroller_list.{{app.request.getLocale()}}" data-route-params='{ "parentName":"{{classmapperservice.getEntityName("AppBundle\\Entity\\Product")}}" , "parentId": "{{entity.id}}", "entityName": "{{classmapperservice.getEntityName("AppBundle\\Entity\\Param")}}" }'  data-route-target="" >{{ "params"|trans}}</a></li>
+      </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active tab-panel-container" id="product-show-tab" > {% block element %}{% endblock %}</div>
+        <div role="tabpanel" class="tab-pane  tab-panel-container" id="product-params-tab"  ></div>
+      </div>
+
+</div>
+{% endblock content %}
+
+
+{% block js %}
+       {{ parent() }}
+        <script src="{{asset("bundles/coreprototype/js/lazyLoadedTab.js")}}"></script>
+{% endblock %}

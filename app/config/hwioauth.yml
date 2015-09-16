@@ -1,0 +1,40 @@
+#app/config/config.yml
+parameters:
+    facebook_app_id: 140098613003679
+    facebook_app_secret: 3ff38ccebd3ab4b58f819ae102ca263c
+    google_app_id: 746511434934-jvd7s97k1u6r2s6dqgb6llt59iv7b3kr.apps.googleusercontent.com
+    google_app_secret: hSl68eoTlo7ythMaXroLLZUj
+        
+hwi_oauth:
+    #this is my custom user provider, created from FOSUBUserProvider - will manage the 
+    #automatic user registration on your site, with data from the provider (facebook. google, etc.)
+    #and also, the connecting part (get the token and the user_id)
+   
+    http_client:
+        verify_peer: false
+    connect:
+        account_connector: my_user_provider
+    # name of the firewall in which this bundle is active, this setting MUST be set
+    firewall_name: main
+    fosub:
+        username_iterations: 30
+        properties:
+            # these properties will be used/redefined later in the custom FOSUBUserProvider service.
+            facebook: facebook_id
+            google: google_id
+    resource_owners:
+        facebook:
+            type:                facebook
+            client_id:           "%facebook_app_id%"
+            client_secret:       "%facebook_app_secret%"
+
+            scope:         "email"
+            infos_url:     "https://graph.facebook.com/me?fields=id,name,email,picture.type(square)"
+            options:
+                display: popup
+        google:
+            type:                google
+            client_id:           "%google_app_id%"
+            client_secret:       "%google_app_secret%"
+            scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+    # here you will add one (or more) configurations for resource owners

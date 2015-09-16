@@ -1,0 +1,7 @@
+core_class_mapper:
+    languages:
+        en:
+            product: 'PhantomBundle\Entity\Product'
+            productcategory: 'PhantomBundle\Entity\ProductCategory'
+            productdescription: 'PhantomBundle\Entity\ProductDescription'
+            productproperty: 'PhantomBundle\Entity\ProductProperty'
