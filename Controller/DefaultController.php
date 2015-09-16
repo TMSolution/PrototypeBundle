@@ -65,8 +65,8 @@ class DefaultController extends BaseController {
         $entity = $model->getEntity();
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
-
-        $formType = $this->getFormType($this->getEntityClass(), null,$model);
+  
+        $formType = $this->getFormType($this->getEntityClass(),$model);
         $form = $this->makeForm($formType, $entity, 'POST', $entityName, $this->getAction('create'));
         $form->handleRequest($request);
 
@@ -468,7 +468,7 @@ class DefaultController extends BaseController {
         if (!$formType) {
             
             $formTypeFactory = $this->get("prototype_formtype_factory");
-            $formType = $formTypeFactory->getFormType($objectName, $class,$this->getModel($objectName));
+            $formType = $formTypeFactory->getFormType($this->getModel($objectName));
         }
         return $formType;
     }
