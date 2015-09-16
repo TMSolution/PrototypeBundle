@@ -25,7 +25,7 @@ class AppKernel extends Kernel
             new Core\ModelBundle\CoreModelBundle(),
             new Core\ClassMapperBundle\CoreClassMapperBundle(),
             new Core\PrototypeBundle\CorePrototypeBundle(),
-            new \PhantomBundle\PhantomBundle(),
+            new PhantomBundle\PhantomBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             
             #konfiguracja autoryzacji
