@@ -15,3 +15,41 @@
     height: 5px;
     border-radius:0px;
 }
+
+
+
+
+
+
+
+.circumflex-line::before {
+    background-color: #fff;
+    content: "";
+    height: 10px;
+    left: 50%;
+    margin: -5px 0 0 -20px;
+    position: absolute;
+    top: 50%;
+    width: 40px;
+    z-index: -1;
+}
+
+.circumflex-line::after {
+    border-bottom: 1px solid #dfe0e6;
+    content: "";
+    display: block;
+    position: absolute;
+    top: 49%;
+    width: 100%;
+    z-index: -2;
+}
+
+.circumflex-line {
+    display: block;
+   
+    margin-bottom: 1em;
+    position: relative;
+    text-align: center;
+    width: 100%;
+    z-index: 1;
+}

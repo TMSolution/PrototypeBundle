@@ -10,6 +10,10 @@
                 <source>the terms</source>
                 <target>warunki</target>
             </trans-unit>
+            <trans-unit id="3">
+                <source>registration.submit</source>
+                <target>Zarejestruj</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
