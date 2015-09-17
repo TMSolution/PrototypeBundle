@@ -1,12 +1,4 @@
 {% extends 'CCOUserBundle:Container:login.html.twig' %}
-
- {% form_theme form 'CCOUserBundle:Form:register_form_layout.html.twig' %}
-
-
- {% block element %}
-   
-
+{% block element %}
     {{ block("fos_user_content") }}
-
-
 {% endblock element %} 

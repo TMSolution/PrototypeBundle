@@ -5,51 +5,9 @@
         <hr/>
 
         <div class="container">
-            <div class="row">
-                <div class="col-md-6" >
-                    <a class="btn btn-lg btn-block btn-social btn-facebook">
-                        <i class="fa fa-facebook"></i> {{ "Zarejestruj się przez Facebook"|trans }}
-                    </a>
-                </div>
-
-                <div class="col-md-6" >     
-                    <a class="btn btn-lg btn-block btn-social btn-google">
-                        <i class="fa fa-google"></i> {{ "Zarejestruj się przez Google"|trans }}
-                    </a>      
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6" >
-                    <div class="checkbox">
-
-                        <label>
-                            <input type="checkbox" value="1" id="terms-for-social-networks"/>
-
-                            {{ 'Accept'|trans }} <a href="url_to_pdf">{{ 'the terms' |trans }}</a>
-                        </label>
-
-                    </div>
-                </div>
-            </div>
-            <strong class="circumflex-line">lub</strong>
-            
-
-            <h1>{{ "Zarejestruj się"|trans }}</h1>
             {% block element %}
             {% endblock element %}
         </div>
     </div>
 
 {% endblock content %}
-{% block js %}
-    {{parent()}}
-    <script src="{{ asset('assets/vendor/pwstrength-bootstrap/dist/pwstrength-bootstrap-1.2.7.min.js') }}"></script>
-    <script>
-
-        $('#fos_user_registration_form_plainPassword_first').pwstrength({
-            ui: {showVerdictsInsideProgressBar: true}
-        });
-    </script>
-    <script>
-        {{ form_jquery_validation(form) }}</script>
-{% endblock js%}    

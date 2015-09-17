@@ -3,3 +3,15 @@
 {% block fos_user_content %}
 {% include "FOSUserBundle:Registration:register_content.html.twig" %}
 {% endblock fos_user_content %}
+{% block js %}
+    {{parent()}}
+    <script src="{{ asset('assets/vendor/pwstrength-bootstrap/dist/pwstrength-bootstrap-1.2.7.min.js') }}"></script>
+    <script>
+
+        $('#fos_user_registration_form_plainPassword_first').pwstrength({
+            ui: {showVerdictsInsideProgressBar: true}
+        });
+    </script>
+    <script>
+        {{ form_jquery_validation(form) }}</script>
+{% endblock js%}    
