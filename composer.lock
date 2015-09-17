@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b161b9bd5320dc925b6e72bbe75ee952",
+    "hash": "efdc0d07a105e8b82f6775c709b14c16",
     "packages": [
         {
             "name": "apy/datagrid-bundle",
@@ -936,7 +936,7 @@
                     "homepage": "https://github.com/friendsofsymfony/FOSJsRoutingBundle/contributors"
                 },
                 {
-                    "name": "William Durand",
+                    "name": "William DURAND",
                     "email": "william.durand1@gmail.com"
                 }
             ],
