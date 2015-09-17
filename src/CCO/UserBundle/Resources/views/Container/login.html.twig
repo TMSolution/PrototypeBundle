@@ -8,23 +8,34 @@
             <div class="row">
                 <div class="col-md-6" >
                     <a class="btn btn-lg btn-block btn-social btn-facebook">
-                        <i class="fa fa-facebook"></i> Zaloguj się przez Facebook
+                        <i class="fa fa-facebook"></i> {{ "Zarejestruj się przez Facebook"|trans }}
                     </a>
                 </div>
-                
+
                 <div class="col-md-6" >     
                     <a class="btn btn-lg btn-block btn-social btn-google">
-                        <i class="fa fa-google"></i> Zaloguj się przez Google
+                        <i class="fa fa-google"></i> {{ "Zarejestruj się przez Google"|trans }}
                     </a>      
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6" >
+                    <div class="checkbox">
+
+                        <label>
+                            <input type="checkbox" value="1" id="terms-for-social-networks">
+
+                            Accept  <a href="url_to_pdf">the terms</a></label>
+                        </div>
                 </div>
             </div>
             <hr/>
             <div style="text-align:center"><strong>lub</strong></div>
             <hr/>
-            
-            <h1>Zarejestruj się</h1>
-                {% block element %}
-                {% endblock element %}
+
+            <h1>{{ "Zarejestruj się"|trans }}</h1>
+            {% block element %}
+            {% endblock element %}
         </div>
     </div>
 
@@ -32,10 +43,12 @@
 {% block js %}
     {{parent()}}
     <script src="{{ asset('assets/vendor/pwstrength-bootstrap/dist/pwstrength-bootstrap-1.2.7.min.js') }}"></script>
-    <script> 
-    $('#fos_user_registration_form_plainPassword_first').pwstrength({
-        ui: { showVerdictsInsideProgressBar: true }
-    });</script>
-    
-     {#<script>  {{ form_jquery_validation(form) }} </script>#}
+    <script>
+
+        $('#fos_user_registration_form_plainPassword_first').pwstrength({
+            ui: {showVerdictsInsideProgressBar: true}
+        });
+    </script>
+    <script>
+        {{ form_jquery_validation(form) }}</script>
 {% endblock js%}    

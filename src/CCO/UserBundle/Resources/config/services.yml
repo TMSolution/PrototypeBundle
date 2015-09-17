@@ -6,3 +6,9 @@ services:
         class: "%cco_user_provider.class%"
         #this is the place where the properties are passed to the UserProvider - see config.yml
         arguments: [@fos_user.user_manager,{facebook: facebook_id, google: google_id}]
+        
+    cco_user_user_form_type_registrationformtype:
+        class: CCO\UserBundle\Form\Type\RegistrationFormType
+        arguments: [ AppBundle\Entity\User ]
+        tags:
+            - { name: form.type,  alias: fos_user_registration  }    

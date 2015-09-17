@@ -22,6 +22,7 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "tmsolution/prototype-bundle": "dev-master",
         "friendsofsymfony/user-bundle":"dev-master",
+        "boekkooi/jquery-validation-bundle": "dev-master",
         "hwi/oauth-bundle":"0.3.*"
     },
     "require-dev": {

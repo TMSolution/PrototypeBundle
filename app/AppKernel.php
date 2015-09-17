@@ -27,6 +27,8 @@ class AppKernel extends Kernel
             new Core\PrototypeBundle\CorePrototypeBundle(),
             new PhantomBundle\PhantomBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+            new Boekkooi\Bundle\JqueryValidationBundle\BoekkooiJqueryValidationBundle(),
+            
             
             #konfiguracja autoryzacji
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
