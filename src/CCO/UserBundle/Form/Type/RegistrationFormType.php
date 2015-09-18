@@ -46,14 +46,16 @@ class RegistrationFormType extends AbstractType
                     'second_options' => array('label' => 'form.password_confirmation'),
                     'invalid_message' => 'fos_user.password.mismatch',
                 ))
-                ->add('gender', 'choice', array(
-                    'choices' => array('m' => 'Male', 'f' => 'Female'),
+                
+                ->add('sex', 'entity', array(
+                    'class' => 'CCOUserBundle:Sex',
                     'label_attr' => array('class' => 'radio-inline'),
                     //'attr' => array('class' => 'radio-inline'),
                     'required' => true,
                     'expanded' => true,
                     'multiple' => false,
-                    'constraints' => new Assert\NotBlank(array('message' => ''))
+                    'constraints' => new Assert\NotBlank(array('message' => '')),
+                    'choice_translation_domain' => true
                 ))
                 ->add('registerTerms', 'checkbox', array(
                     'label' => '',

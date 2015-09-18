@@ -38,6 +38,14 @@
                 <source>security.login.submit</source>
                 <target>Zaloguj się</target>
             </trans-unit>
+            <trans-unit id="cco.user.sex.male">
+                <source>Male</source>
+                <target>Mężczyzna</target>
+            </trans-unit>
+            <trans-unit id="cco.user.sex.female">
+                <source>Female</source>
+                <target>Kobieta</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

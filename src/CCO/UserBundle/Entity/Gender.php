@@ -7,10 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="callcenter_gender_type")
+ * @ORM\Table(name="callcenter_sex_type")
  *
  */
-class Gender
+class Sex
 {
 
     /**
@@ -22,6 +22,11 @@ class Gender
 
     /** @ORM\Column(name="name", type="string", length=255, nullable=false) */
     protected $name;
+    
+    public function __toString()
+    {
+        return $this->getName();
+    }
 
     /**
      * Get id
@@ -37,7 +42,7 @@ class Gender
      * Set name
      *
      * @param string $name
-     * @return GenderType
+     * @return SexType
      */
     public function setName($name)
     {
