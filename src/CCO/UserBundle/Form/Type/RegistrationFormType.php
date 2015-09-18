@@ -49,6 +49,7 @@ class RegistrationFormType extends AbstractType
                 ->add('gender', 'choice', array(
                     'choices' => array('m' => 'Male', 'f' => 'Female'),
                     'label_attr' => array('class' => 'radio-inline'),
+                    //'attr' => array('class' => 'radio-inline'),
                     'required' => true,
                     'expanded' => true,
                     'multiple' => false,

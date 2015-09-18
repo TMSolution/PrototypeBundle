@@ -105,3 +105,12 @@
     margin:0px auto;
 }
 
+
+.control-group input[type=radio] + .help-block {
+    display: none;
+}
+
+label input[type=checkbox] + .help-block {
+    display: none;
+}
+
