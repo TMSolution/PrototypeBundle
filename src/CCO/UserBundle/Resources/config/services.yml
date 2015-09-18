@@ -9,6 +9,6 @@ services:
         
     cco_user_user_form_type_registrationformtype:
         class: CCO\UserBundle\Form\Type\RegistrationFormType
-        arguments: [ AppBundle\Entity\User ]
+        arguments: [ CCO\UserBundle\Entity\User ]
         tags:
             - { name: form.type,  alias: fos_user_registration  }    

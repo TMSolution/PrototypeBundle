@@ -18,10 +18,6 @@
 
 
 
-
-
-
-
 .circumflex-line::before {
     background-color: #fff;
     content: "";
@@ -46,10 +42,66 @@
 
 .circumflex-line {
     display: block;
-   
     margin-bottom: 1em;
+    margin-top:20px;
     position: relative;
     text-align: center;
     width: 100%;
     z-index: 1;
 }
+
+@font-face {
+	font-family: 'icomoon';
+	src:url('../fonts/icomoon.eot?n91jrr');
+	src:url('../fonts/icomoon.eot?#iefixn91jrr') format('embedded-opentype'),
+		url('../fonts/icomoon.ttf?n91jrr') format('truetype'),
+		url('../fonts/icomoon.woff?n91jrr') format('woff'),
+		url('../fonts/icomoon.svg?n91jrr#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-cco-logo:before {
+	content: "\e600";
+}
+.icon-cco-headset:before {
+	content: "\e601";
+}
+
+.btn-cco {
+    display:block; 
+    border-color: rgba(0, 0, 0, 0.2);
+    color: dark grey;
+    margin:0px auto;
+}
+
+.btn-cco-register{
+    min-width:170px;  
+    width: auto;
+}
+
+.btn-cco-login{    
+    min-width:170px; 
+    width: auto;
+}
+
+.cco-center-block{
+    width:400px; 
+    margin:0px auto;
+}
+

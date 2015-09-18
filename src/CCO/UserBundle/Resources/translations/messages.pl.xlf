@@ -2,17 +2,41 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="pl" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="1">
+            <trans-unit id="cco.user.accept">
                 <source>Accept</source>
                 <target>Zaakceptuj</target>
             </trans-unit>
-            <trans-unit id="2">
+            <trans-unit id="cco.user.terms">
                 <source>the terms</source>
                 <target>warunki</target>
             </trans-unit>
-            <trans-unit id="3">
+            <trans-unit id="cco.user.registration.submit">
                 <source>registration.submit</source>
                 <target>Zarejestruj</target>
+            </trans-unit>
+            <trans-unit id="cco.user.signin">
+                <source>Sign in</source>
+                <target>Zaloguj się</target>
+            </trans-unit>
+            <trans-unit id="cco.user.signup">
+                <source>Sign up</source>
+                <target>Zarejestruj się</target>
+            </trans-unit>
+            <trans-unit id="cco.user.security.login.email">
+                <source>security.login.email</source>
+                <target>E-mail</target>
+            </trans-unit>
+            <trans-unit id="cco.user.security.login.password">
+                <source>security.login.password</source>
+                <target>Hasło</target>
+            </trans-unit>
+            <trans-unit id="cco.user.security.login.remember_me">
+                <source>security.login.remember_me</source>
+                <target>Nie wylogowuj mnie</target>
+            </trans-unit>
+            <trans-unit id="cco.user.security.login.submit">
+                <source>security.login.submit</source>
+                <target>Zaloguj się</target>
             </trans-unit>
         </body>
     </file>

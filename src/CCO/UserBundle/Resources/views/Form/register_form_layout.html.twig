@@ -3,6 +3,29 @@
 
 
 {%- block checkbox_widget -%}
-    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+<input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
 {%- endblock checkbox_widget -%}
+
+{% block form_errors -%}
+    {% if errors|length > 0 -%}
+
+        {% set parent_label_class = parent_label_class|default('') -%}    
+        {% if 'checkbox' in parent_label_class or 'checkboxinline' in parent_label_class %} 
+            aaaaaaaaaaaaaaa
+            
+        {% elseif 'radio-inline' in parent_label_class or 'radio-inline' in parent_label_class %}     
+aassssssssssssssssssss
+        {% else %}     
+
+            {% if form.parent %}<span class="help-block">{% else %}<div class="alert alert-danger">{% endif %}
+                    <ul class="list-unstyled">
+                        {%- for error in errors -%}
+                        <li><span class="glyphicon glyphicon-exclamation-sign"></span> {{ error.message }}</li>
+                            {%- endfor -%}
+                    </ul>
+                {% if form.parent %}</span>{% else %}</div>{% endif %}
+
+        {%- endif %}
+        {%- endif %}
+        {%- endblock form_errors %}
 
