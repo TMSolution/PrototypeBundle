@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
 
  * @ORM\Entity(repositoryClass="TMSolution\UserBundle\Repository\UserRepository")
- * @ORM\Table("fos_user")
+ * @ORM\Table(name="callceneter_user")
  * 
  */
 class User extends BaseUser
@@ -38,7 +38,7 @@ class User extends BaseUser
     protected $term;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Gender")
+     * @ORM\ManyToOne(targetEntity="GenderType")
      */
     protected $gender;
 
@@ -140,7 +140,7 @@ class User extends BaseUser
      * @param integer $gender
      * @return User
      */
-    public function setGender(Gender $gender)
+    public function setGender(GenderType $gender)
     {
         $this->gender = $gender;
 

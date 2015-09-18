@@ -1,6 +1,6 @@
 {% form_theme form 'CCOUserBundle:Form:register_form_layout.html.twig' %}
-<div style="width:800px; margin:0px auto;">
-    <div style="width:400px; margin:0px auto;">
+<div >
+    <div class="cco-center-block">
     <div class="row">
         <div class="col-md-12" >
             <a class="btn btn-lg btn-block btn-social btn-facebook">
@@ -32,7 +32,7 @@
     <strong class="circumflex-line">lub</strong>
 
     
-        <h1>{{ "Zarejestruj się"|trans }}</h1>
+        <h1>{{ "Sign up"|trans }}</h1>
 
 
 
@@ -50,14 +50,17 @@
                     {{ 'Accept'|trans }} <a href="url_to_pdf">{{ 'the terms' |trans }}</a></label>
                     {{ form_errors(form.registerTerms) }} 
             </div>
+            
+            {{ form_row(form.gender) }}
 
 
 
 
             <div>
-                <button style="display:block; width:180px; margin:0px auto;" class="btn btn-lg btn-block btn-social btn-reddit" type="submit"  value="{{ 'registration.submit'|trans }}" >
+       
+                <button class="btn btn-lg btn-block btn-social btn-cco btn-cco-register" type="submit"  value="{{ 'registration.submit'|trans }}" >
 
-                    <i class="fa fa-openid"></i> {{ 'registration.submit'|trans }}
+                    <i class="icon-cco-headset"></i> {{ 'registration.submit'|trans }}
                 </button>
             </div>
 

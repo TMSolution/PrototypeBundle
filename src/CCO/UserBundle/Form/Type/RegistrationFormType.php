@@ -16,22 +16,25 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class RegistrationFormType extends AbstractType {
+class RegistrationFormType extends AbstractType
+{
 
     private $class;
 
     /**
      * @param string $class The User class name
      */
-    public function __construct($class) {
-        
-       
+    public function __construct($class)
+    {
+
+
         $this->class = $class;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
-        
-      
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+
+
         $builder
                 ->add('email', 'email', array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'))
                 ->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle'))
@@ -47,11 +50,16 @@ class RegistrationFormType extends AbstractType {
                     'required' => true,
                     'mapped' => false
                 ))
+                ->add('gender', 'choice', array(
+                    'choices' => array('m' => 'Male', 'f' => 'Female'),
+                    'required' => false,
+                ))
 
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver)
+    {
         $resolver->setDefaults(array(
             'data_class' => $this->class,
             'intention' => 'registration',
@@ -59,11 +67,13 @@ class RegistrationFormType extends AbstractType {
     }
 
     // BC for SF < 2.7
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
         $this->configureOptions($resolver);
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'fos_user_registration';
     }
 

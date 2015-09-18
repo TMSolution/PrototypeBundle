@@ -1,14 +1,32 @@
 {% extends "FOSUserBundle::layout.html.twig" %}
 
-{% trans_default_domain 'FOSUserBundle' %}
-
-
 {% block fos_user_content %}
     {% if error %}
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    <div style="width:400px; margin:0px auto;">
+    <div class="cco-center-block">
+        <div class="row">
+            <div class="col-md-12" >
+                <a class="btn btn-lg btn-block btn-social btn-facebook">
+                    <i class="fa fa-facebook"></i> {{ "Zaloguj się przez Facebook"|trans }}
+                </a>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">        
+            <div class="col-md-12" >     
+                <a class="btn btn-lg btn-block btn-social btn-google">
+                    <i class="fa fa-google"></i> {{ "Zaloguj się przez Google"|trans }}
+                </a>      
+            </div>
+        </div>
+
+
+        <strong class="circumflex-line">lub</strong>
+
+        <h1>{{ "Sign in"|trans }}</h1>
+
         <form class="fos_user_login" action="{{ path("fos_user_security_check") }}" method="post">
             <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
 
@@ -26,11 +44,14 @@
                     {{ 'security.login.remember_me'|trans }}</label>
             </div>
             <div>
-                <button style="display:block; width:180px; margin:0px auto;" class="btn btn-lg btn-block btn-social btn-reddit" type="submit"  value="{{ 'security.login.submit'|trans }}" >
+                <button class="btn btn-lg btn-block btn-social btn-cco btn-cco-login" type="submit"  value="{{ 'security.login.submit'|trans }}" >
 
-                    <i class="fa fa-openid"></i> {{ 'security.login.submit'|trans }}
+                    <i class="icon-cco-headset"></i> {{ 'security.login.submit'|trans }}
                 </button>
             </div> 
+
+
+
 
         </form>
     </div>
