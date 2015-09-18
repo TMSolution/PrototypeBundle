@@ -16,7 +16,11 @@
     border-radius:0px;
 }
 
-
+.btn-social
+{
+  margin-bottom:20px;
+    
+}
 
 .circumflex-line::before {
     background-color: #fff;
@@ -43,7 +47,7 @@
 .circumflex-line {
     display: block;
     margin-bottom: 1em;
-    margin-top:20px;
+   
     position: relative;
     text-align: center;
     width: 100%;

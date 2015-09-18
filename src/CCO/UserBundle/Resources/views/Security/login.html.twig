@@ -14,14 +14,17 @@
             </div>
         </div>
 
-        <div class="row" style="margin-top:10px">        
-            <div class="col-md-12" >     
-                <a class="btn btn-lg btn-block btn-social btn-google">
-                    <i class="fa fa-google"></i> {{ "Zaloguj się przez Google"|trans }}
-                </a>      
-            </div>
-        </div>
 
+        {% for owner in hwi_oauth_resource_owners() %}
+            <div class="row">
+                <div class="col-md-12" >
+                    {{ dump(owner) }}
+                    <a class="btn btn-lg btn-block btn-social btn-{{owner}}" href="{{ hwi_oauth_login_url(owner) }}">
+                        <i class="fa fa-{{owner}}"></i>{{ "Zaloguj się przez "|trans }} {{ owner | trans({}, 'HWIOAuthBundle')|capitalize  }}
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
 
         <strong class="circumflex-line">lub</strong>
 
