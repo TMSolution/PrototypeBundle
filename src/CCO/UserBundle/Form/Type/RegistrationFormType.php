@@ -15,6 +15,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class RegistrationFormType extends AbstractType
 {
@@ -45,14 +46,19 @@ class RegistrationFormType extends AbstractType
                     'second_options' => array('label' => 'form.password_confirmation'),
                     'invalid_message' => 'fos_user.password.mismatch',
                 ))
+                ->add('gender', 'choice', array(
+                    'choices' => array('m' => 'Male', 'f' => 'Female'),
+                    'label_attr' => array('class' => 'radio-inline'),
+                    'required' => true,
+                    'expanded' => true,
+                    'multiple' => false,
+                    'constraints' => new Assert\NotBlank(array('message' => ''))
+                ))
                 ->add('registerTerms', 'checkbox', array(
                     'label' => '',
                     'required' => true,
-                    'mapped' => false
-                ))
-                ->add('gender', 'choice', array(
-                    'choices' => array('m' => 'Male', 'f' => 'Female'),
-                    'required' => false,
+                    'mapped' => false,
+                    'constraints' => new Assert\NotBlank(array('message' => ''))
                 ))
 
         ;

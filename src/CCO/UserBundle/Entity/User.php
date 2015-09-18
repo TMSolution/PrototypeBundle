@@ -6,9 +6,10 @@ use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
+
 /**
 
- * @ORM\Entity(repositoryClass="TMSolution\UserBundle\Repository\UserRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="callceneter_user")
  * 
  */
@@ -34,11 +35,14 @@ class User extends BaseUser
     /** @ORM\Column(name="google_access_token", type="string", length=255, nullable=true) */
     protected $google_access_token;
 
-    /** @ORM\Column(name="terms", type="boolean", nullable=true) */
-    protected $term;
+    /** 
+     * @ORM\Column(name="registerTerms", type="boolean", nullable=false) 
+     */
+    protected $registerTerms;
 
     /**
-     * @ORM\ManyToOne(targetEntity="GenderType")
+     * @ORM\ManyToOne(targetEntity="Gender")
+     * @ORM\Column(name="gender", nullable=false)
      */
     protected $gender;
 
@@ -140,7 +144,7 @@ class User extends BaseUser
      * @param integer $gender
      * @return User
      */
-    public function setGender(GenderType $gender)
+    public function setGender(Gender $gender)
     {
         $this->gender = $gender;
 
@@ -158,26 +162,26 @@ class User extends BaseUser
     }
 
     /**
-     * Set term
+     * Set registerTerms
      *
-     * @param integer $term
+     * @param integer $registerTerms
      * @return User
      */
-    public function setTerm(Term $term)
+    public function setRegisterTerms($registerTerms)
     {
-        $this->term = $term;
+        $this->registerTerms = $registerTerms;
 
         return $this;
     }
 
     /**
-     * Get term
+     * Get registerTerms
      *
      * @return integer 
      */
-    public function getTerm()
+    public function getRegisterTerms()
     {
-        return $this->term;
+        return $this->registerTerms;
     }
 
 }

@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Table(name="callcenter_gender_type")
  *
  */
-class GenderType
+class Gender
 {
 
     /**
