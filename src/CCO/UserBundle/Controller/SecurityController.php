@@ -208,7 +208,7 @@ class SecurityController extends Controller
             }
         }
 
-        return new RedirectResponse($this->container->get('hwi_oauth.security.oauth_utils')->getAuthorizationUrl($request, $service));
+        return new Response($this->container->get('hwi_oauth.security.oauth_utils')->getAuthorizationUrl($request, $service));
     }
 
     /**
