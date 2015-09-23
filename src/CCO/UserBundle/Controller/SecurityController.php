@@ -109,8 +109,10 @@ class SecurityController extends Controller
     
     
     public function connectServiceAction(Request $request, $service)
-    {
-        dump('Security connectService');
+    {   
+      
+        
+       
         $connect = $this->container->getParameter('hwi_oauth.connect');
         if (!$connect) {
             throw new NotFoundHttpException();
@@ -169,13 +171,13 @@ class SecurityController extends Controller
                     $this->authenticateUser($request, $currentUser, $service, $currentToken->getRawToken(), false);
                 }
 
-                return $this->container->get('templating')->renderResponse('HWIOAuthBundle:Connect:connect_success.html.' . $this->getTemplatingEngine(), array(
+                return $this->container->get('templating')->renderResponse('CCO:UserBundle:Connect:connect_success.html.' . $this->getTemplatingEngine(), array(
                     'userInformation' => $userInformation,
                 ));
             }
         }
 
-        return $this->container->get('templating')->renderResponse('HWIOAuthBundle:Connect:connect_confirm.html.' . $this->getTemplatingEngine(), array(
+        return $this->container->get('templating')->renderResponse('CCO:UserBundle:Connect:connect_confirm.html.' . $this->getTemplatingEngine(), array(
             'key'             => $key,
             'service'         => $service,
             'form'            => $form->createView(),
@@ -191,6 +193,7 @@ class SecurityController extends Controller
      */
     public function redirectToServiceAction(Request $request, $service)
     {
+    
         // Check for a specified target path and store it before redirect if present
         $param = $this->container->getParameter('hwi_oauth.target_path_parameter');
 

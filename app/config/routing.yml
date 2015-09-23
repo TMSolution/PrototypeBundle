@@ -16,9 +16,6 @@ app:
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
     
-    
-
-
 
 hwi_oauth_redirect:
     resource: "@CCOUserBundle/Resources/config/routing/redirect.xml"
@@ -28,6 +25,10 @@ hwi_oauth_redirect:
 hwi_oauth_connect:
     resource: "@CCOUserBundle/Resources/config/routing/connect.xml"
     prefix: /login
+    
+hwi_oauth_login:
+    resource: "@CCOUserBundle/Resources/config/routing/login.xml"
+    prefix: /login    
 
 
 
