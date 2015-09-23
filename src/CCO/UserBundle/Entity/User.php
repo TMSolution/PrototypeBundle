@@ -41,10 +41,12 @@ class User extends BaseUser
     protected $registerTerms;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Gender")
-     * @ORM\Column(name="gender", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Sex")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="sex", referencedColumnName="id")
+     * })
      */
-    protected $gender;
+    protected $sex;
 
     /**
      * Set facebook_id
@@ -139,26 +141,26 @@ class User extends BaseUser
     }
 
     /**
-     * Set gender
+     * Set sex
      *
-     * @param integer $gender
+     * @param integer $sex
      * @return User
      */
-    public function setGender(Gender $gender)
+    public function setSex(Sex $sex)
     {
-        $this->gender = $gender;
+        $this->sex = $sex;
 
         return $this;
     }
 
     /**
-     * Get gender
+     * Get sex
      *
      * @return integer 
      */
-    public function getGender()
+    public function getSex()
     {
-        return $this->gender;
+        return $this->sex;
     }
 
     /**
