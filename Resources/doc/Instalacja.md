@@ -10,7 +10,7 @@ Poniżej opisano kolejne kroki, w celu właściwej instalacji narzędzi do budow
 
 1.Utworzyć nowy projekt Symfony.
 
-2.Do projektu należy podłączyć PrototypeBundle:
+2.Do projektu należy podłączyć PrototypeBundle oraz bibliotekę do walidacji:
 ```
 #composer.json
 "require": {
@@ -18,6 +18,11 @@ Poniżej opisano kolejne kroki, w celu właściwej instalacji narzędzi do budow
            }
 ```
 oraz dołączyć PhantomBundle –  sklonuj z TMSolution GitHub – do src swojego projektu.
+
+A nastepnie wykonaj komende:
+```
+composer update
+```
 
 **Jeśli nie masz dostępu do konta TMSolution sforkuj projekt na swoje konto github**
 
@@ -33,11 +38,9 @@ oraz dołączyć PhantomBundle –  sklonuj z TMSolution GitHub – do src swoje
             new Core\PrototypeBundle\CorePrototypeBundle(),
             new PhantomBundle\PhantomBundle(), 
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+            new Boekkooi\Bundle\JqueryValidationBundle\BoekkooiJqueryValidationBundle(),
 ```
-A nastepnie wykonaj komende:
-```
-composer update
-```
+
 4.Stwórz schemat bazy danych za pomocą komendy:
 ```
 doctrine:schema:create

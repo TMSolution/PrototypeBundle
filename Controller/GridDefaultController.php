@@ -31,7 +31,7 @@ class GridDefaultController extends DefaultController {
      */
     public function listAction() {
 
-        dump($this->getEntityClass());
+
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
         $model = $this->getModel($this->getEntityClass());
@@ -41,7 +41,7 @@ class GridDefaultController extends DefaultController {
         $grid->resetSessionData();
         $this->buildGrid($grid);
         $grid->setId($routePrefix . '_' . $entityName);
-        dump($grid->getId());
+        
         $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxlist", $grid->getRouteParameters()));
 
         //config parameters for render and event broadcast
