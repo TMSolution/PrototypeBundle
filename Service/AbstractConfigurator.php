@@ -10,7 +10,7 @@ class AbstractConfigurator {
     protected $chosenService= null;
     protected $divider = "*";
     
-
+/*
     protected function getRouteName($serviceName) {
         $serviceNameArr = explode($this->divider, $serviceName);
         return $serviceNameArr[0];
@@ -51,7 +51,18 @@ class AbstractConfigurator {
 
         return $servicesConfigs;
     }
+    
+    
+    public function getNamesOfServices() {
 
+        if (!$this->namesOfServices) {
+
+            $this->namesOfServices = array_keys($this->servicesConfigs);
+        }
+        return $this->namesOfServices;
+    }
+    */
+    
     public function getNamesOfServices() {
 
         if (!$this->namesOfServices) {
@@ -73,7 +84,7 @@ class AbstractConfigurator {
         return $this->chosen;
     }
     
-    
+    /*
     protected function calculateService($servicesConfigs)
     {
             $keys = array_keys($servicesConfigs);
@@ -81,61 +92,73 @@ class AbstractConfigurator {
             $servisConfig=$servicesConfigs[$serviceName];
             $this->setChosen($servisConfig);
             return $servisConfig["service"];      
-    }
-
-    public function getService($route, $entity) {
+    }*/
     
-         $bestSuitedServicesConfigs = $this->getBestSuitedServices($this->calculateBestSuitedServiceName($route));
-   
-        //there is services for route
-        if (count($bestSuitedServicesConfigs)) {
-
-            // check configuration for entity
-            $serviceConfigArr = array_filter($bestSuitedServicesConfigs, function($config,$key) use ($route, $entity) {
-               
-                if (strstr($route,$config['route'])) {
-                   
-                    return $this->servicesConfigs[$key];
-                }
-            }, ARRAY_FILTER_USE_BOTH);
-
-            
-            if (count($serviceConfigArr)) {
-                
-                $serviceConfig=array_shift($serviceConfigArr);
-               // dump($serviceConfig);
-                $this->setChosen($serviceConfig);
-                return $serviceConfig["service"];
-            }
-            
-            
-            //if there is no configuration for entity, but route exists
-           return $this->calculateService($bestSuitedServicesConfigs);
-        }
-        //there is no service for this route
-        else {
-            //maybe is service for entity exists
-            $serviceConfigArr = array_filter($this->servicesConfigs, function($k) use ($route, $entity) {
-
-                if ($this->divider . $entity == $k) {
-                
-                    return $this->servicesConfigs[$k];
-                }
-            }, ARRAY_FILTER_USE_KEY);
-
-            if (count($serviceConfigArr)) {
-                return $this->calculateService($serviceConfigArr);
-            }
-        }
-
-        //use universal config
-        if(count($this->servicesConfigs)){
-        $this->setChosen($this->servicesConfigs[$this->divider]);
-        return $this->servicesConfigs[$this->divider]["service"];
+    
+    protected function findByBestSuitedRoute($route,$serviceConfigs)
+    {
         
+        $bestServiceConfig = null;
+        $bestScore = 0;
+
+        foreach ($serviceConfigs as $serviceConfig) {
+
+            $serviceConfigRoute = $serviceConfig['route'];
+            if ($serviceConfigRoute) {
+                if (\mb_substr($route, 0, mb_strlen($serviceConfigRoute)) == $serviceConfigRoute) {
+                    $score = similar_text($route, $serviceConfigRoute);
+                    if ($score > $bestScore) {
+                        $bestScore = $score;
+                        $bestServiceConfig = $serviceConfig;
+                    }
+                }
+            }
+        }
+        
+        return $bestServiceConfig;
+        
+    }
+    
+    
+    public function getService($route, $entity) {
+        
+        $forEntity=[];
+        $universal=[];
+        
+        dump($this->servicesConfigs);
+        foreach($this->servicesConfigs as $serviceConfig)
+        {
+            if($serviceConfig['entity']==$entity )
+            {
+              $forEntity[]=$serviceConfig;  
+            }
+            elseif(!$serviceConfig['entity']){
+                 
+                $universal[]=$serviceConfig;
+            }
+        }
+        $serviceConfig=null;
+        
+        if(count($forEntity)>0)
+        {
+            $serviceConfig=$this->findByBestSuitedRoute($route,$forEntity);
+        }
+        
+        if(!$serviceConfig)
+        {
+            $serviceConfig=$this->findByBestSuitedRoute($route,$universal);
+        }
+        if(!$serviceConfig)
+        {
+            if(array_key_exists($this->divider,$this->servicesConfigs)){
+            $serviceConfig=$this->servicesConfigs[$this->divider];}
+        }
+        if($serviceConfig){
+        $this->setChosen($serviceConfig);
+        return $serviceConfig["service"];
         }
     }
-
+   
 
     public function __construct($container) {
        

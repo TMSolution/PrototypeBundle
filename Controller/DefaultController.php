@@ -165,19 +165,26 @@ class DefaultController extends BaseController {
      */
     public function updateAction($id) {
 
+          
         $request = $this->get('request');
         
         $model = $this->getModel($this->getEntityClass());
+         
         $formType = $this->getFormType($this->getEntityClass(), null,$model);
         $entity = $model->findOneById($id);
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
 
+       
         $updateForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
         $updateForm->handleRequest($request);
 
         //config parameters for render and event broadcast
+   
         $params = $this->get('prototype.controler.params');
+       
+        dump($params);
+      
         $params->setArray([
             'entity' => $entity,
             'form' => $updateForm->createView(),
