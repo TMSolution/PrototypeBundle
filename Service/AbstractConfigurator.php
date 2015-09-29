@@ -10,6 +10,7 @@ class AbstractConfigurator {
     protected $chosenService= null;
     protected $divider = "*";
     
+    
 /*
     protected function getRouteName($serviceName) {
         $serviceNameArr = explode($this->divider, $serviceName);
