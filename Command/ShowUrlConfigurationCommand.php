@@ -53,11 +53,18 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
         $service=$configuratorService->getService($route["_route"], $entityName);
         $this->printServiceInfo("Base config(twig)",$configuratorService,$output);
         $this->showTwigConfig($service->getConfig(),$output);
+        
         $output->writeln("" );
         $configuratorService=$this->getContainer()->get('prototype.gridbuilder.configurator.service');
         $namesOfServices=$configuratorService->getNamesOfServices();
         $service=$configuratorService->getService($route["_route"], $entityName);
         $this->printServiceInfo("Grid builder config",$configuratorService,$output);
+        
+        $output->writeln("");
+        $configuratorService=$this->getContainer()->get('prototype.formtype.configurator.service');
+        $namesOfServices=$configuratorService->getNamesOfServices();
+        $service=$configuratorService->getService($route["_route"], $entityName);
+        $this->printServiceInfo("FormType config",$configuratorService,$output);
         
         
     }
@@ -77,11 +84,31 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
     protected function printServiceInfo($name,$service,$output)
     {
         $serviceArray=$service->getChosen();
-        $output->writeln("  ".$name.": " );
+        
+        if($name){
+            $output->writeln("  ".$name.": " );
+        }
+        
+        if($serviceArray['phrase']){
         $output->writeln("      phrase: <info>" .$serviceArray['phrase']."</info>" );
-        $output->writeln("      servicename: <comment>" .$serviceArray['serviceid']."</comment>" );
-        $output->writeln("      class: <comment>" .get_class($serviceArray['service'])."</comment>" );
-
+        }
+        if($serviceArray['serviceid'])
+        {    
+            $output->writeln("      servicename: <comment>" .$serviceArray['serviceid']."</comment>" );
+        }
+        else
+        {
+             $output->writeln("      servicename: <comment>none</comment>" );
+        }    
+        
+        if($serviceArray['service'])
+        {    
+            $output->writeln("      class: <comment>" .get_class($serviceArray['service'])."</comment>" );
+        }
+        else
+        {
+             $output->writeln("      class: <comment>none</comment>" );
+        }    
       
     }
 

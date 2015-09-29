@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 use Core\PrototypeBundle\DependencyInjection\Compiler\ConfigPass;
 use Core\PrototypeBundle\DependencyInjection\Compiler\GridBuilderPass;
+use Core\PrototypeBundle\DependencyInjection\Compiler\FormTypePass;
 
 class CorePrototypeBundle extends Bundle// implements BundleDependencyInterface
 {
@@ -36,5 +37,6 @@ class CorePrototypeBundle extends Bundle// implements BundleDependencyInterface
         parent::build($container);
         $container->addCompilerPass(new ConfigPass());
         $container->addCompilerPass(new GridBuilderPass());
+        $container->addCompilerPass(new FormTypePass());
     }
 }

@@ -18,6 +18,7 @@ class FormTypePass implements CompilerPassInterface
                 'prototype.formtype.configurator.service'
         );
 
+        
         $taggedServices = $container->findTaggedServiceIds(
                 'prototype.formtype'
         );
