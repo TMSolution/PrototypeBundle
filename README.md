@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # PrototypeBundle installation description
 
 >by Damian Piela <damian.piela@tmsolution.pl>
@@ -30,9 +30,4 @@ public function registerBundles()
 }
 ```
 
-=======
-Prototype
-=========
 
-A Symfony project created on August 14, 2015, 3:19 pm.
->>>>>>> origin/master
