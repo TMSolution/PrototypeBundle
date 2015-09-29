@@ -18,7 +18,13 @@ To install the application tools follow the steps:
             }
 ```
 and then clone the PhantomBundle 
+
 ***if you have access to the TMSolution account, otherwise fork the bundle on your own github account***
+
+and then run the command:
+```
+composer update
+```
 
 3.Add the lines below:
 ```
@@ -32,11 +38,9 @@ and then clone the PhantomBundle
             new Core\PrototypeBundle\CorePrototypeBundle(),
             new PhantomBundle\PhantomBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+            new Boekkooi\Bundle\JqueryValidationBundle\BoekkooiJqueryValidationBundle(),
 ```
-and then run the command:
-```
-composer update
-```
+
 4.In the next step  database schema is needed. Please create it follow the command below:
 ```
 doctrine:schema:create
