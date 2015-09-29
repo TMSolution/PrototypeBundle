@@ -24,7 +24,6 @@
         "tmsolution/datagrid-bundle": "2.*",
         "friendsofsymfony/jsrouting-bundle": "1.*",
         "knplabs/knp-paginator-bundle": "2.*",
-        "boekkooi/jquery-validation-bundle": "dev-master"
         "boekkooi/jquery-validation-bundle": "0.3.0"
 
         
