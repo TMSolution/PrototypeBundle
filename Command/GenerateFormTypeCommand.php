@@ -142,7 +142,7 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
         $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $input);
-        $fileName = $directory . DIRECTORY_SEPARATOR . "FormType.php";
+        $fileName = $directory . DIRECTORY_SEPARATOR . $objectName.".php";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
         $formTypeNamespaceName = $this->getFormTypeNamespaceName($entityName, $input);
