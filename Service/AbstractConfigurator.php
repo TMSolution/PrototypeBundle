@@ -126,7 +126,7 @@ class AbstractConfigurator {
         $forEntity=[];
         $universal=[];
         
-        dump($this->servicesConfigs);
+      
         foreach($this->servicesConfigs as $serviceConfig)
         {
             if($serviceConfig['entity']==$entity )
