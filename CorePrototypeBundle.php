@@ -6,7 +6,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 use Core\PrototypeBundle\DependencyInjection\Compiler\ConfigPass;
-use Core\PrototypeBundle\DependencyInjection\Compiler\GridBuilderPass;
+use Core\PrototypeBundle\DependencyInjection\Compiler\GridConfigPass;
 use Core\PrototypeBundle\DependencyInjection\Compiler\FormTypePass;
 
 class CorePrototypeBundle extends Bundle// implements BundleDependencyInterface
