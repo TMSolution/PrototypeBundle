@@ -16,14 +16,14 @@ use APY\DataGridBundle\Grid\Export\XMLExport;
 use TMSolution\DataGridBundle\Grid\Column\NumberColumn;
 use TMSolution\DataGridBundle\Grid\Column\TextColumn;
 use TMSolution\DataGridBundle\Grid\Action\RowAction;
-use TMSolution\DataGridBundle\GridBuilder\GridBuilder;
+use TMSolution\DataGridBundle\GridBuilder\GridConfig;
 
 /**
  * GridConifg  for 'AppBundle\Entity\Product'.
  *
  * Generated with {@see TMSolution\GridBundle\Command\GridConfigCommand}.
  */
-class AssociationGridConfig extends GridBuilder {
+class AssociationGridConfig extends GridConfig {
 
     protected $request;
     public function buildGrid($grid, $routePrefix) {
