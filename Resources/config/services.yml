@@ -34,7 +34,7 @@ services:
         tags:
             -  { name: prototype.config }  
 ############################################################    
-    prototype..configurator.service:
+    prototype.gridconfig.configurator.service:
         class: Core\PrototypeBundle\Service\GridConfigConfigurator
         arguments: [@service_container] 
     #niezgrabna 
