@@ -56,7 +56,7 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
         $this->showTwigConfig($service->getConfig(),$output);
         
         $output->writeln("" );
-        $configuratorService=$this->getContainer()->get('prototype.gridbuilder.configurator.service');
+        $configuratorService=$this->getContainer()->get('prototype.gridconfig.configurator.service');
         $namesOfServices=$configuratorService->getNamesOfServices();
         $service=$configuratorService->getService($route["_route"], $entityName);
         $this->printServiceInfo("Grid builder config",$configuratorService,$output);
