@@ -6,20 +6,20 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
-class GridBuilderPass implements CompilerPassInterface
+class GridConfigPass implements CompilerPassInterface
 {
        public function process(ContainerBuilder $container) {
 
-        if (!$container->has('prototype.gridbuilder.configurator.service')) {
+        if (!$container->has('prototype.gridconfig.configurator.service')) {
             return;
         }
 
         $definition = $container->findDefinition(
-                'prototype.gridbuilder.configurator.service'
+                'prototype.gridconfig.configurator.service'
         );
 
         $taggedServices = $container->findTaggedServiceIds(
-                'prototype.gridbuilder'
+                'prototype.gridconfig'
         );
         
        

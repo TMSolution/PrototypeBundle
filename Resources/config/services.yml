@@ -34,15 +34,15 @@ services:
         tags:
             -  { name: prototype.config }  
 ############################################################    
-    prototype.gridbuilder.configurator.service:
-        class: Core\PrototypeBundle\Service\GridBuilderConfigurator
+    prototype..configurator.service:
+        class: Core\PrototypeBundle\Service\GridConfigConfigurator
         arguments: [@service_container] 
     #niezgrabna 
-    prototype.gridbuilder:
-        class: TMSolution\DataGridBundle\GridBuilder\GridBuilder
+    prototype.gridconfig:
+        class: TMSolution\DataGridBundle\GridConfig\GridConfig
         arguments: [%prototype_config_params%]        
         tags:
-            -  { name: prototype.gridbuilder }
+            -  { name: prototype.gridconfig }
 ################################################################               
     prototype.formtype.configurator.service:
         class: Core\PrototypeBundle\Service\FormTypeConfigurator
@@ -67,11 +67,11 @@ services:
             -  { name: prototype.config, route: core_prototype_associationcontroller_ }            
 
             
-    prototype.gridconfig.associationgridbuilder:
+    prototype.gridconfig.associationgridconfig:
         class: Core\PrototypeBundle\Config\AssociationGridConfig
         arguments: [@service_container]        
         tags:
-            -  { name: prototype.gridbuilder, route: core_prototype_associationcontroller_ }        
+            -  { name: prototype.gridconfig, route: core_prototype_associationcontroller_ }        
    
     prototype.ajax.config:
         class: Core\PrototypeBundle\Service\Config
