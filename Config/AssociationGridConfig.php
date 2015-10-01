@@ -16,7 +16,7 @@ use APY\DataGridBundle\Grid\Export\XMLExport;
 use TMSolution\DataGridBundle\Grid\Column\NumberColumn;
 use TMSolution\DataGridBundle\Grid\Column\TextColumn;
 use TMSolution\DataGridBundle\Grid\Action\RowAction;
-use TMSolution\DataGridBundle\GridBuilder\GridConfig;
+use TMSolution\DataGridBundle\GridConfig\GridConfig;
 
 /**
  * GridConifg  for 'AppBundle\Entity\Product'.
