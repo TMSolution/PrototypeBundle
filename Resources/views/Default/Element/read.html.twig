@@ -43,11 +43,11 @@
                 {{ "Back"|trans}}
             </button>
             <span class="pull-right">   
-                <a href="{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn">
+                <a href="{{ path(deleteActionName, routeParams)}}" class="btn btn-default">
                     {{ "Delete"|trans}} 
 
                 </a>
-                <a href="{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" class="btn">
+                <a href="{{ path(editActionName, routeParams)}}" class="btn btn-default">
                     {{ "Edit"|trans}}
                 </a>
             </span>

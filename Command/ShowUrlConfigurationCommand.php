@@ -48,6 +48,7 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
         $output->writeln("");
         $output->writeln("Services: ");
         $output->writeln("");
+        
         $configuratorService=$this->getContainer()->get('prototype.configurator.service');
         $namesOfServices=$configuratorService->getNamesOfServices();
         $service=$configuratorService->getService($route["_route"], $entityName);

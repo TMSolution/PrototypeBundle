@@ -3,8 +3,8 @@ parameters:
     prototype.association.config.list.parameters:
         twig_base_index: 'CorePrototypeBundle:Association\Base:index.html.twig'
     
-    prototype.association.config.parameters:
-        twig_element_read: 'CorePrototypeBundle:Association\Element:read.html.twig'
+   # prototype.association.config.parameters:
+      #  twig_element_read: 'CorePrototypeBundle:Association\Element:read.html.twig'
         
       
         
@@ -62,7 +62,7 @@ services:
             
     prototype.association.config:
         class: Core\PrototypeBundle\Service\Config
-        arguments: [@prototype.config,%prototype.association.config.parameters%]        
+        arguments: [@prototype.config]        
         tags:
             -  { name: prototype.config, route: core_prototype_associationcontroller_ }            
 
