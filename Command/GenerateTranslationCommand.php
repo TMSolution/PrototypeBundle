@@ -90,18 +90,30 @@ class GenerateTranslationCommand extends ContainerAwareCommand
         $entities = [];
         foreach ($metadata->getMetadata() as $m) {
             $entityName = $m->getName();
-
-            $model = $this->getContainer()->get("model_factory")->getModel($entityName);
-            $fieldsInfo = $model->getFieldsInfo();
-
+            /* $model = $this->getContainer()->get("model_factory")->getModel($entityName);
+              $fieldsInfo = $model->getFieldsInfo();
+             */
             $classPath = $this->getClassPath($entityName, $manager);
             $entityReflection = new ReflectionClass($entityName);
-            $lowerPrefix = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityReflection->getNamespaceName())));
+            $methods = $entityReflection->getMethods();
+            $fields = [];
+            foreach ($methods as $method) {
 
-            // $lowerObjectName = strtolower($entityReflection->getShortName());
+                $name = $method->getName();
+
+                if ($method->isPublic() && (substr($name, 0, 3) == 'get' || substr($name, 0, 3) == 'has')) {
+                    $name = lcfirst(substr($name, 3));
+                    $fields[] = $name;
+                }
+            }
+
+           
+            $lowerPrefix = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityReflection->getNamespaceName())));
+            $objectName = $entityReflection->getShortName();
             $entities[$entityName]["prefix"] = $lowerPrefix;
-            //$entities[$entityName]["objectName"] = $lowerObjectName;
-            $entities[$entityName]["fieldsInfo"] = $fieldsInfo;
+            $entities[$entityName]["objectName"] = lcfirst($objectName);
+            $entities[$entityName]["section"] = $entityName;
+            $entities[$entityName]["fields"] = $fields;
         }
 
         $directory = $this->createTranslationDirectory($classPath, $entityReflection->getNamespaceName());
