@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="{{ language }}" datatype="plaintext" original="file.ext">
+        <body>
+            
+    {% for entity in entities %}{% for field, fieldParam in entity.fieldsInfo %}{% if field !='id' %}        <trans-unit id="{{entity.prefix}}.{{field|lower}}">
+                <source>{{field}}</source>
+                <target>{{field}}</target>
+            </trans-unit>
+    {% endif %}{% endfor %}{% endfor %}
+    </body>
+    </file>
+</xliff>
