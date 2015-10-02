@@ -35,7 +35,7 @@ Services:
       class: Core\PrototypeBundle\Service\Config
   Grid builder config: 
       phrase: *
-      servicename: prototype.gridbuilder
+      servicename: prototype.gridconfig
       class: TMSolution\DataGridBundle\GridBuilder\GridBuilder
 ```
 For example:
