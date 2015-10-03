@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
+use Symfony\Component\Yaml\Parser;
 use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
@@ -23,29 +24,26 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTranslationCommand extends ContainerAwareCommand
+class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 {
 
     protected function configure()
     {
-        $this->setName('prototype:generate:translation')
-                ->setDescription('Generate translation file for bundle')
-                ->addArgument('name', InputArgument::REQUIRED, 'Insert bundle name or entity path')
-                ->addArgument('language', InputArgument::REQUIRED, 'Insert language shortcut (pl,en,etc...)');
+        $this->setName('prototype:generate:services')
+                ->setDescription('Generate services configuration in bundle services.yml')
+                ->addArgument('name', InputArgument::REQUIRED, 'Insert bundle name or entity path');
     }
 
     protected function getClassPath($entityName, $manager)
     {
-
         $classPath = $manager->getClassMetadata($entityName)->getPath();
         return $classPath;
     }
 
     protected function createTranslationDirectory($classPath, $entityNamespace)
     {
-
         $directory = str_replace("/", DIRECTORY_SEPARATOR, str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . '/' . $entityNamespace)));
-        $directory = $this->replaceLast("Entity", "Resources" . DIRECTORY_SEPARATOR . "translations", $directory);
+        $directory = $this->replaceLast("Entity", "Resources" . DIRECTORY_SEPARATOR . "config", $directory);
 
         if (is_dir($directory) == false) {
             if (mkdir($directory, 0777, true) == false) {
@@ -73,16 +71,26 @@ class GenerateTranslationCommand extends ContainerAwareCommand
         return $subject;
     }
 
+    protected function readYml($file)
+    {
+        try {
+            $yaml = new Parser();
+            return $yaml->parse(file_get_contents($file));
+        } catch (\Exception $e) {
+            throw new \Exception('Error reading yml file.');
+        }
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $language = $input->getArgument('language');
+
 
         $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
         $entities = [];
 
         try {
             $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('name'));
-            $output->writeln(sprintf('Generating translation for bundle "<info>%s</info>"', $bundle->getName()));
+            $output->writeln(sprintf('Generating services.yml  "<info>%s</info>"', $bundle->getName()));
             $bundleMetadata = $manager->getBundleMetadata($bundle);
             foreach ($bundleMetadata->getMetadata() as $metadata) {
                 $entities[] = $metadata->getName();
@@ -93,7 +101,7 @@ class GenerateTranslationCommand extends ContainerAwareCommand
                 $metadata = $model->getMetadata();
                 $entities[] = $metadata->getName();
             } catch (\Exception $e) {
-                $output->writeln("<error>Argument \"".$input->getArgument('name')."\" not exist.</error>");
+                $output->writeln("<error>Argument \"" . $input->getArgument('name') . "\" not exist.</error>");
                 exit;
             }
         }
@@ -126,18 +134,23 @@ class GenerateTranslationCommand extends ContainerAwareCommand
         }
 
         $directory = $this->createTranslationDirectory($classPath, $entityReflection->getNamespaceName());
-        $fileName = $directory . DIRECTORY_SEPARATOR . "messages." . $language . ".xlf";
-        $this->isFileNameBusy($fileName);
+        $fileName = $directory . DIRECTORY_SEPARATOR . "services" . ".yml";
+        //$this->isFileNameBusy($fileName);
+
+
+        $yamlArr = $this->readYml($fileName);
+        dump($yamlArr['services']);
+        exit;
+
         $templating = $this->getContainer()->get('templating');
 
 
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:translation.template.twig", [
-            "language" => $language,
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:services.template.twig", [
             "entities" => $twigEntities
         ]);
 
-        file_put_contents($fileName, $renderedConfig);
-        $output->writeln("Translation file <info>" . $fileName . "</info> generated.");
+        file_put_contents($fileName, $renderedConfig, FILE_APPEND);
+        $output->writeln("Services configuration file <info>" . $fileName . "</info> generated.");
     }
 
 }
