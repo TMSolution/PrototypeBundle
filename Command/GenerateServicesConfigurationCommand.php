@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use Symfony\Component\Yaml\Parser;
+use Symfony\Component\Yaml\Yaml;
 use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
@@ -40,7 +41,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         return $classPath;
     }
 
-    protected function createTranslationDirectory($classPath, $entityNamespace)
+    protected function createDirectory($classPath, $entityNamespace)
     {
         $directory = str_replace("/", DIRECTORY_SEPARATOR, str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . '/' . $entityNamespace)));
         $directory = $this->replaceLast("Entity", "Resources" . DIRECTORY_SEPARATOR . "config", $directory);
@@ -71,14 +72,39 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         return $subject;
     }
 
-    protected function readYml($file)
+    protected function readYml($fileName)
     {
         try {
             $yaml = new Parser();
-            return $yaml->parse(file_get_contents($file));
+            return $yaml->parse(file_get_contents($fileName));
         } catch (\Exception $e) {
             throw new \Exception('Error reading yml file.');
         }
+    }
+
+    protected function checkKeyExist($yamlArr, $key, $output)
+    {
+        $output->writeln("Check key: <info>" . $key . "</info>.");
+        return array_key_exists($key, $yamlArr['services']);
+    }
+
+    protected function addService(&$yamlArr, $key, $class, $argumentsArray, $tags)
+    {
+        $yamlArr['services'][$key] = [
+            'class' => $class,
+            'arguments' => $argumentsArray,
+            'tags' => $tags
+        ];
+    }
+
+    protected function createServiceName($entity, $serviceType, $associationName = null)
+    {
+        $serviceName = str_replace('\\', '.', str_replace('bundle\\entity', '', strtolower($entity)));
+        if ($associationName) {
+            $serviceName .= '.' . strtolower($associationName);
+        }
+        $serviceName .= '.' . strtolower($serviceType);
+        return $serviceName;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -90,7 +116,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 
         try {
             $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('name'));
-            $output->writeln(sprintf('Generating services.yml  "<info>%s</info>"', $bundle->getName()));
+            $output->writeln(sprintf('Generating services.yml for "<info>%s</info>"', $bundle->getName()));
             $bundleMetadata = $manager->getBundleMetadata($bundle);
             foreach ($bundleMetadata->getMetadata() as $metadata) {
                 $entities[] = $metadata->getName();
@@ -107,50 +133,50 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         }
 
         $twigEntities = [];
+
+        $fileName = null;
+        $yamlArr = null;
+
         foreach ($entities as $entityName) {
 
-
-            $classPath = $this->getClassPath($entityName, $manager);
-            $entityReflection = new ReflectionClass($entityName);
-            $methods = $entityReflection->getMethods();
-            $fields = [];
-            foreach ($methods as $method) {
-
-                $name = $method->getName();
-
-                if ($method->isPublic() && (substr($name, 0, 3) == 'get' || substr($name, 0, 3) == 'has')) {
-                    $name = lcfirst(substr($name, 3));
-                    $fields[] = $name;
-                }
+            if (!$fileName) {
+                $classPath = $this->getClassPath($entityName, $manager);
+                $entityReflection = new ReflectionClass($entityName);
+                $directory = $this->createDirectory($classPath, $entityReflection->getNamespaceName());
+                $fileName = $directory . DIRECTORY_SEPARATOR . "services" . ".yml";
             }
 
+            if ($fileName && !$yamlArr) {
+                $yamlArr = $this->readYml($fileName);
+            }
 
-            $lowerPrefix = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityReflection->getNamespaceName())));
-            $objectName = $entityReflection->getShortName();
-            $twigEntities[$entityName]["prefix"] = $lowerPrefix;
-            $twigEntities[$entityName]["objectName"] = lcfirst($objectName);
-            $twigEntities[$entityName]["section"] = $entityName;
-            $twigEntities[$entityName]["fields"] = $fields;
+            if ($fileName && $yamlArr) {
+
+
+                $serviceName = $this->createServiceName($entityName, 'gridconfig');
+                if (!$this->checkKeyExist($yamlArr, $serviceName, $output)) {
+                    $this->addService($yamlArr, $serviceName, $entityName, [ '@service_container'], [['name' => 'prototype.gridconfig', 'route' => 'core_prototype_', 'entity' => $entityName]]);
+                } else {
+                    $output->writeln("Service <comment>" . $serviceName . "</comment> already exist.");
+                }
+
+                $serviceName = $this->createServiceName($entityName, 'associationgridconfig');
+                if (!$this->checkKeyExist($yamlArr, $serviceName, $output)) {
+                    $this->addService($yamlArr, $serviceName, $entityName, [ '@service_container'], [['name' => 'prototype.gridconfig', 'route' => 'core_prototype_', 'entity' => $entityName]]);
+                } else {
+                    $output->writeln("Service <comment>" . $serviceName . "</comment> already exist.");
+                }
+            }
         }
 
-        $directory = $this->createTranslationDirectory($classPath, $entityReflection->getNamespaceName());
-        $fileName = $directory . DIRECTORY_SEPARATOR . "services" . ".yml";
-        //$this->isFileNameBusy($fileName);
-
-
-        $yamlArr = $this->readYml($fileName);
-        dump($yamlArr['services']);
-        exit;
-
-        $templating = $this->getContainer()->get('templating');
-
-
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:services.template.twig", [
-            "entities" => $twigEntities
-        ]);
-
-        file_put_contents($fileName, $renderedConfig, FILE_APPEND);
+        $this->writeYml($fileName, $yamlArr);
         $output->writeln("Services configuration file <info>" . $fileName . "</info> generated.");
+    }
+
+    protected function writeYml($fileName, $yamlArr)
+    {
+        $yamlData = Yaml::dump($yamlArr, 4, 4, false, true);
+        file_put_contents($fileName, $yamlData);
     }
 
 }
