@@ -15,8 +15,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
-use Symfony\Component\Yaml\Parser;
-use Symfony\Component\Yaml\Yaml;
+use Core\PrototypeBundle\Component\Yaml\Parser;
+use Core\PrototypeBundle\Component\Yaml\Dumper;
 use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
@@ -81,6 +81,16 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             throw new \Exception('Error reading yml file.');
         }
     }
+    
+    protected function writeYml($fileName, $yamlArr, $output)
+    {
+        $yaml = new Dumper();
+        $yamlData = $yaml->dump($yamlArr, 4, 0, false, true);
+
+        
+        file_put_contents($fileName, $yamlData);
+        $output->writeln("Services configuration file <info>" . $fileName . "</info> generated.");
+    }
 
     protected function checkKeyExist($yamlArr, $key, $output)
     {
@@ -91,7 +101,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
     protected function addService(&$yamlArr, $key, $class, $argumentsArray, $tags)
     {
         $yamlArr['services'][$key] = [
-            'class' => $class,
+            'class' => "'$class'",
             'arguments' => $argumentsArray,
             'tags' => $tags
         ];
@@ -133,50 +143,52 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         }
 
         $twigEntities = [];
-
         $fileName = null;
         $yamlArr = null;
 
-        foreach ($entities as $entityName) {
+        if ($entities && $entities[0]) {
+            $classPath = $this->getClassPath($entities[0], $manager);
+            $entityReflection = new ReflectionClass($entities[0]);
+            $directory = $this->createDirectory($classPath, $entityReflection->getNamespaceName());
+  
+            $fileName = $directory . DIRECTORY_SEPARATOR . "services" . ".yml";
 
-            if (!$fileName) {
-                $classPath = $this->getClassPath($entityName, $manager);
-                $entityReflection = new ReflectionClass($entityName);
-                $directory = $this->createDirectory($classPath, $entityReflection->getNamespaceName());
-                $fileName = $directory . DIRECTORY_SEPARATOR . "services" . ".yml";
-            }
-
-            if ($fileName && !$yamlArr) {
+            if (file_exists($fileName)) {
                 $yamlArr = $this->readYml($fileName);
             }
+            else{
+                $yamlArr = ['parameters'=>[],'services'=>[]];
+            }
+        }
+        
+  
+        foreach ($entities as $entityName) {
 
             if ($fileName && $yamlArr) {
 
-
                 $serviceName = $this->createServiceName($entityName, 'gridconfig');
                 if (!$this->checkKeyExist($yamlArr, $serviceName, $output)) {
-                    $this->addService($yamlArr, $serviceName, $entityName, [ '@service_container'], [['name' => 'prototype.gridconfig', 'route' => 'core_prototype_', 'entity' => $entityName]]);
+                    $this->addService($yamlArr, $serviceName, $entityName, [ '@service_container'], [['name' => "'prototype.gridconfig'", 'route' => "'core_prototype_'", 'entity' => "'$entityName'"]]);
                 } else {
+                    
+                    
                     $output->writeln("Service <comment>" . $serviceName . "</comment> already exist.");
                 }
 
                 $serviceName = $this->createServiceName($entityName, 'associationgridconfig');
                 if (!$this->checkKeyExist($yamlArr, $serviceName, $output)) {
-                    $this->addService($yamlArr, $serviceName, $entityName, [ '@service_container'], [['name' => 'prototype.gridconfig', 'route' => 'core_prototype_', 'entity' => $entityName]]);
+                    $this->addService($yamlArr, $serviceName, $entityName, [ '@service_container'], [['name' => "'prototype.gridconfig'", 'route' => "'core_prototype_'", 'entity' => "'$entityName'"]]);
                 } else {
                     $output->writeln("Service <comment>" . $serviceName . "</comment> already exist.");
                 }
             }
         }
 
-        $this->writeYml($fileName, $yamlArr);
-        $output->writeln("Services configuration file <info>" . $fileName . "</info> generated.");
+        $this->writeYml($fileName, $yamlArr, $output);
+        
+        
     }
 
-    protected function writeYml($fileName, $yamlArr)
-    {
-        $yamlData = Yaml::dump($yamlArr, 4, 4, false, true);
-        file_put_contents($fileName, $yamlData);
-    }
+    
 
 }
