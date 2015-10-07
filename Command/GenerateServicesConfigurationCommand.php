@@ -12,11 +12,13 @@ namespace Core\PrototypeBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use Core\PrototypeBundle\Component\Yaml\Parser;
 use Core\PrototypeBundle\Component\Yaml\Dumper;
+use Symfony\Component\Console\Input\ArrayInput;
 use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
@@ -32,12 +34,24 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
     {
         $this->setName('prototype:generate:services')
                 ->setDescription('Generate services configuration in bundle services.yml')
-                ->addArgument('name', InputArgument::REQUIRED, 'Insert bundle name or entity path');
+                ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert configuration Bundle')
+                ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity path')
+                ->addArgument('tag', InputArgument::REQUIRED, 'Insert tagname (example:prototype.config,prototype.formtype)')
+                ->addArgument('route', InputArgument::REQUIRED, 'Insert route parameter (example.: core_prototype_ )')
+                ->addArgument('parent', InputArgument::OPTIONAL, 'Insert parent parameter')
+                ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
     }
 
-    protected function getClassPath($entityName, $manager)
+    protected function getConfigFilePath($manager, $input)
     {
-        $classPath = $manager->getClassMetadata($entityName)->getPath();
+        $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('configBundle'));
+        $bundleMetadata = $manager->getBundleMetadata($bundle);
+        return str_replace('/', DIRECTORY_SEPARATOR, $bundleMetadata->getPath()) . DIRECTORY_SEPARATOR . $bundleMetadata->getNamespace() . DIRECTORY_SEPARATOR . 'Resources/config/services.yml';
+    }
+
+    protected function getClassPath($entity, $manager)
+    {
+        $classPath = $manager->getClassMetadata($entity)->getPath();
         return $classPath;
     }
 
@@ -72,23 +86,30 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         return $subject;
     }
 
-    protected function readYml($fileName)
+    protected function readYml($configFullPath)
     {
         try {
-            $yaml = new Parser();
-            return $yaml->parse(file_get_contents($fileName));
+            if (file_exists($configFullPath)) {
+                $yaml = new Parser();
+                $yamlArr = $yaml->parse(file_get_contents($configFullPath));
+            } else {
+                $yamlArr = ['parameters' => [], 'services' => []];
+            }
+
+            return $yamlArr;
         } catch (\Exception $e) {
             throw new \Exception('Error reading yml file.');
         }
     }
-    
+
     protected function writeYml($fileName, $yamlArr, $output)
     {
+
         $yaml = new Dumper();
         $yamlData = $yaml->dump($yamlArr, 4, 0, false, true);
 
-        
-        file_put_contents($fileName, $yamlData);
+        //die($yamlData);
+        file_put_contents($fileName, str_replace("'@service_container'", "@service_container", $yamlData));
         $output->writeln("Services configuration file <info>" . $fileName . "</info> generated.");
     }
 
@@ -98,97 +119,160 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         return array_key_exists($key, $yamlArr['services']);
     }
 
-    protected function addService(&$yamlArr, $key, $class, $argumentsArray, $tags)
+    protected function addService($output, &$yamlArr, $entity, $tag = '', $route = '', $parent = '', $associatedName = null)
     {
-        $yamlArr['services'][$key] = [
+        $serviceName = $this->createServiceName($entity, $tag, $associatedName);
+        $className = $this->createClassName($entity, $tag, $associatedName);
+        if (!$this->checkKeyExist($yamlArr, $serviceName, $output)) {
+            switch ($tag) {
+                //case 'prototype.config':
+                case 'prototype.gridconfig':
+                    $this->addGridConfigService($yamlArr, $serviceName, $className, $entity, $tag, $route, $parent);
+                    break;
+                case 'prototype.formtype':
+                    $this->addFormTypeService($yamlArr, $serviceName, $className, $entity, $tag, $route, $parent);
+                    break;
+            }
+        } else {
+            $output->writeln("Service <comment>" . $serviceName . "</comment> already exist.");
+        }
+    }
+
+    protected function addGridConfigService(&$yamlArr, $serviceName, $class, $entity, $tag = '', $route = '', $parent = '')
+    {
+        $yamlArr['services'][$serviceName] = [
             'class' => "'$class'",
-            'arguments' => $argumentsArray,
-            'tags' => $tags
+            'arguments' => ["@service_container"],
+            'tags' => [['name' => "'$tag'", 'route' => "'$route'", 'entity' => "'$entity'", 'parent' => "'$parent'"]]
         ];
     }
 
-    protected function createServiceName($entity, $serviceType, $associationName = null)
+    protected function addFormTypeService(&$yamlArr, $serviceName, $class, $entity, $tag = '', $route = '', $parent = '')
     {
-        $serviceName = str_replace('\\', '.', str_replace('bundle\\entity', '', strtolower($entity)));
-        if ($associationName) {
-            $serviceName .= '.' . strtolower($associationName);
+        $yamlArr['services'][$serviceName] = [
+            'class' => "'$class'",
+            'arguments' => [],
+            'tags' => [['name' => "'$tag'", 'route' => "'$route'", 'entity' => "'$entity'", 'parent' => "'$parent'"]]
+        ];
+    }
+
+    protected function repairApostrophes(&$yamlArr)
+    {
+        foreach ($yamlArr['services'] as $key => $value) {
+
+            foreach ($value as $key2 => $value2) {
+
+                if ($key2 == 'class' && substr($value2, 0, 1) != "'") {
+                    $yamlArr['services'][$key][$key2] = "'" . $value2 . "'";
+                }
+                if ($key2 == 'tags' && is_array($value2) && substr($value2[0]['entity'], 0, 1) != "'") {
+                    $yamlArr['services'][$key][$key2][0]['entity'] = "'" . $value2[0]['entity'] . "'";
+                }
+            }
         }
-        $serviceName .= '.' . strtolower($serviceType);
+    }
+
+    protected function createServiceName($entity, $tag, $associationName = null)
+    {
+
+        $tagArr = explode('.', $tag);
+        unset($tagArr[0]);
+        $tagName = implode('.', $tagArr);
+
+        switch ($tag) {
+            //case 'prototype.config':
+            case 'prototype.gridconfig':
+            case 'prototype.formtype':
+                $serviceName = str_replace('\\', '.', str_replace('bundle\\entity', '', strtolower($entity)));
+                $serviceName .= '.' . strtolower($tagName);
+                if ($associationName) {
+                    $original = explode('.', $serviceName);
+                    $inserted = [strtolower($associationName)];
+                    array_splice($original, 1, 0, $inserted);
+                    $serviceName = implode('.', $original);
+                }
+                break;
+        }
+
         return $serviceName;
     }
+
+    protected function createClassName($entity, $tag, $associationName = null)
+    {
+
+        switch ($tag) {
+            //case 'prototype.config':
+            case 'prototype.gridconfig':
+                $className = str_replace('\\Entity', '\\Config', $entity) . '\\GridConfig';
+                if ($associationName) {
+                    $className = str_replace('\\Config\\', '\\Config\\' . $associationName . '\\', $className);
+                }
+                break;
+            case 'prototype.formtype':
+                $className = str_replace('\\Entity', '\\Config', $entity) . '\\FormType';
+                if ($associationName) {
+                    $className = str_replace('\\Config\\', '\\Config\\' . $associationName . '\\', $className);
+                }
+                break;
+        }
+
+        return $className;
+    }
+
+    protected function runAssociatedObjectsRecursively($fieldsInfo, &$yamlArr, $input, $output)
+    {
+        $arr = explode('\\', $input->getArgument('entity'));
+        $parentEntity = array_pop($arr);
+
+        $associations = [];
+        foreach ($fieldsInfo as $key => $value) {
+
+            $associationTypes = ["OneToMany", "ManyToMany"];
+            $field = $fieldsInfo[$key];
+            if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) {
+                $this->addService($output, $yamlArr, $value['object_name'], $input->getArgument('tag'), $input->getArgument('route'), $input->getArgument('parent'), $parentEntity);
+            }
+        }
+    }
+
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
 
         $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
-        $entities = [];
+        $configFullPath = $this->getConfigFilePath($manager, $input);
+        $entity = $input->getArgument('entity');
+        $tag = $input->getArgument('tag');
+        $route = $input->getArgument('route');
+        $parent = $input->getArgument('parent');
+        $serviceName = '';
 
-        try {
-            $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('name'));
-            $output->writeln(sprintf('Generating services.yml for "<info>%s</info>"', $bundle->getName()));
-            $bundleMetadata = $manager->getBundleMetadata($bundle);
-            foreach ($bundleMetadata->getMetadata() as $metadata) {
-                $entities[] = $metadata->getName();
-            }
-        } catch (\InvalidArgumentException $e) {
-            try {
-                $model = $this->getContainer()->get("model_factory")->getModel($input->getArgument('name'));
-                $metadata = $model->getMetadata();
-                $entities[] = $metadata->getName();
-            } catch (\Exception $e) {
-                $output->writeln("<error>Argument \"" . $input->getArgument('name') . "\" not exist.</error>");
-                exit;
-            }
+        //Read yaml file to array $yamlArr
+        if ($entity) {
+            $model = $this->getContainer()->get("model_factory")->getModel($entity);
+            $fieldsInfo = $model->getFieldsInfo();
+            $classPath = $this->getClassPath($entity, $manager);
+            $entityReflection = new ReflectionClass($entity);
+            $yamlArr = $this->readYml($configFullPath);
         }
 
-        $twigEntities = [];
-        $fileName = null;
-        $yamlArr = null;
+        //Repair apotrophes on class path
+        $this->repairApostrophes($yamlArr);
 
-        if ($entities && $entities[0]) {
-            $classPath = $this->getClassPath($entities[0], $manager);
-            $entityReflection = new ReflectionClass($entities[0]);
-            $directory = $this->createDirectory($classPath, $entityReflection->getNamespaceName());
-  
-            $fileName = $directory . DIRECTORY_SEPARATOR . "services" . ".yml";
-
-            if (file_exists($fileName)) {
-                $yamlArr = $this->readYml($fileName);
-            }
-            else{
-                $yamlArr = ['parameters'=>[],'services'=>[]];
-            }
-        }
-        
-  
-        foreach ($entities as $entityName) {
-
-            if ($fileName && $yamlArr) {
-
-                $serviceName = $this->createServiceName($entityName, 'gridconfig');
-                if (!$this->checkKeyExist($yamlArr, $serviceName, $output)) {
-                    $this->addService($yamlArr, $serviceName, $entityName, [ '@service_container'], [['name' => "'prototype.gridconfig'", 'route' => "'core_prototype_'", 'entity' => "'$entityName'"]]);
-                } else {
-                    
-                    
-                    $output->writeln("Service <comment>" . $serviceName . "</comment> already exist.");
-                }
-
-                $serviceName = $this->createServiceName($entityName, 'associationgridconfig');
-                if (!$this->checkKeyExist($yamlArr, $serviceName, $output)) {
-                    $this->addService($yamlArr, $serviceName, $entityName, [ '@service_container'], [['name' => "'prototype.gridconfig'", 'route' => "'core_prototype_'", 'entity' => "'$entityName'"]]);
-                } else {
-                    $output->writeln("Service <comment>" . $serviceName . "</comment> already exist.");
-                }
-            }
+        //add service
+        if ($configFullPath && $yamlArr) {
+            $this->addService($output, $yamlArr, $entity, $tag, $route, $parent);
         }
 
-        $this->writeYml($fileName, $yamlArr, $output);
-        
-        
+
+        //generate assoc services
+        if (true === $input->getOption('withAssociated')) {
+            $this->runAssociatedObjectsRecursively($fieldsInfo, $yamlArr, $input, $output);
+        }
+
+        //onetomany manytomany
+        $this->writeYml($configFullPath, $yamlArr, $output);
     }
-
-    
 
 }
