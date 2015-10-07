@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use ReflectionClass;
 use LogicException;
@@ -52,13 +53,14 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         $this->setName('prototype:generate:formtype')
                 ->setDescription('Generate formtype for entity')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity class name')
-                ->addArgument('path', InputArgument::OPTIONAL, 'Insert form type path');
+                ->addArgument('path', InputArgument::OPTIONAL, 'Insert form type path')
+                ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
     }
 
-    protected function getEntityName($input)
+    protected function getEntityName($entity)
     {
         $doctrine = $this->getContainer()->get('doctrine');
-        $entityName = str_replace('/', '\\', $input->getArgument('entity'));
+        $entityName = str_replace('/', '\\', $entity);
         if (($position = strpos($entityName, ':')) !== false) {
             $entityName = $doctrine->getAliasNamespace(substr($entityName, 0, $position)) . '\\' . substr($entityName, $position + 1);
         }
@@ -73,10 +75,10 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         return $classPath;
     }
 
-    protected function createDirectory($classPath, $entityNamespace, $objectName, $input)
+    protected function createDirectory($path, $classPath, $entityNamespace, $objectName)
     {
 
-        if ($path = $input->getArgument('path')) {
+        if ($path) {
             $entityNamespace = $entityNamespace . DIRECTORY_SEPARATOR . $path;
         }
 
@@ -120,35 +122,32 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         return $subject;
     }
 
-    protected function getFormTypeNamespaceName($entityName,$input)
+    protected function getFormTypeNamespaceName($entityName, $path)
     {
         $directory = "Config";
-        if ($path = $input->getArgument('path')) {
-            $directory = str_replace(DIRECTORY_SEPARATOR,"\\","Config\\" . $path);
+        if ($path) {
+            $directory = str_replace(DIRECTORY_SEPARATOR, "\\", "Config\\" . $path);
         }
         $entityNameArr = explode("\\", str_replace("Entity", $directory, $entityName));
         unset($entityNameArr[count($entityNameArr) - 1]);
         return implode("\\", $entityNameArr);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function addFile($entityName, $path, $fieldsInfo, $output)
     {
 
-        $entityName = $this->getEntityName($input);
-        $model = $this->getContainer()->get("model_factory")->getModel($entityName);
-        $fieldsInfo = $model->getFieldsInfo();
         $classPath = $this->getClassPath($entityName);
         $entityReflection = new ReflectionClass($entityName);
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
-        $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $input);
-        $fileName = $directory . DIRECTORY_SEPARATOR . $objectName.".php";
+        
+        
+        $directory = $this->createDirectory($path, $classPath, $entityNamespace, $objectName);
+        $fileName = $directory . DIRECTORY_SEPARATOR . "FormType.php";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
-        $formTypeNamespaceName = $this->getFormTypeNamespaceName($entityName, $input);
+        $formTypeNamespaceName = $this->getFormTypeNamespaceName($entityName, $path);
         $formTypeName = strtolower(str_replace('\\', '_', $entityNamespace));
-
-
 
 
         foreach ($fieldsInfo as $key => $field) {
@@ -167,7 +166,41 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         ]);
 
         file_put_contents($fileName, $renderedConfig);
-        $output->writeln("Update view generated");
+        $output->writeln("Form type " . $entityName . " generated");
+    }
+
+    protected function runAssociatedObjectsRecursively($fieldsInfo, $rootPath, $output)
+    {
+        $associations = [];
+        foreach ($fieldsInfo as $key => $value) {
+
+            $associationTypes = ["OneToMany", "ManyToMany"];
+            $field = $fieldsInfo[$key];
+            if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) {
+                
+                $arr = explode('\\', $value['object_name']);
+                $path = array_pop($arr);
+                $this->addFile($value['object_name'], $rootPath.DIRECTORY_SEPARATOR.$path, $fieldsInfo, $output);
+            }
+        }
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        //add form type
+        $path = $input->getArgument('path');
+        $entity = $input->getArgument('entity');
+        $entityName = $this->getEntityName($entity);
+        $model = $this->getContainer()->get("model_factory")->getModel($entityName);
+        $fieldsInfo = $model->getFieldsInfo();
+        $this->addFile($entityName, $path, $fieldsInfo, $output);
+
+
+        //generate assoc form types
+        if (true === $input->getOption('withAssociated')) {
+
+            $this->runAssociatedObjectsRecursively($fieldsInfo,$path, $output);
+        }
     }
 
 }
