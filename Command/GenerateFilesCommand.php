@@ -40,8 +40,9 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 ->addOption('withFormTypes', null, InputOption::VALUE_NONE, 'Generate Formtype files')
                 ->addOption('withGridConfig', null, InputOption::VALUE_NONE, 'Generate Gridconfig files')
                 ->addOption('withTranslation', null, InputOption::VALUE_NONE, 'Generate Translation files')
-                ->addOption('withReadTwig', null, InputOption::VALUE_NONE, 'Generate read twig element')
-                ->addOption('withUpdateTwig', null, InputOption::VALUE_NONE, 'Generate update twig element')
+                ->addOption('withReadElementTwig', null, InputOption::VALUE_NONE, 'Generate read twig element')
+                ->addOption('withUpdateElementTwig', null, InputOption::VALUE_NONE, 'Generate update twig element')
+                ->addOption('withReadViewContainerTwig', null, InputOption::VALUE_NONE, 'Generate read view twig container')
                 ->addOption('withAll', null, InputOption::VALUE_NONE, 'Generate update twig element');
     }
 
@@ -84,8 +85,11 @@ class GenerateFilesCommand extends ContainerAwareCommand
         $withFormTypes = true === $input->getOption('withFormTypes');
         $withGridConfig = true === $input->getOption('withGridConfig');
         $withTranslation = true === $input->getOption('withTranslation');
-        $withReadTwig = true === $input->getOption('withReadTwig');
-        $withUpdateTwig = true === $input->getOption('withUpdateTwig');
+        $withReadElementTwig = true === $input->getOption('withReadElementTwig');
+        $withUpdateElementTwig = true === $input->getOption('withUpdateElementTwig');
+        $withReadViewContainerTwig = true === $input->getOption('withReadViewContainerTwig');
+        
+        
 
         $withAll = true === $input->getOption('withAll');
 
@@ -157,8 +161,8 @@ class GenerateFilesCommand extends ContainerAwareCommand
             }
 
 
-            if ($withReadTwig || $withAll) {
-                $output->writeln(sprintf('Generate translation file for <info>%s</info>', $entity));
+            if ($withReadElementTwig || $withAll) {
+                $output->writeln(sprintf('Generate read element for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:element:read');
                 $arguments = array(
                     'entity' => $entity,
@@ -168,8 +172,8 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 $returnCode = $command->run($inputCommand, $output);
             }
 
-            if ($withUpdateTwig || $withAll) {
-                $output->writeln(sprintf('Generate translation file for <info>%s</info>', $entity));
+            if ($withUpdateElementTwig || $withAll) {
+                $output->writeln(sprintf('Generate update element for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:element:update');
                 $arguments = array(
                     'entity' => $entity,
@@ -178,6 +182,20 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
+            
+            if ($withReadViewContainerTwig || $withAll) {
+                $output->writeln(sprintf('Generate read view container for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:container:read');
+                $arguments = array(
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder')
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
+            
+            
         }
 
         //translation for bundle
