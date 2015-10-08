@@ -23,20 +23,23 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTwigElementUpdateCommand extends ContainerAwareCommand {
-    
-    
-   
+class GenerateTwigElementUpdateCommand extends ContainerAwareCommand
+{
 
-    protected function configure() {
+    protected function configure()
+    {
+        /*
+         * type "OPTIONAL" for the parameter "rootFolder" was chosen because of compatibility with the global command prototype:generate:files. 
+         * Please do not change!
+         */
         $this->setName('prototype:generate:twig:element:update')
                 ->setDescription('Generate twig element update template.')
-                ->addArgument(
-                        'entity', InputArgument::REQUIRED, 'Insert entity class name'
-        );
+                ->addArgument('entity', InputArgument::OPTIONAL, 'Insert entity class name')
+                ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder');
     }
 
-    protected function getEntityName($input) {
+    protected function getEntityName($input)
+    {
         $doctrine = $this->getContainer()->get('doctrine');
         $entityName = str_replace('/', '\\', $input->getArgument('entity'));
         if (($position = strpos($entityName, ':')) !== false) {
@@ -46,53 +49,55 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand {
         return $entityName;
     }
 
-    protected function getClassPath($entityName) {
+    protected function getClassPath($entityName)
+    {
         $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
         $classPath = $manager->getClassMetadata($entityName)->getPath();
         return $classPath;
     }
-    
-    protected function getGridConfigNamespaceName($entityName)
-    {   
-       
-         $entityNameArr=explode("\\", str_replace("Entity", "Grid", $entityName));
-         unset($entityNameArr[count($entityNameArr)-1]);
-         return implode("\\",$entityNameArr);
-        
-    }
-    
 
-    protected function createDirectory($classPath,$entityNamespace,$objectName) {
-        
-        
-       $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
-       $directory=$this->replaceLast("Entity", "Resources".DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR.$objectName.DIRECTORY_SEPARATOR."Element", $directory);
-      
+    protected function getGridConfigNamespaceName($entityName)
+    {
+
+        $entityNameArr = explode("\\", str_replace("Entity", "Grid", $entityName));
+        unset($entityNameArr[count($entityNameArr) - 1]);
+        return implode("\\", $entityNameArr);
+    }
+
+    protected function createDirectory($classPath, $entityNamespace, $objectName, $rootFolder)
+    {
+
+
+        $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
+        $directory = $this->replaceLast("Entity", "Resources" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . $rootFolder . DIRECTORY_SEPARATOR . $objectName . DIRECTORY_SEPARATOR . "Element", $directory);
+
         if (is_dir($directory) == false) {
-            if (mkdir($directory,0777,true) == false) {
-                throw new UnexpectedValueException("Creating directory failed: ".$directory);
+            if (mkdir($directory, 0777, true) == false) {
+                throw new UnexpectedValueException("Creating directory failed: " . $directory);
             }
         }
-        
-       
+
+
         return $directory;
     }
 
-    protected function calculateFileName($entityReflection) {
+    protected function calculateFileName($entityReflection)
+    {
 
         $fileName = $this->replaceLast("Entity", "Grid", $entityReflection->getFileName());
         return $fileName;
     }
 
-    protected function isFileNameBusy($fileName) {
+    protected function isFileNameBusy($fileName)
+    {
         if (file_exists($fileName) == true) {
-            throw new LogicException("File ".$fileName." exists!");
+            throw new LogicException("File " . $fileName . " exists!");
         }
         return false;
     }
-    
-    
-     protected function replaceLast($search, $replace, $subject) {
+
+    protected function replaceLast($search, $replace, $subject)
+    {
         $position = strrpos($subject, $search);
         if ($position !== false) {
             $subject = \substr_replace($subject, $replace, $position, strlen($search));
@@ -100,31 +105,31 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand {
         return $subject;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
 
         $entityName = $this->getEntityName($input);
-        $model=$this->getContainer()->get("model_factory")->getModel($entityName);
-        $fieldsInfo=$model->getFieldsInfo();  
+        $rootFolder = $input->getArgument('rootFolder');
+        $model = $this->getContainer()->get("model_factory")->getModel($entityName);
+        $fieldsInfo = $model->getFieldsInfo();
         $classPath = $this->getClassPath($entityName);
         $entityReflection = new ReflectionClass($entityName);
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
-        $directory=$this->createDirectory($classPath,$entityNamespace,$objectName);
-        $fileName=$directory.DIRECTORY_SEPARATOR."update.html.twig";
+        $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder);
+        $fileName = $directory . DIRECTORY_SEPARATOR . "update.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
-       
+
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:element.update.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
             "objectName" => $objectName,
             "fieldsInfo" => $fieldsInfo
-            ]);
-        
+        ]);
+
         file_put_contents($fileName, $renderedConfig);
         $output->writeln("Twig element update generated");
     }
-
-   
 
 }

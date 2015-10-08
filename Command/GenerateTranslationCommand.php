@@ -19,8 +19,10 @@ use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
 
+
+
 /**
- * GridConfigCommand generates widget class and his template.
+ * GenerateTranslationCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
 class GenerateTranslationCommand extends ContainerAwareCommand
@@ -28,10 +30,15 @@ class GenerateTranslationCommand extends ContainerAwareCommand
 
     protected function configure()
     {
+        /*
+         * type "OPTIONAL" for the parameter "short Language" was chosen because of compatibility with the global command prototype: generate: files. 
+         * Please do not change!
+         */
         $this->setName('prototype:generate:translation')
-                ->setDescription('Generate translation file for bundle')
-                ->addArgument('name', InputArgument::REQUIRED, 'Insert bundle name or entity path')
-                ->addArgument('language', InputArgument::REQUIRED, 'Insert language shortcut (pl,en,etc...)');
+                ->setDescription('Generate translation file for bundle or entity')
+                ->addArgument('entityOrBundle', InputArgument::REQUIRED, 'Insert bundle name or entity path')
+                ->addArgument('shortLanguage', InputArgument::OPTIONAL, 'Insert language shortcut (pl,en,etc...)','en');
+//                ->addArgument('aaa', InputArgument::OPTIONAL, 'Insert optional');
     }
 
     protected function getClassPath($entityName, $manager)
@@ -75,25 +82,27 @@ class GenerateTranslationCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $language = $input->getArgument('language');
+        
+      
+        $language = $input->getArgument('shortLanguage');
 
         $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
         $entities = [];
 
         try {
-            $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('name'));
-            $output->writeln(sprintf('Generating translation for bundle "<info>%s</info>"', $bundle->getName()));
+            $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('entityOrBundle'));
+            $output->writeln(sprintf('Generating translation for bundle "<info>%s</info>"', $bundle->getName())); 
             $bundleMetadata = $manager->getBundleMetadata($bundle);
             foreach ($bundleMetadata->getMetadata() as $metadata) {
                 $entities[] = $metadata->getName();
             }
         } catch (\InvalidArgumentException $e) {
             try {
-                $model = $this->getContainer()->get("model_factory")->getModel($input->getArgument('name'));
+                $model = $this->getContainer()->get("model_factory")->getModel($input->getArgument('entityOrBundle'));
                 $metadata = $model->getMetadata();
                 $entities[] = $metadata->getName();
             } catch (\Exception $e) {
-                $output->writeln("<error>Argument \"".$input->getArgument('name')."\" not exist.</error>");
+                $output->writeln("<error>Argument \"".$input->getArgument('entityOrBundle')."\" not exist.</error>");
                 exit;
             }
         }

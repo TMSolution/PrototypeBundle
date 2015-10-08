@@ -38,7 +38,11 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 ->addOption('withGridServices', null, InputOption::VALUE_NONE, 'Generate grid services file')
                 ->addOption('withFormTypeServices', null, InputOption::VALUE_NONE, 'Generate formtype services file')
                 ->addOption('withFormTypes', null, InputOption::VALUE_NONE, 'Generate Formtype files')
-                ->addOption('withGridConfig', null, InputOption::VALUE_NONE, 'Generate Gridconfig files');
+                ->addOption('withGridConfig', null, InputOption::VALUE_NONE, 'Generate Gridconfig files')
+                ->addOption('withTranslation', null, InputOption::VALUE_NONE, 'Generate Translation files')
+                ->addOption('withReadTwig', null, InputOption::VALUE_NONE, 'Generate read twig element')
+                ->addOption('withUpdateTwig', null, InputOption::VALUE_NONE, 'Generate update twig element')
+                ->addOption('withAll', null, InputOption::VALUE_NONE, 'Generate update twig element');
     }
 
     protected function getConfigFilePath($manager, $input)
@@ -57,7 +61,7 @@ class GenerateFilesCommand extends ContainerAwareCommand
         $entities = [];
         try {
             $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('entityOrBundle'));
-
+            $bundleName = $bundle->getName();
             $bundleMetadata = $manager->getBundleMetadata($bundle);
             foreach ($bundleMetadata->getMetadata() as $metadata) {
                 $entities[] = $metadata->getName();
@@ -66,6 +70,8 @@ class GenerateFilesCommand extends ContainerAwareCommand
             try {
                 $model = $this->getContainer()->get("model_factory")->getModel($input->getArgument('entityOrBundle'));
                 $metadata = $model->getMetadata();
+                $bundleName = str_replace('\\', '', str_replace('\Entity', null, $metadata->namespace));
+
                 $entities[] = $metadata->getName();
             } catch (\Exception $e) {
                 $output->writeln("<error>Element \"" . $input->getArgument('entityOrBundle') . "\" not exist.</error>");
@@ -77,12 +83,17 @@ class GenerateFilesCommand extends ContainerAwareCommand
         $withFormTypeServices = true === $input->getOption('withFormTypeServices');
         $withFormTypes = true === $input->getOption('withFormTypes');
         $withGridConfig = true === $input->getOption('withGridConfig');
+        $withTranslation = true === $input->getOption('withTranslation');
+        $withReadTwig = true === $input->getOption('withReadTwig');
+        $withUpdateTwig = true === $input->getOption('withUpdateTwig');
+
+        $withAll = true === $input->getOption('withAll');
 
         foreach ($entities as $entity) {
 
             $output->writeln(sprintf('Entity: "<info>%s</info>"', $entity));
 
-            if ($withGridServices) {
+            if ($withGridServices || $withAll) {
                 $output->writeln('Generate grid services.');
                 $command = $this->getApplication()->find('prototype:generate:services');
                 $arguments = array(
@@ -98,7 +109,7 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 $returnCode = $command->run($inputCommand, $output);
             }
 
-            if ($withFormTypeServices) {
+            if ($withFormTypeServices || $withAll) {
                 $output->writeln('Generate formtype services.');
                 $command = $this->getApplication()->find('prototype:generate:services');
                 $arguments = array(
@@ -115,7 +126,7 @@ class GenerateFilesCommand extends ContainerAwareCommand
             }
 
 
-            if ($withFormTypes) {
+            if ($withFormTypes || $withAll) {
                 $output->writeln('Generate form types.');
                 $command = $this->getApplication()->find('prototype:generate:formtype');
                 $pathArr = explode('\\', $entity);
@@ -130,7 +141,7 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 $returnCode = $command->run($inputCommand, $output);
             }
 
-            if ($withGridConfig) {
+            if ($withGridConfig || $withAll) {
                 $output->writeln(sprintf('Generate Gridconfig file for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('datagrid:generate:grid:config');
                 $pathArr = explode('\\', $entity);
@@ -139,11 +150,57 @@ class GenerateFilesCommand extends ContainerAwareCommand
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder'),
                     'path' => $path,
-                    '--associated' => null,
+                    '--associated' => null
                 );
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
+
+
+            if ($withReadTwig || $withAll) {
+                $output->writeln(sprintf('Generate translation file for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:element:read');
+                $arguments = array(
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder')
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+
+            if ($withUpdateTwig || $withAll) {
+                $output->writeln(sprintf('Generate translation file for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:element:update');
+                $arguments = array(
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder')
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+        }
+
+        //translation for bundle
+        if (!empty($entities) && ($withTranslation || $withAll)) {
+
+            $output->writeln(sprintf('Generate translation file for <info>%s</info>', $entity));
+            $command = $this->getApplication()->find('prototype:generate:translation');
+
+            //for polish
+            $arguments = array(
+                'entityOrBundle' => $bundleName,
+                'shortLanguage' => 'pl'
+            );
+            $inputCommand = new ArrayInput($arguments);
+            $returnCode = $command->run($inputCommand, $output);
+
+            //for english
+            $arguments = array(
+                'entityOrBundle' => $bundleName,
+                'shortLanguage' => 'en'
+            );
+            $inputCommand = new ArrayInput($arguments);
+            $returnCode = $command->run($inputCommand, $output);
         }
     }
 
