@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use Core\PrototypeBundle\Component\Yaml\Parser;
 use Core\PrototypeBundle\Component\Yaml\Dumper;
-use Symfony\Component\Console\Input\ArrayInput;
+//use Symfony\Component\Console\Input\ArrayInput;
 use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
@@ -35,10 +35,11 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         $this->setName('prototype:generate:services')
                 ->setDescription('Generate services configuration in bundle services.yml')
                 ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert configuration Bundle')
+                ->addArgument('rootSpace', InputArgument::REQUIRED, 'Insert rootSpace')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity path')
                 ->addArgument('tag', InputArgument::REQUIRED, 'Insert tagname (example:prototype.config,prototype.formtype)')
                 ->addArgument('route', InputArgument::REQUIRED, 'Insert route parameter (example.: core_prototype_ )')
-                ->addArgument('parent', InputArgument::OPTIONAL, 'Insert parent parameter')
+                ->addArgument('parentEntity', InputArgument::OPTIONAL, 'Insert parentEntity parameter')
                 ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
     }
 
@@ -119,7 +120,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         return array_key_exists($key, $yamlArr['services']);
     }
 
-    protected function addService($output, &$yamlArr, $entity, $tag = '', $route = '', $parent = '', $associatedName = null)
+    protected function addService($output, &$yamlArr, $entity, $tag = '', $route = '', $parentEntity = '', $associatedName = null)
     {
         $serviceName = $this->createServiceName($entity, $tag, $associatedName);
         $className = $this->createClassName($entity, $tag, $associatedName);
@@ -127,10 +128,10 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             switch ($tag) {
                 //case 'prototype.config':
                 case 'prototype.gridconfig':
-                    $this->addGridConfigService($yamlArr, $serviceName, $className, $entity, $tag, $route, $parent);
+                    $this->addGridConfigService($yamlArr, $serviceName, $className, $entity, $tag, $route, $parentEntity);
                     break;
                 case 'prototype.formtype':
-                    $this->addFormTypeService($yamlArr, $serviceName, $className, $entity, $tag, $route, $parent);
+                    $this->addFormTypeService($yamlArr, $serviceName, $className, $entity, $tag, $route, $parentEntity);
                     break;
             }
         } else {
@@ -138,21 +139,21 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         }
     }
 
-    protected function addGridConfigService(&$yamlArr, $serviceName, $class, $entity, $tag = '', $route = '', $parent = '')
+    protected function addGridConfigService(&$yamlArr, $serviceName, $class, $entity, $tag = '', $route = '', $parentEntity = '')
     {
         $yamlArr['services'][$serviceName] = [
             'class' => "'$class'",
             'arguments' => ["@service_container"],
-            'tags' => [['name' => "'$tag'", 'route' => "'$route'", 'entity' => "'$entity'", 'parent' => "'$parent'"]]
+            'tags' => [['name' => "'$tag'", 'route' => "'$route'", 'entity' => "'$entity'", 'parentEntity' => "'$parentEntity'"]]
         ];
     }
 
-    protected function addFormTypeService(&$yamlArr, $serviceName, $class, $entity, $tag = '', $route = '', $parent = '')
+    protected function addFormTypeService(&$yamlArr, $serviceName, $class, $entity, $tag = '', $route = '', $parentEntity = '')
     {
         $yamlArr['services'][$serviceName] = [
             'class' => "'$class'",
             'arguments' => [],
-            'tags' => [['name' => "'$tag'", 'route' => "'$route'", 'entity' => "'$entity'", 'parent' => "'$parent'"]]
+            'tags' => [['name' => "'$tag'", 'route' => "'$route'", 'entity' => "'$entity'", 'parentEntity' => "'$parentEntity'"]]
         ];
     }
 
@@ -221,8 +222,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 
     protected function runAssociatedObjectsRecursively($fieldsInfo, &$yamlArr, $input, $output)
     {
-        $arr = explode('\\', $input->getArgument('entity'));
-        $parentEntity = array_pop($arr);
+
 
         $associations = [];
         foreach ($fieldsInfo as $key => $value) {
@@ -230,11 +230,12 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             $associationTypes = ["OneToMany", "ManyToMany"];
             $field = $fieldsInfo[$key];
             if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) {
-                $this->addService($output, $yamlArr, $value['object_name'], $input->getArgument('tag'), $input->getArgument('route'), $input->getArgument('parent'), $parentEntity);
+                $arr = explode('\\', $input->getArgument('entity'));
+                $last = array_pop($arr);
+                $this->addService($output, $yamlArr, $value['object_name'], $input->getArgument('tag'), $input->getArgument('route'), $input->getArgument('parentEntity'), $last);
             }
         }
     }
-
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -245,7 +246,12 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         $entity = $input->getArgument('entity');
         $tag = $input->getArgument('tag');
         $route = $input->getArgument('route');
-        $parent = $input->getArgument('parent');
+        $parentEntity = $input->getArgument('parentEntity');
+        
+        $rootSpace = $input->getArgument('rootSpace');
+        
+        
+        
         $serviceName = '';
 
         //Read yaml file to array $yamlArr
@@ -262,7 +268,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 
         //add service
         if ($configFullPath && $yamlArr) {
-            $this->addService($output, $yamlArr, $entity, $tag, $route, $parent);
+            $this->addService($output, $yamlArr, $entity, $tag, $route, $parentEntity);
         }
 
 
