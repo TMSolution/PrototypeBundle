@@ -35,6 +35,7 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert configBundle')
                 ->addArgument('entityOrBundle', InputArgument::REQUIRED, 'Insert Entity or Bundle')
                 ->addArgument('rootFolder', InputArgument::REQUIRED, 'Insert rootFolder(SuperAdmin,Admin,Agent,...)')
+                ->addOption('withConfigServices', null, InputOption::VALUE_NONE, 'Generate config services file')
                 ->addOption('withGridServices', null, InputOption::VALUE_NONE, 'Generate grid services file')
                 ->addOption('withFormTypeServices', null, InputOption::VALUE_NONE, 'Generate formtype services file')
                 ->addOption('withFormTypes', null, InputOption::VALUE_NONE, 'Generate Formtype files')
@@ -80,6 +81,7 @@ class GenerateFilesCommand extends ContainerAwareCommand
             }
         }
 
+        $withConfigServices = true === $input->getOption('withConfigServices');
         $withGridServices = true === $input->getOption('withGridServices');
         $withFormTypeServices = true === $input->getOption('withFormTypeServices');
         $withFormTypes = true === $input->getOption('withFormTypes');
@@ -97,6 +99,22 @@ class GenerateFilesCommand extends ContainerAwareCommand
 
             $output->writeln(sprintf('Entity: "<info>%s</info>"', $entity));
 
+            if ($withConfigServices || $withAll) {
+                $output->writeln('Generate grid services.');
+                $command = $this->getApplication()->find('prototype:generate:services');
+                $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
+                    'rootSpace' => $input->getArgument('rootFolder'),
+                    'entity' => $entity,
+                    'tag' => 'prototype.config',
+                    'route' => 'core_prototype_',
+                    'parentEntity' => '',
+                    '--withAssociated' => null,
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
             if ($withGridServices || $withAll) {
                 $output->writeln('Generate grid services.');
                 $command = $this->getApplication()->find('prototype:generate:services');
@@ -156,7 +174,9 @@ class GenerateFilesCommand extends ContainerAwareCommand
                     'path' => $path,
                     '--associated' => null
                 );
+                
                 $inputCommand = new ArrayInput($arguments);
+                
                 $returnCode = $command->run($inputCommand, $output);
             }
 

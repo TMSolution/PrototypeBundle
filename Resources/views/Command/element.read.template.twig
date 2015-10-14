@@ -4,7 +4,10 @@
     <table class="record_properties table table-hover table-striped">
         <tbody>
             {% for field, fieldParam in fieldsInfo %}
-
+                {% if field.type !='4' and  field.type !='8'%}
+                
+                
+                
               <!-- Field {{field}} -->  
               {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
                     <tr>
@@ -27,6 +30,10 @@
                     </tr>
                 {{ "{% endif %}" }}    
 
+                
+                {% endif %}
+                
+                
             {% endfor %}
 
         </tbody>

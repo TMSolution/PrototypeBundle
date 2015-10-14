@@ -13,8 +13,8 @@
         {{ "{{ form_errors(form) }}" }}
 
         {% for field, fieldParam in fieldsInfo %}
-            {% if field!='id'%}
-
+            {% if field!='id' and field.type !='4' and  field.type !='8' %}
+    
                 <!-- {{field}} -->
                 <div class="form-group">
                     {{ "{{ form_label(form." }}{{field}}{{ ") }}" }}
