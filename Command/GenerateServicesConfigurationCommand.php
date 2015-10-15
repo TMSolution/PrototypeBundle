@@ -334,7 +334,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 $last = array_pop($arr);
 
                 $parameterName = $this->addParameters($yamlArr, $value['object_name'], $input->getArgument('tag'), $bundleName, $rootSpace, $objectName, $output, false);
-                $this->addService($output, $yamlArr, $value['object_name'], $input->getArgument('tag'), $input->getArgument('route'), $input->getArgument('parentEntity'), $last, $parameterName, $rootSpace);
+                $this->addService($output, $yamlArr, $value['object_name'], $input->getArgument('tag'), 'core_prototype_associationcontroller_', $input->getArgument('parentEntity'), $last, $parameterName, $rootSpace);
             }
         }
     }
