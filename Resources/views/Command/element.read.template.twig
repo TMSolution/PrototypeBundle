@@ -1,57 +1,80 @@
 {{ "{% extends config.get('twig_container_read') %}" }}
 
 {{ "{% block element %}" }}
-    <table class="record_properties table table-hover table-striped">
-        <tbody>
-            {% for field, fieldParam in fieldsInfo %}
-                {% if field.type !='4' and  field.type !='8'%}
-                
-                
-                
-              <!-- Field {{field}} -->  
-              {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
+<table class="record_properties table table-hover table-striped">
+    <tbody>
+        {% for field, fieldParam in fieldsInfo %}
+            {% if fieldParam.is_object %}
+                {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
+                 <!-- Field {{field}} {{fieldParam.association}} -->  
+                    {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
                     <tr>
                         <td><strong>{{field|trans}}</strong></td>
                         <td>
                             <ul>
                                 {{ "{% for item in properties."}}{{field}}{{" %} "}}
-                                    <li>
-                                       {{ " {% if item %}{{item}}{% else %}-{% endif %}" }}
-                                    </li>   
+                                <li>
+                                    {{ " {% if item %}{{item}}{% else %}-{% endif %}" }}
+                                </li>   
                                 {{ "{% endfor %}" }}
                             </ul>
                         </td>
                     </tr> 
-                {{ "{% else %}" }}
+                    {{ "{% else %}" }}
 
                     <tr>
                         <td><strong>{{field|trans}}</strong></td>
                         <td>{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</td>
                     </tr>
+                    {{ "{% endif %}" }}    
+
+                {% endif %}
+            {% else %}
+
+                <!-- Field {{field}} {{fieldParam.type}} -->  
+                {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
+                <tr>
+                    <td><strong>{{field|trans}}</strong></td>
+                    <td>
+                        <ul>
+                            {{ "{% for item in properties."}}{{field}}{{" %} "}}
+                            <li>
+                                {{ " {% if item %}{{item}}{% else %}-{% endif %}" }}
+                            </li>   
+                            {{ "{% endfor %}" }}
+                        </ul>
+                    </td>
+                </tr> 
+                {{ "{% else %}" }}
+
+                <tr>
+                    <td><strong>{{field|trans}}</strong></td>
+                    <td>{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</td>
+                </tr>
                 {{ "{% endif %}" }}    
 
-                
-                {% endif %}
-                
-                
-            {% endfor %}
 
-        </tbody>
-    </table>
-    <div>
-        <a href="{{ "{{ path(listActionName, { 'entityName': entityName})}}" }}" class=" prevButton btn">
-            {{ "{{ 'Back'|trans}}" }}
+            {% endif %}
+
+
+        {% endfor %}
+
+    </tbody>
+</table>
+<div>
+    <a href="{{ "{{ path(listActionName, { 'entityName': entityName})}}" }}" class=" prevButton btn">
+        {{ "{{ 'Back'|trans}}" }}
+    </a>
+    <span class="pull-right">   
+        <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
+            {{ "{{ 'Delete'|trans}} " }}
+
         </a>
-        <span class="pull-right">   
-            <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
-               {{ "{{ 'Delete'|trans}} " }}
-
-            </a>
-            <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
-                {{ "{{ 'Edit'|trans}}" }}
-            </a>
-        </span>
-    </div>
+        <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
+            {{ "{{ 'Edit'|trans}}" }}
+        </a>
+    </span>
+</div>
 
 
 

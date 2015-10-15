@@ -121,6 +121,8 @@ class GenerateTwigElementReadCommand extends ContainerAwareCommand
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
 
+        //dump($fieldsInfo);exit;
+        
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:element.read.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
