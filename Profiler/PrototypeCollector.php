@@ -2,34 +2,44 @@
 
 namespace Core\PrototypeBundle\Profiler;
 
+use AppKernel;
+use Exception;
 use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
-
-use Exception;
+use Core\PrototypeBundle\Command\ShowUrlConfigurationCommand;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
 
 /**
  * @author Krzysiek Piasecki <krzysiekpiasecki@gmail.com>
  */
 class PrototypeCollector implements DataCollectorInterface
 {
-
-    private $router = null;
+    private $data = [];
     
     public function __construct()
     {
-        //$this->router = $router;
+        
     }
     
     public function collect(Request $request, Response $response, Exception $exception = null)
     {
-        $this->data = array(
-            'locale' => $request->getLocale(),
-            'memory' => memory_get_peak_usage(true),
-            'uri' => $request->getRequestUri(),
-            'basePath' => $request->getBasePath(),                  
-        );
+        $kernel = new \AppKernel('dev', true);                
+        $kernel->boot();
+        $container = $kernel->getContainer();
+        $router = $container->get('router');
+        $classmapper = $container->get('classmapperservice');
+        $data["header"] = "Url configuration";
+        $data["uri"] = $request->getRequestUri();
+        $route = $router->match($data["uri"]);           
+        $data["route"] = $route["_route"];
+        $data["controller"] = $route["_controller"];
+        $data["locale"] = $route["_locale"];
+        $data["entityName"] = $route["entityName"];
+        $data["entityClass"] = $classmapper->getEntityClass($route["entityName"], $data["locale"]);        
+        $this->data = $data;
     }
     
     public function getData()
@@ -37,15 +47,6 @@ class PrototypeCollector implements DataCollectorInterface
         return $this->data;
     }
 
-    public function getUri()
-    {
-        return $this->data['uri'];
-    }
-    
-    public function getMemory()
-    {
-        return $this->data['memory'];
-    }
             
     public function getName()
     {
