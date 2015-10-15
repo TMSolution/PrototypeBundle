@@ -7,12 +7,12 @@
     {% endset %}
 
     {% set text %}
-    <div class="sf-toolbar-info-piece">
-        Uri: {{ collector.data.uri }} 
-    </div>
-    <div class="sf-toolbar-info-piece">
-        Locale: {{ collector.data.locale }}
-    </div>
+    <div>URI: {{ collector.data.uri }}</div>
+    <div>Route: {{ collector.data.route }}</div>
+    <div>Controller: {{ collector.data.controller }}</div>
+    <div>Locale: {{ collector.data.locale }}</div>
+    <div>EntityName: {{ collector.data.entityName }}</div>
+    <div>EntityClass: {{ collector.data.entityClass }}</div>    
     {% endset %}
 
     {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
@@ -32,8 +32,12 @@
 
 {% block panel %}
     {# Optional, for showing the most details. #}
-    <h2>Prototype</h2>
-    <p>
-        <em>{{ collector.getUri() }}</em>
-    </p>
+    <h1>Prototype</h1>
+    <h2>{{ collector.data.header }}</h2>
+    <div>URI: {{ collector.data.uri }}</div>
+    <div>Route: {{ collector.data.route }}</div>
+    <div>Controller: {{ collector.data.controller }}</div>
+    <div>Locale: {{ collector.data.locale }}</div>
+    <div>EntityName: {{ collector.data.entityName }}</div>
+    <div>EntityClass: {{ collector.data.entityClass }}</div>
 {% endblock %}
