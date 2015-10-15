@@ -78,11 +78,11 @@ class FormType extends AbstractType
                 //    'class' => 'css class name',
                 //]   
              ])
-            {% elseif fieldParam.formType=='entity' %}{% if fieldParam.association=='ManyToMany' or fieldParam.association=='OneToMany' %}->add('{{field}}', 'entity', [
-                'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
-                'class' => '{{fieldParam.object_name}}',
-                'expanded' =>false,
-                'multiple'=>true,
+            {% elseif fieldParam.formType=='entity' %}{% if fieldParam.association=='ManyToMany' or fieldParam.association=='OneToMany' %}//->add('{{field}}', 'entity', [
+                //'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
+                //'class' => '{{fieldParam.object_name}}',
+                //'expanded' =>false,
+                //'multiple'=>true,
                 //'label' => 'Label name',
                 //'widget' => 'widget name',
                 //'required' => true,
@@ -95,7 +95,7 @@ class FormType extends AbstractType
                 //    'placeholder' => 'placeholder text',
                 //    'class' => 'css class name',
                 //]   
-             ])
+             //])
             {% else %}->add('{{field}}', 'entity', [
                 'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
                 'class' => '{{fieldParam.object_name}}',
