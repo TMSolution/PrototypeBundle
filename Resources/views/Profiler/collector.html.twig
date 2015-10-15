@@ -1,0 +1,39 @@
+{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        <span class="icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAcCAQAAADVGmdYAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQffAxkBCDStonIVAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAHpJREFUOMtj3PWfgXRAuqZd/5nIsIdhVBPFmgqIjCuYOrJsYtz1fxuUOYER2TQID8afwIiQ8YIkI4TzCv5D2AgaWSuExJKMIDbA7EEVhQEWXJ6FKUY4D48m7HYU/EcWZ8JlE6qfMELPDcUJuEMPxvYazYTDWRMjOcUyAEswO+VjeQQaAAAAAElFTkSuQmCC" alt=""/></span>
+        <span class="sf-toolbar-status">Prototype</span>
+    {% endset %}
+
+    {% set text %}
+    <div class="sf-toolbar-info-piece">
+        Uri: {{ collector.data.uri }} 
+    </div>
+    <div class="sf-toolbar-info-piece">
+        Locale: {{ collector.data.locale }}
+    </div>
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
+
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}    
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+        <span class="icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAcCAQAAADVGmdYAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQffAxkBCDStonIVAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAHpJREFUOMtj3PWfgXRAuqZd/5nIsIdhVBPFmgqIjCuYOrJsYtz1fxuUOYER2TQID8afwIiQ8YIkI4TzCv5D2AgaWSuExJKMIDbA7EEVhQEWXJ6FKUY4D48m7HYU/EcWZ8JlE6qfMELPDcUJuEMPxvYazYTDWRMjOcUyAEswO+VjeQQaAAAAAElFTkSuQmCC" alt=""/></span>
+        <strong>Prototype</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    {# Optional, for showing the most details. #}
+    <h2>Prototype</h2>
+    <p>
+        <em>{{ collector.getUri() }}</em>
+    </p>
+{% endblock %}
