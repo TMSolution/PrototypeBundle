@@ -109,12 +109,46 @@ class GenerateTranslationCommand extends ContainerAwareCommand
         $output->writeln("Services configuration file <info>" . $fileName . "</info> generated.");
     }
 
-    protected function checkKeyExist($yamlArr, $objectName, $key)
+    protected function checkKeyExist($yamlArr, $objectName, $key, $nameSpace)
     {
-        if (array_key_exists($objectName, $yamlArr)) {
-            return array_key_exists($key, $yamlArr[$objectName]);
+
+        if (array_key_exists($nameSpace, $yamlArr)) {
+            if (array_key_exists($objectName, $yamlArr[$nameSpace])) {
+                return array_key_exists($key, $yamlArr[$nameSpace][$objectName]);
+            }
+            return false;
         }
         return false;
+    }
+
+    protected function createYamlPrefix($prefix)
+    {
+        $yaml = NULL;
+        $prefixArr = explode('.', $prefix);
+        $i = 0;
+
+        foreach ($prefixArr as $prefixEl) {
+
+
+
+            for ($z = 1; $z <= $i; $z++) {
+                $yaml.="\x20\x20\x20\x20";
+            }
+            $yaml.=$prefixEl . ": \n";
+            $i++;
+        }
+
+        dump($yaml);
+        return $yaml;
+    }
+
+    function get_last_child_recursive($array)
+    {
+        if (is_array(end($array))) {
+            return $this->get_last_child_recursive(end($array));
+        } else {
+            return key($array);
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -151,6 +185,11 @@ class GenerateTranslationCommand extends ContainerAwareCommand
             $classPath = $this->getClassPath($entities[0], $manager);
             $directory = $this->createTranslationDirectory($classPath, $entityReflection->getNamespaceName());
             $configFullPath = $directory . DIRECTORY_SEPARATOR . "messages." . $language . ".yml";
+
+            $lowerNameSpace = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityReflection->getNamespaceName())));
+            //$yamlPrefix = $this->createYamlPrefix($lowerPrefix);
+            //$yaml = new Parser();
+            //$lowerPrefixArr = $yaml->parse($yamlPrefix);
             $yamlArr = $this->readYml($configFullPath);
 
             $twigEntities = [];
@@ -164,6 +203,8 @@ class GenerateTranslationCommand extends ContainerAwareCommand
 
                 foreach ($methods as $method) {
 
+
+
                     $name = $method->getName();
 
                     if ($method->isPublic() && (substr($name, 0, 3) == 'get' || substr($name, 0, 3) == 'has')) {
@@ -173,12 +214,19 @@ class GenerateTranslationCommand extends ContainerAwareCommand
 
 
 
-                        if (!$this->checkKeyExist($yamlArr, lcfirst($objectName), $name)) {
-                            $yamlArr[lcfirst($objectName)][$name] = $name;
+                        if (!$this->checkKeyExist($yamlArr, lcfirst($objectName), $name, $lowerNameSpace)) {
+
+
+                            $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name] = $name;
                         }
                     }
                 }
             }
+
+
+
+
+
 
 
 

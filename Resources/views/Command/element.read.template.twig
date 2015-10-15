@@ -6,10 +6,10 @@
         {% for field, fieldParam in fieldsInfo %}
             {% if fieldParam.is_object %}
                 {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
-                 <!-- Field {{field}} {{fieldParam.association}} -->  
+                 <!-- Field {{field}} -->  
                     {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
                     <tr>
-                        <td><strong>{{field|trans}}</strong></td>
+                        <td><strong>{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</strong></td>
                         <td>
                             <ul>
                                 {{ "{% for item in properties."}}{{field}}{{" %} "}}
@@ -23,7 +23,7 @@
                     {{ "{% else %}" }}
 
                     <tr>
-                        <td><strong>{{field|trans}}</strong></td>
+                        <td><strong>{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</strong></td>
                         <td>{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</td>
                     </tr>
                     {{ "{% endif %}" }}    
@@ -31,10 +31,10 @@
                 {% endif %}
             {% else %}
 
-                <!-- Field {{field}} {{fieldParam.type}} -->  
+                <!-- Field {{field}} -->  
                 {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
                 <tr>
-                    <td><strong>{{field|trans}}</strong></td>
+                    <td><strong>{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</strong></td>
                     <td>
                         <ul>
                             {{ "{% for item in properties."}}{{field}}{{" %} "}}
@@ -48,7 +48,7 @@
                 {{ "{% else %}" }}
 
                 <tr>
-                    <td><strong>{{field|trans}}</strong></td>
+                    <td><strong>{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</strong></td>
                     <td>{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</td>
                 </tr>
                 {{ "{% endif %}" }}    

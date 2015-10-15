@@ -25,7 +25,7 @@ class FormType extends AbstractType
         
         $builder
         {% for field, fieldParam in fieldsInfo %}{% if field !='id' %}{% if fieldParam.formType=='text' %}->add('{{field}}', '{{fieldParam.formType}}', [
-                //'label' => 'Label name',
+                'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
                 //'widget' => 'widget name',
                 //'required' => true,
                 //'attr' => [
@@ -34,7 +34,7 @@ class FormType extends AbstractType
                 //]
              ])
             {% elseif fieldParam.formType=='number' %}->add('{{field}}', '{{fieldParam.formType}}', [
-                //'label' => 'Label name',
+                'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
                 //'widget' => 'widget name',
                 //'required' => true,
                 //'attr' => [
@@ -43,7 +43,7 @@ class FormType extends AbstractType
                 //]   
              ])
             {% elseif fieldParam.formType=='datetime' %}->add('{{field}}', '{{fieldParam.formType}}', [
-                //'label' => 'Label name',
+                'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
                 'widget' => 'single_text',
                 //'required' => true,
                 'format' => 'dd.MM.yyyy',
@@ -54,7 +54,7 @@ class FormType extends AbstractType
                 ]   
              ]) 
             {% elseif fieldParam.formType=='date' %}->add('{{field}}', '{{fieldParam.formType}}', [
-                //'label' => 'Label name',
+                'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
                 'widget' => 'single_text',
                 //'required' => true,
                 'format' => 'dd.MM.yyyy',
@@ -65,7 +65,7 @@ class FormType extends AbstractType
                 ]   
              ])  
             {% elseif fieldParam.formType=='array' %}->add('{{field}}', 'choice', [
-                //'label' => 'Label name',
+                'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}'
                 //'widget' => 'widget name',
                 //'required' => true,
                 //'choices' => array(
@@ -79,6 +79,7 @@ class FormType extends AbstractType
                 //]   
              ])
             {% elseif fieldParam.formType=='entity' %}{% if fieldParam.association=='ManyToMany' or fieldParam.association=='OneToMany' %}->add('{{field}}', 'entity', [
+                'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
                 'class' => '{{fieldParam.object_name}}',
                 'expanded' =>false,
                 'multiple'=>true,
@@ -96,6 +97,7 @@ class FormType extends AbstractType
                 //]   
              ])
             {% else %}->add('{{field}}', 'entity', [
+                'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
                 'class' => '{{fieldParam.object_name}}',
                 //'label' => 'Label name',
                 //'widget' => 'widget name',
@@ -112,7 +114,7 @@ class FormType extends AbstractType
              ])
             {% endif %} 
             {% elseif fieldParam.formType=='boolean' %}->add('{{field}}', 'checkbox', [
-                //'label' => 'Label name',
+                'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}'
                 //'widget' => 'widget name',
                 //'required' => true,
                 //'attr' => [
@@ -120,7 +122,7 @@ class FormType extends AbstractType
                 //]   
              ]) 
             {% else %}->add('{{field}}', '{{fieldParam.formType}}', [
-                //'label' => 'Label name',
+                'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}'
                 //'widget' => 'widget name',
                 //'required' => true,
                 //'attr' => [

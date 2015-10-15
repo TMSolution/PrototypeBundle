@@ -120,14 +120,17 @@ class GenerateTwigElementReadCommand extends ContainerAwareCommand
         $fileName = $directory . DIRECTORY_SEPARATOR . "read.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
+        
+        $lowerNameSpaceForTranslate = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityNamespace)));
 
         //dump($fieldsInfo);exit;
         
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:element.read.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
-            "objectName" => $objectName,
-            "fieldsInfo" => $fieldsInfo
+            "objectName" => strtolower($objectName),
+            "fieldsInfo" => $fieldsInfo,
+            "lowerNameSpaceForTranslate"=>$lowerNameSpaceForTranslate
         ]);
 
         file_put_contents($fileName, $renderedConfig);

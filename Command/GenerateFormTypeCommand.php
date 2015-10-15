@@ -136,6 +136,8 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         $entityReflection = new ReflectionClass($entityName);
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
+        
+        $lowerNameSpaceForTranslate = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityNamespace)));
                
         $directory = $this->createDirectory($path, $classPath, $entityNamespace, $objectName, $rootFolder);
         $fileName = $directory . DIRECTORY_SEPARATOR . "FormType.php";
@@ -151,10 +153,11 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:formtype.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
-            "objectName" => $objectName,
+            "objectName" => strtolower($objectName),
             "fieldsInfo" => $fieldsInfo,
             "formTypeNamespace" => $formTypeNamespaceName,
-            "formTypeName" => $formTypeName
+            "formTypeName" => $formTypeName,
+            "lowerNameSpaceForTranslate"=>$lowerNameSpaceForTranslate
         ]);
 
         file_put_contents($fileName, $renderedConfig);

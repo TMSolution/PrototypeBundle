@@ -228,6 +228,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                     }
                     if ($key2 == 'tags' && is_array($value2) && substr($value2[0]['entity'], 0, 1) != "'") {
                         $yamlArr['services'][$key][$key2][0]['entity'] = "'" . $value2[0]['entity'] . "'";
+                        $yamlArr['services'][$key][$key2][0]['parentEntity'] = "'" . $value2[0]['parentEntity'] . "'";
                     }
                 }
             }
@@ -322,7 +323,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         return $className;
     }
 
-    protected function runAssociatedObjectsRecursively($fieldsInfo, &$yamlArr, $input, $output, $rootSpace, $objectName, $bundleName)
+    protected function runAssociatedObjectsRecursively($fieldsInfo, &$yamlArr, $input, $output, $rootSpace, $objectName, $bundleName, $entity)
     {
 
 
@@ -336,7 +337,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 $last = array_pop($arr);
 
                 $parameterName = $this->addParameters($yamlArr, $value['object_name'], $input->getArgument('tag'), $bundleName, $rootSpace, $objectName, $output, false);
-                $this->addService($output, $yamlArr, $value['object_name'], $input->getArgument('tag'), 'core_prototype_associationcontroller_', $input->getArgument('parentEntity'), $last, $parameterName, $rootSpace);
+                $this->addService($output, $yamlArr, $value['object_name'], $input->getArgument('tag'), 'core_prototype_associationcontroller_', $entity, $last, $parameterName, $rootSpace);
             }
         }
     }
@@ -382,7 +383,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 
         //generate assoc services
         if (true === $input->getOption('withAssociated')) {
-            $this->runAssociatedObjectsRecursively($fieldsInfo, $yamlArr, $input, $output, $rootSpace, $objectName, $bundleName);
+            $this->runAssociatedObjectsRecursively($fieldsInfo, $yamlArr, $input, $output, $rootSpace, $objectName, $bundleName,$entity);
         }
 
       
