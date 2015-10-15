@@ -25,8 +25,8 @@
 
 {% block menu %}
     <span class="label">
-        <span class="icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAcCAQAAADVGmdYAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQffAxkBCDStonIVAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAHpJREFUOMtj3PWfgXRAuqZd/5nIsIdhVBPFmgqIjCuYOrJsYtz1fxuUOYER2TQID8afwIiQ8YIkI4TzCv5D2AgaWSuExJKMIDbA7EEVhQEWXJ6FKUY4D48m7HYU/EcWZ8JlE6qfMELPDcUJuEMPxvYazYTDWRMjOcUyAEswO+VjeQQaAAAAAElFTkSuQmCC" alt=""/></span>
-        <strong>Prototype</strong>
+{#       <span class="icon"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI" alt=""/></span>
+#}        <strong>Prototype</strong>
     </span>
 {% endblock %}
 
@@ -34,10 +34,28 @@
     {# Optional, for showing the most details. #}
     <h1>Prototype</h1>
     <h2>{{ collector.data.header }}</h2>
-    <div>URI: {{ collector.data.uri }}</div>
-    <div>Route: {{ collector.data.route }}</div>
-    <div>Controller: {{ collector.data.controller }}</div>
-    <div>Locale: {{ collector.data.locale }}</div>
-    <div>EntityName: {{ collector.data.entityName }}</div>
-    <div>EntityClass: {{ collector.data.entityClass }}</div>
+    <div><strong>URI</strong>: {{ collector.data.uri }}</div>
+    <div><strong>Route</strong>: {{ collector.data.route }}</div>
+    <div><strong>Controller</strong>: {{ collector.data.controller }}</div>
+    <div><strong>Locale</strong>: {{ collector.data.locale }}</div>
+    <div><strong>EntityName</strong>: {{ collector.data.entityName }}</div>
+    <div><strong>EntityClass</strong>: {{ collector.data.entityClass }}</div>
+    
+    {% for line in collector.data.config %}
+        <div>{{ line | raw }}</div>    
+    {% endfor %}
+
+    {% for line in collector.data.twigs %}
+        <div>{{ line | raw  }}</div>    
+    {% endfor %}
+
+    
+    {% for line in collector.data.gridconfig %}
+        <div>{{ line | raw  }}</div>    
+    {% endfor %}
+    
+    {% for line in collector.data.formtype %}
+        <div>{{ line | raw  }}</div>    
+    {% endfor %}
+
 {% endblock %}
