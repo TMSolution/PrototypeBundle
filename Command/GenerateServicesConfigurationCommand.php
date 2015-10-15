@@ -167,12 +167,12 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 
                     if ($associated) {
                         $yamlArr['parameters'][$parametersName] = [
-                            'twig_container_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:read.html.twig',
                             'twig_element_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
                             'twig_element_update' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig'
                         ];
                     } else {
                         $yamlArr['parameters'][$parametersName] = [
+                            'twig_container_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:read.html.twig',
                             'twig_element_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
                             'twig_element_update' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig'
                         ];
@@ -311,9 +311,11 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 break;
             case 'prototype.formtype':
                 $className = str_replace('\\Entity', '\\Config', $entity) . '\\FormType';
-                if ($associationName) {
-                    $className = str_replace('\\Config\\', '\\Config\\' . $associationName . '\\', $className);
-                }
+                if ($rootSpace && $rootSpace != $associationName) {
+                        $className = str_replace('\\Config\\', '\\Config\\' . $rootSpace.'\\'.$associationName . '\\', $className);
+                    } else {
+                        $className = str_replace('\\Config\\', '\\Config\\' . $associationName . '\\', $className);
+                    }
                 break;
         }
 
@@ -383,7 +385,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             $this->runAssociatedObjectsRecursively($fieldsInfo, $yamlArr, $input, $output, $rootSpace, $objectName, $bundleName);
         }
 
-        //onetomany manytomany
+      
         $this->writeYml($configFullPath, $yamlArr, $output);
     }
 
