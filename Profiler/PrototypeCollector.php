@@ -30,7 +30,7 @@ class PrototypeCollector implements DataCollectorInterface {
         $router = $container->get('router');
         $classmapper = $container->get('classmapperservice');
         $data["header"] = "Url configuration";
-        $data["uri"] = $request->getRequestUri();
+        $data["uri"] = $request->getPathInfo();
         $route = $router->match($data["uri"]);
         $data["route"] = $route["_route"];
         $data["controller"] = $route["_controller"];
