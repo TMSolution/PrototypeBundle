@@ -39,16 +39,23 @@ class PrototypeCollector implements DataCollectorInterface {
         $data["entityClass"] = $classmapper->getEntityClass($route["entityName"], $data["locale"]);
 
         $configuratorService = $container->get('prototype.configurator.service');
-        $service = $configuratorService->getService($data["route"], $data["entityName"]);
+        $namesOfServices=$configuratorService->getNamesOfServices();
+        
+        print_r($namesOfServices);
+        $service = $configuratorService->getService($data["route"], $data["entityClass"]);
+        
+        
         $data['config'] = $this->printServiceInfo('Config', $configuratorService);
         $data['twigs'] = $this->printTwigConfig($service->getConfig());
 
         $configuratorService = $container->get('prototype.gridconfig.configurator.service');
-        $configuratorService->getService($data["route"], $data["entityName"]);
+        $namesOfServices=$configuratorService->getNamesOfServices();
+        $configuratorService->getService($data["route"], $data["entityClass"]);
         $data['gridconfig'] = $this->printServiceInfo('Grid', $configuratorService);
 
         $configuratorService = $container->get('prototype.formtype.configurator.service');
-        $configuratorService->getService($data["route"], $data["entityName"]);
+        $namesOfServices=$configuratorService->getNamesOfServices();
+        $configuratorService->getService($data["route"], $data["entityClass"]);
         $data['formtype'] = $this->printServiceInfo('Form Type', $configuratorService);
 
         $this->data = $data;
@@ -71,10 +78,10 @@ class PrototypeCollector implements DataCollectorInterface {
         return $output;
     }
 
-    protected function printServiceInfo($name, $service) {
+    protected function printServiceInfo($name, $configuratorService) {
         $output = [];
 
-        $serviceArray = $service->getChosen();
+        $serviceArray = $configuratorService->getChosen();
         if ($name) {
             $output[] = "<br/><h2>" . $name . "</h2>";
         }
