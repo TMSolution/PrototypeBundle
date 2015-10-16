@@ -41,7 +41,6 @@ class PrototypeCollector implements DataCollectorInterface {
         $configuratorService = $container->get('prototype.configurator.service');
         $namesOfServices=$configuratorService->getNamesOfServices();
         
-        print_r($namesOfServices);
         $service = $configuratorService->getService($data["route"], $data["entityClass"]);
         
         
@@ -73,7 +72,14 @@ class PrototypeCollector implements DataCollectorInterface {
         $output = [];
         $output[] = ("Twigs: ");
         foreach ($config as $name => $path) {
-            $output[] = ("<strong>$name</strong>: $path");
+            
+            if(strstr($path,'CorePrototypeBundle:Default')){
+                $output[] = ("<strong>$name</strong>: $path");
+            }
+            else{
+                $output[] = ("<strong>$name</strong>: <span style='background-color: #aacd4e;border-radius: 6px; color: #fff; display: inline-block;margin-right: 2px;padding: 4px;'>$path</span>");
+            }
+            
         }
         return $output;
     }

@@ -42,8 +42,8 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
         $output->writeln("  controller: <info>" . $route["_controller"]."</info>");
         $output->writeln("  locale: <info>" . $route["_locale"]."</info>");
         $output->writeln("  entityName: <info>" . $route["entityName"]."</info>");
-        $entityName = $this->getContainer()->get("classmapperservice")->getEntityClass($route["entityName"], $route["_locale"]);
-        $output->writeln("  entityClass: <info>" . $entityName."</info>");
+        $entityClass = $this->getContainer()->get("classmapperservice")->getEntityClass($route["entityName"], $route["_locale"]);
+        $output->writeln("  entityClass: <info>" . $entityClass."</info>");
         
         $output->writeln("");
         $output->writeln("Services: ");
@@ -51,20 +51,20 @@ class ShowUrlConfigurationCommand extends ContainerAwareCommand {
         
         $configuratorService=$this->getContainer()->get('prototype.configurator.service');
         $namesOfServices=$configuratorService->getNamesOfServices();
-        $service=$configuratorService->getService($route["_route"], $entityName);
+        $service=$configuratorService->getService($route["_route"], $entityClass);
         $this->printServiceInfo("Base config(twig)",$configuratorService,$output);
         $this->showTwigConfig($service->getConfig(),$output);
         
         $output->writeln("" );
         $configuratorService=$this->getContainer()->get('prototype.gridconfig.configurator.service');
         $namesOfServices=$configuratorService->getNamesOfServices();
-        $service=$configuratorService->getService($route["_route"], $entityName);
+        $service=$configuratorService->getService($route["_route"], $entityClass);
         $this->printServiceInfo("Grid builder config",$configuratorService,$output);
         
         $output->writeln("");
         $configuratorService=$this->getContainer()->get('prototype.formtype.configurator.service');
         $namesOfServices=$configuratorService->getNamesOfServices();
-        $service=$configuratorService->getService($route["_route"], $entityName);
+        $service=$configuratorService->getService($route["_route"], $entityClass);
         $this->printServiceInfo("FormType config",$configuratorService,$output);
         
         
