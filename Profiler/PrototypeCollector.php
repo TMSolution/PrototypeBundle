@@ -78,7 +78,7 @@ class PrototypeCollector implements DataCollectorInterface
     {
 
         $output = [];
-        $output[] = "<br/><h2>Twigs2</h2>";
+        $output[] = "<br/><h2>Twigs</h2>";
         $output[] = "<table><thead><tr><th>Type</th><th>Twig</th></tr></thead><tbody>";
         foreach ($config as $name => $path) {
 
