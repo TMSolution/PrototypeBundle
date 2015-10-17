@@ -35,6 +35,7 @@ class PrototypeCollector implements DataCollectorInterface
         $data["header"] = "Url configuration";
         $data["uri"] = $request->getPathInfo();
         $route = $router->match($data["uri"]);
+       
         $data["route"] = $route["_route"];
         $data["controller"] = $route["_controller"];
         if (array_key_exists("_locale", $route)) {
@@ -45,9 +46,7 @@ class PrototypeCollector implements DataCollectorInterface
 
             $configuratorService = $container->get('prototype.configurator.service');
             $namesOfServices = $configuratorService->getNamesOfServices();
-
             $service = $configuratorService->getService($data["route"], $data["entityClass"]);
-
 
             $data['config'] = $this->printServiceInfo('Config', $configuratorService);
             $data['twigs'] = $this->printTwigConfig($service->getConfig());

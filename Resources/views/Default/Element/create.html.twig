@@ -11,25 +11,22 @@
             {% for child in form.children %}
                 {{ form_row(child) }}
             {% endfor %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 col-sm-12">
-            <div class="button-row button-rows">
+
+            <div class="button-rows">
                 <button onclick="history.go(-1)" class="btn btn-default pull-left btn-bottom" type="button">{{ "Cancel"|trans }}</button>
-            </div>
-            <div class="button-row button-rows ">          
+
                 <button class="btn btn-success pull-right btn-bottom" type="submit" >Zapisz</button>
             </div>
+            {{ form_end(form) }}
         </div>
     </div>
 
 
-    {{ form_end(form) }} 
+
 {% endblock  element%}
 
 {% block js %}
-    
+
     {{parent()}}
-     <script>  {{ form_jquery_validation(form) }} </script>
+    <script>  {{ form_jquery_validation(form) }} </script>
 {% endblock %}

@@ -24,8 +24,8 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('core_prototype');
         $rootNode->children()
-       ->scalarNode('twig_base_index')->defaultValue('CorePrototypeBundle:Default\Base:index.html.twig')->end()
-                
+        ->scalarNode('twig_base_index')->defaultValue('CorePrototypeBundle:Default\Base:index.html.twig')->end()
+        ->scalarNode('twig_base_ajax_index')->defaultValue('CorePrototypeBundle:Default\Base:ajax_index.html.twig')->end()
         ->scalarNode('twig_element_create')->defaultValue('CorePrototypeBundle:Default\Element:create.html.twig')->end()
         ->scalarNode('twig_element_list')->defaultValue('CorePrototypeBundle:Default\Element:list.html.twig')->end()
         ->scalarNode('twig_element_ajaxlist')->defaultValue('CorePrototypeBundle:Default\Element:list.ajax.html.twig')->end()
@@ -39,7 +39,7 @@ class Configuration implements ConfigurationInterface
         ->scalarNode('twig_container_update')->defaultValue('CorePrototypeBundle:Default\Container:update.html.twig')->end()
         ->scalarNode('twig_container_read')->defaultValue('CorePrototypeBundle:Default\Container:read.html.twig')->end()
         ->scalarNode('twig_container_error')->defaultValue('CorePrototypeBundle:Default\sContainer:error.html.twig')->end()
-        ->scalarNode('formtype_class')->defaultValue('')->end();
+        ;
                 
         return $treeBuilder;
 

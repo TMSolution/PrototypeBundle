@@ -1,4 +1,5 @@
-{% extends config.get("twig_base_index") %}
+{% extends app.request.isXmlHttpRequest() ? config.get("twig_base_ajax_index") : config.get("twig_base_index") %}
+
 {% block content %}  
     <div class="row">
         <div class="col-md-12 col-sm-12">

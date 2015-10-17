@@ -8,8 +8,8 @@
 
 {{ "{% block element %}" }}
 <div class="row">
-    {{ "{{ form_start(form) }}" }}
     <div class="col-md-12 col-sm-12">
+        {{ "{{ form_start(form) }}" }}
         {{ "{{ form_errors(form) }}" }}
 
         {% for field, fieldParam in fieldsInfo %}
@@ -32,19 +32,12 @@
                 {% endif %}
             {% endif %}
         {% endfor %}
-
+        <div class="button-rows" >    
+            <button onclick="history.go(-1)" class="btn btn-default pull-left" type="button">{{ "{{ 'Cancel'|trans}}" }}</button>
+            <button class="btn btn-default pull-right" type="submit" >{{ "{{ 'Save'|trans}}" }}</button>
+        </div>
+        {{ "{{ form_end(form) }}" }}
     </div>
-</div>
-<div class="row">
-
-    <div class="button-row button-rows">
-        <button onclick="history.go(-1)" class="btn btn-default pull-left" type="button">{{ "{{ 'Cancel'|trans}}" }}</button>
-    </div>
-    <div class="button-row button-rows ">          
-        <button class="btn btn-default pull-right" type="submit" >{{ "{{ 'Save'|trans}}" }}</button>
-    </div>
-
-    {{ "{{ form_end(form) }}" }}
 </div>
 {{ "{% endblock element %}" }}
 

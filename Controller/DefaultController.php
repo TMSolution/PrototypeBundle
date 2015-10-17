@@ -34,6 +34,8 @@ class DefaultController extends BaseController
 
             /*
               //twig templates for Elements
+              'twig_base_index'=>'CorePrototypeBundle:Default\Base:index.html.twig'
+              'twig_base_ajax_index'=>CorePrototypeBundle:Default\Base:ajax_index.html.twig'
               'twig_element_create' => 'CorePrototypeBundle:Default/Element:create.html.twig',
               'twig_element_list' => 'CorePrototypeBundle:Default/Element:list.html.twig',
               'twig_element_ajax_list' => 'CorePrototypeBundle:Default/Element:list.ajax.html.twig',
@@ -46,10 +48,7 @@ class DefaultController extends BaseController
               'twig_container_update' => 'CorePrototypeBundle:Default/Container:update.html.twig',
               'twig_container_read' => 'CorePrototypeBundle:Default/Container:read.html.twig',
               'twig_container_error' => 'CorePrototypeBundle:Default/Container:error.html.twig',
-              //grid service
-              'grid_config_service' => null,
-              //form ttype class
-              'formtype_class' => null */
+              */
     ];
 
     /**

@@ -16,11 +16,11 @@
         load: function (id, url, target, operation, callback) {
 
             var object = this;
-         
+
             $.ajax({
                 url: url,
                 method: "POST",
-                data: { elementId: id}
+                data: {elementId: id}
             }).done(function (data) {
 
                 if (target) {
@@ -32,13 +32,13 @@
                     }
                 }
 
-            //    object[operation](id, url, target);
-            
+                //    object[operation](id, url, target);
 
-               /* if (callback)
-                {
-                    callback(id, url, target, data);
-                }*/
+
+                /* if (callback)
+                 {
+                 callback(id, url, target, data);
+                 }*/
 
             });
         },
@@ -48,7 +48,7 @@
             $.ajax({
                 method: "POST",
                 url: url
-               
+
             }).done(function (data) {
 
 
@@ -65,8 +65,8 @@
         },
         replaceUrl: function (id, url, target) {
 
-console.debug(this.settings);
-            history.pushState({"url": url, "target": target, "id": id}, id, this.settings.defaultPath + '/' + id.replace(/_/g,"/"));
+            console.debug(this.settings);
+            history.pushState({"url": url, "target": target, "id": id}, id, this.settings.defaultPath + '/' + id.replace(/_/g, "/"));
 
             /*var pat = /^https?:\/\//i;
              if (!pat.test(url)) {
