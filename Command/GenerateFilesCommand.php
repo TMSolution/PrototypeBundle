@@ -186,7 +186,8 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:twig:element:read');
                 $arguments = array(
                     'entity' => $entity,
-                    'rootFolder' => $input->getArgument('rootFolder')
+                    'rootFolder' => $input->getArgument('rootFolder'),
+                    '--withAssociated' => null
                 );
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
@@ -197,7 +198,8 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:twig:element:update');
                 $arguments = array(
                     'entity' => $entity,
-                    'rootFolder' => $input->getArgument('rootFolder')
+                    'rootFolder' => $input->getArgument('rootFolder'),
+                    '--withAssociated' => null
                 );
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);

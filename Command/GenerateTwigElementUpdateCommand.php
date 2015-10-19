@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use ReflectionClass;
 use LogicException;
@@ -35,7 +36,9 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand
         $this->setName('prototype:generate:twig:element:update')
                 ->setDescription('Generate twig element update template.')
                 ->addArgument('entity', InputArgument::OPTIONAL, 'Insert entity class name')
-                ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder');
+                ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder')
+                ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
+        
     }
 
     protected function getEntityName($input)
@@ -104,14 +107,9 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand
         }
         return $subject;
     }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
+    
+    protected function addFile($entityName, $fieldsInfo, $rootFolder)
     {
-
-        $entityName = $this->getEntityName($input);
-        $rootFolder = $input->getArgument('rootFolder');
-        $model = $this->getContainer()->get("model_factory")->getModel($entityName);
-        $fieldsInfo = $model->getFieldsInfo();
         $classPath = $this->getClassPath($entityName);
         $entityReflection = new ReflectionClass($entityName);
         $entityNamespace = $entityReflection->getNamespaceName();
@@ -121,14 +119,61 @@ class GenerateTwigElementUpdateCommand extends ContainerAwareCommand
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
 
+        $lowerNameSpaceForTranslate = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityNamespace)));
+
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:element.update.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
             "objectName" => $objectName,
-            "fieldsInfo" => $fieldsInfo
+            "fieldsInfo" => $fieldsInfo,
+            "lowerNameSpaceForTranslate" => $lowerNameSpaceForTranslate
         ]);
 
         file_put_contents($fileName, $renderedConfig);
+        return $directory;
+    }
+
+    protected function runAssociatedObjectsRecursively($fieldsInfo, $rootFolder,$objectName, $output)
+    {
+        $associations = [];
+        foreach ($fieldsInfo as $key => $value) {
+
+            $associationTypes = ["OneToMany", "ManyToMany"];
+            $field = $fieldsInfo[$key];
+            if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) {
+
+                $model = $this->getContainer()->get("model_factory")->getModel($value['object_name']);
+                $assocObjectFieldsInfo = $model->getFieldsInfo();
+
+                $arr = explode('\\', $value['object_name']);
+                $path = array_pop($arr);
+               
+                //$this->addFile($value['object_name'], $rootPath . DIRECTORY_SEPARATOR . $path, $assocObjectFieldsInfo, $rootFolder, $output);
+                $this->addFile($value['object_name'], $assocObjectFieldsInfo, $rootFolder.DIRECTORY_SEPARATOR.$objectName);
+            }
+        }
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+
+        $entityName = $this->getEntityName($input);
+        $rootFolder = $input->getArgument('rootFolder');
+        $model = $this->getContainer()->get("model_factory")->getModel($entityName);
+        $fieldsInfo = $model->getFieldsInfo();
+        $entityReflection = new ReflectionClass($entityName);
+        $objectName = $entityReflection->getShortName();
+        $this->addFile($entityName, $fieldsInfo, $rootFolder);
+
+
+        //generate assoc form types
+        if (true === $input->getOption('withAssociated')) {
+
+            $this->runAssociatedObjectsRecursively($fieldsInfo, $rootFolder,$objectName, $output);
+        }
+
+
+
         $output->writeln("Twig element update generated");
     }
 

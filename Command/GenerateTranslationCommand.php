@@ -139,7 +139,6 @@ class GenerateTranslationCommand extends ContainerAwareCommand
             $i++;
         }
 
-        dump($yaml);
         return $yaml;
     }
 

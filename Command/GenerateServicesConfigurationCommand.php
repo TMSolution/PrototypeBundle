@@ -164,14 +164,16 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 
             switch ($tag) {
                 case 'prototype.config':
-                    $parametersName = $this->createParametersName($entity, $tag, $rootSpace);
+                    
 
                     if ($associated) {
+                        $parametersName = $this->createParametersName($entity, $tag, $rootSpace);
                         $yamlArr['parameters'][$parametersName] = [
                             'twig_element_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
                             'twig_element_update' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig'
                         ];
                     } else {
+                        $parametersName = $this->createParametersName($entity, $tag, $rootSpace);
                         $yamlArr['parameters'][$parametersName] = [
                             'twig_container_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:read.html.twig',
                             'twig_element_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
@@ -250,7 +252,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 $serviceName = str_replace('\\', '.', str_replace('bundle\\entity', '', strtolower($entity)));
                 $serviceName .= '.' . strtolower($tagName);
 
-                dump('serviceName1:' . $serviceName);
+                
                 if ($associationName) {
                     $original = explode('.', $serviceName);
 
@@ -262,7 +264,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                     array_splice($original, 2, 0, $inserted);
                     $serviceName = implode('.', $original);
                 }
-                dump('serviceName2:' . $serviceName);
+            
                 break;
         }
 
@@ -283,8 +285,8 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 $parametersName .= '.' . strtolower($tagName);
                 if ($associationName) {
                     $original = explode('.', $parametersName);
-                    $inserted = [strtolower($associationName)];
-                    array_splice($original, 2, 0, $inserted);
+                    $inserted = [strtolower(str_replace('\\', '.', $associationName))];
+                    array_splice($original, 3, 0, $inserted);
                     $parametersName = implode('.', $original);
                 }
                 break;
@@ -335,10 +337,11 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             $field = $fieldsInfo[$key];
             if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) {
                 $arr = explode('\\', $input->getArgument('entity'));
+                $rootLast = array_pop($arr);
+                $arr = explode('\\', $value['object_name']);
                 $last = array_pop($arr);
-
-                $parameterName = $this->addParameters($yamlArr, $value['object_name'], $input->getArgument('tag'), $bundleName, $rootSpace, $objectName, $output, false);
-                $this->addService($output, $yamlArr, $value['object_name'], $input->getArgument('tag'), 'core_prototype_associationcontroller_', $entity, $last, $parameterName, $rootSpace);
+                $parameterName = $this->addParameters($yamlArr, $value['object_name'], $input->getArgument('tag'), $bundleName, $rootSpace.DIRECTORY_SEPARATOR.$objectName, $last, $output, true);
+                $this->addService($output, $yamlArr, $value['object_name'], $input->getArgument('tag'), 'core_prototype_associationcontroller_', $entity, $rootLast, $parameterName, $rootSpace);
             }
         }
     }
