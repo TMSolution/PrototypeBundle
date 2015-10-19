@@ -20,6 +20,9 @@
             </svg>
         </span>
         <span class="sf-toolbar-status">Prototype</span>
+        <span class="sf-toolbar-status sf-toolbar-status-green">
+            <span>{% if collector.data.twigChanges is defined %}{{ collector.data.twigChanges }}{% else %}0{% endif %}</span>
+        </span>
     {% endset %}
 
     {% set text %}
@@ -38,6 +41,10 @@
         <div class="sf-toolbar-info-piece">
             <b>EntityClass</b>
             <span>{% if collector.data.entityClass is defined %}{{ collector.data.entityClass }}{% else %}none{% endif %}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Changed twigs</b>
+            <span class="sf-toolbar-status sf-toolbar-status-green">{% if collector.data.twigChanges is defined %}{{ collector.data.twigChanges }}{% else %}0{% endif %}</span>
         </div>
 
     {% endset %}
@@ -71,6 +78,11 @@
             </svg>
         </span>
         <strong>Prototype</strong>
+        <span class="count" alt="amount of changed twigs">
+            <span>{% if collector.data.twigChanges is defined %}{{ collector.data.twigChanges }}{% else %}0{% endif %}</span>
+        </span>
+
+        
     </span>
 {% endblock menu %}
 
@@ -85,7 +97,7 @@
     <div><strong>EntityName</strong>: {% if collector.data.entityName is defined %}{{ collector.data.entityName }}{% else %}none{% endif %}</div>
     <div><strong>EntityClass</strong>: {% if collector.data.entityClass is defined %}{{ collector.data.entityClass }}{% else %}none{% endif %}</div>
 
-    
+
     {% if collector.data.config is defined %}
         {% for line in collector.data.config %}
             {{ line | raw }}   
@@ -97,13 +109,13 @@
             {{ line | raw  }}   
         {% endfor %}
     {% endif %}
-    
+
     {% if collector.data.gridconfig is defined %}
         {% for line in collector.data.gridconfig %}
             {{ line | raw  }}   
         {% endfor %}
     {% endif %}
-    
+
     {% if collector.data.formtype is defined %}
         {% for line in collector.data.formtype %}
             {{ line | raw  }}   

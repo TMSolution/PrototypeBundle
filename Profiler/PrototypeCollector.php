@@ -19,6 +19,7 @@ class PrototypeCollector implements DataCollectorInterface
 {
 
     private $data = [];
+    private $twigChanges = 0;
 
     public function __construct()
     {
@@ -67,6 +68,7 @@ class PrototypeCollector implements DataCollectorInterface
         } catch (Symfony\Component\Routing\Exception\ResourceNotFoundException $e) {
             
         }
+        $data['twigChanges']=$this->twigChanges;
         $this->data = $data;
     }
 
@@ -86,15 +88,18 @@ class PrototypeCollector implements DataCollectorInterface
         $output = [];
         $output[] = "<br/><h2>Twigs</h2>";
         $output[] = "<table><thead><tr><th>Type</th><th>Twig</th></tr></thead><tbody>";
+       
         foreach ($config as $name => $path) {
 
             if (strstr($path, 'CorePrototypeBundle:Default')) {
                 $output[] = ("<tr><th>$name</th><td>$path</td></tr>");
             } else {
+                $this->twigChanges++;
                 $output[] = ("<tr><th>$name</th><td><span style='background-color: #aacd4e;border-radius: 6px; color: #fff; display: inline-block;margin-right: 2px;padding: 4px;'>$path</span></td></tr>");
             }
         }
         $output[] = "</tbody></table>";
+        
         return $output;
     }
 
