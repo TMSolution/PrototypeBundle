@@ -45,7 +45,7 @@
 
 
                 $.blockUI.defaults = {
-                    message: '<h1>Please wait...</h1>',
+                    message: '<h1>{{"Please wait"|trans}}...</h1>',
                     css: {
                         padding: 0,
                         margin: 0,
@@ -79,7 +79,7 @@
                         init: function (settings) {
 
                             $.extend(this.settings, settings);
-                            console.debug(this.settings);
+                            //console.debug(this.settings);
                             var that = this;
                             window.addEventListener('popstate', function (event) {
 
@@ -113,6 +113,9 @@
                             if (typeof (registerAsState) === "undefined") {
                                 registerAsState = true;
                             }
+
+
+
                             if (element.data("route"))
                             {
                                 var url = Routing.generate(element.data("route"), element.data("route-params"))
@@ -133,7 +136,24 @@
 
                             if (type == 'tab')
                             {
+
                                 var context = element.attr("href");
+                                var splitContext = context.substr(1).split("-");
+                                var displayUrl = window.location.href;
+                                var lastHrefElement=displayUrl.split("/");
+                                lastHrefElement=lastHrefElement[lastHrefElement.length-1]
+                                
+                                
+                                console.debug('lastHrefElement: ' + lastHrefElement);
+                                 console.debug('splitContext[1]: ' + splitContext[1]);
+
+
+                                if (splitContext[1] != 'show' && lastHrefElement!=splitContext[1]) {
+                                    var displayUrl = displayUrl + "/" + splitContext[1];
+                                }
+                                else{
+                                    registerAsState = false;
+                                }
 
                             }
                             else if (element.data("route-target"))
@@ -147,21 +167,46 @@
 
                             }
 
-                            //console.debug(context);
+
                             var state = element.attr("href").substr(1);
-                            this.loadData(url, context, registerAsState, callback);
+
+
+
+                            console.debug('registerAsState: ' + registerAsState);
+                            console.debug('type: ' + type)
+                            console.debug('url: ' + url)
+                            console.debug('state: ' + state);
+
+                            this.loadData(url, context, registerAsState, displayUrl, callback);
 
                         },
-                        loadData: function (url, context, registerAsState, callback)
+                        loadData: function (pushUrl, context, registerAsState, displayUrl, callback)
                         {
+
+                            if (typeof (displayUrl) === "undefined") {
+                                displayUrl = pushUrl;
+                            }
+
+
+
+                            var ajaxUrl = '';
+                            if ($(context).length) {
+                                ajaxUrl = pushUrl;
+                            }
+                            else {
+                                ajaxUrl = displayUrl;
+                                context = this.settings.defaultContainer;
+                            }
+
+
                             $(context).fadeOut(150);
                             $.ajax({
-                                url: url,
+                                url: ajaxUrl,
                             }).done(function (data) {
 
                                 if (registerAsState == true)
                                 {
-                                    history.pushState({'url': url, 'context': context, 'registerAsState': registerAsState}, url, url);
+                                    history.pushState({'url': pushUrl, 'context': context, 'registerAsState': registerAsState}, pushUrl, displayUrl);
                                 }
                                 $(context).html(data);
                                 $(context).fadeIn(700);
@@ -171,6 +216,8 @@
 
                                 }
                             });
+
+
 
                         }
 
@@ -203,7 +250,8 @@
 
                     $(document).on('click', '.lazy-loaded-tab', function (e) {
                         e.preventDefault();
-                        $().lazyLoader('load', $(this), false, 'tab', function () {});
+                        $().lazyLoader('load', $(this), true, 'tab', function () {
+                        });
                     });
 
                     $(document).on('click', 'a:not(.not-lazy-loaded)', function (e) {
