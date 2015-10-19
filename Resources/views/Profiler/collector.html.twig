@@ -3,9 +3,8 @@
 {% block toolbar %}
     {% set icon %}
         <span class="icon">
-            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                 width="20px" viewBox="0 0 466.227 466.227"
-                 xml:space="preserve">
+            <svg version="1.1" id="proto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                 width="20px" height="28px" viewBox="0 0 466.227 466.227" xml:space="preserve">
                 <g>
                     <path d="M463.36,2.852c-1.906-1.805-4.188-2.712-6.854-2.712c-49.677,0-90.694,6.755-123.051,20.271
                           c-32.353,13.518-66.424,38.072-102.208,73.662c-15.225,15.418-31.977,33.977-50.248,55.675l-108.205,5.708
@@ -26,7 +25,7 @@
     {% set text %}
         <div class="sf-toolbar-info-piece">
             <b>URI</b>
-            <span>{{ collector.data.uri }}</span>
+            <span>{% if collector.data.uri is defined %}{{ collector.data.uri }}{% else %}none{% endif %}</span>
         </div>
         <div class="sf-toolbar-info-piece">
             <b>Locale</b>
@@ -78,14 +77,15 @@
 {% block panel %}
     {# Optional, for showing the most details. #}
     <h1>Prototype</h1>
-    <h2>{{ collector.data.header }}</h2>
-    <div><strong>URI</strong>: {{ collector.data.uri }}</div>
-    <div><strong>Route</strong>: {{ collector.data.route }}</div>
-    <div><strong>Controller</strong>: {{ collector.data.controller }}</div>
+    <h2>{% if collector.data.header is defined %}{{ collector.data.header }}{% else %}none{% endif %}</h2>
+    <div><strong>URI</strong>: {% if collector.data.uri is defined %}{{ collector.data.uri }}{% else %}none{% endif %}</div>
+    <div><strong>Route</strong>: {% if collector.data.route is defined %}{{ collector.data.route }}{% else %}none{% endif %}</div>
+    <div><strong>Controller</strong>: {% if collector.data.controller is defined %}{{ collector.data.controller }}{% else %}none{% endif %}</div>
     <div><strong>Locale</strong>: {% if collector.data.locale is defined %}{{ collector.data.locale }}{% else %}none{% endif %}</div>
     <div><strong>EntityName</strong>: {% if collector.data.entityName is defined %}{{ collector.data.entityName }}{% else %}none{% endif %}</div>
     <div><strong>EntityClass</strong>: {% if collector.data.entityClass is defined %}{{ collector.data.entityClass }}{% else %}none{% endif %}</div>
 
+    
     {% if collector.data.config is defined %}
         {% for line in collector.data.config %}
             {{ line | raw }}   

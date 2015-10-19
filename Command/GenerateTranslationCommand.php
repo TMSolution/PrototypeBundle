@@ -24,6 +24,7 @@ use UnexpectedValueException;
 /**
  * GenerateTranslationCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
+ * @author Jacek Łoziński <jacek.lozinski@tmsolution.pl>
  */
 class GenerateTranslationCommand extends ContainerAwareCommand
 {
@@ -222,13 +223,6 @@ class GenerateTranslationCommand extends ContainerAwareCommand
                     }
                 }
             }
-
-
-
-
-
-
-
 
             $this->writeYml($configFullPath, $yamlArr, $output);
             $output->writeln("Translation file <info>" . $configFullPath . "</info> generated.");

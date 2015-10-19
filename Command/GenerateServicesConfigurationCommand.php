@@ -24,8 +24,9 @@ use LogicException;
 use UnexpectedValueException;
 
 /**
- * GridConfigCommand generates widget class and his template.
+ * GenerateServicesConfigurationCommand generates services configuration.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
+ * @author Jacek Łoziński <jacek.lozinski@tmsolution.pl>
  */
 class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 {

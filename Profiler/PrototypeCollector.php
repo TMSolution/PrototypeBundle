@@ -27,6 +27,7 @@ class PrototypeCollector implements DataCollectorInterface
 
     public function collect(Request $request, Response $response, Exception $exception = null)
     {
+
         $kernel = new \AppKernel('dev', true);
         $kernel->boot();
         $container = $kernel->getContainer();
@@ -34,32 +35,37 @@ class PrototypeCollector implements DataCollectorInterface
         $classmapper = $container->get('classmapperservice');
         $data["header"] = "Url configuration";
         $data["uri"] = $request->getPathInfo();
-        $route = $router->match($data["uri"]);
-       
-        $data["route"] = $route["_route"];
-        $data["controller"] = $route["_controller"];
-        if (array_key_exists("_locale", $route)) {
-            $data["locale"] = $route["_locale"];
 
-            $data["entityName"] = $route["entityName"];
-            $data["entityClass"] = $classmapper->getEntityClass($route["entityName"], $data["locale"]);
+        try {
+            $route = $router->match($data["uri"]);
 
-            $configuratorService = $container->get('prototype.configurator.service');
-            $namesOfServices = $configuratorService->getNamesOfServices();
-            $service = $configuratorService->getService($data["route"], $data["entityClass"]);
+            $data["route"] = $route["_route"];
+            $data["controller"] = $route["_controller"];
+            if (array_key_exists("_locale", $route)) {
+                $data["locale"] = $route["_locale"];
 
-            $data['config'] = $this->printServiceInfo('Config', $configuratorService);
-            $data['twigs'] = $this->printTwigConfig($service->getConfig());
+                $data["entityName"] = $route["entityName"];
+                $data["entityClass"] = $classmapper->getEntityClass($route["entityName"], $data["locale"]);
 
-            $configuratorService = $container->get('prototype.gridconfig.configurator.service');
-            $namesOfServices = $configuratorService->getNamesOfServices();
-            $configuratorService->getService($data["route"], $data["entityClass"]);
-            $data['gridconfig'] = $this->printServiceInfo('Grid', $configuratorService);
+                $configuratorService = $container->get('prototype.configurator.service');
+                $namesOfServices = $configuratorService->getNamesOfServices();
+                $service = $configuratorService->getService($data["route"], $data["entityClass"]);
 
-            $configuratorService = $container->get('prototype.formtype.configurator.service');
-            $namesOfServices = $configuratorService->getNamesOfServices();
-            $configuratorService->getService($data["route"], $data["entityClass"]);
-            $data['formtype'] = $this->printServiceInfo('Form Type', $configuratorService);
+                $data['config'] = $this->printServiceInfo('Config', $configuratorService);
+                $data['twigs'] = $this->printTwigConfig($service->getConfig());
+
+                $configuratorService = $container->get('prototype.gridconfig.configurator.service');
+                $namesOfServices = $configuratorService->getNamesOfServices();
+                $configuratorService->getService($data["route"], $data["entityClass"]);
+                $data['gridconfig'] = $this->printServiceInfo('Grid', $configuratorService);
+
+                $configuratorService = $container->get('prototype.formtype.configurator.service');
+                $namesOfServices = $configuratorService->getNamesOfServices();
+                $configuratorService->getService($data["route"], $data["entityClass"]);
+                $data['formtype'] = $this->printServiceInfo('Form Type', $configuratorService);
+            }
+        } catch (Symfony\Component\Routing\Exception\ResourceNotFoundException $e) {
+            
         }
         $this->data = $data;
     }

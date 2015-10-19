@@ -22,8 +22,8 @@ use LogicException;
 use UnexpectedValueException;
 
 /**
- * GridConfigCommand generates widget class and his template.
- * @author Mariusz Piela <mariuszpiela@gmail.com>
+ * GenerateFilesCommand generates all configuration.
+ * @author Jacek Łoziński <jacek.lozinski@tmsolution.pl>
  */
 class GenerateFilesCommand extends ContainerAwareCommand
 {
@@ -90,8 +90,8 @@ class GenerateFilesCommand extends ContainerAwareCommand
         $withReadElementTwig = true === $input->getOption('withReadElementTwig');
         $withUpdateElementTwig = true === $input->getOption('withUpdateElementTwig');
         $withReadViewContainerTwig = true === $input->getOption('withReadViewContainerTwig');
-        
-        
+
+
 
         $withAll = true === $input->getOption('withAll');
 
@@ -114,7 +114,7 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
-            
+
             if ($withGridServices || $withAll) {
                 $output->writeln('Generate grid services.');
                 $command = $this->getApplication()->find('prototype:generate:services');
@@ -174,9 +174,9 @@ class GenerateFilesCommand extends ContainerAwareCommand
                     'path' => $path,
                     '--associated' => null
                 );
-                
+
                 $inputCommand = new ArrayInput($arguments);
-                
+
                 $returnCode = $command->run($inputCommand, $output);
             }
 
@@ -202,7 +202,7 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
-            
+
             if ($withReadViewContainerTwig || $withAll) {
                 $output->writeln(sprintf('Generate read view container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:read');
@@ -213,32 +213,29 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
-            
-            
-            
-        }
 
-        //translation for bundle
-        if (!empty($entities) && ($withTranslation || $withAll)) {
+            //translation for bundle
+            if ($withTranslation || $withAll) {
 
-            $output->writeln(sprintf('Generate translation file for <info>%s</info>', $entity));
-            $command = $this->getApplication()->find('prototype:generate:translation');
+                $output->writeln(sprintf('Generate translation file for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:translation');
 
-            //for polish
-            $arguments = array(
-                'entityOrBundle' => $bundleName,
-                'shortLanguage' => 'pl'
-            );
-            $inputCommand = new ArrayInput($arguments);
-            $returnCode = $command->run($inputCommand, $output);
+                //for polish
+                $arguments = array(
+                    'entityOrBundle' => $entity, //$bundleName,
+                    'shortLanguage' => 'pl'
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
 
-            //for english
-            $arguments = array(
-                'entityOrBundle' => $bundleName,
-                'shortLanguage' => 'en'
-            );
-            $inputCommand = new ArrayInput($arguments);
-            $returnCode = $command->run($inputCommand, $output);
+                //for english
+                $arguments = array(
+                    'entityOrBundle' => $entity,
+                    'shortLanguage' => 'en'
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
         }
     }
 

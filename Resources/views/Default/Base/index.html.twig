@@ -18,7 +18,7 @@
     <body>
 
 
-        <div id="container" class="container">
+        <div id="page-container" class="container">
             {% block content %}
 
                 {% block container %}
@@ -80,37 +80,39 @@
 
                             $.extend(this.settings, settings);
                             console.debug(this.settings);
-                            var that=this;
+                            var that = this;
                             window.addEventListener('popstate', function (event) {
-                                    
-                                    console.log(event.state);
-                                    console.debug('stop');
-                                    var state= event.state;
-                                    if(state)   
-                                    {
-                                       var context= state.context; 
-                                       console.debug(context);
-                                        that.loadData(window.location.href, context, false);
-                                       
-                                
-                                    }else
-                                    {
-                                        
-                                        window.location.reload();
-                                        
-                                    }    
-                                   
-                                       
-                                   
-        
-                              });
+
+                                //console.log(event.state);
+                                //console.debug('stop');
+                                var state = event.state;
+                                if (state)
+                                {
+                                    var context = state.context;
+                                    //console.debug(context);
+                                    that.loadData(window.location.href, context, false);
+
+
+                                } else
+                                {
+
+                                    window.location.reload();
+
+                                }
+
+
+
+
+                            });
 
 
 
                         },
                         load: function (element, registerAsState, type, callback)
                         {
-                            if (typeof(registerAsState) === "undefined") { registerAsState = true; }
+                            if (typeof (registerAsState) === "undefined") {
+                                registerAsState = true;
+                            }
                             if (element.data("route"))
                             {
                                 var url = Routing.generate(element.data("route"), element.data("route-params"))
@@ -141,25 +143,25 @@
                             else if (this.settings.defaultContainer)
                             {
 
-                                var context =this.settings.defaultContainer;
+                                var context = this.settings.defaultContainer;
 
                             }
 
-                            console.debug(context);
+                            //console.debug(context);
                             var state = element.attr("href").substr(1);
-                            this.loadData(url,  context, registerAsState, callback);
+                            this.loadData(url, context, registerAsState, callback);
 
                         },
-                        loadData: function (url,context, registerAsState, callback)
+                        loadData: function (url, context, registerAsState, callback)
                         {
                             $(context).fadeOut(150);
                             $.ajax({
                                 url: url,
                             }).done(function (data) {
-                                
-                                if(registerAsState==true)
-                                {    
-                                  history.pushState({ 'url': url, 'context': context, 'registerAsState': registerAsState  }, url, url);
+
+                                if (registerAsState == true)
+                                {
+                                    history.pushState({'url': url, 'context': context, 'registerAsState': registerAsState}, url, url);
                                 }
                                 $(context).html(data);
                                 $(context).fadeIn(700);
@@ -197,13 +199,11 @@
 
                 $(function () {
                     //@todo plugin needed
-                    $().lazyLoader({defaultContainer: "#container"})
+                    $().lazyLoader({defaultContainer: "#page-container"})
 
                     $(document).on('click', '.lazy-loaded-tab', function (e) {
                         e.preventDefault();
-                        $().lazyLoader('load', $(this), false, 'tab', function () {
-                          
-                        });
+                        $().lazyLoader('load', $(this), false, 'tab', function () {});
                     });
 
                     $(document).on('click', 'a:not(.not-lazy-loaded)', function (e) {
