@@ -140,18 +140,13 @@
                                 var context = element.attr("href");
                                 var splitContext = context.substr(1).split("-");
                                 var displayUrl = window.location.href;
-                                var lastHrefElement=displayUrl.split("/");
-                                lastHrefElement=lastHrefElement[lastHrefElement.length-1]
-                                
-                                
-                                console.debug('lastHrefElement: ' + lastHrefElement);
-                                 console.debug('splitContext[1]: ' + splitContext[1]);
+                                var lastHrefElement = displayUrl.split("/");
+                                lastHrefElement = lastHrefElement[lastHrefElement.length - 1]
 
-
-                                if (splitContext[1] != 'show' && lastHrefElement!=splitContext[1]) {
+                                if (splitContext[1] != 'show' && lastHrefElement != splitContext[1]) {
                                     var displayUrl = displayUrl + "/" + splitContext[1];
                                 }
-                                else{
+                                else {
                                     registerAsState = false;
                                 }
 
@@ -162,21 +157,10 @@
                             }
                             else if (this.settings.defaultContainer)
                             {
-
                                 var context = this.settings.defaultContainer;
-
                             }
 
-
-                            var state = element.attr("href").substr(1);
-
-
-
-                            console.debug('registerAsState: ' + registerAsState);
-                            console.debug('type: ' + type)
-                            console.debug('url: ' + url)
-                            console.debug('state: ' + state);
-
+                            //var state = element.attr("href").substr(1);
                             this.loadData(url, context, registerAsState, displayUrl, callback);
 
                         },
@@ -187,8 +171,6 @@
                                 displayUrl = pushUrl;
                             }
 
-
-
                             var ajaxUrl = '';
                             if ($(context).length) {
                                 ajaxUrl = pushUrl;
@@ -197,7 +179,6 @@
                                 ajaxUrl = displayUrl;
                                 context = this.settings.defaultContainer;
                             }
-
 
                             $(context).fadeOut(150);
                             $.ajax({

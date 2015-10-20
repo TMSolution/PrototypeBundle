@@ -25,6 +25,8 @@ class DefaultController extends BaseController
     protected $objectName = null;
     protected $routePrefix = null;
     protected $entityName;
+    protected $parentName = null;
+    protected $parentId = null;
     protected $routeName;
     protected $configLoaded = false;
     protected $configService;
@@ -48,7 +50,7 @@ class DefaultController extends BaseController
               'twig_container_update' => 'CorePrototypeBundle:Default/Container:update.html.twig',
               'twig_container_read' => 'CorePrototypeBundle:Default/Container:read.html.twig',
               'twig_container_error' => 'CorePrototypeBundle:Default/Container:error.html.twig',
-              */
+             */
     ];
 
     /**
@@ -299,6 +301,8 @@ class DefaultController extends BaseController
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
 
+
+
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -309,7 +313,9 @@ class DefaultController extends BaseController
             'deleteActionName' => $this->getAction('delete'),
             'config' => $this->getConfig(),
             'routeParams' => $this->getRouteParams(),
-            'states' => $this->getStates()
+            'states' => $this->getStates(),
+            'parentName' => $this->getParentName(),
+            'parentId' => $this->getParentId()
         ]);
 
         //Create event broadcast.
@@ -331,10 +337,10 @@ class DefaultController extends BaseController
 
         foreach ($fields as $field) {
 
-           
+
             $method = $model->checkMethod($entity, $field['fieldName']);
 
-            if ($method && $field['type']!=4 && $field['type']!=8) {
+            if ($method && $field['type'] != 4 && $field['type'] != 8) {
 
 
                 $result = $entity->$method();
@@ -361,7 +367,7 @@ class DefaultController extends BaseController
                 $properties[$field['fieldName']] = $value;
             }
         }
-   
+
 
 
         return $properties;
@@ -613,6 +619,28 @@ class DefaultController extends BaseController
             }
         }
         return $this->states;
+    }
+
+    protected function getParentName()
+    {
+        $params = $this->getRouteParams();
+        if ($this->parentName == null) {
+            if (array_key_exists("parentName", $params)) {
+                $this->parentName = $params["parentName"];
+            }
+        }
+        return $this->parentName;
+    }
+
+    protected function getParentId()
+    {
+        $params = $this->getRouteParams();
+        if ($this->parentId == null) {
+            if (array_key_exists("parentId", $params)) {
+                $this->parentId = $params["parentId"];
+            }
+        }
+        return $this->parentId;
     }
 
     protected function getBasePath()

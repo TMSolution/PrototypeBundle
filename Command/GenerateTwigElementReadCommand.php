@@ -108,7 +108,7 @@ class GenerateTwigElementReadCommand extends ContainerAwareCommand
         return $subject;
     }
 
-    protected function addFile($entityName, $fieldsInfo, $rootFolder)
+    protected function addFile($entityName, $fieldsInfo, $rootFolder,$isAssociated=false)
     {
         $classPath = $this->getClassPath($entityName);
         $entityReflection = new ReflectionClass($entityName);
@@ -126,7 +126,8 @@ class GenerateTwigElementReadCommand extends ContainerAwareCommand
             "entityName" => $entityName,
             "objectName" => strtolower($objectName),
             "fieldsInfo" => $fieldsInfo,
-            "lowerNameSpaceForTranslate" => $lowerNameSpaceForTranslate
+            "lowerNameSpaceForTranslate" => $lowerNameSpaceForTranslate,
+            "isAssociated"=>$isAssociated
         ]);
 
         file_put_contents($fileName, $renderedConfig);
@@ -149,7 +150,7 @@ class GenerateTwigElementReadCommand extends ContainerAwareCommand
                 $path = array_pop($arr);
                
                 //$this->addFile($value['object_name'], $rootPath . DIRECTORY_SEPARATOR . $path, $assocObjectFieldsInfo, $rootFolder, $output);
-                $this->addFile($value['object_name'], $assocObjectFieldsInfo, $rootFolder.DIRECTORY_SEPARATOR.$objectName);
+                $this->addFile($value['object_name'], $assocObjectFieldsInfo, $rootFolder.DIRECTORY_SEPARATOR.$objectName,true);
             }
         }
     }

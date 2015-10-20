@@ -6,7 +6,7 @@
         {% for field, fieldParam in fieldsInfo %}
             {% if fieldParam.is_object %}
                 {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
-                 <!-- Field {{field}} -->  
+                    <!-- Field {{field}} -->  
                     {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
                     <tr>
                         <td><strong>{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</strong></td>
@@ -62,18 +62,41 @@
     </tbody>
 </table>
 <div>
-    <a href="{{ "{{ path(listActionName, { 'entityName': entityName})}}" }}" class=" prevButton btn">
-        {{ "{{ 'Back'|trans}}" }}
-    </a>
-    <span class="pull-right">   
-        <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
-            {{ "{{ 'Delete'|trans}} " }}
 
+    
+    {% if isAssociated %}
+        <a href="{{ "{{ path(listActionName, { 'entityName': entityName,'parentName': parentName,'parentId': parentId })}}" }}" class=" prevButton btn">
+            {{ "{{ 'Back'|trans}}" }}
         </a>
-        <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
-            {{ "{{ 'Edit'|trans}}" }}
+        <span class="pull-right">   
+            <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId})}}" }}" class="btn">
+                {{ "{{ 'Delete'|trans}} " }}
+
+            </a>
+            <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId})}}" }}" class="btn">
+                {{ "{{ 'Edit'|trans}}" }}
+            </a>
+        </span>
+    {% else %}
+        <a href="{{ "{{ path(listActionName, { 'entityName': entityName })}}" }}" class=" prevButton btn">
+            {{ "{{ 'Back'|trans}}" }}
         </a>
-    </span>
+        <span class="pull-right">   
+            <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
+                {{ "{{ 'Delete'|trans}} " }}
+
+            </a>
+            <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
+                {{ "{{ 'Edit'|trans}}" }}
+            </a>
+        </span>
+    {% endif %}
+
+
+
+
+
+
 </div>
 
 
