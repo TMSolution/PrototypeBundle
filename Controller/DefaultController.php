@@ -186,7 +186,7 @@ class DefaultController extends BaseController
 
         $params = $this->get('prototype.controler.params');
 
-        dump($params);
+        //dump($params);
 
         $params->setArray([
             'entity' => $entity,
@@ -206,8 +206,10 @@ class DefaultController extends BaseController
         $event->setForm($updateForm);
 
         if ($updateForm->isValid()) {
+           
             $model->update($entity, true);
             $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'update.success', $event);
+            
             return $this->redirect($this->generateUrl($routePrefix . '_read', $this->getRouteParams()));
         }
 

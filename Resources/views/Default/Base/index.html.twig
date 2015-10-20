@@ -114,27 +114,36 @@
                                 registerAsState = true;
                             }
 
+                            var context = null;
+                            var url = null;
+                            //var method = null;
+                            //var serializedForm = [];
+                            var formParams = {};
 
-
+                            //get URL
                             if (element.data("route"))
                             {
-                                var url = Routing.generate(element.data("route"), element.data("route-params"))
-
-
+                                url = Routing.generate(element.data("route"), element.data("route-params"))
                             }
                             else if (type == 'form')
                             {
-
+                                url = element.attr('action');
 
                             }
                             else
                             {
-                                var url = element.attr('href');
+                                url = element.attr('href');
                             }
 
-
-
-                            if (type == 'tab')
+                            //get params
+                            if (type == 'form')
+                            {
+                                var formParams = {
+                                    method: element.attr('method'),
+                                    data: element.serializeArray()
+                                }
+                            }
+                            else if (type == 'tab')
                             {
 
                                 var context = element.attr("href");
@@ -155,17 +164,22 @@
                             {
                                 var context = element.data("route-target");
                             }
-                            else if (this.settings.defaultContainer)
-                            {
+
+
+                            if (typeof (context) === "undefined" || context == null) {
                                 var context = this.settings.defaultContainer;
                             }
 
-                            //var state = element.attr("href").substr(1);
-                            this.loadData(url, context, registerAsState, displayUrl, callback);
+
+                            this.loadData(url, context, registerAsState, displayUrl, callback, formParams);
 
                         },
-                        loadData: function (pushUrl, context, registerAsState, displayUrl, callback)
+                        loadData: function (pushUrl, context, registerAsState, displayUrl, callback, formParams)
                         {
+
+                            if (typeof (formParams) === "undefined") {
+                                formParams = {};
+                            }
 
                             if (typeof (displayUrl) === "undefined") {
                                 displayUrl = pushUrl;
@@ -180,10 +194,10 @@
                                 context = this.settings.defaultContainer;
                             }
 
+                            var ajaxParams = $.extend({url: ajaxUrl}, formParams);
+
                             $(context).fadeOut(150);
-                            $.ajax({
-                                url: ajaxUrl,
-                            }).done(function (data) {
+                            $.ajax(ajaxParams).done(function (data) {
 
                                 if (registerAsState == true)
                                 {
@@ -243,20 +257,26 @@
 
 
 
+//DOŁOŻYĆ TO DO LAZY LOADERA
                     $(document).on('submit', 'form', function (e) {
                         e.preventDefault();
-                        var serializedForm = $(this).serializeArray();
-                        var action=$(this).attr('action');
-                        var method=$(this).attr('method');
 
-                        $.ajax({
-                            url: action,
-                            data: serializedForm,
-                            method: method
-                        }).done(function (data) {
-                            console.debug(data);
-                        });
+                        $().lazyLoader('load', $(this), true, 'form');
 
+                        /*
+                         
+                         var serializedForm = $(this).serializeArray();
+                         var action=$(this).attr('action');
+                         var method=$(this).attr('method');
+                         
+                         $.ajax({
+                         url: action,
+                         data: serializedForm,
+                         method: method
+                         }).done(function (data) {
+                         console.debug(data);
+                         });
+                         */
 
 
                         return false;

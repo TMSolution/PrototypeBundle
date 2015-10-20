@@ -66,7 +66,7 @@ class PrototypeCollector implements DataCollectorInterface
                 $data['formtype'] = $this->printServiceInfo('Form Type', $configuratorService);
             }
         } catch (Symfony\Component\Routing\Exception\ResourceNotFoundException $e) {
-            
+      
         }
         $data['twigChanges']=$this->twigChanges;
         $this->data = $data;
