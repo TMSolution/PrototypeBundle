@@ -170,6 +170,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                         $parametersName = $this->createParametersName($entity, $tag, $rootSpace);
                         $yamlArr['parameters'][$parametersName] = [
                             'twig_element_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
+                            'twig_element_create' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:create.html.twig',
                             'twig_element_update' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig'
                         ];
                     } else {
@@ -177,6 +178,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                         $yamlArr['parameters'][$parametersName] = [
                             'twig_container_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:read.html.twig',
                             'twig_element_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
+                            'twig_element_create' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:create.html.twig',
                             'twig_element_update' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig'
                         ];
                     }

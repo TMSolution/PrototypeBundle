@@ -42,6 +42,7 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 ->addOption('withGridConfig', null, InputOption::VALUE_NONE, 'Generate Gridconfig files')
                 ->addOption('withTranslation', null, InputOption::VALUE_NONE, 'Generate Translation files')
                 ->addOption('withReadElementTwig', null, InputOption::VALUE_NONE, 'Generate read twig element')
+                ->addOption('withCreateElementTwig', null, InputOption::VALUE_NONE, 'Generate create twig element')
                 ->addOption('withUpdateElementTwig', null, InputOption::VALUE_NONE, 'Generate update twig element')
                 ->addOption('withReadViewContainerTwig', null, InputOption::VALUE_NONE, 'Generate read view twig container')
                 ->addOption('withAll', null, InputOption::VALUE_NONE, 'Generate update twig element');
@@ -89,6 +90,7 @@ class GenerateFilesCommand extends ContainerAwareCommand
         $withTranslation = true === $input->getOption('withTranslation');
         $withReadElementTwig = true === $input->getOption('withReadElementTwig');
         $withUpdateElementTwig = true === $input->getOption('withUpdateElementTwig');
+        $withCreateElementTwig = true === $input->getOption('withCreateElementTwig');
         $withReadViewContainerTwig = true === $input->getOption('withReadViewContainerTwig');
 
 
@@ -196,6 +198,18 @@ class GenerateFilesCommand extends ContainerAwareCommand
             if ($withUpdateElementTwig || $withAll) {
                 $output->writeln(sprintf('Generate update element for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:element:update');
+                $arguments = array(
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder'),
+                    '--withAssociated' => null
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
+            if ($withCreateElementTwig || $withAll) {
+                $output->writeln(sprintf('Generate create element for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:element:create');
                 $arguments = array(
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder'),

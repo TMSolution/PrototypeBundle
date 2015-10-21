@@ -1,4 +1,4 @@
-{{ "{% extends config.get('twig_container_update') %}" }}
+{{ "{% extends config.get('twig_container_create') %}" }}
 {{ "{% form_theme form 'bootstrap_3_layout.html.twig' %}" }}
 
 {{ '{% block css %}' }}
@@ -9,7 +9,10 @@
 {{ "{% block element %}" }}
 <div class="row">
     <div class="col-md-12 col-sm-12">
-        {{ "{{ form_start(form) }}" }}
+        
+
+        {# added params for disable html validation #}
+        {{ "{{ form_start(form, { 'attr': {'class': '','novalidate': 'novalidate' }}) }}" }}
         {{ "{{ form_errors(form) }}" }}
         {% set datepicker=false %}
         {% for field, fieldParam in fieldsInfo %}
@@ -52,6 +55,3 @@
 <script src="{{ "{{ asset('assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"}}"></script>
 {% endif %}
 {{ '{% endblock js %}' }}
-
-
-
