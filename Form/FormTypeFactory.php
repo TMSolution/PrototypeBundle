@@ -33,7 +33,7 @@ class FormTypeFactory {
         return $formType;
     }
 
-    protected function createFormType(/*$entityName, $class,*/$model) {
+    public function createFormType(/*$entityName, $class,*/$model) {
         //$metadata = $this->manager->getClassMetadata($entityName);
         $formTypeName = str_replace('\\Entity\\', '\\Form\\' /*$metadata->name .*/, 'Type');
         if (false === class_exists($formTypeName) ) {
