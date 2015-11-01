@@ -71,7 +71,7 @@ and in the twig block in config.yml  add the command below:
 
 1.Assets install with the command:
 ```
- php app/console assets:install
+ php app/console asset:install
 ```
 
 2.Generate the configs for grid use the command below:
