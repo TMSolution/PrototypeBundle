@@ -70,7 +70,7 @@ do bloku twig:
 
 1.Zainstaluj assety według komendy: 
 ```
-php app/console assets:install
+php app/console asset:install
 ```
 
 2.Wygeneruj configi dla grida następującą komendą:
