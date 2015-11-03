@@ -150,10 +150,54 @@ class GenerateTranslationCommand extends ContainerAwareCommand
             return key($array);
         }
     }
-    
-    
-    protected function addYamlData($entity){
-        
+
+    protected function checkAssociation($entityName, $fieldName)
+    {
+        $model = $this->getContainer()->get("model_factory")->getModel($entityName);
+        $fieldsInfo = $model->getFieldsInfo();
+
+        if (array_key_exists($fieldName, $fieldsInfo)) {
+
+            if (array_key_exists('association', $fieldsInfo[$fieldName])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected function addYamlData(&$yamlArr, $entityName, $manager, $lowerNameSpace)
+    {
+
+
+
+        $classPath = $this->getClassPath($entityName, $manager);
+        $entityReflection = new ReflectionClass($entityName);
+        $objectName = $entityReflection->getShortName();
+        $methods = $entityReflection->getMethods();
+
+        foreach ($methods as $method) {
+
+
+
+            $name = $method->getName();
+
+            if ($method->isPublic() && (substr($name, 0, 3) == 'get' || substr($name, 0, 3) == 'has')) {
+                $name = lcfirst(substr($name, 3));
+
+
+                if (!$this->checkKeyExist($yamlArr, lcfirst($objectName), $name, $lowerNameSpace)) {
+
+                    if ($this->checkAssociation($entityName, $name)) {
+                        $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name]['name'] = $name;
+                    }
+                    else{
+                        $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name] = $name;
+                    }
+
+                    
+                }
+            }
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -186,14 +230,14 @@ class GenerateTranslationCommand extends ContainerAwareCommand
 
         if (!empty($entities)) {
 
-          
-         
-            
+
+
+
             $entityReflection = new ReflectionClass($entities[0]);
             $classPath = $this->getClassPath($entities[0], $manager);
             $directory = $this->createTranslationDirectory($classPath, $entityReflection->getNamespaceName());
-            $shortObjectName=$entityReflection->getShortName();
-   
+            $shortObjectName = $entityReflection->getShortName();
+
             $configFullPath = $directory . DIRECTORY_SEPARATOR . "messages." . $language . ".yml";
 
             $lowerNameSpace = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityReflection->getNamespaceName())));
@@ -203,31 +247,7 @@ class GenerateTranslationCommand extends ContainerAwareCommand
             $twigEntities = [];
             foreach ($entities as $entityName) {
 
-
-                $classPath = $this->getClassPath($entityName, $manager);
-                $entityReflection = new ReflectionClass($entityName);
-                $objectName = $entityReflection->getShortName();
-                $methods = $entityReflection->getMethods();
-
-                foreach ($methods as $method) {
-
-
-
-                    $name = $method->getName();
-
-                    if ($method->isPublic() && (substr($name, 0, 3) == 'get' || substr($name, 0, 3) == 'has')) {
-                        $name = lcfirst(substr($name, 3));
-
-                        
-                        if (!$this->checkKeyExist($yamlArr, lcfirst($objectName), $name, $lowerNameSpace)) {
-                         
-                              
-                        
-                               $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name] = $objectName.' '.$name; 
-                            
-                        }
-                    }
-                }
+                $this->addYamlData($yamlArr, $entityName, $manager, $lowerNameSpace);
             }
 
             $this->writeYml($configFullPath, $yamlArr, $output);
