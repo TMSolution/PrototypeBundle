@@ -47,7 +47,7 @@ services:
     #niezgrabna 
     prototype.gridconfig:
         class: TMSolution\DataGridBundle\GridConfig\GridConfig
-        arguments: [%prototype_config_params%]        
+        arguments: [@service_container]        
         tags:
             -  { name: prototype.gridconfig }
 ################################################################               
