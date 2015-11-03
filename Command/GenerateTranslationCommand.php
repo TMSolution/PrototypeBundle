@@ -150,6 +150,11 @@ class GenerateTranslationCommand extends ContainerAwareCommand
             return key($array);
         }
     }
+    
+    
+    protected function addYamlData($entity){
+        
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -181,15 +186,18 @@ class GenerateTranslationCommand extends ContainerAwareCommand
 
         if (!empty($entities)) {
 
+          
+         
+            
             $entityReflection = new ReflectionClass($entities[0]);
             $classPath = $this->getClassPath($entities[0], $manager);
             $directory = $this->createTranslationDirectory($classPath, $entityReflection->getNamespaceName());
+            $shortObjectName=$entityReflection->getShortName();
+   
             $configFullPath = $directory . DIRECTORY_SEPARATOR . "messages." . $language . ".yml";
 
             $lowerNameSpace = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityReflection->getNamespaceName())));
-            //$yamlPrefix = $this->createYamlPrefix($lowerPrefix);
-            //$yaml = new Parser();
-            //$lowerPrefixArr = $yaml->parse($yamlPrefix);
+
             $yamlArr = $this->readYml($configFullPath);
 
             $twigEntities = [];
@@ -210,14 +218,13 @@ class GenerateTranslationCommand extends ContainerAwareCommand
                     if ($method->isPublic() && (substr($name, 0, 3) == 'get' || substr($name, 0, 3) == 'has')) {
                         $name = lcfirst(substr($name, 3));
 
-
-
-
-
+                        
                         if (!$this->checkKeyExist($yamlArr, lcfirst($objectName), $name, $lowerNameSpace)) {
-
-
-                            $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name] = $objectName.' '.$name;
+                         
+                              
+                        
+                               $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name] = $objectName.' '.$name; 
+                            
                         }
                     }
                 }
