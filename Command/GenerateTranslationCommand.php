@@ -217,7 +217,7 @@ class GenerateTranslationCommand extends ContainerAwareCommand
                         if (!$this->checkKeyExist($yamlArr, lcfirst($objectName), $name, $lowerNameSpace)) {
 
 
-                            $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name] = $name;
+                            $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name] = $objectName.' '.$name;
                         }
                     }
                 }
