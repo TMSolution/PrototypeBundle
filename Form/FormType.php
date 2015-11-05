@@ -39,9 +39,10 @@ class FormType extends BaseFormType {
             //for block to display 'id' in form
             $builder->add($key);
             if ($key == "id") {
-                $builder->add('id', 'hidden');
+                $builder->add('id', 'hidden', [
+                    'mapped' => false,                   
+                ]);
             }
-            
             }
         }
         

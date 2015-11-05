@@ -19,8 +19,7 @@ use Core\PrototypeBundle\Event\Event;
  * 
  * @copyright (c) 2014-current, TMSolution
  */
-class DefaultController extends BaseController
-{
+class DefaultController extends BaseController {
 
     protected $objectName = null;
     protected $routePrefix = null;
@@ -60,8 +59,7 @@ class DefaultController extends BaseController
 
       )
      */
-    public function createAction()
-    {
+    public function createAction() {
 
         $request = $this->get('request');
         $model = $this->getModel($this->getEntityClass());
@@ -115,8 +113,7 @@ class DefaultController extends BaseController
      * @return Response
      * @throws \BadMethodCallException Not implemented yet
      */
-    public function listAction()
-    {
+    public function listAction() {
 
 
         $entityName = $this->getEntityName();
@@ -165,8 +162,7 @@ class DefaultController extends BaseController
      * @param id Entity id
      * @return Response
      */
-    public function updateAction($id)
-    {
+    public function updateAction($id) {
 
 
         $request = $this->get('request');
@@ -180,6 +176,7 @@ class DefaultController extends BaseController
 
 
         $updateForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
+ 
         $updateForm->handleRequest($request);
 
         //config parameters for render and event broadcast
@@ -200,16 +197,19 @@ class DefaultController extends BaseController
         ]);
 
         //Create event broadcast.
+
+
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($model);
         $event->setForm($updateForm);
 
+
         if ($updateForm->isValid()) {
-           
+
             $model->update($entity, true);
             $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'update.success', $event);
-            
+
             return $this->redirect($this->generateUrl($routePrefix . '_read', $this->getRouteParams()));
         }
 
@@ -223,8 +223,7 @@ class DefaultController extends BaseController
      * @param id Entity id
      * @return Response
      */
-    public function deleteAction($id)
-    {
+    public function deleteAction($id) {
 
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->findOneById($id);
@@ -256,8 +255,7 @@ class DefaultController extends BaseController
      * @param id Entity id
      * @return Response
      */
-    public function editAction($id)
-    {
+    public function editAction($id) {
 
         $model = $this->getModel($this->getEntityClass());
         $formType = $this->getFormType($this->getEntityClass(), null, $model);
@@ -296,8 +294,7 @@ class DefaultController extends BaseController
      * @param $id Entity id
      * @return Response
      */
-    public function readAction($id)
-    {
+    public function readAction($id) {
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->findOneById($id);
         $entityName = $this->getEntityName();
@@ -330,8 +327,7 @@ class DefaultController extends BaseController
         return $this->render($this->getConfig()->get('twig_element_read'), $params->getArray());
     }
 
-    protected function prepareProperties($model, $entity)
-    {
+    protected function prepareProperties($model, $entity) {
 
         $properties = [];
         $fields = array_merge($model->getMetadata()->fieldMappings, $model->getMetadata()->getAssociationMappings());
@@ -380,8 +376,7 @@ class DefaultController extends BaseController
      * 
      * @return Response
      */
-    public function newAction()
-    {
+    public function newAction() {
         $entity = $this->getModel($this->getEntityClass())->getEntity();
         $model = $this->getModel($this->getEntityClass());
         $entityName = $this->getEntityName();
@@ -417,8 +412,7 @@ class DefaultController extends BaseController
      * 
      * @return Symfony\Component\DependencyInjection\ContainerInterface Dependency container
      */
-    protected function getContainer()
-    {
+    protected function getContainer() {
         return $this->get('service_container');
     }
 
@@ -427,8 +421,7 @@ class DefaultController extends BaseController
      * 
      * @return string
      */
-    protected function getEntityClass()
-    {
+    protected function getEntityClass() {
         if (null == $this->objectName) {
             $this->objectName = $this->get('request')->attributes->get('objectName');
         }
@@ -440,8 +433,7 @@ class DefaultController extends BaseController
      * 
      * @return string
      */
-    protected function getEntityName()
-    {
+    protected function getEntityName() {
         if (null == $this->entityName) {
             $this->entityName = $this->get('request')->attributes->get('entityName');
         }
@@ -455,8 +447,7 @@ class DefaultController extends BaseController
      * @param string $managerName
      * @return Core\BaseBundle\Model
      */
-    protected function getModel($objectName, $managerName = null)
-    {
+    protected function getModel($objectName, $managerName = null) {
         if ($managerName) {
             $factory = "model_factory" . $managerName;
         } else {
@@ -472,8 +463,7 @@ class DefaultController extends BaseController
      * 
      * @return Core\BaseBundle\Model Default model for this controller
      */
-    protected function getDefaultModel()
-    {
+    protected function getDefaultModel() {
         $modelFactory = $this->get("model_factory");
         $model = $modelFactory->getModel($this->getEntityClass());
 
@@ -487,8 +477,7 @@ class DefaultController extends BaseController
      * @param string $class Entity class
      * @return Symfony\Component\Form\Extension\Core\Type\FormType FormType
      */
-    protected function getFormType($objectName, $class = null)
-    {
+    protected function getFormType($objectName, $class = null) {
 
         $configurator = $this->get("prototype.formtype.configurator.service");
         $formType = $configurator->getService($this->getRouteName(), $this->getEntityClass());
@@ -517,8 +506,7 @@ class DefaultController extends BaseController
      * @param string $url
      * @return Symfony\Component\Form\Extension\Core\Type\FormType
      */
-    protected function makeForm($formType, $entity, $method, $entityName, $action, $id = null, $class = null, $url = null)
-    {
+    protected function makeForm($formType, $entity, $method, $entityName, $action, $id = null, $class = null, $url = null) {
         $params = $this->getRouteParams();
 
         if ($url && !$id) {
@@ -547,8 +535,7 @@ class DefaultController extends BaseController
      * 
      * @return string Current route
      */
-    protected function getRouteName()
-    {
+    protected function getRouteName() {
         if (null == $this->routeName) {
             $this->routeName = $this->get('request')->attributes->get('_route');
         }
@@ -560,8 +547,7 @@ class DefaultController extends BaseController
      * 
      * @return string Current route
      */
-    protected function getRoutePrefix()
-    {
+    protected function getRoutePrefix() {
         $routeStringArray = explode("_", $this->getRouteName());
         $this->routePrefix = implode("_", array_slice($routeStringArray, 0, -1));
         return $this->routePrefix;
@@ -573,21 +559,18 @@ class DefaultController extends BaseController
      * @param string $actionName Custom action name
      * @return string Custom route
      */
-    protected function getAction($actionName)
-    {
+    protected function getAction($actionName) {
         return $this->getRoutePrefix() . "_" . $actionName;
     }
 
-    protected function loadConfig()
-    {
+    protected function loadConfig() {
 
         $configurator = $this->get("prototype.configurator.service");
         $config = $configurator->getService($this->getRouteName(), $this->getEntityClass());
         return $config;
     }
 
-    protected function getConfig()
-    {
+    protected function getConfig() {
 
 
         if (false == $this->configService) {
@@ -601,15 +584,13 @@ class DefaultController extends BaseController
         return $this->configService;
     }
 
-    protected function getRouteParams()
-    {
+    protected function getRouteParams() {
         $parametersArr = $this->get('request')->attributes->all();
         $parameters = $parametersArr["_route_params"];
         return $parameters;
     }
 
-    protected function getStates()
-    {
+    protected function getStates() {
         $params = $this->getRouteParams();
         if ($this->states == null) {
 
@@ -623,8 +604,7 @@ class DefaultController extends BaseController
         return $this->states;
     }
 
-    protected function getParentName()
-    {
+    protected function getParentName() {
         $params = $this->getRouteParams();
         if ($this->parentName == null) {
             if (array_key_exists("parentName", $params)) {
@@ -634,8 +614,7 @@ class DefaultController extends BaseController
         return $this->parentName;
     }
 
-    protected function getParentId()
-    {
+    protected function getParentId() {
         $params = $this->getRouteParams();
         if ($this->parentId == null) {
             if (array_key_exists("parentId", $params)) {
@@ -645,15 +624,13 @@ class DefaultController extends BaseController
         return $this->parentId;
     }
 
-    protected function getBasePath()
-    {
+    protected function getBasePath() {
         $params = $this->getRouteParams();
         $params["states"] = null;
         return $this->generateUrl($this->getRouteName(), $params);
     }
 
-    protected function setBaseTwigParams()
-    {
+    protected function setBaseTwigParams() {
         
     }
 
