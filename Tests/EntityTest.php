@@ -659,4 +659,11 @@ class EntityTest extends WebTestCase {
     public function byXpath($xpath) {
         return $this->webDriver->findElement(WebDriverBy::xpath($id))->click();
     }
+    
+    
+    
+    
+    
+    
 }
+
