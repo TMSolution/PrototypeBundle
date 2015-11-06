@@ -135,15 +135,27 @@ class EntityTest extends WebTestCase {
             //get class antotation---------------------------------------------
             $reflectionClass = new \ReflectionClass('PhantomBundle\Entity\ProductDescription');
             $classAnotations = $annotationReader->getClassAnnotations($reflectionClass);
-//            dump($classAnotations);
-//            die('ok');
+            dump($classAnotations);
+            die('ok');
             //-----------------------------------------------------------------------------
             //property annotation-----------------------------------------------
-            $reflectionProperty = new \ReflectionProperty('PhantomBundle\Entity\ProductProperty', 'name');
+            $reflectionProperty = new \ReflectionProperty('PhantomBundle\Entity\ProductCategory', 'name');
             $propertyAnnotations = $annotationReader->getPropertyAnnotations($reflectionProperty);
-            dump($propertyAnnotations);
-            die('ok');
-
+//            dump($propertyAnnotations);
+//            die('ok');
+            //------------------------------------------------------------------
+            //method annotation
+            $reflectionMethod = new \ReflectionMethod('PhantomBundle\Entity\ProductCategory', 'getName');
+            $methodAnnotations = $annotationReader->getMethodAnnotations($reflectionMethod);
+//            dump($methodAnnotations);
+//            die('ok');
+            //------------------------------------------------------------------
+            //object annotation
+            $annotationDemoObject = new \PhantomBundle\Entity\ProductCategory();
+            $reflectionObject = new \ReflectionObject($annotationDemoObject);
+//            dump($reflectionObject);
+//            die('ok');
+            //------------------------------------------------------------------
 
             if ($type == "text" || $type == "textarea") {
                 if ($entityName == "product") {
@@ -647,5 +659,4 @@ class EntityTest extends WebTestCase {
     public function byXpath($xpath) {
         return $this->webDriver->findElement(WebDriverBy::xpath($id))->click();
     }
-
 }
