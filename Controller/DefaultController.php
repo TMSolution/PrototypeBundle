@@ -13,13 +13,14 @@ namespace Core\PrototypeBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Core\PrototypeBundle\Event\Event;
+use FOS\RestBundle\Controller\FOSRestController;
 
 /**
  * Default controller.
  * 
  * @copyright (c) 2014-current, TMSolution
  */
-class DefaultController extends BaseController
+class DefaultController extends FOSRestController
 {
 
     protected $objectName = null;
