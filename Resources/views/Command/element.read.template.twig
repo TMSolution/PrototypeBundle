@@ -1,31 +1,32 @@
 {{ "{% extends config.get('twig_container_read') %}" }}
 
 {{ "{% block element %}" }}
-<table class="record_properties table table-hover table-striped">
-    <tbody>
+<div class="row">
+        <div class="col-md-12 col-sm-12 form-horizontal">
+            
         {% for field, fieldParam in fieldsInfo %}
             {% if fieldParam.is_object %}
+                {% if fieldParam.object_name is defined %}{% set defaultFieldName=that.getDefaultField(fieldParam.object_name) %}{% endif %}
                 {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
                     <!-- Field {{field}} -->  
                     {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
-                    <tr>
-                        <td><strong>{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</strong></td>
-                        <td>
-                            <ul>
-                                {{ "{% for item in properties."}}{{field}}{{" %} "}}
-                                <li>
-                                    {{ " {% if item %}{{item}}{% else %}-{% endif %}" }}
-                                </li>   
-                                {{ "{% endfor %}" }}
-                            </ul>
-                        </td>
-                    </tr> 
+                    <div class="form-group m-b-20">
+                        <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}.{{defaultFieldName}}{{"'|trans}} "}}</div>
+                        <div class="col-sm-11">
+                                {{ "{% if property %}{% for item in properties."}}{{field}}{{" %} "}}
+                                
+                                    {{ " {% if item %}{{item}}{% if not loop.last %},{% endif %}{% endif %}" }}
+                                
+                                {{ "{% endfor %}{% else %}-{% endif %}" }}
+                           
+                        </div>
+                    </div> 
                     {{ "{% else %}" }}
 
-                    <tr>
-                        <td><strong>{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</strong></td>
-                        <td>{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</td>
-                    </tr>
+                    <div class="form-group m-b-20">
+                        <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}.{{defaultFieldName}}{{"'|trans}} "}}</div>
+                        <div class="col-sm-11">{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</div>
+                    </div>
                     {{ "{% endif %}" }}    
 
                 {% endif %}
@@ -33,24 +34,23 @@
 
                 <!-- Field {{field}} -->  
                 {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
-                <tr>
-                    <td><strong>{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</strong></td>
-                    <td>
-                        <ul>
-                            {{ "{% for item in properties."}}{{field}}{{" %} "}}
-                            <li>
-                                {{ " {% if item %}{{item}}{% else %}-{% endif %}" }}
-                            </li>   
-                            {{ "{% endfor %}" }}
-                        </ul>
-                    </td>
-                </tr> 
+                <div class="form-group m-b-20">
+                    <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</div>
+                    <div class="col-sm-11">
+                            {{ "{% if property %}{% for item in properties."}}{{field}}{{" %} "}}
+
+                                {{ " {% if item %}{{item}}{% if not loop.last %},{% endif %}{% endif %}" }}
+
+                            {{ "{% endfor %}{% else %}-{% endif %}" }}
+
+                    </div>
+                </div> 
                 {{ "{% else %}" }}
 
-                <tr>
-                    <td><strong>{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</strong></td>
-                    <td>{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</td>
-                </tr>
+                <div class="form-group m-b-20">
+                    <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</div>
+                    <div class="col-sm-11">{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</div>
+                </div>
                 {{ "{% endif %}" }}    
 
 
@@ -59,44 +59,43 @@
 
         {% endfor %}
 
-    </tbody>
-</table>
-<div>
-
-    
-    {% if isAssociated %}
-        <a href="{{ "{{ path(listActionName, { 'entityName': entityName,'parentName': parentName,'parentId': parentId })}}" }}" class=" prevButton btn">
-            {{ "{{ 'Back'|trans}}" }}
-        </a>
-        <span class="pull-right">   
-            <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId})}}" }}" class="btn">
-                {{ "{{ 'Delete'|trans}} " }}
-
-            </a>
-            <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId})}}" }}" class="btn">
-                {{ "{{ 'Edit'|trans}}" }}
-            </a>
-        </span>
-    {% else %}
-        <a href="{{ "{{ path(listActionName, { 'entityName': entityName })}}" }}" class=" prevButton btn">
-            {{ "{{ 'Back'|trans}}" }}
-        </a>
-        <span class="pull-right">   
-            <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
-                {{ "{{ 'Delete'|trans}} " }}
-
-            </a>
-            <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" }}" class="btn">
-                {{ "{{ 'Edit'|trans}}" }}
-            </a>
-        </span>
-    {% endif %}
+     </div> 
+</div> 
+<div class="row">
+    <div class="col-md-12 col-sm-12">
 
 
+        {% if isAssociated %}
+            <!--<a href="{{ "{{ path(listActionName, { 'entityName': entityName,'parentName': parentName,'parentId': parentId })}}" }}" class="prevButton btn btn-link lazy-loaded">
+            {{ "{{ 'Cancel'|trans}}" }}
+        </a>-->
+            <span class="pull-right">   
+                <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId})}}" }}" class="btn btn-link lazy-loaded">
+                    {{ "{{ 'Delete'|trans}} " }}
 
+                </a>
+                <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId})}}" }}" class="btn btn-primary m-l-5 lazy-loaded">
+                    {{ "{{ 'Edit'|trans}}" }}
+                </a>
+            </span>
+        {% else %}
 
+        <!--<a href="{{ "{{ path(listActionName, { 'entityName': entityName })}}" }}" data-masked-element=".card" class=" prevButton btn btn-link lazy-loaded">
+            {{ "{{ 'Cancel'|trans}}" }}
+         </a>-->
+            <span class="pull-right"> 
+                <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" }}" data-masked-element=".card" class="btn btn-link lazy-loaded">
+                    {{ "{{ 'Delete'|trans}} " }}
 
+                </a>
+                <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" }}" data-masked-element=".card" class="btn btn-primary m-l-5 lazy-loaded">
+                    {{ "{{ 'Edit'|trans}}" }}
+                </a>
+            </span>
 
+        {% endif %}
+
+    </div>
 </div>
 
 

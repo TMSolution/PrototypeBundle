@@ -107,6 +107,16 @@ class GenerateTwigElementReadCommand extends ContainerAwareCommand
         }
         return $subject;
     }
+    
+    public function getDefaultField($entityName)
+    {
+        $model = $this->getContainer()->get("model_factory")->getModel($entityName);
+        if ($model->checkPropertyByName("name")) {
+            return "name";
+        } else {
+            return "id";
+        }
+    }
 
     protected function addFile($entityName, $fieldsInfo, $rootFolder,$isAssociated=false)
     {
@@ -127,7 +137,8 @@ class GenerateTwigElementReadCommand extends ContainerAwareCommand
             "objectName" => strtolower($objectName),
             "fieldsInfo" => $fieldsInfo,
             "lowerNameSpaceForTranslate" => $lowerNameSpaceForTranslate,
-            "isAssociated"=>$isAssociated
+            "isAssociated"=>$isAssociated,
+            "that"=>$this
         ]);
 
         file_put_contents($fileName, $renderedConfig);

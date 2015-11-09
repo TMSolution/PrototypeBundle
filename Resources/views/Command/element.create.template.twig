@@ -1,9 +1,11 @@
 {{ "{% extends config.get('twig_container_create') %}" }}
-{{ "{% form_theme form 'bootstrap_3_layout.html.twig' %}" }}
+{{ "{% form_theme form 'Form\\\\bootstrap_3_horizontal_layout.html.twig' %}" }}
 
 {{ '{% block css %}' }}
 {{ '{{ parent() }}' }}
+{% if datepicker is defined %}
 <link rel="stylesheet" href="{{ "{{ asset('assets/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}" }}">
+{% endif %}
 {{ '{% endblock css %}' }}
 
 {{ "{% block element %}" }}
@@ -12,7 +14,7 @@
         
 
         {# added params for disable html validation #}
-        {{ "{{ form_start(form, { 'attr': {'class': '','novalidate': 'novalidate' }}) }}" }}
+        {{ "{{ form_start(form, { 'attr': {'class': '','novalidate': 'novalidate','data-masked-element': '.card' }}) }}" }}
         {{ "{{ form_errors(form) }}" }}
         {% set datepicker=false %}
         {% for field, fieldParam in fieldsInfo %}
@@ -26,22 +28,22 @@
                     {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
              <!-- {{field}} {{fieldParam.type}} -->
                         <div class="form-group">
-                            {{ "{{ form_label(form." }}{{field}}{{ ") }}" }}
-                            {{ "{{ form_widget(form." }}{{field}}{{ ") }}" }}
+                            {{ "{{ form_row(form." }}{{field}}{{ ") }}" }}
+                            {# "{{ form_widget(form." }}{{field}}{{ ") }}" #}
                         </div>   
                     {% endif %}
                 {% else %}    
             <!-- {{field}} {{fieldParam.type}} -->
                     <div class="form-group">
-                        {{ "{{ form_label(form." }}{{field}}{{ ") }}" }}
-                        {{ "{{ form_widget(form." }}{{field}}{{ ") }}" }}
+                        {{ "{{ form_row(form." }}{{field}}{{ ") }}" }}
+                        {# "{{ form_widget(form." }}{{field}}{{ ") }}" #}
                     </div>
                 {% endif %}
             {% endif %}
         {% endfor %}
         <div class="button-rows" >    
-            <button onclick="history.go(-1)" class="btn btn-default pull-left" type="button">{{ "{{ 'Cancel'|trans}}" }}</button>
-            <button class="btn btn-default pull-right" type="submit" >{{ "{{ 'Save'|trans}}" }}</button>
+            <button class="btn btn-primary pull-right waves-effect m-l-5" data-masked-element=".card" type="submit" >{{ "{{ 'Save'|trans}}" }}</button>
+            <button onclick="history.go(-1)" class="btn btn-link pull-right waves-effect" data-masked-element=".card" type="button">{{ "{{ 'Cancel'|trans}}" }}</button>
         </div>
         {{ "{{ form_end(form) }}" }}
     </div>
@@ -51,7 +53,8 @@
 
 {{ '{% block js %}' }}
 {{ '{{ parent() }}' }}
-{% if datepicker %}
+<script> {{ '{{ form_jquery_validation(form) }}' }} </script>
+{% if datepicker is defined %}
 <script src="{{ "{{ asset('assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"}}"></script>
 {% endif %}
 {{ '{% endblock js %}' }}
