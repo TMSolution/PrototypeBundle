@@ -1,0 +1,60 @@
+#swieta nazwa - nie wolno jej zmieniać PO CO TO?
+core_prototype_defaultcontroller_list:
+    locales:  { en: "/{entityName}/list/{states}", pl: "/{entityName}/lista/{states}" } 
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:list", states: "", _format: ~ }
+    requirements: {"states": ".+"}
+    options:
+        expose: true
+        
+#swieta nazwa - nie wolno jej zmieniać PO CO TO?
+core_prototype_defaultcontroller_ajaxlist:
+    locales:  { en: "/{entityName}/ajaxlist/{states}", pl: "/{entityName}/listaajax/{states}" } 
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:ajaxlist", states: "", _format: ~ }
+    options:
+        expose: true        
+       
+#swieta nazwa - nie wolno jej zmieniać    
+core_prototype_defaultcontroller_read:
+    locales:  { en: "/{entityName}/read/{id}/{states}", pl: "/{entityName}/pobierz/{id}/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:read", states: "", _format: ~ }   
+    requirements: {"states": ".+"}
+    options:
+        expose: true
+
+#### widoki tworzące obiekt
+#święta nazwa - nie wolno jej zmieniać    
+core_prototype_defaultcontroller_new:
+    locales:  { en: "/{entityName}/new/{states}", pl: "/{entityName}/nowy/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:new", states: "", _format: ~ }   
+    requirements: {"states": ".+"}
+    options:
+        expose: true
+#swieta nazwa - nie wolno jej zmieniać
+core_prototype_defaultcontroller_create:
+    locales:  { en: "/{entityName}/create/{states}", pl: "/{entityName}/utworz/{states}" }
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:create", states: "", _format: ~ }   
+    requirements: {"states": ".+"}
+    options:
+        expose: true       
+#święta nazwa - nie wolno jej zmieniać    
+core_prototype_defaultcontroller_delete:
+    locales:  { en: "/{entityName}/delete/{id}/{states}", pl: "/{entityName}/usun/{id}/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:delete", states: "", _format: ~ }       
+    requirements: {"states": ".+"}
+    options:
+        expose: true
+#### widoki aktualizujące obiekt
+#święta nazwa - nie wolno jej zmieniać - update    
+core_prototype_defaultcontroller_edit:
+    locales:  { en: "/{entityName}/edit/{id}/{states}", pl: "/{entityName}/edytuj/{id}/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:edit", states: "", _format: ~ }
+    requirements: {"states": ".+"}
+    options:
+        expose: true    
+#święta nazwa - nie wolno jej zmieniać    
+core_prototype_defaultcontroller_update:
+    locales:  { en: "/{entityName}/update/{id}/{states}", pl: "/{entityName}/aktualizuj/{id}/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:update", states: "", _format: ~ }   
+    requirements: {"states": ".+"}
+    options:
+        expose: true

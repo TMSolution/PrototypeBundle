@@ -106,7 +106,7 @@ class AssociationGridConfig extends GridConfig {
           /*@todo, aftert test - add to oryginal data-grid command generator */
         
           $parametersArr=$this->request->attributes->all();
-          $parameters=["id"];
+          $parameters=["id","containerName"=>"container","actionId"=>"default"];
           $parameters=  array_merge($parameters,$parametersArr["_route_params"]);
           
           

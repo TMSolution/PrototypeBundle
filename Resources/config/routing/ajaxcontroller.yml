@@ -1,60 +1,61 @@
 #swieta nazwa - nie wolno jej zmieniać PO CO TO?
 core_prototype_ajaxcontroller_list:
-    locales:  { en: "/ajax/{entityName}/list/{states}", pl: "/ajax/{entityName}/lista/{states}" } 
+    locales:  { en: "/ajax/{entityName}/{containerName}/{actionId}/list/{states}", pl: "/ajax/{entityName}/{containerName}/{actionId}/lista/{states}" } 
     defaults: { _controller: "CorePrototypeBundle:GridDefault:list", states: "", _format: ~ }
-    requirements: {"states": ".+"}
+    requirements: { "containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
         
 #swieta nazwa - nie wolno jej zmieniać PO CO TO?
 core_prototype_ajaxcontroller_ajaxlist:
-    locales:  { en: "/ajax/{entityName}/ajaxlist/{states}", pl: "/ajax/{entityName}/listaajax/{states}" } 
+    locales:  { en: "/ajax/{entityName}/{containerName}/{actionId}/ajaxlist/{states}", pl: "/ajax/{entityName}/{containerName}/{actionId}/listaajax/{states}" } 
     defaults: { _controller: "CorePrototypeBundle:GridDefault:ajaxlist", states: "", _format: ~ }
+    requirements: { "containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true        
        
 #swieta nazwa - nie wolno jej zmieniać    
 core_prototype_ajaxcontroller_read:
-    locales:  { en: "/ajax/{entityName}/read/{id}/{states}", pl: "/ajax/{entityName}/pobierz/{id}/{states}"}
+    locales:  { en: "/ajax/{entityName}/{containerName}/{actionId}/read/{id}/{states}", pl: "/ajax/{entityName}/{containerName}/{actionId}/pobierz/{id}/{states}"}
     defaults: { _controller: "CorePrototypeBundle:GridDefault:read", states: "", _format: ~ }   
-    requirements: {"states": ".+"}
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
 
 #### widoki tworzące obiekt
 #święta nazwa - nie wolno jej zmieniać    
 core_prototype_ajaxcontroller_new:
-    locales:  { en: "/ajax/{entityName}/new/{states}", pl: "/ajax/{entityName}/nowy/{states}"}
+    locales:  { en: "/ajax/{entityName}/{containerName}/{actionId}/new/{states}", pl: "/ajax/{entityName}/{containerName}/{actionId}/nowy/{states}"}
     defaults: { _controller: "CorePrototypeBundle:GridDefault:new", states: "", _format: ~ }   
-    requirements: {"states": ".+"}
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
 #swieta nazwa - nie wolno jej zmieniać
 core_prototype_ajaxcontroller_create:
-    locales:  { en: "/ajax/{entityName}/create/{states}", pl: "/ajax/{entityName}/utworz/{states}" }
+    locales:  { en: "/ajax/{entityName}/{containerName}/{actionId}/create/{states}", pl: "/ajax/{entityName}/{containerName}/{actionId}/utworz/{states}" }
     defaults: { _controller: "CorePrototypeBundle:GridDefault:create", states: "", _format: ~ }   
-    requirements: {"states": ".+"}
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true       
 #święta nazwa - nie wolno jej zmieniać    
 core_prototype_ajaxcontroller_delete:
-    locales:  { en: "/ajax/{entityName}/delete/{id}/{states}", pl: "/ajax/{entityName}/usun/{id}/{states}"}
+    locales:  { en: "/ajax/{entityName}/{containerName}/{actionId}/delete/{id}/{states}", pl: "/ajax/{entityName}/{containerName}/{actionId}/usun/{id}/{states}"}
     defaults: { _controller: "CorePrototypeBundle:GridDefault:delete", states: "", _format: ~ }       
-    requirements: {"states": ".+"}
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
 #### widoki aktualizujące obiekt
 #święta nazwa - nie wolno jej zmieniać - update    
 core_prototype_ajaxcontroller_edit:
-    locales:  { en: "/ajax/{entityName}/edit/{id}/{states}", pl: "/ajax/{entityName}/edytuj/{id}/{states}"}
+    locales:  { en: "/ajax/{entityName}/{containerName}/{actionId}/edit/{id}/{states}", pl: "/ajax/{entityName}/{containerName}/{actionId}/edytuj/{id}/{states}"}
     defaults: { _controller: "CorePrototypeBundle:GridDefault:edit", states: "", _format: ~ }
-    requirements: {"states": ".+"}
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true    
 #święta nazwa - nie wolno jej zmieniać    
 core_prototype_ajaxcontroller_update:
-    locales:  { en: "/ajax/{entityName}/update/{id}/{states}", pl: "/ajax/{entityName}/aktualizuj/{id}/{states}"}
+    locales:  { en: "/ajax/{entityName}/{containerName}/{actionId}/update/{id}/{states}", pl: "/ajax/{entityName}/{containerName}/{actionId}/aktualizuj/{id}/{states}"}
     defaults: { _controller: "CorePrototypeBundle:GridDefault:update", states: "", _format: ~ }   
-    requirements: {"states": ".+"}
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true

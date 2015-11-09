@@ -51,6 +51,8 @@ class GridDefaultController extends DefaultController {
             'newActionName' => $this->getAction('new'),
             'routeName' => $routePrefix . '_new',
             'config' => $this->getConfig(),
+            'containerName'=> 'container',
+            'actionId' => 'default',
             'routeParams' => $this->getRouteParams(),
         ]);
 

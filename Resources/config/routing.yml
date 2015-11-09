@@ -13,3 +13,9 @@ prototype_defaultcontroller:
     resource: "@CorePrototypeBundle/Resources/config/routing/defaultcontroller.yml"
     prefix:   /panel
     type: be_simple_i18n
+    
+    
+prototype_defaultcontroller_api:
+    resource: "@CorePrototypeBundle/Resources/config/routing/api.yml"
+    prefix:   /api1
+    type: be_simple_i18n
