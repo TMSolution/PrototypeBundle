@@ -151,8 +151,19 @@ class GenerateTranslationCommand extends ContainerAwareCommand
         }
     }
 
+    protected function getDefaultField($entityName)
+    {
+        $model = $this->getContainer()->get("model_factory")->getModel($entityName);
+        if ($model->checkPropertyByName("name")) {
+            return "name";
+        } else {
+            return "id";
+        }
+    }
+
     protected function checkAssociation($entityName, $fieldName)
     {
+
         $model = $this->getContainer()->get("model_factory")->getModel($entityName);
         $fieldsInfo = $model->getFieldsInfo();
 
@@ -188,13 +199,11 @@ class GenerateTranslationCommand extends ContainerAwareCommand
                 if (!$this->checkKeyExist($yamlArr, lcfirst($objectName), $name, $lowerNameSpace)) {
 
                     if ($this->checkAssociation($entityName, $name)) {
-                        $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name]['name'] = $name;
-                    }
-                    else{
+                        $defaultField = $this->getDefaultField($entityName);
+                        $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name][$defaultField] = $name;
+                    } else {
                         $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name] = $name;
                     }
-
-                    
                 }
             }
         }
