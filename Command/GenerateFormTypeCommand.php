@@ -129,6 +129,16 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         unset($entityNameArr[count($entityNameArr) - 1]);
         return implode("\\", $entityNameArr);
     }
+    
+    public function getDefaultField($entityName)
+    {
+        $model = $this->getContainer()->get("model_factory")->getModel($entityName);
+        if ($model->checkPropertyByName("name")) {
+            return "name";
+        } else {
+            return "id";
+        }
+    }
 
     protected function addFile($entityName, $path, $fieldsInfo, $rootFolder, $output)
     {
@@ -157,7 +167,8 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
             "fieldsInfo" => $fieldsInfo,
             "formTypeNamespace" => $formTypeNamespaceName,
             "formTypeName" => $formTypeName,
-            "lowerNameSpaceForTranslate"=>$lowerNameSpaceForTranslate
+            "lowerNameSpaceForTranslate"=>$lowerNameSpaceForTranslate,
+            "that"=>$this
         ]);
 
         file_put_contents($fileName, $renderedConfig);
