@@ -155,6 +155,8 @@ class GenerateFilesCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:formtype');
                 $pathArr = explode('\\', $entity);
                 $path = array_pop($pathArr);
+                
+                
                 $arguments = array(
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder'),
