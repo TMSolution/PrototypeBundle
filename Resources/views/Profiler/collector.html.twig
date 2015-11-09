@@ -21,6 +21,9 @@
         </span>
         <span class="sf-toolbar-status">Prototype</span>
         <span class="sf-toolbar-status sf-toolbar-status-green">
+            <span>{% if collector.data.twigYellowChanges is defined %}{{ collector.data.twigYellowChanges }}{% else %}0{% endif %}</span>
+        </span>
+        <span class="sf-toolbar-status sf-toolbar-status-yellow">
             <span>{% if collector.data.twigChanges is defined %}{{ collector.data.twigChanges }}{% else %}0{% endif %}</span>
         </span>
     {% endset %}
@@ -44,7 +47,8 @@
         </div>
         <div class="sf-toolbar-info-piece">
             <b>Changed twigs</b>
-            <span class="sf-toolbar-status sf-toolbar-status-green">{% if collector.data.twigChanges is defined %}{{ collector.data.twigChanges }}{% else %}0{% endif %}</span>
+            <span class="sf-toolbar-status sf-toolbar-status-green">{% if collector.data.twigYellowChanges is defined %}{{ collector.data.twigYellowChanges }}{% else %}0{% endif %}</span>
+            <span class="sf-toolbar-status sf-toolbar-status-yellow">{% if collector.data.twigChanges is defined %}{{ collector.data.twigChanges }}{% else %}0{% endif %}</span>
         </div>
 
     {% endset %}
@@ -78,8 +82,10 @@
             </svg>
         </span>
         <strong>Prototype</strong>
+     
         <span class="count" alt="amount of changed twigs">
             <span>{% if collector.data.twigChanges is defined %}{{ collector.data.twigChanges }}{% else %}0{% endif %}</span>
+            <span style="background-color: #ffcc00;">{% if collector.data.twigYellowChanges is defined %}{{ collector.data.twigYellowChanges }}{% else %}0{% endif %}</span>
         </span>
 
         
