@@ -24,17 +24,17 @@
 
                     {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
              <!-- {{field}} {{fieldParam.type}} -->
-                        <div class="form-group">
+                      
                             {{ "{{ form_row(form." }}{{field}}{{ ") }}" }}
                             {# "{{ form_widget(form." }}{{field}}{{ ") }}" #}
-                        </div>   
+                       
                     {% endif %}
                 {% else %}    
             <!-- {{field}} {{fieldParam.type}} -->
-                    <div class="form-group">
+                    
                         {{ "{{ form_row(form." }}{{field}}{{ ") }}" }}
                         {# "{{ form_widget(form." }}{{field}}{{ ") }}" #}
-                    </div>
+                 
                 {% endif %}
             {% endif %}
         {% endfor %}
