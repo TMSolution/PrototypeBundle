@@ -30,7 +30,7 @@ class AssociationGridConfig extends GridConfig {
 
         $this->request=$this->getContainer()->get('request');
         $this->manipulateQuery($grid);
-        //$this->configureColumn($grid);
+        $this->configureColumn($grid);
         //$this->configureFilter($grid);
         //$this->configureExport($grid);
         $this->configureRowButton($grid,$routePrefix);
