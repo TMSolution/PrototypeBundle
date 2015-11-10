@@ -31,6 +31,7 @@ class GridDefaultController extends DefaultController {
      */
     public function listAction() {
 
+        
 
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();

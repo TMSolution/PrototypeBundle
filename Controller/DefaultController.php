@@ -117,7 +117,7 @@ class DefaultController extends FOSRestController
      */
     public function listAction() {
 
-
+       
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
         $model = $this->getModel($this->getEntityClass());

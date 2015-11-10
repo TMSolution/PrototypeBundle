@@ -11,7 +11,58 @@ class AbstractConfigurator {
     protected $divider = "*";
     
     
+/*
+    protected function getRouteName($serviceName) {
+        $serviceNameArr = explode($this->divider, $serviceName);
+        return $serviceNameArr[0];
+    }
 
+    protected function calculateBestSuitedServiceName($route) {
+
+        $bestSuitedRouteName = null;
+        $bestScore = 0;
+
+        $namesOfServices = $this->getNamesOfServices();
+        foreach ($namesOfServices as $serviceName) {
+
+            $routeName = $this->getRouteName($serviceName);
+            if ($routeName) {
+                if (\mb_substr($route, 0, mb_strlen($routeName)) == $routeName) {
+                   // dump(\mb_substr($route, 0, mb_strlen($routeName)));
+                    $score = similar_text($route, $routeName);
+                    if ($score > $bestScore) {
+                        $bestScore = $score;
+                        $bestSuitedRouteName = $routeName;
+                    }
+                }
+            }
+        }
+
+        return $bestSuitedRouteName;
+    }
+
+    protected function getBestSuitedServices($bestSuitedRouteName) {
+        $servicesConfigs = [];
+
+        foreach ($this->getNamesOfServices() as $serviceName) {
+            if (strstr($serviceName, $bestSuitedRouteName)) {
+                $servicesConfigs[$serviceName] = $this->servicesConfigs[$serviceName];
+            };
+        }
+
+        return $servicesConfigs;
+    }
+    
+    
+    public function getNamesOfServices() {
+
+        if (!$this->namesOfServices) {
+
+            $this->namesOfServices = array_keys($this->servicesConfigs);
+        }
+        return $this->namesOfServices;
+    }
+    */
     
     public function getNamesOfServices() {
 
@@ -34,7 +85,15 @@ class AbstractConfigurator {
         return $this->chosen;
     }
     
-   
+    /*
+    protected function calculateService($servicesConfigs)
+    {
+            $keys = array_keys($servicesConfigs);
+            $serviceName=$keys[0];
+            $servisConfig=$servicesConfigs[$serviceName];
+            $this->setChosen($servisConfig);
+            return $servisConfig["service"];      
+    }*/
     
     
     protected function findByBestSuitedRoute($route,$serviceConfigs)
@@ -62,21 +121,14 @@ class AbstractConfigurator {
     }
     
     
-    public function getService($route, $entity,$actionId='default') {
+    public function getService($route, $entity) {
         
         $forEntity=[];
         $universal=[];
-        $serviceConfig=null;
         
       
         foreach($this->servicesConfigs as $serviceConfig)
         {
-            if(!$serviceConfig['actionId'] || $serviceConfig['actionId']='default')
-            {
-                
-                
-            
-            
             if($serviceConfig['entity']==$entity )
             {
               $forEntity[]=$serviceConfig;  
@@ -85,13 +137,8 @@ class AbstractConfigurator {
                  
                 $universal[]=$serviceConfig;
             }
-            }
         }
-        
-        
-        
-        
-        
+        $serviceConfig=null;
         
         if(count($forEntity)>0)
         {
@@ -119,10 +166,10 @@ class AbstractConfigurator {
         $this->container = $container;
     }
 
-    public function addService($service, $route, $entity, $actionId,$id) {
+    public function addService($service, $route, $entity,$id) {
        
         $phrase=$route . $this->divider . $entity;
-        $this->servicesConfigs[$route . $this->divider . $entity] =["phrase"=>$phrase, "route"=>$route, "entity"=>$entity, "serviceid"=>$id, "actionId"=>$actionId, "service"=> $service];
+        $this->servicesConfigs[$route . $this->divider . $entity] =["phrase"=>$phrase, "route"=>$route, "entity"=>$entity, "serviceid"=>$id,"service"=> $service];
     }
 
 }

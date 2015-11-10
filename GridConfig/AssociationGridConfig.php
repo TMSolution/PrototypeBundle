@@ -26,8 +26,14 @@ use TMSolution\DataGridBundle\GridConfig\GridConfig;
 class AssociationGridConfig extends GridConfig {
 
     protected $request;
+    
+    
+    
+    
+    
     public function buildGrid($grid, $routePrefix) {
 
+        
         $this->request=$this->getContainer()->get('request');
         $this->manipulateQuery($grid);
         $this->configureColumn($grid);
@@ -55,13 +61,20 @@ class AssociationGridConfig extends GridConfig {
     
     protected function getParentFieldNameFromRequest()
     {
-        $this->request=$this->getContainer()->get('request');
-        $objectName = $this->request->get('objectName');
-        $model = $this->getContainer()->get('model_factory')->getModel($objectName);
+        
+        die('abc');
         $parentName = $this->request->get('parentName');
+        if($parentName){
+            
         $parentEntity = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->request->getLocale());
-         
-        return $this->findParentFieldName($model,$parentEntity); 
+        
+        
+        }
+        else
+        {
+            throw new \Exception('Parameter "parentName" required!');
+        }    
+        return $this->findParentFieldName($this->model,$parentEntity); 
     }
 
     protected function manipulateQuery($grid) {
@@ -85,14 +98,6 @@ class AssociationGridConfig extends GridConfig {
          
     }
 
-    protected function configureColumn($grid) {
-
-
-    }
-
-    protected function configureFilter($grid) {
-       
-    }
 
     protected function configureExport($grid) {
 
@@ -106,7 +111,7 @@ class AssociationGridConfig extends GridConfig {
           /*@todo, aftert test - add to oryginal data-grid command generator */
         
           $parametersArr=$this->request->attributes->all();
-          $parameters=["id"];
+          $parameters = ["id", "containerName" => "container", "actionId" => "default"];
           $parameters=  array_merge($parameters,$parametersArr["_route_params"]);
           
           
