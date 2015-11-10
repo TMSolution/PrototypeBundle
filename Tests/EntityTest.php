@@ -128,6 +128,14 @@ class EntityTest extends WebTestCase {
         return $entitiesNames;
     }
 
+    public function getLastWordEntity($entity) {
+        return ucfirst(
+                mb_strtolower((
+                        new \ReflectionClass($entity)
+                        )->getShortName()
+        ));
+    }
+
     public function get($serviceId) {
         return self::$container->get($serviceId);
     }
@@ -142,70 +150,38 @@ class EntityTest extends WebTestCase {
      * @dataProvider testEntitiesProvider
      */
     public function testNew($entity) {
-        $entityFriendlyName = $this->getNameOfEntity($entity);
-        $this->modelFactory = $this->get('model_factory');
-        $this->model = $this->modelFactory->getModel(get_class($entity));
-        $typeForm = '/new';
-        $entityForm = $this->createForm($entityFriendlyName, $entity, $typeForm);
-        $this->webDriver->get("http://localhost/makeapp/web/app_dev.php/panel/" . $entityFriendlyName . "/new");
-        foreach ($entityForm as $item) {
-            $fieldName = $item->getConfig()->getName();
-            $type = $item->getConfig()->getType()->getName();
-        
-            $guess = $this->guessTypeColumn()->guessFormat(
-                    $fieldName, $this->model->getMetadata()
-            );
+        if (get_class($entity != "PhantomBundle\Entity\File")) {
+            $entityFriendlyName = $this->getNameOfEntity($entity);
+            $this->modelFactory = $this->get('model_factory');
+            $this->model = $this->modelFactory->getModel(get_class($entity));
+            $typeForm = '/new';
+            $entityForm = $this->createForm($entityFriendlyName, $entity, $typeForm);
+            $this->webDriver->get("http://localhost/makeapp/web/app_dev.php/panel/" . $entityFriendlyName . "/new");
+            foreach ($entityForm as $item) {
+                $fieldName = $item->getConfig()->getName();
+                $type = $item->getConfig()->getType()->getName();
 
-            $name = $item->getConfig()->getName();
-            $elementName = $entityFriendlyName . '_' . $name;
-            $elementHandlerName = \sprintf("type%s", ucfirst($type));
-            $this->$elementHandlerName($elementName, $guess);
+                $guess = $this->guessTypeColumn()->guessFormat(
+                        $fieldName, $this->model->getMetadata()
+                );
+
+                $name = $item->getConfig()->getName();
+                $elementName = $entityFriendlyName . '_' . $name;
+                $elementHandlerName = \sprintf("type%s", ucfirst($type));
+                $this->$elementHandlerName($elementName, $guess);
+            }
+
+            $this->webDriver->executeScript("jQuery('.btn-success').click();");
+            sleep(3);
+            $this->webDriver->close();
+
+            $this->assertResponseOK(\sprintf(
+                            'localhost/makeapp/web/app_dev.php/panel/%s/new', $entityFriendlyName
+            ));
         }
-
-        $this->webDriver->executeScript("jQuery('.btn-success').click();");
-        sleep(3);
-        $this->webDriver->close();
-////----------------test insert to DB---------------------------------------------
-//        //check the amount of records in the begin of test
-//        //Save into DB - check the amount  
-//        $em = self::$container->get('doctrine.orm.entity_manager');
-//        $product = new \PhantomBundle\GridConfig\Product();
-////        $em->persist($product);
-////        $em->flush();
-////        $product->getId();
-////        dump($product);
-//        $connection = self::$container->get('doctrine')->getConnection();
-//
-//        $lastInsertID = $connection->lastInsertId();
-////        dump($lastInsertID);
-////        exit;
-////        $query = $em->createNativeQuery('SELECT id FROM phantom_product');
-////        $user = $query->getResult();
-////        dump($user);
-////        exit;
-//
-//        $manager = self::$container->get('doctrine')->getManager();
-//        $repository = $manager->getRepository($pathToEntity);
-//        $id = 1;
-//
-//
-//        $query = $em->createQuery("SELECT pr FROM PhantomBundle\Entity\Product pr WHERE pr.id = 160 ");
-//        $queryLast = $em->createQuery("SELECT COUNT(pr.id) FROM PhantomBundle\Entity\ProductCategory pr");
-//        $queryLastMax = $em->createQuery("SELECT MAX(pr.id) FROM PhantomBundle\Entity\ProductCategory pr");
-//
-//
-//        $result = $query->getResult();
-//        $resultLast = $queryLast->getResult();
-//        $resultLastMax = $queryLastMax->getResult();
-        //----------------------------------------------------------------------------
-        //assertion for check edit response 200
-        $this->assertResponseOK(\sprintf(
-                        'localhost/makeapp/web/app_dev.php/panel/%s/new', $entityFriendlyName
-        ));
-  }
+    }
 
     public function testEntitiesProvider() {
-
         self::$kernel = new \TestAppKernel('test', true);
         self::$kernel->boot();
         self::$container = self::$kernel->getContainer();
@@ -234,17 +210,16 @@ class EntityTest extends WebTestCase {
      */
     public function testEdit($entity) {
         $entityId = 1;
-
         $entityFriendlyName = $this->getNameOfEntity($entity);
         $this->modelFactory = $this->get('model_factory');
         $this->model = $this->modelFactory->getModel(get_class($entity));
         $typeForm = '/new';
         $entityForm = $this->createForm($entityFriendlyName, $entity, $typeForm);
-        $this->webDriver->get("http://localhost/makeapp/web/app_dev.php/panel/" . $entityFriendlyName . "/edit/" . $entityId);
+        $this->webDriver->get("http://localhost/makeapp/web/app_dev.php/panel/" . $entityFriendlyName . '/edit/' . $entityId);
         foreach ($entityForm as $item) {
             $fieldName = $item->getConfig()->getName();
             $type = $item->getConfig()->getType()->getName();
-            
+
             $guess = $this->guessTypeColumn()->guessFormat(
                     $fieldName, $this->model->getMetadata()
             );
@@ -256,47 +231,13 @@ class EntityTest extends WebTestCase {
         }
 
         $this->webDriver->executeScript("jQuery('.btn-success').click();");
-        sleep(3);
+        sleep(4);
+        $this->assertSaveToDB($entity);
+
         $this->webDriver->close();
 
-
-
-////----------------test insert to DB---------------------------------------------
-//        //check the amount of records in the begin of test
-//        //Save into DB - check the amount  
-//        $em = self::$container->get('doctrine.orm.entity_manager');
-//        $product = new \PhantomBundle\GridConfig\Product();
-////        $em->persist($product);
-////        $em->flush();
-////        $product->getId();
-////        dump($product);
-//        $connection = self::$container->get('doctrine')->getConnection();
-//
-//        $lastInsertID = $connection->lastInsertId();
-////        dump($lastInsertID);
-////        exit;
-////        $query = $em->createNativeQuery('SELECT id FROM phantom_product');
-////        $user = $query->getResult();
-////        dump($user);
-////        exit;
-//
-//        $manager = self::$container->get('doctrine')->getManager();
-//        $repository = $manager->getRepository($pathToEntity);
-//        $id = 1;
-//
-//
-//        $query = $em->createQuery("SELECT pr FROM PhantomBundle\Entity\Product pr WHERE pr.id = 160 ");
-//        $queryLast = $em->createQuery("SELECT COUNT(pr.id) FROM PhantomBundle\Entity\ProductCategory pr");
-//        $queryLastMax = $em->createQuery("SELECT MAX(pr.id) FROM PhantomBundle\Entity\ProductCategory pr");
-//
-//
-//        $result = $query->getResult();
-//        $resultLast = $queryLast->getResult();
-//        $resultLastMax = $queryLastMax->getResult();
-////------------------------------------------------------------------------------
-
         $this->assertResponseOK(\sprintf(
-                        'localhost/makeapp/web/app_dev.php/panel/%s/edit/%d', $entityName, $entityId
+                        'localhost/makeapp/web/app_dev.php/panel/%s/edit/%d', $entityFriendlyName, $entityId
         ));
     }
 
@@ -308,11 +249,11 @@ class EntityTest extends WebTestCase {
                         'localhost/makeapp/web/app_dev.php/panel/%s/read/%d', $this->get('classmapperservice')->getEntityName($entity), $entityId
         ));
     }
+
     public function testReadProvider() {
         $entitiesNames = $this->getEntitiesNames();
         return $entitiesNames;
     }
-        
 
     /**
      * @dataProvider testListProvider
@@ -324,7 +265,7 @@ class EntityTest extends WebTestCase {
     }
 
     public function testListProvider() {
-         $entitiesNames = $this->getEntitiesNames();
+        $entitiesNames = $this->getEntitiesNames();
         return $entitiesNames;
     }
 
@@ -349,6 +290,13 @@ class EntityTest extends WebTestCase {
 
     public function byXpath($xpath) {
         return $this->webDriver->findElement(WebDriverBy::xpath($id))->click();
+    }
+
+    public function assertSaveToDB($entity) {
+        $word = $this->getLastWordEntity($entity);
+        $headerWord = 'Show ' . $word . ':';
+        $headerValue = $this->webDriver->findElement(WebDriverBy::tagName("h2"))->getText();
+        $this->assertSame($headerWord, $headerValue);
     }
 
 }
