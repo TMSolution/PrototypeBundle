@@ -66,29 +66,29 @@
 
 
         {% if isAssociated %}
-            <!--<a href="{{ "{{ path(listActionName, { 'entityName': entityName,'parentName': parentName,'parentId': parentId })}}" }}" class="prevButton btn btn-link lazy-loaded">
+            <!--<a href="{{ "{{ path(listActionName, { 'entityName': entityName,'parentName': parentName,'parentId': parentId, containerName: 'container', actionId: 'default' })}}" }}" class="prevButton btn btn-link lazy-loaded">
             {{ "{{ 'Cancel'|trans}}" }}
         </a>-->
             <span class="pull-right">   
-                <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId})}}" }}" class="btn btn-link lazy-loaded">
+                <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId, containerName: 'container', actionId: 'default'})}}" }}" class="btn btn-link lazy-loaded">
                     {{ "{{ 'Delete'|trans}} " }}
 
                 </a>
-                <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId})}}" }}" class="btn btn-primary m-l-5 lazy-loaded">
+                <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId, containerName: 'container', actionId: 'default'})}}" }}" class="btn btn-primary m-l-5 lazy-loaded">
                     {{ "{{ 'Edit'|trans}}" }}
                 </a>
             </span>
         {% else %}
 
-        <!--<a href="{{ "{{ path(listActionName, { 'entityName': entityName })}}" }}" data-masked-element=".card" class=" prevButton btn btn-link lazy-loaded">
+        <!--<a href="{{ "{{ path(listActionName, { 'entityName': entityName , containerName: 'container', actionId: 'default'})}}" }}" data-masked-element=".card" class=" prevButton btn btn-link lazy-loaded">
             {{ "{{ 'Cancel'|trans}}" }}
          </a>-->
             <span class="pull-right"> 
-                <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id})}}" }}" data-masked-element=".card" class="btn btn-link lazy-loaded">
+                <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id, containerName: 'container', actionId: 'default'})}}" }}" data-masked-element=".card" class="btn btn-link lazy-loaded">
                     {{ "{{ 'Delete'|trans}} " }}
 
                 </a>
-                <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id})}}" }}" data-masked-element=".card" class="btn btn-primary m-l-5 lazy-loaded">
+                <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id, containerName: 'container', actionId: 'default'})}}" }}" data-masked-element=".card" class="btn btn-primary m-l-5 lazy-loaded">
                     {{ "{{ 'Edit'|trans}}" }}
                 </a>
             </span>

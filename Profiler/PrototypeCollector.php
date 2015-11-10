@@ -19,6 +19,7 @@ class PrototypeCollector implements DataCollectorInterface
 {
 
     private $data = [];
+    private $twigYellowChanges = 0;
     private $twigChanges = 0;
 
     public function __construct()
@@ -69,6 +70,7 @@ class PrototypeCollector implements DataCollectorInterface
       
         }
         $data['twigChanges']=$this->twigChanges;
+        $data['twigYellowChanges']=$this->twigYellowChanges;
         $this->data = $data;
     }
 
@@ -93,9 +95,14 @@ class PrototypeCollector implements DataCollectorInterface
 
             if (strstr($path, 'CorePrototypeBundle:Default')) {
                 $output[] = ("<tr><th>$name</th><td>$path</td></tr>");
-            } else {
+            }
+            elseif (strstr($path, 'Default')) {
+                $this->twigYellowChanges++;
+                $output[] = ("<tr><th>$name</th><td><span style='background-color: #aacd4e; border-radius: 6px; color: #fff; display: inline-block;margin-right: 2px;padding: 4px;'>$path</span></td></tr>");
+            }
+            else {
                 $this->twigChanges++;
-                $output[] = ("<tr><th>$name</th><td><span style='background-color: #aacd4e;border-radius: 6px; color: #fff; display: inline-block;margin-right: 2px;padding: 4px;'>$path</span></td></tr>");
+                $output[] = ("<tr><th>$name</th><td><span style='background-color: #ffcc00; border-radius: 6px; color: #000000; display: inline-block;margin-right: 2px;padding: 4px;'>$path</span></td></tr>");
             }
         }
         $output[] = "</tbody></table>";
