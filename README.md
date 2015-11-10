@@ -7,8 +7,10 @@
 ---
 
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TMSolution/PrototypeBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/TMSolution/PrototypeBundle/?branch=master)
+__Scrutinizer CI__
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TMSolution/PrototypeBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/TMSolution/PrototypeBundle/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/TMSolution/PrototypeBundle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/TMSolution/PrototypeBundle/build-status/master)
 
 ### Installation
 
