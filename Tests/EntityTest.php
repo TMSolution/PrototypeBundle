@@ -89,7 +89,7 @@ class EntityTest extends WebTestCase {
         
     }
 
-    public function getNameOfEntity($entity) {
+    public function getEntityName($entity) {
         $pathToEntity = get_class($entity);
         $pieces = explode('\\', $pathToEntity);
         $last_word = array_pop($pieces);
@@ -119,7 +119,7 @@ class EntityTest extends WebTestCase {
         return $columnGuesser;
     }
 
-    public function getEntitiesNames() {
+    public function getEntities() {
         self::$kernel = new \TestAppKernel('test', true);
         self::$kernel->boot();
         self::$container = self::$kernel->getContainer();
@@ -151,7 +151,7 @@ class EntityTest extends WebTestCase {
      */
     public function testNew($entity) {
         if (get_class($entity != "PhantomBundle\Entity\File")) {
-            $entityFriendlyName = $this->getNameOfEntity($entity);
+            $entityFriendlyName = $this->getEntityName($entity);
             $this->modelFactory = $this->get('model_factory');
             $this->model = $this->modelFactory->getModel(get_class($entity));
             $typeForm = '/new';
@@ -164,17 +164,14 @@ class EntityTest extends WebTestCase {
                 $guess = $this->guessTypeColumn()->guessFormat(
                         $fieldName, $this->model->getMetadata()
                 );
-
                 $name = $item->getConfig()->getName();
                 $elementName = $entityFriendlyName . '_' . $name;
                 $elementHandlerName = \sprintf("type%s", ucfirst($type));
                 $this->$elementHandlerName($elementName, $guess);
             }
-
             $this->webDriver->executeScript("jQuery('.btn-success').click();");
             sleep(3);
             $this->webDriver->close();
-
             $this->assertResponseOK(\sprintf(
                             'localhost/makeapp/web/app_dev.php/panel/%s/new', $entityFriendlyName
             ));
@@ -187,13 +184,11 @@ class EntityTest extends WebTestCase {
         self::$container = self::$kernel->getContainer();
         $getAllEntities = self::$container->get('phantom.entities.getallentities');
         $entitiesNames = $getAllEntities->checkEntities();
-
         $faker = Factory::create();
         $app = new \AppKernel('test', true);
         $app->boot();
         $dic = $app->getContainer();
         $model = $dic->get('model_factory');
-
         foreach ($entitiesNames as $name) {
             $entity = $model->getModel($name[0])->getEntity();
             if (property_exists($entity, "name")) {
@@ -201,7 +196,6 @@ class EntityTest extends WebTestCase {
             }
             $entities[] = [$entity];
         }
-
         return $entities;
     }
 
@@ -210,7 +204,7 @@ class EntityTest extends WebTestCase {
      */
     public function testEdit($entity) {
         $entityId = 1;
-        $entityFriendlyName = $this->getNameOfEntity($entity);
+        $entityFriendlyName = $this->getEntityName($entity);
         $this->modelFactory = $this->get('model_factory');
         $this->model = $this->modelFactory->getModel(get_class($entity));
         $typeForm = '/new';
@@ -219,23 +213,18 @@ class EntityTest extends WebTestCase {
         foreach ($entityForm as $item) {
             $fieldName = $item->getConfig()->getName();
             $type = $item->getConfig()->getType()->getName();
-
             $guess = $this->guessTypeColumn()->guessFormat(
                     $fieldName, $this->model->getMetadata()
             );
-
             $name = $item->getConfig()->getName();
             $elementName = $entityFriendlyName . '_' . $name;
             $elementHandlerName = \sprintf("type%s", ucfirst($type));
             $this->$elementHandlerName($elementName, $guess);
         }
-
         $this->webDriver->executeScript("jQuery('.btn-success').click();");
         sleep(4);
         $this->assertSaveToDB($entity);
-
         $this->webDriver->close();
-
         $this->assertResponseOK(\sprintf(
                         'localhost/makeapp/web/app_dev.php/panel/%s/edit/%d', $entityFriendlyName, $entityId
         ));
@@ -251,7 +240,7 @@ class EntityTest extends WebTestCase {
     }
 
     public function testReadProvider() {
-        $entitiesNames = $this->getEntitiesNames();
+        $entitiesNames = $this->getEntities();
         return $entitiesNames;
     }
 
@@ -265,7 +254,7 @@ class EntityTest extends WebTestCase {
     }
 
     public function testListProvider() {
-        $entitiesNames = $this->getEntitiesNames();
+        $entitiesNames = $this->getEntities();
         return $entitiesNames;
     }
 
