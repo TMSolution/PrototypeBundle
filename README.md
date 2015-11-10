@@ -4,9 +4,11 @@
 >by Damian Piela <damian.piela@tmsolution.pl>
 
 
+---
+
+
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TMSolution/PrototypeBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/TMSolution/PrototypeBundle/?branch=master)
 
----
 
 ### Installation
 
