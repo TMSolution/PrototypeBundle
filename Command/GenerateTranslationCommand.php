@@ -104,8 +104,6 @@ class GenerateTranslationCommand extends ContainerAwareCommand
 
         $yaml = new Dumper();
         $yamlData = $yaml->dump($yamlArr, 4, 0, false, true);
-
-        //die($yamlData);
         file_put_contents($fileName, str_replace("'@service_container'", "@service_container", $yamlData));
         $output->writeln("Services configuration file <info>" . $fileName . "</info> generated.");
     }
@@ -193,16 +191,17 @@ class GenerateTranslationCommand extends ContainerAwareCommand
             $name = $method->getName();
 
             if ($method->isPublic() && (substr($name, 0, 3) == 'get' || substr($name, 0, 3) == 'has')) {
-                $name = lcfirst(substr($name, 3));
+                $name = strtolower(substr($name, 3));
+                $objectName = strtolower($objectName);
 
 
-                if (!$this->checkKeyExist($yamlArr, lcfirst($objectName), $name, $lowerNameSpace)) {
+                if (!$this->checkKeyExist($yamlArr, $objectName, $name, $lowerNameSpace)) {
 
                     if ($this->checkAssociation($entityName, $name)) {
                         $defaultField = $this->getDefaultField($entityName);
-                        $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name][$defaultField] = $name;
+                        $yamlArr[$lowerNameSpace][$objectName][$name][$defaultField] = $name;
                     } else {
-                        $yamlArr[$lowerNameSpace][lcfirst($objectName)][$name] = $name;
+                        $yamlArr[$lowerNameSpace][$objectName][$name] = $name;
                     }
                 }
             }
