@@ -25,7 +25,13 @@
         "friendsofsymfony/jsrouting-bundle": "1.*",
         "knplabs/knp-paginator-bundle": "2.*",
         "boekkooi/jquery-validation-bundle": "0.3.0"
-   },
+    },
+    "require-dev": { 
+        "phpunit/phpunit": "5.*",  
+        "phpunit/phpunit-story": "*",  
+        "phploc/phploc": "*",  
+        "fabpot/php-cs-fixer": "*" 
+     }, 
     "autoload": {
         "psr-4": {
             "Core\\PrototypeBundle\\": ""
