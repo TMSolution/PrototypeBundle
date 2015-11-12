@@ -145,6 +145,11 @@ class EntityTest extends WebTestCase {
         $this->webDriver = RemoteWebDriver::create('http://127.0.0.1:4444/wd/hub', $capabilities);
         $this->webDriver->manage()->timeouts()->implicitlyWait(4);
     }
+    
+     public function tearDown()
+    {
+        $this->webDriver->quit();
+    }
 
     /**
      * @dataProvider testEntitiesProvider
@@ -171,7 +176,6 @@ class EntityTest extends WebTestCase {
             }
             $this->webDriver->executeScript("jQuery('.btn-success').click();");
             sleep(3);
-            $this->webDriver->close();
             $this->assertResponseOK(\sprintf(
                             'localhost/makeapp/web/app_dev.php/panel/%s/new', $entityFriendlyName
             ));
@@ -224,7 +228,6 @@ class EntityTest extends WebTestCase {
         $this->webDriver->executeScript("jQuery('.btn-success').click();");
         sleep(4);
         $this->assertSaveToDB($entity);
-        $this->webDriver->close();
         $this->assertResponseOK(\sprintf(
                         'localhost/makeapp/web/app_dev.php/panel/%s/edit/%d', $entityFriendlyName, $entityId
         ));
