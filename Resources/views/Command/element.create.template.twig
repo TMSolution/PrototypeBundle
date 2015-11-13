@@ -27,15 +27,17 @@
 
                     {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
              <!-- {{field}} {{fieldParam.type}} -->
-                      
+                        {{ "{% if form." }}{{field}}{{ " is defined %}" }}
                             {{ "{{ form_row(form." }}{{field}}{{ ") }}" }}
+                        {{ "{% endif %}" }}
                             {# "{{ form_widget(form." }}{{field}}{{ ") }}" #}
                         
                     {% endif %}
                 {% else %}    
             <!-- {{field}} {{fieldParam.type}} -->
-                  
+                     {{ "{% if form." }}{{field}}{{ " is defined %}" }}
                         {{ "{{ form_row(form." }}{{field}}{{ ") }}" }}
+                     {{ "{% endif %}" }}
                         {# "{{ form_widget(form." }}{{field}}{{ ") }}" #}
                  
                 {% endif %}

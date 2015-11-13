@@ -25,13 +25,13 @@ use UnexpectedValueException;
  * GenerateFilesCommand generates all configuration.
  * @author Jacek Łoziński <jacek.lozinski@tmsolution.pl>
  */
-class GenerateFilesCommand extends ContainerAwareCommand
+class GenerateCommand extends ContainerAwareCommand
 {
 
     protected function configure()
     {
-        $this->setName('prototype:generate:files')
-                ->setDescription('Generate formtype for entity')
+        $this->setName('prototype:generate')
+                ->setDescription('Generate configuration')
                 ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert configBundle')
                 ->addArgument('entityOrBundle', InputArgument::REQUIRED, 'Insert Entity or Bundle')
                 ->addArgument('rootFolder', InputArgument::REQUIRED, 'Insert rootFolder(SuperAdmin,Admin,Agent,...)')

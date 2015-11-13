@@ -27,7 +27,7 @@ $builder
 {% for field, fieldParam in fieldsInfo %}
 
 {% if field !='id' %}{% if fieldParam.formType=='text' %}->add('{{field}}', '{{fieldParam.formType}}', [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}',
         //'widget' => 'widget name',
         //'required' => true,
         //'attr' => [
@@ -36,7 +36,7 @@ $builder
         //]
         ])
     {% elseif fieldParam.formType=='number' %}->add('{{field}}', '{{fieldParam.formType}}', [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}',
         //'widget' => 'widget name',
         //'required' => true,
         //'attr' => [
@@ -45,7 +45,7 @@ $builder
         //]   
         ])
     {% elseif fieldParam.formType=='datetime' %}->add('{{field}}', '{{fieldParam.formType}}', [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}',
         'widget' => 'single_text',
         //'required' => true,
         'format' => 'dd.MM.yyyy',
@@ -56,7 +56,7 @@ $builder
         ]   
         ]) 
     {% elseif fieldParam.formType=='date' %}->add('{{field}}', '{{fieldParam.formType}}', [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}',
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}',
         'widget' => 'single_text',
         //'required' => true,
         'format' => 'dd.MM.yyyy',
@@ -67,7 +67,7 @@ $builder
         ]   
         ])  
     {% elseif fieldParam.formType=='array' %}->add('{{field}}', 'choice', [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}'
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}'
         //'widget' => 'widget name',
         //'required' => true,
         //'choices' => array(
@@ -83,7 +83,7 @@ $builder
     {% elseif fieldParam.formType=='entity' %}
         {% if fieldParam.object_name is defined %}{% set defaultFieldName=that.getDefaultField(fieldParam.object_name) %}{% endif %}
         {% if fieldParam.association=='ManyToMany' or fieldParam.association=='OneToMany' %}//->add('{{field}}', 'entity', [
-            //'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}.{{defaultFieldName}}',
+            //'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}',
             //'class' => '{{fieldParam.object_name}}',
             //'expanded' =>false,
             //'multiple'=>true,
@@ -101,7 +101,7 @@ $builder
             //]   
             //])
         {% else %}->add('{{field}}', 'entity', [
-            'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}.{{defaultFieldName}}',
+            'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}',
             'class' => '{{fieldParam.object_name}}',
             //'label' => 'Label name',
             //'widget' => 'widget name',
@@ -118,7 +118,7 @@ $builder
             ])
         {% endif %} 
     {% elseif fieldParam.formType=='boolean' %}->add('{{field}}', 'checkbox', [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}'
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}'
         //'widget' => 'widget name',
         //'required' => true,
         //'attr' => [
@@ -126,7 +126,7 @@ $builder
         //]   
         ]) 
     {% else %}->add('{{field}}', '{{fieldParam.formType}}', [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}'
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}'
         //'widget' => 'widget name',
         //'required' => true,
         //'attr' => [
