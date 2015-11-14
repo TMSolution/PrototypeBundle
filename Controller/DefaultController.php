@@ -54,6 +54,60 @@ class DefaultController extends FOSRestController
              */
     ];
 
+    protected function findParentFieldName($model, $serachingField)
+    {
+        
+        $fieldsInfo = $model->getFieldsInfo();
+
+        foreach ($fieldsInfo as $fieldName => $fieldInfo) {
+            if ($fieldInfo["is_object"] == true && $fieldInfo["object_name"] == $parentEntity && in_array($fieldInfo["association"], ["ManyToOne", "OneToOne", "ManyToMany"])) {
+
+                return $fieldName;
+            }
+        }
+    }
+/*
+    protected function getParentFieldNameFromRequest()
+    {
+
+
+        $parentName = $this->get('request')->get('parentName');
+        if ($parentName) {
+
+            $parentEntity = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->get('request')->getLocale());
+        } else {
+            throw new \Exception('Parameter "parentName" required!');
+        }
+        return $this->findParentFieldName($this->model, $parentEntity);
+    }*/
+
+    protected function addToParent($entity)
+    {
+        $parentId = $this->get('request')->get('parentId');
+        $parentName = $this->get('request')->get('parentName');
+        if ($parentId && $parentName) {
+
+
+            $parentEntityName = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->get('request')->getLocale());
+            $parentModel = $this->getModel($parentEntityName);
+            $parentEntity = $parentModel->findOneById($parentId);
+
+            //$field = $this->findParentFieldName($parentModel, $parentEntity);
+
+            //if ($field) {
+                $addMethod = 'addSecureFile';
+
+                if ($parentEntity) {
+                    $parentEntity->$addMethod($entity);
+                } else {
+                    throw new \Exception('Add to parent failure !');
+                }
+            //} else {
+              //  throw new \Exception('Field  $fieldname in parent doesn\'t exists!');
+           /// }
+        }
+    }
+
     /**
      * Create action.
      * 
@@ -61,7 +115,8 @@ class DefaultController extends FOSRestController
 
       )
      */
-    public function createAction() {
+    public function createAction()
+    {
 
         $request = $this->get('request');
         $model = $this->getModel($this->getEntityClass());
@@ -91,22 +146,28 @@ class DefaultController extends FOSRestController
         $event->setForm($form);
 
         if ($form->isValid()) {
+       
             $entity = $model->create($entity, true);
 
+            $this->addToParent($entity);
+            $model->flush();
 
             $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.success', $event);
 
             $routeParams = $this->getRouteParams();
             $routeParams['id'] = $entity->getId();
 
-            return $this->redirect($this->generateUrl($routePrefix . '_read', $routeParams));
+
+            $view = $this->redirectView($this->generateUrl($routePrefix . '_read', $routeParams), 301);
+            return $this->handleView($view);
         }
 
         //Event broadcast
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.failure', $event);
 
         //Render
-        return $this->render($this->getConfig()->get('twig_element_create'), $params->getArray());
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'));
+        return $this->handleView($view);
     }
 
     /**
@@ -115,9 +176,10 @@ class DefaultController extends FOSRestController
      * @return Response
      * @throws \BadMethodCallException Not implemented yet
      */
-    public function listAction() {
+    public function listAction()
+    {
 
-       
+
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
         $model = $this->getModel($this->getEntityClass());
@@ -155,7 +217,9 @@ class DefaultController extends FOSRestController
 
         //  throw new \BadMethodCallException("Not implemented yet");
         // parameters to template
-        return $this->render($this->getConfig()->get('twig_element_list'), $params->getArray());
+        //Render
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_list'));
+        return $this->handleView($view);
     }
 
     /**
@@ -164,7 +228,8 @@ class DefaultController extends FOSRestController
      * @param id Entity id
      * @return Response
      */
-    public function updateAction($id) {
+    public function updateAction($id)
+    {
 
 
         $request = $this->get('request');
@@ -178,7 +243,7 @@ class DefaultController extends FOSRestController
 
 
         $updateForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
- 
+
         $updateForm->handleRequest($request);
 
         //config parameters for render and event broadcast
@@ -212,11 +277,17 @@ class DefaultController extends FOSRestController
             $model->update($entity, true);
             $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'update.success', $event);
 
-            return $this->redirect($this->generateUrl($routePrefix . '_read', $this->getRouteParams()));
+
+
+            $view = $this->redirectView($this->generateUrl($routePrefix . '_read', $this->getRouteParams()), 301);
+            return $this->handleView($view);
         }
 
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'update.failure', $event);
-        return $this->render($this->getConfig()->get('twig_element_update'), $params->getArray());
+
+        //Render
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'));
+        return $this->handleView($view);
     }
 
     /**
@@ -225,7 +296,8 @@ class DefaultController extends FOSRestController
      * @param id Entity id
      * @return Response
      */
-    public function deleteAction($id) {
+    public function deleteAction($id)
+    {
 
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->findOneById($id);
@@ -248,7 +320,10 @@ class DefaultController extends FOSRestController
 
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'delete', $event);
         //$this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'delete.failure', $event);
-        return $this->redirect($this->generateUrl($routePrefix . '_list', $params->getArray()));
+
+
+        $view = $this->redirectView($this->generateUrl($routePrefix . '_list', $params->getArray()), 301);
+        return $this->handleView($view);
     }
 
     /**
@@ -257,7 +332,8 @@ class DefaultController extends FOSRestController
      * @param id Entity id
      * @return Response
      */
-    public function editAction($id) {
+    public function editAction($id)
+    {
 
         $model = $this->getModel($this->getEntityClass());
         $formType = $this->getFormType($this->getEntityClass(), null, $model);
@@ -287,7 +363,10 @@ class DefaultController extends FOSRestController
 
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'edit', $event);
 
-        return $this->render($this->getConfig()->get('twig_element_update'), $params->getArray());
+
+        //Render
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'));
+        return $this->handleView($view);
     }
 
     /**
@@ -296,7 +375,8 @@ class DefaultController extends FOSRestController
      * @param $id Entity id
      * @return Response
      */
-    public function readAction($id) {
+    public function readAction($id)
+    {
         $model = $this->getModel($this->getEntityClass());
         $entity = $model->findOneById($id);
         $entityName = $this->getEntityName();
@@ -326,10 +406,13 @@ class DefaultController extends FOSRestController
 
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'read', $event);
 
-        return $this->render($this->getConfig()->get('twig_element_read'), $params->getArray());
+        //Render
+        $view = $this->view($params['entity'])->setTemplate($this->getConfig()->get('twig_element_read'))->setTemplateData($params->getArray());
+        return $this->handleView($view);
     }
 
-    protected function prepareProperties($model, $entity) {
+    protected function prepareProperties($model, $entity)
+    {
 
         $properties = [];
         $fields = array_merge($model->getMetadata()->fieldMappings, $model->getMetadata()->getAssociationMappings());
@@ -378,7 +461,8 @@ class DefaultController extends FOSRestController
      * 
      * @return Response
      */
-    public function newAction() {
+    public function newAction()
+    {
         $entity = $this->getModel($this->getEntityClass())->getEntity();
         $model = $this->getModel($this->getEntityClass());
         $entityName = $this->getEntityName();
@@ -406,7 +490,9 @@ class DefaultController extends FOSRestController
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'new', $event);
 
 
-        return $this->render($this->getConfig()->get('twig_element_create'), $params->getArray());
+        //Render
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'));
+        return $this->handleView($view);
     }
 
     /**
@@ -414,7 +500,8 @@ class DefaultController extends FOSRestController
      * 
      * @return Symfony\Component\DependencyInjection\ContainerInterface Dependency container
      */
-    protected function getContainer() {
+    protected function getContainer()
+    {
         return $this->get('service_container');
     }
 
@@ -423,7 +510,8 @@ class DefaultController extends FOSRestController
      * 
      * @return string
      */
-    protected function getEntityClass() {
+    protected function getEntityClass()
+    {
         if (null == $this->objectName) {
             $this->objectName = $this->get('request')->attributes->get('objectName');
         }
@@ -435,7 +523,8 @@ class DefaultController extends FOSRestController
      * 
      * @return string
      */
-    protected function getEntityName() {
+    protected function getEntityName()
+    {
         if (null == $this->entityName) {
             $this->entityName = $this->get('request')->attributes->get('entityName');
         }
@@ -449,7 +538,8 @@ class DefaultController extends FOSRestController
      * @param string $managerName
      * @return Core\BaseBundle\Model
      */
-    protected function getModel($objectName, $managerName = null) {
+    protected function getModel($objectName, $managerName = null)
+    {
         if ($managerName) {
             $factory = "model_factory" . $managerName;
         } else {
@@ -465,7 +555,8 @@ class DefaultController extends FOSRestController
      * 
      * @return Core\BaseBundle\Model Default model for this controller
      */
-    protected function getDefaultModel() {
+    protected function getDefaultModel()
+    {
         $modelFactory = $this->get("model_factory");
         $model = $modelFactory->getModel($this->getEntityClass());
 
@@ -479,7 +570,8 @@ class DefaultController extends FOSRestController
      * @param string $class Entity class
      * @return Symfony\Component\Form\Extension\Core\Type\FormType FormType
      */
-    protected function getFormType($objectName, $class = null) {
+    protected function getFormType($objectName, $class = null)
+    {
 
         $configurator = $this->get("prototype.formtype.configurator.service");
         $formType = $configurator->getService($this->getRouteName(), $this->getEntityClass());
@@ -508,7 +600,8 @@ class DefaultController extends FOSRestController
      * @param string $url
      * @return Symfony\Component\Form\Extension\Core\Type\FormType
      */
-    protected function makeForm($formType, $entity, $method, $entityName, $action, $id = null, $class = null, $url = null) {
+    protected function makeForm($formType, $entity, $method, $entityName, $action, $id = null, $class = null, $url = null)
+    {
         $params = $this->getRouteParams();
 
         if ($url && !$id) {
@@ -537,7 +630,8 @@ class DefaultController extends FOSRestController
      * 
      * @return string Current route
      */
-    protected function getRouteName() {
+    protected function getRouteName()
+    {
         if (null == $this->routeName) {
             $this->routeName = $this->get('request')->attributes->get('_route');
         }
@@ -549,7 +643,8 @@ class DefaultController extends FOSRestController
      * 
      * @return string Current route
      */
-    protected function getRoutePrefix() {
+    protected function getRoutePrefix()
+    {
         $routeStringArray = explode("_", $this->getRouteName());
         $this->routePrefix = implode("_", array_slice($routeStringArray, 0, -1));
         return $this->routePrefix;
@@ -561,18 +656,21 @@ class DefaultController extends FOSRestController
      * @param string $actionName Custom action name
      * @return string Custom route
      */
-    protected function getAction($actionName) {
+    protected function getAction($actionName)
+    {
         return $this->getRoutePrefix() . "_" . $actionName;
     }
 
-    protected function loadConfig() {
+    protected function loadConfig()
+    {
 
         $configurator = $this->get("prototype.configurator.service");
         $config = $configurator->getService($this->getRouteName(), $this->getEntityClass());
         return $config;
     }
 
-    protected function getConfig() {
+    protected function getConfig()
+    {
 
 
         if (false == $this->configService) {
@@ -586,13 +684,15 @@ class DefaultController extends FOSRestController
         return $this->configService;
     }
 
-    protected function getRouteParams() {
+    protected function getRouteParams()
+    {
         $parametersArr = $this->get('request')->attributes->all();
         $parameters = $parametersArr["_route_params"];
         return $parameters;
     }
 
-    protected function getStates() {
+    protected function getStates()
+    {
         $params = $this->getRouteParams();
         if ($this->states == null) {
 
@@ -606,7 +706,8 @@ class DefaultController extends FOSRestController
         return $this->states;
     }
 
-    protected function getParentName() {
+    protected function getParentName()
+    {
         $params = $this->getRouteParams();
         if ($this->parentName == null) {
             if (array_key_exists("parentName", $params)) {
@@ -616,7 +717,8 @@ class DefaultController extends FOSRestController
         return $this->parentName;
     }
 
-    protected function getParentId() {
+    protected function getParentId()
+    {
         $params = $this->getRouteParams();
         if ($this->parentId == null) {
             if (array_key_exists("parentId", $params)) {
@@ -626,13 +728,15 @@ class DefaultController extends FOSRestController
         return $this->parentId;
     }
 
-    protected function getBasePath() {
+    protected function getBasePath()
+    {
         $params = $this->getRouteParams();
         $params["states"] = null;
         return $this->generateUrl($this->getRouteName(), $params);
     }
 
-    protected function setBaseTwigParams() {
+    protected function setBaseTwigParams()
+    {
         
     }
 

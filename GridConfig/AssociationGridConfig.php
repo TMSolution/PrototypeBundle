@@ -30,8 +30,7 @@ class AssociationGridConfig extends GridConfig {
     
     
     
-    
-    public function buildGrid($grid, $routePrefix) {
+   /* public function buildGrid($grid, $routePrefix) {
 
         
         $this->request=$this->getContainer()->get('request');
@@ -42,7 +41,7 @@ class AssociationGridConfig extends GridConfig {
         $this->configureRowButton($grid,$routePrefix);
 
         return $grid;
-    }
+    }*/
 
     public function getContainer() {
         return $this->container;
@@ -62,7 +61,7 @@ class AssociationGridConfig extends GridConfig {
     protected function getParentFieldNameFromRequest()
     {
         
-        die('abc');
+        
         $parentName = $this->request->get('parentName');
         if($parentName){
             
