@@ -68,8 +68,8 @@ class GridDefaultController extends DefaultController {
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'list', $event);
         $gridConfig = $grid->getGridConfig($this->getConfig()->get('twig_element_list'), $params->getArray());
 
-
-        $view = $this->view($grid->getItems())
+dump($grid->getSimpleResult());
+        $view = $this->view($grid->getResult())
                 ->setTemplate($gridConfig->view)
                 ->setTemplateData($gridConfig->parameters);
 
@@ -109,7 +109,7 @@ class GridDefaultController extends DefaultController {
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'ajaxlist', $event);
 
         $gridConfig = $grid->getGridConfig($this->getConfig()->get('twig_element_ajaxlist'), $params);
-        $view = $this->view($grid->getItems())
+        $view = $this->view($grid->getResult())
                 ->setTemplate($gridConfig->view)
                 ->setTemplateData($gridConfig->parameters);
 
