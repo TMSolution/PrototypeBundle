@@ -56,7 +56,7 @@ class DefaultController extends FOSRestController
 
     protected function findParentFieldName($model, $serachingField)
     {
-        
+
         $fieldsInfo = $model->getFieldsInfo();
 
         foreach ($fieldsInfo as $fieldName => $fieldInfo) {
@@ -66,20 +66,21 @@ class DefaultController extends FOSRestController
             }
         }
     }
-/*
-    protected function getParentFieldNameFromRequest()
-    {
+
+    /*
+      protected function getParentFieldNameFromRequest()
+      {
 
 
-        $parentName = $this->get('request')->get('parentName');
-        if ($parentName) {
+      $parentName = $this->get('request')->get('parentName');
+      if ($parentName) {
 
-            $parentEntity = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->get('request')->getLocale());
-        } else {
-            throw new \Exception('Parameter "parentName" required!');
-        }
-        return $this->findParentFieldName($this->model, $parentEntity);
-    }*/
+      $parentEntity = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->get('request')->getLocale());
+      } else {
+      throw new \Exception('Parameter "parentName" required!');
+      }
+      return $this->findParentFieldName($this->model, $parentEntity);
+      } */
 
     protected function addToParent($entity)
     {
@@ -93,18 +94,17 @@ class DefaultController extends FOSRestController
             $parentEntity = $parentModel->findOneById($parentId);
 
             //$field = $this->findParentFieldName($parentModel, $parentEntity);
-
             //if ($field) {
-                $addMethod = 'addSecureFile';
+            $addMethod = 'addSecureFile';
 
-                if ($parentEntity) {
-                    $parentEntity->$addMethod($entity);
-                } else {
-                    throw new \Exception('Add to parent failure !');
-                }
+            if ($parentEntity) {
+                $parentEntity->$addMethod($entity);
+            } else {
+                throw new \Exception('Add to parent failure !');
+            }
             //} else {
-              //  throw new \Exception('Field  $fieldname in parent doesn\'t exists!');
-           /// }
+            //  throw new \Exception('Field  $fieldname in parent doesn\'t exists!');
+            /// }
         }
     }
 
@@ -146,7 +146,7 @@ class DefaultController extends FOSRestController
         $event->setForm($form);
 
         if ($form->isValid()) {
-       
+
             $entity = $model->create($entity, true);
 
             $this->addToParent($entity);
@@ -241,7 +241,8 @@ class DefaultController extends FOSRestController
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
 
-
+            dump($formType);
+        dump($entity);
         $updateForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
 
         $updateForm->handleRequest($request);
@@ -341,8 +342,9 @@ class DefaultController extends FOSRestController
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
 
+    
         $editForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
-
+        
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -422,8 +424,7 @@ class DefaultController extends FOSRestController
 
 
             $method = $model->checkMethod($entity, $field['fieldName']);
-
-            if ($method && $field['type'] != 4 && $field['type'] != 8) {
+            if ($method && $field['type'] != 4 /* && $field['type'] != 8 */) {
 
 
                 $result = $entity->$method();
@@ -440,8 +441,8 @@ class DefaultController extends FOSRestController
                     } else {
                         $value = '';
                     }
-                } else {
-
+                }  else {
+                    
                     $value = $result;
                 }
 
