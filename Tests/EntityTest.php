@@ -6,10 +6,10 @@
  * Testing all entities from the bundles.
  * 
  *  
- * @author Lukasz Sobieraj
+ * @author Łukasz Sobieraj
  */
 
-namespace TMSolution\PhantomBundle\Tests;
+namespace CCO\CallCenterBundle\Tests;
 
 use \PHPUnit_Framework_TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -53,23 +53,33 @@ class EntityTest extends WebTestCase {
     }
 
     public function typeColor($elementName, $guess) {
+//        die('jestem w color');
         $this->webDriver->findElement(WebDriverBy::id($elementName))->clear();
         $this->webDriver->findElement(WebDriverBy::id($elementName))->sendKeys($guess());
     }
 
     public function typeEditor($elementName, $guess) {
+//        die('jestem w editor');
         $this->webDriver->findElement(WebDriverBy::id($elementName))->clear();
         $this->webDriver->findElement(WebDriverBy::id($elementName))->sendKeys($guess());
     }
 
     public function typeDate($elementName, $guess) {
+//        die('jestem w date');
         $this->webDriver->findElement(WebDriverBy::id($elementName))->clear();
         $this->webDriver->findElement(WebDriverBy::id($elementName))->sendKeys($guess());
     }
 
     public function typeDatetime($elementName, $guess) {
-        $this->webDriver->findElement(WebDriverBy::id($elementName))->clear();
-        $this->webDriver->findElement(WebDriverBy::id($elementName))->sendKeys($guess());
+        $month = $elementName . '_date_month_chosen';
+        $day = $elementName . '_date_day_chosen';
+        $year = $elementName . '_date_year_chosen';
+        $this->webDriver->findElement(WebDriverBy::id($month))->click();
+        $this->webDriver->executeScript("jQuery('#" . $month . "').val(10);");
+        $this->webDriver->findElement(WebDriverBy::id($day))->click();
+        $this->webDriver->executeScript("jQuery('#" . $day . "').val(10);");
+        $this->webDriver->findElement(WebDriverBy::id($year))->click();
+        $this->webDriver->executeScript("jQuery('#" . $year . "').val(10);");
     }
 
     public function typeTextarea($elementName, $guess) {
@@ -81,15 +91,30 @@ class EntityTest extends WebTestCase {
     }
 
     public function typeEntity($elementName, $guess) {
-        $this->webDriver->findElement(WebDriverBy::id($elementName))->click();
-        $this->webDriver->executeScript("jQuery('#" . $elementName . "').val(10);");
+        //jQuery("#campaign_campaigntype_chosen").prev().trigger('chosen:open');
+        $correctEelementName = $elementName . '_chosen';
+        $this->webDriver->findElement(WebDriverBy::id($correctEelementName))->click();
+        $this->webDriver->executeScript("jQuery('#" . $correctEelementName . "').prev().trigger('chosen:open');");
+        $this->webDriver->executeScript("jQuery('#" . $correctEelementName . "').prev().val(10);");
+        //jQuery("#campaign_campaigntype_chosen").prev().trigger('chosen:open'); - dopracowac jutro
+        //jQuery("#campaign_campaigntype_chosen").prev().val(9);
+    }
+
+    public function typeInteger($elementName, $guess) {
+        $this->webDriver->findElement(WebDriverBy::id($elementName))->clear();
+        $this->webDriver->findElement(WebDriverBy::id($elementName))->sendKeys($guess());
+    }
+    
+    public function typeCheckbox($elementName, $guess){
+        $this->webDriver->findElement(WebDriverBy::id($elementName))->clear();
+        $this->webDriver->findElement(WebDriverBy::id($elementName))->sendKeys($guess());
     }
 
     public function typeHidden() {
         
     }
 
-    public function getEntityName($entity) {
+    public function getShortName($entity) {
         $pathToEntity = get_class($entity);
         $pieces = explode('\\', $pathToEntity);
         $last_word = array_pop($pieces);
@@ -136,6 +161,13 @@ class EntityTest extends WebTestCase {
         ));
     }
 
+    public function getShortNameBundle($entityName) {
+        $fullName = $entityName[0];
+        $pieces = explode('\\', $fullName);
+        $shortName = $pieces[0];
+        return $shortName;
+    }
+
     public function get($serviceId) {
         return self::$container->get($serviceId);
     }
@@ -145,44 +177,40 @@ class EntityTest extends WebTestCase {
         $this->webDriver = RemoteWebDriver::create('http://127.0.0.1:4444/wd/hub', $capabilities);
         $this->webDriver->manage()->timeouts()->implicitlyWait(4);
     }
-    
-     public function tearDown()
-    {
+
+    public function tearDown() {
         $this->webDriver->quit();
     }
 
     /**
-     * @dataProvider testEntitiesProvider
+     * @dataProvider entitiesProvider
      */
     public function testNew($entity) {
-        if (get_class($entity != "PhantomBundle\Entity\File")) {
-            $entityFriendlyName = $this->getEntityName($entity);
-            $this->modelFactory = $this->get('model_factory');
-            $this->model = $this->modelFactory->getModel(get_class($entity));
-            $typeForm = '/new';
-            $entityForm = $this->createForm($entityFriendlyName, $entity, $typeForm);
-            $this->webDriver->get("http://localhost/makeapp/web/app_dev.php/panel/" . $entityFriendlyName . "/new");
-            foreach ($entityForm as $item) {
-                $fieldName = $item->getConfig()->getName();
-                $type = $item->getConfig()->getType()->getName();
-
-                $guess = $this->guessTypeColumn()->guessFormat(
-                        $fieldName, $this->model->getMetadata()
-                );
-                $name = $item->getConfig()->getName();
-                $elementName = $entityFriendlyName . '_' . $name;
-                $elementHandlerName = \sprintf("type%s", ucfirst($type));
-                $this->$elementHandlerName($elementName, $guess);
-            }
-            $this->webDriver->executeScript("jQuery('.btn-success').click();");
-            sleep(3);
-            $this->assertResponseOK(\sprintf(
-                            'localhost/makeapp/web/app_dev.php/panel/%s/new', $entityFriendlyName
-            ));
+        $friendlyName = $this->getShortName($entity);
+        $this->modelFactory = $this->get('model_factory');
+        $this->model = $this->modelFactory->getModel(get_class($entity));
+        $form = $this->createForm($friendlyName, $entity, '/container/default/new');
+        $this->webDriver->get("http://localhost/callcenterproject/web/app_dev.php/panel/" . $friendlyName . '/container/default/new');
+        foreach ($form as $item) {
+            $fieldName = $item->getConfig()->getName();
+            $type = $item->getConfig()->getType()->getName();
+            $guess = $this->guessTypeColumn()->guessFormat(
+                    $fieldName, $this->model->getMetadata()
+            );
+            $name = $item->getConfig()->getName();
+            $elementName = $friendlyName . '_' . $name;
+            $elementHandlerName = \sprintf("type%s", ucfirst($type));
+            $this->$elementHandlerName($elementName, $guess);
         }
+        $this->webDriver->executeScript("jQuery('.btn-primary ').click();");
+        sleep(4);
+        $this->assertSaveToDB($entity);
+        $this->assertResponseOK(\sprintf(
+                        'localhost/callcenterproject/web/app_dev.php/panel/%s/container/default/new', $friendlyName
+        ));
     }
 
-    public function testEntitiesProvider() {
+    public function entitiesProvider() {
         self::$kernel = new \TestAppKernel('test', true);
         self::$kernel->boot();
         self::$container = self::$kernel->getContainer();
@@ -194,69 +222,75 @@ class EntityTest extends WebTestCase {
         $dic = $app->getContainer();
         $model = $dic->get('model_factory');
         foreach ($entitiesNames as $name) {
-            $entity = $model->getModel($name[0])->getEntity();
-            if (property_exists($entity, "name")) {
-                $entity->setName($faker->firstName);
+            $shortName = $this->getShortNameBundle($name);
+            if ($shortName == "CCO") {
+                $entity = $model->getModel($name[0])->getEntity();
+                if (property_exists($entity, "name")) {
+                    $entity->setName($faker->firstName);
+                }
+                $entities[] = [$entity];
             }
-            $entities[] = [$entity];
         }
         return $entities;
     }
 
     /**
-     * @dataProvider testEntitiesProvider
+     * @dataProvider entitiesProvider
      */
     public function testEdit($entity) {
         $entityId = 1;
-        $entityFriendlyName = $this->getEntityName($entity);
+        $friendlyName = $this->getShortName($entity);
         $this->modelFactory = $this->get('model_factory');
         $this->model = $this->modelFactory->getModel(get_class($entity));
-        $typeForm = '/new';
-        $entityForm = $this->createForm($entityFriendlyName, $entity, $typeForm);
-        $this->webDriver->get("http://localhost/makeapp/web/app_dev.php/panel/" . $entityFriendlyName . '/edit/' . $entityId);
-        foreach ($entityForm as $item) {
+        $form = $this->createForm($friendlyName, $entity, '/container/default/edit/1');
+        $this->webDriver->get("http://localhost/callcenterproject/web/app_dev.php/panel/" . $friendlyName . '/container/default/edit/' . $entityId);
+        foreach ($form as $item) {
             $fieldName = $item->getConfig()->getName();
             $type = $item->getConfig()->getType()->getName();
             $guess = $this->guessTypeColumn()->guessFormat(
                     $fieldName, $this->model->getMetadata()
             );
             $name = $item->getConfig()->getName();
-            $elementName = $entityFriendlyName . '_' . $name;
+            $elementName = $friendlyName . '_' . $name;
             $elementHandlerName = \sprintf("type%s", ucfirst($type));
             $this->$elementHandlerName($elementName, $guess);
         }
-        $this->webDriver->executeScript("jQuery('.btn-success').click();");
+        $this->webDriver->executeScript("jQuery('.btn-primary ').click();");
         sleep(4);
         $this->assertSaveToDB($entity);
         $this->assertResponseOK(\sprintf(
-                        'localhost/makeapp/web/app_dev.php/panel/%s/edit/%d', $entityFriendlyName, $entityId
+                        'localhost/callcenterproject/web/app_dev.php/panel/%s/container/default/edit/%d', $friendlyName, $entityId
         ));
     }
 
     /**
-     * @dataProvider testReadProvider
+     * @dataProvider response200Provider
      */
     public function testRead($entity, $entityId = 1) {
         $this->assertResponseOK(\sprintf(
-                        'localhost/makeapp/web/app_dev.php/panel/%s/read/%d', $this->get('classmapperservice')->getEntityName($entity), $entityId
+                        'localhost/callcenterproject/web/app_dev.php/panel/%s/container/default/read/%d', $this->get('classmapperservice')->getEntityName($entity), $entityId
         ));
-    }
-
-    public function testReadProvider() {
-        $entitiesNames = $this->getEntities();
-        return $entitiesNames;
     }
 
     /**
-     * @dataProvider testListProvider
+     * @dataProvider response200Provider
      */
-    public function testList($entity) {
+    public function testUpdate($entity, $entityId = 1) {
         $this->assertResponseOK(\sprintf(
-                        'localhost/makeapp/web/app_dev.php/panel/%s/list', $this->get('classmapperservice')->getEntityName($entity)
+                        'localhost/callcenterproject/web/app_dev.php/panel/%s/container/default/update/%d', $this->get('classmapperservice')->getEntityName($entity), $entityId
         ));
     }
 
-    public function testListProvider() {
+    /**
+     * @dataProvider response200Provider
+     */
+    public function testList($entity) {
+        $this->assertResponseOK(\sprintf(
+                        'localhost/callcenterproject/web/app_dev.php/panel/%s/list', $this->get('classmapperservice')->getEntityName($entity)
+        ));
+    }
+
+    public function response200Provider() {
         $entitiesNames = $this->getEntities();
         return $entitiesNames;
     }
@@ -286,7 +320,8 @@ class EntityTest extends WebTestCase {
 
     public function assertSaveToDB($entity) {
         $word = $this->getLastWordEntity($entity);
-        $headerWord = 'Show ' . $word . ':';
+        $upper = strtoupper($word);
+        $headerWord = $upper . ' / ALA MA KOTA A KOT MAALE';
         $headerValue = $this->webDriver->findElement(WebDriverBy::tagName("h2"))->getText();
         $this->assertSame($headerWord, $headerValue);
     }
