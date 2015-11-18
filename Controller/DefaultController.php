@@ -67,6 +67,15 @@ class DefaultController extends FOSRestController
         }
     }
 
+    protected function getDispatchName($fireAction)
+    {
+        $routePrefix = $this->getRoutePrefix();
+        $entityName = $this->getEntityName();
+        $routeParams = $this->getRouteParams();
+        
+        return $routePrefix . '.' . $routeParams['entityName'] . '.' . $routeParams['actionId'] . '.' . $fireAction;
+    }
+
     /*
       protected function getParentFieldNameFromRequest()
       {
@@ -86,17 +95,15 @@ class DefaultController extends FOSRestController
     {
         $parentId = $this->get('request')->get('parentId');
         $parentName = $this->get('request')->get('parentName');
-        dump($parentId);
-dump($parentName)    ; 
+
         if ($parentId && $parentName) {
 
 
             $parentEntityName = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->get('request')->getLocale());
             $parentModel = $this->getModel($parentEntityName);
             $parentEntity = $parentModel->findOneById($parentId);
-       
+
             //$field = $this->findParentFieldName($parentModel, $parentEntity);
-      
             //if ($field) {
             $addMethod = 'addPbxRecordFile';
 
@@ -131,6 +138,8 @@ dump($parentName)    ;
         $form = $this->makeForm($formType, $entity, 'POST', $entityName, $this->getAction('create'));
         $form->handleRequest($request);
 
+        $routeParams = $this->getRouteParams();
+
         //config parameters for render and event broadcast
         $params = $this->get('prototype.controler.params');
         $params->setArray([
@@ -138,36 +147,35 @@ dump($parentName)    ;
             'entityName' => $this->getEntityName(),
             'form' => $form->createView(),
             'config' => $this->getConfig(),
-            'routeParams' => $this->getRouteParams(),
+            'routeParams' => $routeParams,
             'states' => $this->getStates()
         ]);
 
+
+     
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($model);
         $event->setForm($form);
-        
+
 
         if ($form->isValid()) {
-
+            $this->get('event_dispatcher')->dispatch($this->getDispatchName('before.create'), $event);
             $entity = $model->create($entity, true);
 
             $this->addToParent($entity);
             $model->flush();
+            $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.create'), $event);
+            $this->get('event_dispatcher')->dispatch($this->getDispatchName('after.create'), $event);
 
-            $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.success', $event);
-
-            $routeParams = $this->getRouteParams();
             $routeParams['id'] = $entity->getId();
-
-
             $view = $this->redirectView($this->generateUrl($routePrefix . '_read', $routeParams), 301);
             return $this->handleView($view);
         }
 
         //Event broadcast
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.failure', $event);
+        $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.invalidcreate'), $event);
 
         //Render
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'));
@@ -215,8 +223,8 @@ dump($parentName)    ;
         $event->setParams($params);
         $event->setModel($model);
         //$event->setList($list);
-        //$this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'create.failure', $event);
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'list', $event);
+      
+        $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.list'), $event);
 
 
         //  throw new \BadMethodCallException("Not implemented yet");
@@ -244,9 +252,8 @@ dump($parentName)    ;
         $entity = $model->findOneById($id);
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
+        $routeParams = $this->getRouteParams();
 
-            dump($formType);
-        dump($entity);
         $updateForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
 
         $updateForm->handleRequest($request);
@@ -264,7 +271,7 @@ dump($parentName)    ;
             'listActionName' => $this->getAction('list'),
             'updateActionName' => $this->getAction('update'),
             'config' => $this->getConfig(),
-            'routeParams' => $this->getRouteParams(),
+            'routeParams' => $routeParams,
             'states' => $this->getStates()
         ]);
 
@@ -279,16 +286,17 @@ dump($parentName)    ;
 
         if ($updateForm->isValid()) {
 
+            $this->get('event_dispatcher')->dispatch($this->getDispatchName('before.update'), $event);
             $model->update($entity, true);
-            $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'update.success', $event);
+            $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.update'), $event);
 
-
+            $this->get('event_dispatcher')->dispatch($this->getDispatchName('after.update'), $event);
 
             $view = $this->redirectView($this->generateUrl($routePrefix . '_read', $this->getRouteParams()), 301);
             return $this->handleView($view);
         }
 
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'update.failure', $event);
+        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . $routeParams['actionId'] . '.' . 'invalid.update', $event);
 
         //Render
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'));
@@ -308,11 +316,12 @@ dump($parentName)    ;
         $entity = $model->findOneById($id);
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
+        $routeParams = $this->getRouteParams();
+
         //config parameters for render and event broadcast
         $params = $this->get('prototype.controler.params');
 
-
-        $params->setArray($this->getRouteParams());
+        $params->setArray($routeParams);
 
         //Create event broadcast.
         $event = $this->get('prototype.event');
@@ -320,11 +329,14 @@ dump($parentName)    ;
         $event->setModel($model);
 
         if (null != $entity) {
+            $this->get('event_dispatcher')->dispatch($this->getDispatchName('before.delete'), $event);
             $model->delete($entity, true);
+            $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.delete'), $event);
+            $this->get('event_dispatcher')->dispatch($this->getDispatchName('after.delete'), $event);
         }
 
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'delete', $event);
-        //$this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'delete.failure', $event);
+
+
 
 
         $view = $this->redirectView($this->generateUrl($routePrefix . '_list', $params->getArray()), 301);
@@ -345,10 +357,10 @@ dump($parentName)    ;
         $entity = $model->findOneById($id);
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
+        $routeParams = $this->getRouteParams();
 
-    
         $editForm = $this->makeForm($formType, $entity, 'PUT', $this->getEntityName(), $this->getAction('update'), $id);
-        
+
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -356,7 +368,7 @@ dump($parentName)    ;
             'listActionName' => $this->getAction('list'),
             'updateActionName' => $this->getAction('update'),
             'config' => $this->getConfig(),
-            'routeParams' => $this->getRouteParams(),
+            'routeParams' => $routeParams,
             'states' => $this->getStates(),
             'form' => $editForm->createView(),
         ]);
@@ -367,7 +379,7 @@ dump($parentName)    ;
         $event->setModel($model);
         $event->setForm($editForm);
 
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'edit', $event);
+        $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.edit'), $event);
 
 
         //Render
@@ -387,7 +399,7 @@ dump($parentName)    ;
         $entity = $model->findOneById($id);
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
-
+        $routeParams = $this->getRouteParams();
 
 
         $params = $this->get('prototype.controler.params');
@@ -399,7 +411,7 @@ dump($parentName)    ;
             'listActionName' => $this->getAction('list'),
             'deleteActionName' => $this->getAction('delete'),
             'config' => $this->getConfig(),
-            'routeParams' => $this->getRouteParams(),
+            'routeParams' => $routeParams,
             'states' => $this->getStates(),
             'parentName' => $this->getParentName(),
             'parentId' => $this->getParentId()
@@ -410,7 +422,7 @@ dump($parentName)    ;
         $event->setParams($params);
         $event->setModel($model);
 
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'read', $event);
+        $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.read'), $event);
 
         //Render
         $view = $this->view($params['entity'])->setTemplate($this->getConfig()->get('twig_element_read'))->setTemplateData($params->getArray());
@@ -445,8 +457,8 @@ dump($parentName)    ;
                     } else {
                         $value = '';
                     }
-                }  else {
-                    
+                } else {
+
                     $value = $result;
                 }
 
@@ -472,6 +484,7 @@ dump($parentName)    ;
         $model = $this->getModel($this->getEntityClass());
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
+ 
 
         $formType = $this->getFormType($this->getEntityClass(), null, $model);
         $form = $this->makeForm($formType, $entity, 'POST', $this->getEntityName(), $this->getAction('create'));
@@ -492,7 +505,7 @@ dump($parentName)    ;
         $event->setModel($model);
         $event->setForm($form);
 
-        $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'new', $event);
+        $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.new'), $event);
 
 
         //Render
