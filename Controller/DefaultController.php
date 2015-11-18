@@ -54,7 +54,7 @@ class DefaultController extends FOSRestController
              */
     ];
 
-    protected function findParentFieldName($model, $serachingField)
+    protected function findParentFieldName($model, $parentEntity)
     {
 
         $fieldsInfo = $model->getFieldsInfo();
@@ -86,16 +86,19 @@ class DefaultController extends FOSRestController
     {
         $parentId = $this->get('request')->get('parentId');
         $parentName = $this->get('request')->get('parentName');
+        dump($parentId);
+dump($parentName)    ; 
         if ($parentId && $parentName) {
 
 
             $parentEntityName = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->get('request')->getLocale());
             $parentModel = $this->getModel($parentEntityName);
             $parentEntity = $parentModel->findOneById($parentId);
-
+       
             //$field = $this->findParentFieldName($parentModel, $parentEntity);
+      
             //if ($field) {
-            $addMethod = 'addSecureFile';
+            $addMethod = 'addPbxRecordFile';
 
             if ($parentEntity) {
                 $parentEntity->$addMethod($entity);
@@ -144,6 +147,7 @@ class DefaultController extends FOSRestController
         $event->setParams($params);
         $event->setModel($model);
         $event->setForm($form);
+        
 
         if ($form->isValid()) {
 
