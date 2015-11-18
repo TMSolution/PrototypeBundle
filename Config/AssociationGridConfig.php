@@ -23,28 +23,35 @@ use TMSolution\DataGridBundle\GridConfig\GridConfig;
  *
  * Generated with {@see TMSolution\GridBundle\Command\GridConfigCommand}.
  */
-class AssociationGridConfig extends GridConfig {
+class AssociationGridConfig extends GridConfig
+{
 
     protected $request;
-    public function buildGrid($grid, $routePrefix) {
 
-        $this->request=$this->getContainer()->get('request');
-        $this->manipulateQuery($grid);
+   /* public function buildGrid($grid, $routePrefix)
+    {
+
+        $grid=parent::buildGrid($grid, $routePrefix);
+        $this->request = $this->getContainer()->get('request');
+        
+       // $this->manipulateQuery($grid);
         //$this->configureColumn($grid);
         //$this->configureFilter($grid);
         //$this->configureExport($grid);
-        $this->configureRowButton($grid,$routePrefix);
+        //$this->configureRowButton($grid, $routePrefix);
 
         return $grid;
-    }
+    }*/
 
-    public function getContainer() {
+    public function getContainer()
+    {
         return $this->container;
     }
 
-    protected function findParentFieldName($model, $parentEntity) {
+    protected function findParentFieldName($model, $parentEntity)
+    {
         $fieldsInfo = $model->getFieldsInfo();
-       
+
         foreach ($fieldsInfo as $fieldName => $fieldInfo) {
             if ($fieldInfo["is_object"] == true && $fieldInfo["object_name"] == $parentEntity && in_array($fieldInfo["association"], ["ManyToOne", "OneToOne", "ManyToMany"])) {
 
@@ -52,79 +59,79 @@ class AssociationGridConfig extends GridConfig {
             }
         }
     }
-    
+
     protected function getParentFieldNameFromRequest()
     {
-        $this->request=$this->getContainer()->get('request');
+        $this->request = $this->getContainer()->get('request');
         $objectName = $this->request->get('objectName');
         $model = $this->getContainer()->get('model_factory')->getModel($objectName);
         $parentName = $this->request->get('parentName');
         $parentEntity = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->request->getLocale());
-         
-        return $this->findParentFieldName($model,$parentEntity); 
+
+        return $this->findParentFieldName($model, $parentEntity);
     }
 
-    protected function manipulateQuery($grid) {
+    protected function manipulateQuery($grid)
+    {
 
-        
-        
-          $parentId=$this->request->get("parentId");
-          $tableAlias = $grid->getSource()->getTableAlias();
-          $parentFieldName=$this->getParentFieldNameFromRequest();
-        
-        
-          $queryBuilderFn = function ($queryBuilder) use($tableAlias,$parentFieldName,$parentId) {
-       
-          $queryBuilder->leftJoin("$tableAlias.$parentFieldName","_$parentFieldName");
-          $queryBuilder->Where("_$parentFieldName.id=:$parentFieldName");        
-          $queryBuilder->setParameter("$parentFieldName", (int)$parentId);        
-          
-          };
-          $grid->getSource()->manipulateQuery($queryBuilderFn);
-          
-         
+
+
+        $parentId = $this->request->get("parentId");
+        $tableAlias = $grid->getSource()->getTableAlias();
+        $parentFieldName = $this->getParentFieldNameFromRequest();
+
+
+        $queryBuilderFn = function ($queryBuilder) use($tableAlias, $parentFieldName, $parentId) {
+
+            $queryBuilder->leftJoin("$tableAlias.$parentFieldName", "_$parentFieldName");
+            $queryBuilder->Where("_$parentFieldName.id=:$parentFieldName");
+            $queryBuilder->setParameter("$parentFieldName", (int) $parentId);
+        };
+        $grid->getSource()->manipulateQuery($queryBuilderFn);
     }
 
-    protected function configureColumn($grid) {
-
-
+    protected function configureColumn($grid)
+    {
+        
     }
 
-    protected function configureFilter($grid) {
-       
+    protected function configureFilter($grid)
+    {
+        
     }
 
-    protected function configureExport($grid) {
+    protected function configureExport($grid)
+    {
 
         $grid->addExport(new ExcelExport('Excel'));
         $grid->addExport(new CSVExport('CSV'));
         $grid->addExport(new XMLExport('XML'));
     }
 
-    protected function configureRowButton($grid, $routePrefix) {
-        
-          /*@todo, aftert test - add to oryginal data-grid command generator */
-        
-          $parametersArr=$this->request->attributes->all();
-          $parameters=["id","containerName"=>"container","actionId"=>"default"];
-          $parameters=  array_merge($parameters,$parametersArr["_route_params"]);
-          
-          
-         $parentId=$this->request->get("parentId");
-          $parentName=$this->request->get("parentName");
-          
-          $rowAction = new RowAction('glyphicon glyphicon-eye-open', $routePrefix.'_read', false, null, ['id' => 'button-id', 'class' => 'button-class', 'data-original-title' => 'Show']);
-          $rowAction->setRouteParameters($parameters);
-          $grid->addRowAction($rowAction);
+    protected function configureRowButton($grid, $routePrefix)
+    {
 
-          $rowAction = new RowAction('glyphicon glyphicon-edit', $routePrefix.'_update', false, null, ['id' => 'button-id', 'class' => 'button-class', 'data-original-title' => 'Edit']);
-          $rowAction->setRouteParameters($parameters);
-          $grid->addRowAction($rowAction);
+        /* @todo, aftert test - add to oryginal data-grid command generator */
 
-          $rowAction = new RowAction('glyphicon glyphicon-remove', $routePrefix.'_delete', false, null, ['id' => 'button-id', 'class' => 'button-class', 'data-original-title' => 'Delete']);
-          $rowAction->setRouteParameters($parameters);
-          $grid->addRowAction($rowAction);
-         
+        $parametersArr = $this->request->attributes->all();
+        $parameters = ["id", "containerName" => "container", "actionId" => "default"];
+        $parameters = array_merge($parameters, $parametersArr["_route_params"]);
+
+
+        $parentId = $this->request->get("parentId");
+        $parentName = $this->request->get("parentName");
+
+        $rowAction = new RowAction('glyphicon glyphicon-eye-open', $routePrefix . '_read', false, null, ['id' => 'button-id', 'class' => 'button-class', 'data-original-title' => 'Show']);
+        $rowAction->setRouteParameters($parameters);
+        $grid->addRowAction($rowAction);
+
+        $rowAction = new RowAction('glyphicon glyphicon-edit', $routePrefix . '_update', false, null, ['id' => 'button-id', 'class' => 'button-class', 'data-original-title' => 'Edit']);
+        $rowAction->setRouteParameters($parameters);
+        $grid->addRowAction($rowAction);
+
+        $rowAction = new RowAction('glyphicon glyphicon-remove', $routePrefix . '_delete', false, null, ['id' => 'button-id', 'class' => 'button-class', 'data-original-title' => 'Delete']);
+        $rowAction->setRouteParameters($parameters);
+        $grid->addRowAction($rowAction);
     }
 
 }
