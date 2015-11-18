@@ -154,7 +154,7 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
         $formTypeNamespaceName = $this->getFormTypeNamespaceName($entityName, $path, $rootFolder);
-        $formTypeName = strtolower(str_replace('\\', '_', $entityNamespace).'_',$objectName);
+        $formTypeName = strtolower(str_replace('\\', '_', $entityNamespace).'_'.$objectName);
 
         foreach ($fieldsInfo as $key => $field) {
             $fieldsInfo[$key]['formType'] = $this->types[$field['type']];
