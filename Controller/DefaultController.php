@@ -32,6 +32,8 @@ class DefaultController extends FOSRestController
     protected $configLoaded = false;
     protected $configService;
     protected $states = null;
+    protected $dispatcher=null;
+    
     //element praktycznie zawsze zmieniany, konfiguracja na zewnątrz
     protected $config = [
 
@@ -64,8 +66,44 @@ class DefaultController extends FOSRestController
 
         return $routePrefix . '.' . $routeParams['entityName'] . '.' . $routeParams['actionId'] . '.' . $fireAction;
     }
-
     
+    protected function dispatch($name,$event)
+    {
+        if(null===$this->dispatcher)
+        { 
+            $this->dispatcher=$this->get('event_dispatcher');
+        }
+        $this->dispatcher->dispatch($this->getDispatchName($name), $event);
+    }
+
+
+
+    protected function addToParent($entity)
+    {
+        $parentId = $this->get('request')->get('parentId');
+        $parentName = $this->get('request')->get('parentName');
+
+        if ($parentId && $parentName) {
+
+
+            $parentEntityName = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->get('request')->getLocale());
+            $parentModel = $this->getModel($parentEntityName);
+            $parentEntity = $parentModel->findOneById($parentId);
+
+            //$field = $this->findParentFieldName($parentModel, $parentEntity);
+            //if ($field) {
+            $addMethod = 'addPbxRecordFile';
+
+            if ($parentEntity) {
+                $parentEntity->$addMethod($entity);
+            } else {
+                throw new \Exception('Add to parent failure !');
+            }
+            //} else {
+            //  throw new \Exception('Field  $fieldname in parent doesn\'t exists!');
+            /// }
+        }
+    }
 
     /**
      * Create action.
@@ -117,16 +155,11 @@ class DefaultController extends FOSRestController
 
         if ($form->isValid()) {
             
-            
-            $this->get('event_dispatcher')->dispatch($this->getDispatchName('before.create'), $event);
-            
-            
+            $this->dispatch('before.create', $event);
             $entity = $model->create($entity, true);
-
-            
+            $this->addToParent($entity);
             $model->flush();
-            $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.create'), $event);
-            $this->get('event_dispatcher')->dispatch($this->getDispatchName('after.create'), $event);
+            $this->dispatch('after.create', $event);
 
             $routeParams['id'] = $entity->getId();
             $view = $this->redirectView($this->generateUrl($routePrefix . '_read', $routeParams), 301);
@@ -134,7 +167,7 @@ class DefaultController extends FOSRestController
         }
 
         //Event broadcast
-        $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.invalidcreate'), $event);
+        $this->dispatch('on.invalidcreate', $event);
 
         //Render
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'));
@@ -182,8 +215,8 @@ class DefaultController extends FOSRestController
         $event->setParams($params);
         $event->setModel($model);
         //$event->setList($list);
-
-        $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.list'), $event);
+      
+        $this->dispatch('on.list', $event);
 
 
         //  throw new \BadMethodCallException("Not implemented yet");
@@ -245,11 +278,9 @@ class DefaultController extends FOSRestController
 
         if ($updateForm->isValid()) {
 
-            $this->get('event_dispatcher')->dispatch($this->getDispatchName('before.update'), $event);
+            $this->dispatch('before.update', $event);
             $model->update($entity, true);
-            $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.update'), $event);
-
-            $this->get('event_dispatcher')->dispatch($this->getDispatchName('after.update'), $event);
+            $this->dispatch('after.update', $event);
 
             $view = $this->redirectView($this->generateUrl($routePrefix . '_read', $this->getRouteParams()), 301);
             return $this->handleView($view);
@@ -288,16 +319,10 @@ class DefaultController extends FOSRestController
         $event->setModel($model);
 
         if (null != $entity) {
-            $this->get('event_dispatcher')->dispatch($this->getDispatchName('before.delete'), $event);
+            $this->dispatch('before.delete', $event);
             $model->delete($entity, true);
-            $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.delete'), $event);
-            $this->get('event_dispatcher')->dispatch($this->getDispatchName('after.delete'), $event);
+            $this->dispatch('after.delete', $event);
         }
-
-
-
-
-
         $view = $this->redirectView($this->generateUrl($routePrefix . '_list', $params->getArray()), 301);
         return $this->handleView($view);
     }
@@ -338,7 +363,7 @@ class DefaultController extends FOSRestController
         $event->setModel($model);
         $event->setForm($editForm);
 
-        $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.edit'), $event);
+        $this->dispatch('on.edit', $event);
 
 
         //Render
@@ -381,7 +406,7 @@ class DefaultController extends FOSRestController
         $event->setParams($params);
         $event->setModel($model);
 
-        $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.read'), $event);
+        $this->dispatch('on.read', $event);
 
         //Render
         $view = $this->view($params['entity'])->setTemplate($this->getConfig()->get('twig_element_read'))->setTemplateData($params->getArray());
@@ -464,13 +489,47 @@ class DefaultController extends FOSRestController
         $event->setModel($model);
         $event->setForm($form);
 
-        $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.new'), $event);
+        $this->dispatch('on.new', $event);
 
 
         //Render
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'));
         return $this->handleView($view);
     }
+    
+    
+    
+    
+       public function viewAction()
+    {
+        $entity = $this->getModel($this->getEntityClass())->getEntity();
+        $model = $this->getModel($this->getEntityClass());
+        $entityName = $this->getEntityName();
+        $routePrefix = $this->getRoutePrefix();
+ 
+        
+        $params = $this->get('prototype.controler.params');
+        $params->setArray([
+            'entity' => $entity,
+            'entityName' => $entityName,
+            'listActionName' => $this->getAction('list'),
+            'config' => $this->getConfig(),
+            'states' => $this->getStates()
+        ]);
+
+        $event = $this->get('prototype.event');
+        $event->setParams($params);
+        $event->setModel($model);
+        
+        $this->dispatch('on.view', $event);
+
+
+        //Render
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_view'));
+        return $this->handleView($view);
+    }
+    
+    
 
     /**
      * Get dependency container.

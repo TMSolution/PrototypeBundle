@@ -1,0 +1,49 @@
+{{' {% extends app.request.isXmlHttpRequest() ? config.get("twig_base_ajax_index") : config.get("twig_base_index") %}'}}    
+{{'{% block content %}'}}    
+<div>
+  <!-- Nav tabs -->
+  <ul class="nav tab-nav tn-justified bgm-white" role="tablist">
+    <li role="presentation" class="{{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}} disabled"><a id="{{name}}-tab" class="lazy-loaded-tab not-lazy-loaded" href="#{{objectName|lower}}-{{name}}-show-tab" aria-controls="{{objectName|lower}}-{{name}}-tab" role="tab" data-toggle="tab" data-route="core_prototype_associationcontroller_view.{{"{{app.request.getLocale()}}"}}" data-route-params='{ "containerName": "element", "actionId": "default", "parentName":"{{ '{{classmapperservice.getEntityName(' }}"{{entityName}}"{{ ')}}' }}" , "parentId": "{{"{{entity.id}}"}}", "entityName": "{{ '{{classmapperservice.getEntityName(' }}"{{association.object_name}}"{{ ')}}' }}" }'  data-route-target="" >{{"{{ "}}"{{name|lower}}"{{"|trans}}"}}</a></li>
+    <li role="presentation" class="{{'{% if \''}}{{objectName|lower}}{{'\' in states %}active{% endif %}'}}"><a id="{{objectName|lower}}-tab" class="not-lazy-loaded" href="#{{objectName|lower}}-show-tab" aria-controls="{{objectName|lower}}-show-tab" role="tab" data-toggle="tab">{{"{{ "}}"{{objectName|lower}}"{{"|trans }}"}}</a></li>
+    {% for  name,association in associations %}
+    <li role="presentation" class="{{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}" disabled><a id="{{name}}-tab" class="lazy-loaded-tab not-lazy-loaded" href="#{{objectName|lower}}-{{name}}-show-tab" aria-controls="{{objectName|lower}}-{{name}}-tab" role="tab" data-toggle="tab" data-route="core_prototype_associationcontroller_list.{{"{{app.request.getLocale()}}"}}" data-route-params='{ "containerName": "element", "actionId": "default", "parentName":"{{ '{{classmapperservice.getEntityName(' }}"{{entityName}}"{{ ')}}' }}" , "parentId": "{{"{{entity.id}}"}}", "entityName": "{{ '{{classmapperservice.getEntityName(' }}"{{association.object_name}}"{{ ')}}' }}" }'  data-route-target="" >{{"{{ "}}"{{name|lower}}"{{"|trans}}"}}</a></li>
+    {% endfor %}
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane tab-panel-container {{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-{{name}}-show-tab"  ></div>
+    <div role="tabpanel" class="tab-pane tab-panel-container {{'{% if \''}}{{objectName|lower}}{{'\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-show-tab" > 
+    
+        <div class="card">
+            <div class="card-header">
+                <h2 class="c-black"><i class="zmdi zmdi-border-color m-r-15"></i>Create<small class="p-l-35">It's just that simple. Turn your simple table into a sophisticated data table and offer your users a nice experience and great features without any effort.</small></h2>
+            </div>
+            <div class="card-body card-padding p-l-60">
+            {{ '{% block element %}'}}{{ '{% endblock %}' }}
+            </div>
+        </div>
+    </div>
+    {% for name,association in associations %}
+    <div role="tabpanel" class="tab-pane tab-panel-container {{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-{{name}}-show-tab"  ></div>
+    {% endfor %}
+  </div>
+
+</div>
+{{ '{% endblock content %}' }}
+
+
+{{ '{% block js %}' }}
+    {{ '{{ parent() }}' }}
+    <script>
+    $(function () {    
+    {{'{% if \''}}{{objectName|lower}}{{'\' in states %}'}}
+        $('#{{objectName|lower}}-tab').click();
+    {% for name,association in associations %}{{'{% elseif \''}}{{name}}{{'\' in states %}'}}
+        $('#{{name}}-tab').click();
+    {% endfor %}{{'{% else %}'}}     
+        $('#{{objectName|lower}}-tab').click();     
+    {{'{% endif %}'}}
+    });
+    </script>
+{{ '{% endblock %}' }}
