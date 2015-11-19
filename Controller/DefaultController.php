@@ -54,17 +54,31 @@ class DefaultController extends FOSRestController
              */
     ];
 
-    protected function findParentFieldName($model, $parentEntity)
+    protected function findParentFieldName($model/*, $entityName, $parentModel*/, $parentEntityName)
     {
 
         $fieldsInfo = $model->getFieldsInfo();
 
         foreach ($fieldsInfo as $fieldName => $fieldInfo) {
-            if ($fieldInfo["is_object"] == true && $fieldInfo["object_name"] == $parentEntity && in_array($fieldInfo["association"], ["ManyToOne", "OneToOne", "ManyToMany"])) {
+          // if(array_key_exists('object_name', $fieldInfo)) {echo "1:".$fieldInfo["object_name"]."\r\n";};
+            
+            if ($fieldInfo["is_object"] == true && $fieldInfo["object_name"] == $parentEntityName && in_array($fieldInfo["association"], ["ManyToOne", "OneToOne", "ManyToMany"])) {
 
                 return $fieldName;
             }
         }
+        
+       /* 
+        $parentFieldsInfo = $parentModel->getFieldsInfo();
+
+        foreach ($parentFieldsInfo as $fieldName => $fieldInfo) {
+            if(array_key_exists('object_name', $fieldInfo)) {echo "2:".$fieldInfo["object_name"]."\r\n";};
+            if ($fieldInfo["is_object"] == true && $fieldInfo["object_name"] == $entityName && in_array($fieldInfo["association"], ["ManyToOne", "OneToOne", "ManyToMany"])) {
+
+                return $fieldName;
+            }
+        }*/
+        
     }
 
     protected function getDispatchName($fireAction)
@@ -72,7 +86,7 @@ class DefaultController extends FOSRestController
         $routePrefix = $this->getRoutePrefix();
         $entityName = $this->getEntityName();
         $routeParams = $this->getRouteParams();
-        
+
         return $routePrefix . '.' . $routeParams['entityName'] . '.' . $routeParams['actionId'] . '.' . $fireAction;
     }
 
@@ -98,23 +112,24 @@ class DefaultController extends FOSRestController
 
         if ($parentId && $parentName) {
 
+            $model = $this->getModel($this->getEntityClass());
 
             $parentEntityName = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->get('request')->getLocale());
             $parentModel = $this->getModel($parentEntityName);
             $parentEntity = $parentModel->findOneById($parentId);
 
-            //$field = $this->findParentFieldName($parentModel, $parentEntity);
-            //if ($field) {
-            $addMethod = 'addPbxRecordFile';
-
+          
+            
+            $field = $this->findParentFieldName($model/*, $this->getEntityClass(), $parentModel*/, $parentEntityName);
+         
+            $addMethod = 'add'.$field;
+          
             if ($parentEntity) {
                 $parentEntity->$addMethod($entity);
             } else {
                 throw new \Exception('Add to parent failure !');
             }
-            //} else {
-            //  throw new \Exception('Field  $fieldname in parent doesn\'t exists!');
-            /// }
+          
         }
     }
 
@@ -152,7 +167,7 @@ class DefaultController extends FOSRestController
         ]);
 
 
-     
+
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
@@ -162,9 +177,11 @@ class DefaultController extends FOSRestController
 
         if ($form->isValid()) {
             $this->get('event_dispatcher')->dispatch($this->getDispatchName('before.create'), $event);
+            
+            //$this->addToParent($entity);
             $entity = $model->create($entity, true);
 
-            $this->addToParent($entity);
+            
             $model->flush();
             $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.create'), $event);
             $this->get('event_dispatcher')->dispatch($this->getDispatchName('after.create'), $event);
@@ -223,7 +240,7 @@ class DefaultController extends FOSRestController
         $event->setParams($params);
         $event->setModel($model);
         //$event->setList($list);
-      
+
         $this->get('event_dispatcher')->dispatch($this->getDispatchName('on.list'), $event);
 
 
@@ -484,7 +501,7 @@ class DefaultController extends FOSRestController
         $model = $this->getModel($this->getEntityClass());
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
- 
+
 
         $formType = $this->getFormType($this->getEntityClass(), null, $model);
         $form = $this->makeForm($formType, $entity, 'POST', $this->getEntityName(), $this->getAction('create'));
