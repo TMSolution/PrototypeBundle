@@ -54,32 +54,7 @@ class DefaultController extends FOSRestController
              */
     ];
 
-    protected function findParentFieldName($model/*, $entityName, $parentModel*/, $parentEntityName)
-    {
-
-        $fieldsInfo = $model->getFieldsInfo();
-
-        foreach ($fieldsInfo as $fieldName => $fieldInfo) {
-          // if(array_key_exists('object_name', $fieldInfo)) {echo "1:".$fieldInfo["object_name"]."\r\n";};
-            
-            if ($fieldInfo["is_object"] == true && $fieldInfo["object_name"] == $parentEntityName && in_array($fieldInfo["association"], ["ManyToOne", "OneToOne", "ManyToMany"])) {
-
-                return $fieldName;
-            }
-        }
-        
-       /* 
-        $parentFieldsInfo = $parentModel->getFieldsInfo();
-
-        foreach ($parentFieldsInfo as $fieldName => $fieldInfo) {
-            if(array_key_exists('object_name', $fieldInfo)) {echo "2:".$fieldInfo["object_name"]."\r\n";};
-            if ($fieldInfo["is_object"] == true && $fieldInfo["object_name"] == $entityName && in_array($fieldInfo["association"], ["ManyToOne", "OneToOne", "ManyToMany"])) {
-
-                return $fieldName;
-            }
-        }*/
-        
-    }
+    
 
     protected function getDispatchName($fireAction)
     {
@@ -90,48 +65,7 @@ class DefaultController extends FOSRestController
         return $routePrefix . '.' . $routeParams['entityName'] . '.' . $routeParams['actionId'] . '.' . $fireAction;
     }
 
-    /*
-      protected function getParentFieldNameFromRequest()
-      {
-
-
-      $parentName = $this->get('request')->get('parentName');
-      if ($parentName) {
-
-      $parentEntity = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->get('request')->getLocale());
-      } else {
-      throw new \Exception('Parameter "parentName" required!');
-      }
-      return $this->findParentFieldName($this->model, $parentEntity);
-      } */
-
-    protected function addToParent($entity)
-    {
-        $parentId = $this->get('request')->get('parentId');
-        $parentName = $this->get('request')->get('parentName');
-
-        if ($parentId && $parentName) {
-
-            $model = $this->getModel($this->getEntityClass());
-
-            $parentEntityName = $this->getContainer()->get("classmapperservice")->getEntityClass($parentName, $this->get('request')->getLocale());
-            $parentModel = $this->getModel($parentEntityName);
-            $parentEntity = $parentModel->findOneById($parentId);
-
-          
-            
-            $field = $this->findParentFieldName($model/*, $this->getEntityClass(), $parentModel*/, $parentEntityName);
-         
-            $addMethod = 'add'.$field;
-          
-            if ($parentEntity) {
-                $parentEntity->$addMethod($entity);
-            } else {
-                throw new \Exception('Add to parent failure !');
-            }
-          
-        }
-    }
+    
 
     /**
      * Create action.
@@ -164,10 +98,16 @@ class DefaultController extends FOSRestController
             'config' => $this->getConfig(),
             'routeParams' => $routeParams,
             'states' => $this->getStates()
+  
         ]);
 
-
-
+        //parent params 
+        $parentId = $this->get('request')->get('parentId');
+        $parentName = $this->get('request')->get('parentName');
+        if($parentId && $parentName){
+            $params['parentId']=$parentId;
+            $params['parentName']=$parentName;
+        }
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
@@ -176,9 +116,11 @@ class DefaultController extends FOSRestController
 
 
         if ($form->isValid()) {
+            
+            
             $this->get('event_dispatcher')->dispatch($this->getDispatchName('before.create'), $event);
             
-            //$this->addToParent($entity);
+            
             $entity = $model->create($entity, true);
 
             
