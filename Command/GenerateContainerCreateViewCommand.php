@@ -26,6 +26,7 @@ use UnexpectedValueException;
 class GenerateContainerCreateViewCommand extends ContainerAwareCommand
 {
 
+    
     protected function configure()
     {
         $this->setName('prototype:generate:twig:container:create')
