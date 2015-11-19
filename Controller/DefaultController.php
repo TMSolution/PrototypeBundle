@@ -157,7 +157,7 @@ class DefaultController extends FOSRestController
             
             $this->dispatch('before.create', $event);
             $entity = $model->create($entity, true);
-            $this->addToParent($entity);
+            //$this->addToParent($entity);
             $model->flush();
             $this->dispatch('after.create', $event);
 
