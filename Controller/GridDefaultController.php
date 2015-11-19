@@ -67,16 +67,8 @@ class GridDefaultController extends DefaultController {
 
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $entityName . '.' . 'list', $event);
         $gridConfig = $grid->getGridConfig($this->getConfig()->get('twig_element_list'), $params->getArray());
-        var_dump($this->get('request')->request->all());
-     
-        try{
-            $result=$grid->getResult();
-            
-        }
-        catch(\Exception $e){
-            
-            $result=  \stdClass();
-        }
+       
+       
         
 
         $view = $this->view($grid->getResult($result))
