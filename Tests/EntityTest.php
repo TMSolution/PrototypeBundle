@@ -71,15 +71,17 @@ class EntityTest extends WebTestCase {
     }
 
     public function typeDatetime($elementName, $guess) {
-        $month = $elementName . '_date_month_chosen';
-        $day = $elementName . '_date_day_chosen';
-        $year = $elementName . '_date_year_chosen';
-        $this->webDriver->findElement(WebDriverBy::id($month))->click();
-        $this->webDriver->executeScript("jQuery('#" . $month . "').val(10);");
-        $this->webDriver->findElement(WebDriverBy::id($day))->click();
-        $this->webDriver->executeScript("jQuery('#" . $day . "').val(10);");
-        $this->webDriver->findElement(WebDriverBy::id($year))->click();
-        $this->webDriver->executeScript("jQuery('#" . $year . "').val(10);");
+//        $month = $elementName . '_date_month_chosen';
+//        $day = $elementName . '_date_day_chosen';
+//        $year = $elementName . '_date_year_chosen';
+//        $this->webDriver->findElement(WebDriverBy::id($month))->click();
+//        $this->webDriver->executeScript("jQuery('#" . $month . "').val(10);");
+//        $this->webDriver->findElement(WebDriverBy::id($day))->click();
+//        $this->webDriver->executeScript("jQuery('#" . $day . "').val(10);");
+//        $this->webDriver->findElement(WebDriverBy::id($year))->click();
+//        $this->webDriver->executeScript("jQuery('#" . $year . "').val(10);");
+        $this->webDriver->findElement(WebDriverBy::id($elementName))->clear();
+        $this->webDriver->findElement(WebDriverBy::id($elementName))->sendKeys($guess());
     }
 
     public function typeTextarea($elementName, $guess) {
@@ -92,6 +94,7 @@ class EntityTest extends WebTestCase {
 
     public function typeEntity($elementName, $guess) {
         //jQuery("#campaign_campaigntype_chosen").prev().trigger('chosen:open');
+
         $correctEelementName = $elementName . '_chosen';
         $this->webDriver->findElement(WebDriverBy::id($correctEelementName))->click();
         $this->webDriver->executeScript("jQuery('#" . $correctEelementName . "').prev().trigger('chosen:open');");
@@ -104,8 +107,10 @@ class EntityTest extends WebTestCase {
         $this->webDriver->findElement(WebDriverBy::id($elementName))->clear();
         $this->webDriver->findElement(WebDriverBy::id($elementName))->sendKeys($guess());
     }
-    
-    public function typeCheckbox($elementName, $guess){
+
+    public function typeCheckbox($elementName, $guess) {
+//        dump($elementName);
+//        die('jestem w checkbox');
         $this->webDriver->findElement(WebDriverBy::id($elementName))->clear();
         $this->webDriver->findElement(WebDriverBy::id($elementName))->sendKeys($guess());
     }
@@ -198,7 +203,8 @@ class EntityTest extends WebTestCase {
                     $fieldName, $this->model->getMetadata()
             );
             $name = $item->getConfig()->getName();
-            $elementName = $friendlyName . '_' . $name;
+            //$elementName = $friendlyName . '_' . $name; - old
+            $elementName = 'cco_callcenterbundle_entity_'. $name;
             $elementHandlerName = \sprintf("type%s", ucfirst($type));
             $this->$elementHandlerName($elementName, $guess);
         }
@@ -262,13 +268,13 @@ class EntityTest extends WebTestCase {
                         'localhost/callcenterproject/web/app_dev.php/panel/%s/container/default/edit/%d', $friendlyName, $entityId
         ));
     }
-
     /**
      * @dataProvider response200Provider
      */
     public function testRead($entity, $entityId = 1) {
+        $friendlyName = get_class($entity);
         $this->assertResponseOK(\sprintf(
-                        'localhost/callcenterproject/web/app_dev.php/panel/%s/container/default/read/%d', $this->get('classmapperservice')->getEntityName($entity), $entityId
+                        'localhost/callcenterproject/web/app_dev.php/panel/%s/container/default/read/%d', $this->get('classmapperservice')->getEntityName($friendlyName), $entityId
         ));
     }
 
@@ -276,28 +282,46 @@ class EntityTest extends WebTestCase {
      * @dataProvider response200Provider
      */
     public function testUpdate($entity, $entityId = 1) {
+        $friendlyName = get_class($entity);
         $this->assertResponseOK(\sprintf(
-                        'localhost/callcenterproject/web/app_dev.php/panel/%s/container/default/update/%d', $this->get('classmapperservice')->getEntityName($entity), $entityId
+                        'localhost/callcenterproject/web/app_dev.php/panel/%s/container/default/update/%d', $this->get('classmapperservice')->getEntityName($friendlyName), $entityId
         ));
     }
+
 
     /**
      * @dataProvider response200Provider
      */
     public function testList($entity) {
+        $friendlyName = get_class($entity);
         $this->assertResponseOK(\sprintf(
-                        'localhost/callcenterproject/web/app_dev.php/panel/%s/list', $this->get('classmapperservice')->getEntityName($entity)
+                        'localhost/callcenterproject/web/app_dev.php/panel/%s/container/default/list', $this->get('classmapperservice')->getEntityName($friendlyName)
         ));
     }
 
     public function response200Provider() {
         $entitiesNames = $this->getEntities();
-        return $entitiesNames;
+        $faker = Factory::create();
+        $app = new \AppKernel('test', true);
+        $app->boot();
+        $dic = $app->getContainer();
+        $model = $dic->get('model_factory');
+        foreach ($entitiesNames as $name) {
+            $shortName = $this->getShortNameBundle($name);
+            if ($shortName == "CCO") {
+                $entity = $model->getModel($name[0])->getEntity();
+                if (property_exists($entity, "name")) {
+                    $entity->setName($faker->firstName);
+                }
+                $entities[] = [$entity];
+            }
+        }
+        return $entities;
     }
 
     public function assertResponseOK($url) {
         $urlChecker = new UrlChecker();
-        $this->assertSame($urlChecker, $urlChecker->waitUntilAvailable(200, $url));
+        $this->assertSame($urlChecker, $urlChecker->waitUntilAvailable(500, $url));
     }
 
     public function byCss($css) {
