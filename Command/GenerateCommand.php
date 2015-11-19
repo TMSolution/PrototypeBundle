@@ -82,16 +82,16 @@ class GenerateCommand extends ContainerAwareCommand
             }
         }
 
-        $withConfigServices = true === $input->getOption('withConfigServices');
-        $withGridServices = true === $input->getOption('withGridServices');
-        $withFormTypeServices = true === $input->getOption('withFormTypeServices');
-        $withFormTypes = true === $input->getOption('withFormTypes');
-        $withGridConfig = true === $input->getOption('withGridConfig');
-        $withTranslation = true === $input->getOption('withTranslation');
-        $withReadElementTwig = true === $input->getOption('withReadElementTwig');
-        $withUpdateElementTwig = true === $input->getOption('withUpdateElementTwig');
-        $withCreateElementTwig = true === $input->getOption('withCreateElementTwig');
-        $withReadViewContainerTwig = true === $input->getOption('withReadViewContainerTwig');
+        $withConfigServices = $input->hasOption('withConfigServices');
+        $withGridServices = $input->hasOption('withGridServices');
+        $withFormTypeServices = $input->hasOption('withFormTypeServices');
+        $withFormTypes = $input->hasOption('withFormTypes');
+        $withGridConfig = $input->hasOption('withGridConfig');
+        $withTranslation = $input->hasOption('withTranslation');
+        $withReadElementTwig = $input->hasOption('withReadElementTwig');
+        $withUpdateElementTwig = $input->hasOption('withUpdateElementTwig');
+        $withCreateElementTwig = $input->hasOption('withCreateElementTwig');
+        $withReadViewContainerTwig = $input->hasOption('withReadViewContainerTwig');
 
 
 
