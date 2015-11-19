@@ -53,3 +53,10 @@ core_prototype_associationcontroller_update:
     requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
     options:
         expose: true
+
+core_prototype_associationcontroller_view:
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/view/{id}/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/podglad/{id}/{parentName}/{parentId}/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:view", states: "", _format: ~ }   
+    requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
+    options:
+        expose: true

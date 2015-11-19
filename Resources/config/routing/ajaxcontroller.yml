@@ -59,3 +59,10 @@ core_prototype_ajaxcontroller_update:
     requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
+        
+core_prototype_ajaxcontroller_view:
+    locales:  { en: "/ajax/{entityName}/{containerName}/{actionId}/view/{id}/{states}", pl: "/ajax/{entityName}/{containerName}/{actionId}/podglad/{id}/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:view", states: "", _format: ~ }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true 

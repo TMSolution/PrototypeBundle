@@ -1,0 +1,64 @@
+
+core_prototype_api_defaultcontroller_list:
+    locales:  { en: "/{entityName}/{actionId}/list/{states}", pl: "/{entityName}/{actionId}/lista/{states}" } 
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:list", states: "", format: ~ }
+    requirements: {  "states": ".+"}
+    options:
+        expose: true
+        
+
+core_prototype_api_defaultcontroller_ajaxlist:
+    locales:  { en: "/{entityName}/{actionId}/ajaxlist/{states}", pl: "/{entityName}/{actionId}/listaajax/{states}" } 
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:ajaxlist", states: "", format: ~ }
+    options:
+        expose: true        
+   
+core_prototype_api_defaultcontroller_read:
+    locales:  { en: "/{entityName}/{actionId}/read/{id}/{states}", pl: "/{entityName}/{actionId}/pobierz/{id}/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:read", states: "", format: ~ }   
+    requirements: {  "states": ".+"}
+    options:
+        expose: true
+
+
+core_prototype_api_defaultcontroller_new:
+    locales:  { en: "/{entityName}/{actionId}/new/{states}", pl: "/{entityName}/{actionId}/nowy/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:new", states: "", format: ~ }   
+    requirements: {  "states": ".+"}
+    options:
+        expose: true
+
+core_prototype_api_defaultcontroller_create:
+    locales:  { en: "/{entityName}/{actionId}/create/{states}", pl: "/{entityName}/{actionId}/utworz/{states}" }
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:create", states: "", format: ~ }   
+    requirements: {  "states": ".+"}
+    options:
+        expose: true       
+
+core_prototype_api_defaultcontroller_delete:
+    locales:  { en: "/{entityName}/{actionId}/delete/{id}/{states}", pl: "/{entityName}/{actionId}/usun/{id}/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:delete", states: "", format: ~ }       
+    requirements: {  "states": ".+"}
+    options:
+        expose: true
+
+core_prototype_api_defaultcontroller_edit:
+    locales:  { en: "/{entityName}/{actionId}/edit/{id}/{states}", pl: "/{entityName}/{actionId}/edytuj/{id}/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:edit", states: "", format: ~ }
+    requirements: {  "states": ".+"}
+    options:
+        expose: true    
+        
+core_prototype_api_defaultcontroller_update:
+    locales:  { en: "/{entityName}/{actionId}/update/{id}/{states}", pl: "/{entityName}/{actionId}/aktualizuj/{id}/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:update", states: "", format: ~ }   
+    requirements: {  "states": ".+"}
+    options:
+        expose: true
+        
+core_prototype_api_defaultcontroller_view:
+    locales:  { en: "/{entityName}/{actionId}/view/{id}/{states}", pl: "/{entityName}/{actionId}/podglad/{id}/{states}"}
+    defaults: { _controller: "CorePrototypeBundle:GridDefault:view", states: "", format: ~ }   
+    requirements: {  "states": ".+"}
+    options:
+        expose: true        

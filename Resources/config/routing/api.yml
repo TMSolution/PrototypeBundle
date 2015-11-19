@@ -1,5 +1,0 @@
-core_prototype_ajaxcontroller_api_aaaaa:
-    locales:  { en: "/ala", pl: "/ala" } 
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:ajaxlist", states: "", _format: ~ }
-    options:
-        expose: true      

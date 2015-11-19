@@ -8,14 +8,19 @@ prototype_associationcontroller:
     prefix:   /panel
     type: be_simple_i18n
     
-
 prototype_defaultcontroller:
     resource: "@CorePrototypeBundle/Resources/config/routing/defaultcontroller.yml"
     prefix:   /panel
     type: be_simple_i18n
-    
-    
-prototype_defaultcontroller_api:
-    resource: "@CorePrototypeBundle/Resources/config/routing/api.yml"
-    prefix:   /api1
+        
+prototype_defaultcontroller_api_defaultcontroller:
+    resource: "@CorePrototypeBundle/Resources/config/routing/api_defaultcontroller.yml"
+    prefix:   /api
     type: be_simple_i18n
+
+prototype_defaultcontroller_api_associationcontroller:
+    resource: "@CorePrototypeBundle/Resources/config/routing/api_associationcontroller.yml"
+    prefix:   /api
+    type: be_simple_i18n
+    
+    
