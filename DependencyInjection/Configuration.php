@@ -32,6 +32,7 @@ class Configuration implements ConfigurationInterface
         ->scalarNode('twig_element_update')->defaultValue('CorePrototypeBundle:Default\Element:update.html.twig')->end()
         ->scalarNode('twig_element_read')->defaultValue('CorePrototypeBundle:Default\Element:read.html.twig')->end()
         ->scalarNode('twig_element_error')->defaultValue('CorePrototypeBundle:Default\Element:error.html.twig')->end()
+        ->scalarNode('twig_element_view')->defaultValue('CorePrototypeBundle:Default\Element:view.html.twig')->end()
         
         ->scalarNode('twig_container_create')->defaultValue('CorePrototypeBundle:Default\Container:create.html.twig')->end()
         ->scalarNode('twig_container_list')->defaultValue('CorePrototypeBundle:Default\Container:list.html.twig')->end()
@@ -39,6 +40,7 @@ class Configuration implements ConfigurationInterface
         ->scalarNode('twig_container_update')->defaultValue('CorePrototypeBundle:Default\Container:update.html.twig')->end()
         ->scalarNode('twig_container_read')->defaultValue('CorePrototypeBundle:Default\Container:read.html.twig')->end()
         ->scalarNode('twig_container_error')->defaultValue('CorePrototypeBundle:Default\sContainer:error.html.twig')->end()
+        ->scalarNode('twig_container_view')->defaultValue('CorePrototypeBundle:Default\Container:view.html.twig')->end()
         ;
                 
         return $treeBuilder;
