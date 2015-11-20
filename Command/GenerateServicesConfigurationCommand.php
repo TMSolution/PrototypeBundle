@@ -34,7 +34,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('prototype:generate:services')
-                ->setDescription('Generate services configuration in bundle services.yml')
+                ->setDescription('Generate services configuration in bundle prototype.services.yml')
                 ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert configuration Bundle')
                 ->addArgument('rootSpace', InputArgument::REQUIRED, 'Insert rootSpace')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity path')
@@ -48,7 +48,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
     {
         $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('configBundle'));
         $bundleMetadata = $manager->getBundleMetadata($bundle);
-        return str_replace('/', DIRECTORY_SEPARATOR, $bundleMetadata->getPath()) . DIRECTORY_SEPARATOR . $bundleMetadata->getNamespace() . DIRECTORY_SEPARATOR . 'Resources/config/services.yml';
+        return str_replace('/', DIRECTORY_SEPARATOR, $bundleMetadata->getPath()) . DIRECTORY_SEPARATOR . $bundleMetadata->getNamespace() . DIRECTORY_SEPARATOR . 'Resources/config/prototype.services.yml';
     }
 
     protected function getClassPath($entity, $manager)

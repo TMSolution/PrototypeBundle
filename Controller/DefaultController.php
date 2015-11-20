@@ -56,25 +56,14 @@ class DefaultController extends FOSRestController
              */
     ];
 
-    protected function findParentFieldName($model, $parentEntity)
-    {
-
-        $fieldsInfo = $model->getFieldsInfo();
-
-        foreach ($fieldsInfo as $fieldName => $fieldInfo) {
-            if ($fieldInfo["is_object"] == true && $fieldInfo["object_name"] == $parentEntity && in_array($fieldInfo["association"], ["ManyToOne", "OneToOne", "ManyToMany"])) {
-
-                return $fieldName;
-            }
-        }
-    }
+    
 
     protected function getDispatchName($fireAction)
     {
         $routePrefix = $this->getRoutePrefix();
         $entityName = $this->getEntityName();
         $routeParams = $this->getRouteParams();
-        
+
         return $routePrefix . '.' . $routeParams['entityName'] . '.' . $routeParams['actionId'] . '.' . $fireAction;
     }
     
@@ -147,10 +136,16 @@ class DefaultController extends FOSRestController
             'config' => $this->getConfig(),
             'routeParams' => $routeParams,
             'states' => $this->getStates()
+  
         ]);
 
-
-     
+        //parent params 
+        $parentId = $this->get('request')->get('parentId');
+        $parentName = $this->get('request')->get('parentName');
+        if($parentId && $parentName){
+            $params['parentId']=$parentId;
+            $params['parentName']=$parentName;
+        }
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
@@ -162,7 +157,7 @@ class DefaultController extends FOSRestController
             
             $this->dispatch('before.create', $event);
             $entity = $model->create($entity, true);
-            $this->addToParent($entity);
+            //$this->addToParent($entity);
             $model->flush();
             $this->dispatch('after.create', $event);
 
@@ -473,7 +468,7 @@ class DefaultController extends FOSRestController
         $model = $this->getModel($this->getEntityClass());
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
- 
+
 
         $formType = $this->getFormType($this->getEntityClass(), null, $model);
         $form = $this->makeForm($formType, $entity, 'POST', $this->getEntityName(), $this->getAction('create'));
