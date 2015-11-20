@@ -483,6 +483,7 @@ class DefaultController extends FOSRestController
             'entity' => $entity,
             'form' => $form->createView(),
             'entityName' => $entityName,
+            'model' => $model,
             'listActionName' => $this->getAction('list'),
             'config' => $this->getConfig(),
             'states' => $this->getStates()
