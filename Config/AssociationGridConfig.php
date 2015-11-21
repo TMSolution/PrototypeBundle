@@ -28,20 +28,20 @@ class AssociationGridConfig extends GridConfig
 
     protected $request;
 
-   /* public function buildGrid($grid, $routePrefix)
-    {
+    /* public function buildGrid($grid, $routePrefix)
+      {
 
-        $grid=parent::buildGrid($grid, $routePrefix);
-        $this->request = $this->getContainer()->get('request');
-        
-       // $this->manipulateQuery($grid);
-        //$this->configureColumn($grid);
-        //$this->configureFilter($grid);
-        //$this->configureExport($grid);
-        //$this->configureRowButton($grid, $routePrefix);
+      $grid=parent::buildGrid($grid, $routePrefix);
+      $this->request = $this->getContainer()->get('request');
 
-        return $grid;
-    }*/
+      // $this->manipulateQuery($grid);
+      //$this->configureColumn($grid);
+      //$this->configureFilter($grid);
+      //$this->configureExport($grid);
+      //$this->configureRowButton($grid, $routePrefix);
+
+      return $grid;
+      } */
 
     public function getContainer()
     {
@@ -81,10 +81,17 @@ class AssociationGridConfig extends GridConfig
         $parentFieldName = $this->getParentFieldNameFromRequest();
 
 
-        $queryBuilderFn = function ($queryBuilder) use($tableAlias, $parentFieldName, $parentId) {
+        $fieldsInfo = $this->model->getFieldsInfo();
 
-            $queryBuilder->leftJoin("$tableAlias.$parentFieldName", "_$parentFieldName");
-            $queryBuilder->Where("_$parentFieldName.id=:$parentFieldName");
+
+
+
+        $queryBuilderFn = function ($queryBuilder) use($tableAlias, $parentFieldName, $parentId, $fieldsInfo) {
+
+       //     if (!array_key_exists($parentFieldName.'s', $fieldsInfo)) {
+                $queryBuilder->leftJoin("$tableAlias.$parentFieldName", "_{$parentFieldName}1");
+         //  }
+            $queryBuilder->Where("_{$parentFieldName}1.id=:$parentFieldName");
             $queryBuilder->setParameter("$parentFieldName", (int) $parentId);
         };
         $grid->getSource()->manipulateQuery($queryBuilderFn);

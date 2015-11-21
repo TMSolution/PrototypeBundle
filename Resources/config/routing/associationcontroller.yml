@@ -13,7 +13,7 @@ core_prototype_associationcontroller_ajaxlist:
         expose: true
         
 core_prototype_associationcontroller_read:
-    locales:  { en: "/{entityName}/{containerName}/{actionId}/read/{id}/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/pobierz/{id}/{parentName}/{parentId}/{states}"}
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/read/{id}/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/pokaz/{id}/{parentName}/{parentId}/{states}"}
     defaults: { _controller: "CorePrototypeBundle:GridDefault:read", states: "", _format: ~ } 
     requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
     options:

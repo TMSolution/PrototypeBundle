@@ -42,6 +42,8 @@ class GridDefaultController extends DefaultController {
         $grid->resetSessionData();
         $this->buildGrid($grid);
         $grid->setId($routePrefix . '_' . $entityName);
+        
+        $this->routeParams = $this->getRouteParams();
 
         $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxlist", $grid->getRouteParameters()));
 
@@ -54,7 +56,7 @@ class GridDefaultController extends DefaultController {
             'config' => $this->getConfig(),
             'containerName'=> 'container',
             'actionId' => 'default',
-            'routeParams' => $this->getRouteParams(),
+            'routeParams' => $this->routeParams,
         ]);
 
 
@@ -88,6 +90,8 @@ class GridDefaultController extends DefaultController {
         $grid->setId($routePrefix . '_' . $entityName);
         $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxlist", $grid->getRouteParameters()));
         //config parameters for render and event broadcast
+        
+        $this->routeParams = $this->getRouteParams();
 
         $params = $params = $this->get('prototype.controler.params');
         $params->setArray(
@@ -96,7 +100,7 @@ class GridDefaultController extends DefaultController {
                     'newActionName' => $this->getAction('new'),
                     'routeName' => $routePrefix . '_new',
                     'config' => $this->getConfig(),
-                    'routeParams' => $this->getRouteParams()
+                    'routeParams' => $this->routeParams
         ]);
 
 
