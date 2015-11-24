@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use ReflectionClass;
 use LogicException;
-use UnexpectedValueException;
+use UnexpectedValueException; 
 
 /**
  * GridConfigCommand generates widget class and his template.

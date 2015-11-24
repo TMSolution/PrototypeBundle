@@ -43,8 +43,12 @@ class GenerateCommand extends ContainerAwareCommand
                 ->addOption('withTranslation', null, InputOption::VALUE_NONE, 'Generate Translation files')
                 ->addOption('withReadElementTwig', null, InputOption::VALUE_NONE, 'Generate read twig element')
                 ->addOption('withCreateElementTwig', null, InputOption::VALUE_NONE, 'Generate create twig element')
+                ->addOption('withViewElementTwig', null, InputOption::VALUE_NONE, 'Generate view twig element')
                 ->addOption('withUpdateElementTwig', null, InputOption::VALUE_NONE, 'Generate update twig element')
-                ->addOption('withReadViewContainerTwig', null, InputOption::VALUE_NONE, 'Generate read view twig container')
+                ->addOption('withReadContainerTwig', null, InputOption::VALUE_NONE, 'Generate read twig container')
+                 ->addOption('withCreateContainerTwig', null, InputOption::VALUE_NONE, 'Generate create twig container')
+                ->addOption('withUpdateContainerTwig', null, InputOption::VALUE_NONE, 'Generate update twig container')
+                ->addOption('withViewContainerTwig', null, InputOption::VALUE_NONE, 'Generate view twig container')
                 ->addOption('withAll', null, InputOption::VALUE_NONE, 'Generate update twig element');
     }
 
@@ -82,19 +86,21 @@ class GenerateCommand extends ContainerAwareCommand
             }
         }
 
-        $withConfigServices = $input->hasOption('withConfigServices');
-        $withGridServices = $input->hasOption('withGridServices');
-        $withFormTypeServices = $input->hasOption('withFormTypeServices');
-        $withFormTypes = $input->hasOption('withFormTypes');
-        $withGridConfig = $input->hasOption('withGridConfig');
-        $withTranslation = $input->hasOption('withTranslation');
-        $withReadElementTwig = $input->hasOption('withReadElementTwig');
-        $withUpdateElementTwig = $input->hasOption('withUpdateElementTwig');
-        $withCreateElementTwig = $input->hasOption('withCreateElementTwig');
-        $withReadViewContainerTwig = $input->hasOption('withReadViewContainerTwig');
-
-
-
+        $withConfigServices = true === $input->getOption('withConfigServices');
+        $withGridServices = true === $input->getOption('withGridServices');
+        $withFormTypeServices = true === $input->getOption('withFormTypeServices');
+        $withFormTypes = true === $input->getOption('withFormTypes');
+        $withGridConfig = true === $input->getOption('withGridConfig');
+        $withTranslation = true === $input->getOption('withTranslation');
+        $withReadElementTwig = true === $input->getOption('withReadElementTwig');
+        $withUpdateElementTwig = true === $input->getOption('withUpdateElementTwig');
+        $withViewElementTwig = true === $input->getOption('withViewElementTwig');
+        $withCreateElementTwig = true === $input->getOption('withCreateElementTwig');
+        $withReadContainerTwig = true === $input->getOption('withReadContainerTwig');
+        $withCreateContainerTwig = true === $input->getOption('withCreateContainerTwig');
+        $withUpdateContainerTwig = true === $input->getOption('withUpdateContainerTwig');
+        $withViewContainerTwig = true === $input->getOption('withViewContainerTwig');
+        
         $withAll = true === $input->getOption('withAll');
 
         foreach ($entities as $entity) {
@@ -184,7 +190,19 @@ class GenerateCommand extends ContainerAwareCommand
                 $returnCode = $command->run($inputCommand, $output);
             }
 
-
+            //twigs
+            if ($withViewElementTwig || $withAll) {
+                $output->writeln(sprintf('Generate view element for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:element:view');
+                $arguments = array(
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder'),
+                    '--withAssociated' => null
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
             if ($withReadElementTwig || $withAll) {
                 $output->writeln(sprintf('Generate read element for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:element:read');
@@ -220,10 +238,45 @@ class GenerateCommand extends ContainerAwareCommand
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
+            
+            
 
-            if ($withReadViewContainerTwig || $withAll) {
-                $output->writeln(sprintf('Generate read view container for <info>%s</info>', $entity));
+            if ($withReadContainerTwig || $withAll) {
+                $output->writeln(sprintf('Generate read container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:read');
+                $arguments = array(
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder')
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
+            if ($withCreateContainerTwig || $withAll) {
+                $output->writeln(sprintf('Generate create container for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:container:create');
+                $arguments = array(
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder')
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
+            if ($withUpdateContainerTwig || $withAll) {
+                $output->writeln(sprintf('Generate update container for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:container:update');
+                $arguments = array(
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder')
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
+            if ($withViewContainerTwig || $withAll) {
+                $output->writeln(sprintf('Generate view container for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:container:view');
                 $arguments = array(
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder')
