@@ -23,7 +23,7 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTwigContainerReadCommand extends ContainerAwareCommand
+class GenerateContainerReadViewCommand extends ContainerAwareCommand
 {
 
     protected function configure()

@@ -23,12 +23,13 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTwigContainerReadCommand extends ContainerAwareCommand
+class GenerateContainerCreateViewCommand extends ContainerAwareCommand
 {
 
+    
     protected function configure()
     {
-        $this->setName('prototype:generate:twig:container:read')
+        $this->setName('prototype:generate:twig:container:create')
                 ->setDescription('Generate container twig for read action.')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity class name')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder');
@@ -137,7 +138,7 @@ class GenerateTwigContainerReadCommand extends ContainerAwareCommand
 
 
 
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:container.read.template.twig", [
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:container.create.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => str_replace('\\', '\\\\', $entityName),
             "objectName" => $objectName,

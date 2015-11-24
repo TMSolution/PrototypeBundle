@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use ReflectionClass;
 use LogicException;
@@ -23,15 +24,20 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTwigContainerReadCommand extends ContainerAwareCommand
+class GenerateTwigElementReadCommand extends ContainerAwareCommand
 {
 
     protected function configure()
     {
-        $this->setName('prototype:generate:twig:container:read')
-                ->setDescription('Generate container twig for read action.')
+        /*
+         * type "OPTIONAL" for the parameter "rootFolder" was chosen because of compatibility with the global command prototype:generate:files. 
+         * Please do not change!
+         */
+        $this->setName('prototype:generate:twig:element:read')
+                ->setDescription('Generate twig element read template.')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity class name')
-                ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder');
+                ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder')
+                ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
     }
 
     protected function getEntityName($input)
@@ -65,8 +71,9 @@ class GenerateTwigContainerReadCommand extends ContainerAwareCommand
 
 
         $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
-        $directory = $this->replaceLast("Entity", "Resources" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . $rootFolder . DIRECTORY_SEPARATOR . $objectName . DIRECTORY_SEPARATOR . "Container", $directory);
+        $directory = $this->replaceLast("Entity", "Resources" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . $rootFolder . DIRECTORY_SEPARATOR . $objectName . DIRECTORY_SEPARATOR . "Element", $directory);
 
+        
         if (is_dir($directory) == false) {
             if (mkdir($directory, 0777, true) == false) {
                 throw new UnexpectedValueException("Creating directory failed: " . $directory);
@@ -100,22 +107,63 @@ class GenerateTwigContainerReadCommand extends ContainerAwareCommand
         }
         return $subject;
     }
-
-    protected function getAssociatedObjects($fieldsInfo)
+    
+    public function getDefaultField($entityName)
     {
+        $model = $this->getContainer()->get("model_factory")->getModel($entityName);
+        if ($model->checkPropertyByName("name")) {
+            return "name";
+        } else {
+            return "id";
+        }
+    }
 
+    protected function addFile($entityName, $fieldsInfo, $rootFolder,$isAssociated=false)
+    {
+        $classPath = $this->getClassPath($entityName);
+        $entityReflection = new ReflectionClass($entityName);
+        $entityNamespace = $entityReflection->getNamespaceName();
+        $objectName = $entityReflection->getShortName();
+        $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder);
+        $fileName = $directory . DIRECTORY_SEPARATOR . "read.html.twig";
+        $this->isFileNameBusy($fileName);
+        $templating = $this->getContainer()->get('templating');
+
+        $lowerNameSpaceForTranslate = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityNamespace)));
+
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:element.read.template.twig", [
+            "namespace" => $entityNamespace,
+            "entityName" => $entityName,
+            "objectName" => strtolower($objectName),
+            "fieldsInfo" => $fieldsInfo,
+            "lowerNameSpaceForTranslate" => $lowerNameSpaceForTranslate,
+            "isAssociated"=>$isAssociated,
+            "that"=>$this
+        ]);
+
+        file_put_contents($fileName, $renderedConfig);
+        return $directory;
+    }
+
+    protected function runAssociatedObjectsRecursively($fieldsInfo, $rootFolder,$objectName, $output)
+    {
         $associations = [];
         foreach ($fieldsInfo as $key => $value) {
 
-            $associationTypes = ["OneToMany", "ManyToMany", "OneToOne"];
+            $associationTypes = ["OneToMany", "ManyToMany"];
             $field = $fieldsInfo[$key];
             if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) {
-                $associations[$key] = $field;
-                $associations[$key]["object_name"] = str_replace('\\', '\\\\', $field["object_name"]);
+
+                $model = $this->getContainer()->get("model_factory")->getModel($value['object_name']);
+                $assocObjectFieldsInfo = $model->getFieldsInfo();
+
+                $arr = explode('\\', $value['object_name']);
+                $path = array_pop($arr);
+               
+                //$this->addFile($value['object_name'], $rootPath . DIRECTORY_SEPARATOR . $path, $assocObjectFieldsInfo, $rootFolder, $output);
+                $this->addFile($value['object_name'], $assocObjectFieldsInfo, $rootFolder.DIRECTORY_SEPARATOR.$objectName,true);
             }
         }
-
-        return $associations;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -125,28 +173,20 @@ class GenerateTwigContainerReadCommand extends ContainerAwareCommand
         $rootFolder = $input->getArgument('rootFolder');
         $model = $this->getContainer()->get("model_factory")->getModel($entityName);
         $fieldsInfo = $model->getFieldsInfo();
-        $classPath = $this->getClassPath($entityName);
         $entityReflection = new ReflectionClass($entityName);
-        $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
-        $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder);
-        $fileName = $directory . DIRECTORY_SEPARATOR . "read.html.twig";
-        $this->isFileNameBusy($fileName);
-        $templating = $this->getContainer()->get('templating');
-        $associations = $this->getAssociatedObjects($fieldsInfo);
+        $this->addFile($entityName, $fieldsInfo, $rootFolder);
+
+
+        //generate assoc form types
+        if (true === $input->getOption('withAssociated')) {
+
+            $this->runAssociatedObjectsRecursively($fieldsInfo, $rootFolder,$objectName, $output);
+        }
 
 
 
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:container.read.template.twig", [
-            "namespace" => $entityNamespace,
-            "entityName" => str_replace('\\', '\\\\', $entityName),
-            "objectName" => $objectName,
-            "fieldsInfo" => $fieldsInfo,
-            "associations" => $associations
-        ]);
-
-        file_put_contents($fileName, $renderedConfig);
-        $output->writeln("Twig:containter:read generated");
+        $output->writeln("Show view generated");
     }
 
 }

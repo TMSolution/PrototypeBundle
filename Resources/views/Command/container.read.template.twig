@@ -20,7 +20,7 @@
                 {{'{{\'Informations\'|lower|trans}}'}}
             </a>
         </li>   
-        <li role="presentation" class="{{'{% if 'show' in states or states is empty %}active{% endif %}'}}">
+        <li role="presentation" class="{{'{% if \'show\' in states or states is empty %}active{% endif %}'}}">
 
             <a  id="{{objectName|lower}}-show-tab"  
                 class="lazy-loaded-tab"
@@ -81,7 +81,7 @@
             
              {% if field.is_object==true and (field.association=='OneToMany' or field.association=='ManyToMany') %}
                 <div role="tabpanel" class="tab-pane tab-panel-container {{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-{{name}}-pane"  >
-                {{'{% if name in states %}'}}
+                {{'{% if \''}}{{name}}{{'\' in states %}'}}
                 {{'{{ render(url(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default", "parentName":'}}{{objectName|lower}}{{' , "parentId": entity.getId(), "entityName": "'}}{{name}}{{'" } )) }}'}}
                 {{'{% endif %}'}}                        
                 </div>

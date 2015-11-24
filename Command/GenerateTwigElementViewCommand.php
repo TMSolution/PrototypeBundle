@@ -24,7 +24,7 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTwigElementCreateCommand extends ContainerAwareCommand
+class GenerateTwigElementViewCommand extends ContainerAwareCommand
 {
 
     protected function configure()
@@ -33,8 +33,8 @@ class GenerateTwigElementCreateCommand extends ContainerAwareCommand
          * type "OPTIONAL" for the parameter "rootFolder" was chosen because of compatibility with the global command prototype:generate:files. 
          * Please do not change!
          */
-        $this->setName('prototype:generate:twig:element:create')
-                ->setDescription('Generate twig element create template.')
+        $this->setName('prototype:generate:twig:element:view')
+                ->setDescription('Generate twig element view template.')
                 ->addArgument('entity', InputArgument::OPTIONAL, 'Insert entity class name')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder')
                 ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');

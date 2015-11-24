@@ -29,8 +29,8 @@ class GenerateTwigContainerViewCommand extends ContainerAwareCommand
     
     protected function configure()
     {
-        $this->setName('prototype:generate:twig:container:update')
-                ->setDescription('Generate container twig for update action.')
+        $this->setName('prototype:generate:twig:container:view')
+                ->setDescription('Generate container twig for view action.')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity class name')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder');
     }

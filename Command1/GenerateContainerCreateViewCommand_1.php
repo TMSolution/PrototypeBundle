@@ -23,13 +23,14 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTwigContainerReadCommand extends ContainerAwareCommand
+class GenerateContainerCreateViewCommand extends ContainerAwareCommand
 {
 
+    
     protected function configure()
     {
-        $this->setName('prototype:generate:twig:container:read')
-                ->setDescription('Generate container twig for read action.')
+        $this->setName('prototype:generate:twig:container:create')
+                ->setDescription('Generate container twig for create action.')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity class name')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder');
     }
@@ -130,14 +131,14 @@ class GenerateTwigContainerReadCommand extends ContainerAwareCommand
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
         $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder);
-        $fileName = $directory . DIRECTORY_SEPARATOR . "read.html.twig";
+        $fileName = $directory . DIRECTORY_SEPARATOR . "create.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
         $associations = $this->getAssociatedObjects($fieldsInfo);
 
 
 
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:container.read.template.twig", [
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:container.create.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => str_replace('\\', '\\\\', $entityName),
             "objectName" => $objectName,
@@ -146,7 +147,7 @@ class GenerateTwigContainerReadCommand extends ContainerAwareCommand
         ]);
 
         file_put_contents($fileName, $renderedConfig);
-        $output->writeln("Twig:containter:read generated");
+        $output->writeln("Twig:containter:create generated");
     }
 
 }
