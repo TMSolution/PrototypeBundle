@@ -38,7 +38,7 @@
         {% for  name,field in associations %}
             {% if field.is_object==true and (field.association=='OneToMany' or field.association=='ManyToMany') %}
 
-                <li role="presentation" class="{{'{% if name in states %}active{% endif %}'}}}">
+                <li role="presentation" class="{{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}}">
                     <a id="{{objectName|lower}}-{{name}}-tab" 
                        class="lazy-loaded-tab" 
                        href="#{{objectName|lower}}-{{name}}-pane" 
