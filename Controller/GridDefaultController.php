@@ -15,6 +15,7 @@ use APY\DataGridBundle\Grid\Export\CSVExport;
 use APY\DataGridBundle\Grid\Export\XMLExport;
 use TMSolution\DataGridBundle\Grid\Source\Entity;
 use TMSolution\DataGridBundle\Grid\Action\RowAction;
+use Symfony\Component\HttpFoundation\Request;
 use Core\PrototypeBundle\Controller\DefaultController;
 
 /**
@@ -29,7 +30,7 @@ class GridDefaultController extends DefaultController {
      * 
      * @return Response
      */
-    public function listAction() {
+    public function listAction(Request $request) {
 
         
 
@@ -77,7 +78,7 @@ class GridDefaultController extends DefaultController {
         return $this->handleView($view);
     }
 
-    public function ajaxlistAction() {
+    public function ajaxlistAction(Request $request) {
 
         
         $entityName = $this->getEntityName();

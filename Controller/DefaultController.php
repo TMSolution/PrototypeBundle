@@ -338,7 +338,7 @@ class DefaultController extends FOSRestController
      * @param id Entity id
      * @return Response
      */
-    public function editAction($id)
+    public function editAction($id, Request $request)
     {
 
       
@@ -386,7 +386,7 @@ class DefaultController extends FOSRestController
      * @param $id Entity id
      * @return Response
      */
-    public function readAction($id)
+    public function readAction($id, Request $request)
     {
         
         $model = $this->getModel($this->getEntityClass());

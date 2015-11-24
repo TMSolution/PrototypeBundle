@@ -110,9 +110,10 @@ class GenerateTwigContainerCreateCommand extends ContainerAwareCommand
 
             $associationTypes = ["OneToMany", "ManyToMany", "OneToOne"];
             $field = $fieldsInfo[$key];
-            if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) {
+            if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) { 
                 $associations[$key] = $field;
                 $associations[$key]["object_name"] = str_replace('\\', '\\\\', $field["object_name"]);
+                $associations[$key]["object_name_stripslashes"] = $field["object_name"];
             }
         }
 
@@ -135,7 +136,7 @@ class GenerateTwigContainerCreateCommand extends ContainerAwareCommand
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
         $associations = $this->getAssociatedObjects($fieldsInfo);
-
+        $classmapperservice=$this->getContainer()->get("classmapperservice");
 
 
         $renderedConfig = $templating->render("CorePrototypeBundle:Command:container.create.template.twig", [
@@ -143,7 +144,8 @@ class GenerateTwigContainerCreateCommand extends ContainerAwareCommand
             "entityName" => str_replace('\\', '\\\\', $entityName),
             "objectName" => $objectName,
             "fieldsInfo" => $fieldsInfo,
-            "associations" => $associations
+            "associations" => $associations,
+            "classmapperservice"=>$classmapperservice
         ]);
 
         file_put_contents($fileName, $renderedConfig);

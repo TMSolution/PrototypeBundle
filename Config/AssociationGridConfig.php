@@ -70,7 +70,7 @@ class AssociationGridConfig extends GridConfig
 
         return $this->findParentFieldName($model, $parentEntity);
     }
-    
+
     protected function manipulateQuery($grid) {
 
         $parentId = $this->request->get("parentId");
@@ -129,7 +129,7 @@ class AssociationGridConfig extends GridConfig
             }
             
             
-            if(!array_key_exists($parentFieldName, $fieldsArr))
+            if(!in_array($parentFieldName, $fieldsArr))
             {
               //  if (array_key_exists('association', $fieldParam) && ($fieldParam['association'] == 'ManyToOne' || $fieldParam['association'] == 'OneToOne' )) {
 
@@ -152,31 +152,7 @@ class AssociationGridConfig extends GridConfig
         $grid->getSource()->manipulateQuery($queryBuilderFn);
     }
 
-   /* protected function manipulateQuery($grid)
-    {
-
-
-
-        $parentId = $this->request->get("parentId");
-        $tableAlias = $grid->getSource()->getTableAlias();
-        $parentFieldName = $this->getParentFieldNameFromRequest();
-
-
-        $fieldsInfo = $this->model->getFieldsInfo();
-
-
-
-
-        $queryBuilderFn = function ($queryBuilder) use($tableAlias, $parentFieldName, $parentId, $fieldsInfo) {
-
-    
-                $queryBuilder->leftJoin("$tableAlias.$parentFieldName", "_{$parentFieldName}1");
-       
-            $queryBuilder->Where("_{$parentFieldName}1.id=:$parentFieldName");
-            $queryBuilder->setParameter("$parentFieldName", (int) $parentId);
-        };
-        $grid->getSource()->manipulateQuery($queryBuilderFn);
-    }*/
+   
 
     protected function configureColumn($grid)
     {
