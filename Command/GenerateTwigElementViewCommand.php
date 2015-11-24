@@ -115,13 +115,13 @@ class GenerateTwigElementCreateCommand extends ContainerAwareCommand
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
         $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder);
-        $fileName = $directory . DIRECTORY_SEPARATOR . "create.html.twig";
+        $fileName = $directory . DIRECTORY_SEPARATOR . "view.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
 
         $lowerNameSpaceForTranslate = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityNamespace)));
 
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:element.create.template.twig", [
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:element.view.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => $entityName,
             "objectName" => $objectName,
