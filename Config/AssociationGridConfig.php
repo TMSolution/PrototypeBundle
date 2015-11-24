@@ -71,7 +71,8 @@ class AssociationGridConfig extends GridConfig
         return $this->findParentFieldName($model, $parentEntity);
     }
 
-    protected function manipulateQuery($grid) {
+    protected function manipulateQuery($grid)
+    {
 
         $parentId = $this->request->get("parentId");
         $tableAlias = $grid->getSource()->getTableAlias();
@@ -84,7 +85,7 @@ class AssociationGridConfig extends GridConfig
         $tableAlias = $grid->getSource()->getTableAlias();
 
         $analizedFieldsInfo = $this->analizedFieldsInfo;
-        $queryBuilderFn = function ($queryBuilder) use($tableAlias, $grid, $analizedFieldsInfo,$parentFieldName,$parentId) {
+        $queryBuilderFn = function ($queryBuilder) use($tableAlias, $grid, $analizedFieldsInfo, $parentFieldName, $parentId) {
 
 
 
@@ -97,7 +98,7 @@ class AssociationGridConfig extends GridConfig
 
                 if (array_key_exists('association', $fieldParam) && ($fieldParam['association'] == 'ManyToOne' || $fieldParam['association'] == 'OneToOne' )) {
                     $fields[] = "_{$field}.{$fieldParam['default_field']} as {$field}::{$fieldParam['default_field']}";
-                    if($fieldParam['default_field']!='id'){
+                    if ($fieldParam['default_field'] != 'id') {
                         $fields[] = "_{$field}.id as {$field}::id";
                     }
                 } else {
@@ -110,16 +111,15 @@ class AssociationGridConfig extends GridConfig
             $fieldsSql = implode(',', $fields);
 
             $queryBuilder->select($fieldsSql);
-            
-            $fieldsArr=[];
+
+            $fieldsArr = [];
 
             foreach ($analizedFieldsInfo as $field => $fieldParam) {
 
                 if (array_key_exists('association', $fieldParam) && ($fieldParam['association'] == 'ManyToOne' || $fieldParam['association'] == 'OneToOne' )) {
 
                     $queryBuilder->leftJoin("$tableAlias.{$field}", "_{$field}");
-                    $fieldsArr[]=$field;
-                    
+                    $fieldsArr[] = $field;
                 }
             }
 
@@ -127,17 +127,12 @@ class AssociationGridConfig extends GridConfig
             if ($this->manyToManyRelationExists) {
                 $queryBuilder->addGroupBy($tableAlias . '.id');
             }
-            
-            
-            if(!in_array($parentFieldName, $fieldsArr))
-            {
-              //  if (array_key_exists('association', $fieldParam) && ($fieldParam['association'] == 'ManyToOne' || $fieldParam['association'] == 'OneToOne' )) {
 
-            
-                    $queryBuilder->leftJoin("$tableAlias.$parentFieldName", "_{$parentFieldName}");
-            //         }
-            
+
+            if (!in_array($parentFieldName, $fieldsArr)) {
+                $queryBuilder->leftJoin("$tableAlias.$parentFieldName", "_{$parentFieldName}");
             }
+            
             $queryBuilder->Where("_{$parentFieldName}.id=:$parentFieldName");
             $queryBuilder->setParameter("$parentFieldName", (int) $parentId);
         };
@@ -151,8 +146,6 @@ class AssociationGridConfig extends GridConfig
 
         $grid->getSource()->manipulateQuery($queryBuilderFn);
     }
-
-   
 
     protected function configureColumn($grid)
     {
