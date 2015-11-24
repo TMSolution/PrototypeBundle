@@ -14,7 +14,7 @@
         
 
         {# added params for disable html validation #}
-        {{ "{{ form_start(form, { 'attr': {'class': '','novalidate': 'novalidate','data-masked-element': '.card' }}) }}" }}
+        {{ "{{ form_start(form, { 'attr': {'class': 'insert-form','novalidate': 'novalidate','data-masked-element': '.card','data-route-target':'.parameters-tab' }}) }}" }}
         {{ "{{ form_errors(form) }}" }}
         {% set datepicker=false %}
         {% for field, fieldParam in fieldsInfo %}
@@ -44,8 +44,8 @@
             {% endif %}
         {% endfor %}
         <div class="button-rows" >    
-            <button class="btn btn-primary pull-right waves-effect m-l-5" data-masked-element=".card" type="submit" >{{ "{{ 'Save'|trans}}" }}</button>
-            <button onclick="history.go(-1)" class="btn btn-link pull-right waves-effect" data-masked-element=".card" type="button">{{ "{{ 'Cancel'|trans}}" }}</button>
+            <button class="btn btn-primary pull-right waves-effect m-l-5" data-masked-element=".card" data-route-target=".parameters-tab" type="submit" >{{ "{{ 'Save'|trans}}" }}</button>
+            <a href="{{'{{ path(cancelActionName, routeParams)}}'}}" class="btn btn-link pull-right waves-effect lazy-loade" data-masked-element=".card" data-route-target=".card-container" type="button">{{ "{{ 'Cancel'|trans}}" }}</button>
         </div>
         {{ "{{ form_end(form) }}" }}
     </div>
@@ -59,4 +59,5 @@
 {% if datepicker is defined %}
 <script src="{{ "{{ asset('assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"}}"></script>
 {% endif %}
+<script>$().lazyLoader('setDefaultLocation', '{{'{{ defaultRoute }}'}}');</script>
 {{ '{% endblock js %}' }}

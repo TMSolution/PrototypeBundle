@@ -1,0 +1,26 @@
+{{ "{% extends config.get('twig_container_create') %}" }}
+{{ "{% form_theme form 'Form\\\\bootstrap_3_horizontal_layout.html.twig' %}" }}
+
+
+{{ "{% block element %}" }}
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+           BEAUTIFUL PANEL !
+        </div>
+    </div>   
+
+{{ "{% endblock element %}" }}
+
+
+{{ '{% block js %}' }}
+{{ '{{ parent() }}' }}
+<script> {{ '{{ form_jquery_validation(form) }}' }} </script>
+{% if datepicker is defined %}
+<script src="{{ "{{ asset('assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"}}"></script>
+{% endif %}
+<script>
+{{"$().lazyLoader('setDefaultLocation', '{{ defaultRoute }}');"}}
+</script>
+{{ '{% endblock js %}' }}
+

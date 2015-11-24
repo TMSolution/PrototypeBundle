@@ -4,14 +4,14 @@
 {{ '{% block css %}' }}
 {{ '{{ parent() }}' }}
 {% if datepicker is defined %}
-<link rel="stylesheet" href="{{ "{{ asset('assets/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}" }}">
+    <link rel="stylesheet" href="{{ "{{ asset('assets/vendor/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}" }}">
 {% endif %}
 {{ '{% endblock css %}' }}
 
 {{ "{% block element %}" }}
 <div class="row">
     <div class="col-md-12 col-sm-12">
-        {{ "{{ form_start(form,{'attr': {'data-masked-element': '.card'}}) }}" }}
+        {{ "{{ form_start(form,{'attr': {'class': 'edit-form','data-masked-element': '.card','data-route-target':'.parameters-tab'}}) }}" }}
         {{ "{{ form_errors(form) }}" }}
         {% set datepicker=false %}
         {% for field, fieldParam in fieldsInfo %}
@@ -24,25 +24,25 @@
 
                     {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
              <!-- {{field}} {{fieldParam.type}} -->
-                         {{ "{% if form." }}{{field}}{{ " is defined %}" }}
-                            {{ "{{ form_row(form." }}{{field}}{{ ") }}" }}
-                          {{ "{% endif %}" }}
-                            {# "{{ form_widget(form." }}{{field}}{{ ") }}" #}
-                       
+                        {{ "{% if form." }}{{field}}{{ " is defined %}" }}
+                        {{ "{{ form_row(form." }}{{field}}{{ ") }}" }}
+                        {{ "{% endif %}" }}
+                        {# "{{ form_widget(form." }}{{field}}{{ ") }}" #}
+
                     {% endif %}
                 {% else %}    
             <!-- {{field}} {{fieldParam.type}} -->
-                     {{ "{% if form." }}{{field}}{{ " is defined %}" }}
-                        {{ "{{ form_row(form." }}{{field}}{{ ") }}" }}
-                      {{ "{% endif %}" }}
-                        {# "{{ form_widget(form." }}{{field}}{{ ") }}" #}
-                 
+                    {{ "{% if form." }}{{field}}{{ " is defined %}" }}
+                    {{ "{{ form_row(form." }}{{field}}{{ ") }}" }}
+                    {{ "{% endif %}" }}
+                    {# "{{ form_widget(form." }}{{field}}{{ ") }}" #}
+
                 {% endif %}
             {% endif %}
         {% endfor %}
         <div class="button-rows" >    
-            <button class="btn btn-primary pull-right waves-effect m-l-5" data-masked-element=".card" type="submit" >{{ "{{ 'Save'|trans}}" }}</button>
-            <button onclick="history.go(-1)" class="btn btn-link pull-right waves-effect" data-masked-element=".card" type="button">{{ "{{ 'Cancel'|trans}}" }}</button>
+            <button class="btn btn-primary pull-right waves-effect m-l-5"  data-route-target=".parameters-tab" data-masked-element=".card" type="submit" >{{ "{{ 'Save'|trans}}" }}</button>
+            <a href="{{'{{ path(cancelActionName, routeParams)}}'}}" class="btn btn-link pull-right waves-effect lazy-loaded" data-masked-element=".card" data-route-target=".card-container" type="button">{{ "{{ 'Cancel'|trans}}" }}</a>                            
         </div>
         {{ "{{ form_end(form) }}" }}
     </div>
@@ -54,8 +54,9 @@
 {{ '{{ parent() }}' }}
 <script> {{ '{{ form_jquery_validation(form) }}' }} </script>
 {% if datepicker is defined %}
-<script src="{{ "{{ asset('assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"}}"></script>
+    <script src="{{ "{{ asset('assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"}}"></script>
 {% endif %}
+{{"$().lazyLoader('setDefaultLocation', '{{ defaultRoute }}');"}}
 {{ '{% endblock js %}' }}
 
 

@@ -2,105 +2,118 @@
 
 {{ "{% block element %}" }}
 <div class="row">
-        <div class="col-md-12 col-sm-12 form-horizontal">
-            
+    <div class="col-md-12 col-sm-12 form-horizontal">
+
         {% for field, fieldParam in fieldsInfo %}
             {% if fieldParam.is_object %}
-                {% if fieldParam.object_name is defined %}{% set defaultFieldName=that.getDefaultField(fieldParam.object_name) %}{% endif %}
-                {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
-                    <!-- Field {{field}} -->  
-                    {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
-                    <div class="form-group m-b-20">
-                        <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}.{{defaultFieldName}}{{"'|trans}} "}}</div>
-                        <div class="col-sm-11">
-                                {{ "{% if property %}{% for item in properties."}}{{field}}{{" %} "}}
-                                
-                                    {{ " {% if item %}{{item}}{% if not loop.last %},{% endif %}{% endif %}" }}
-                                
-                                {{ "{% endfor %}{% else %}-{% endif %}" }}
-                           
-                        </div>
-                    </div> 
-                    {{ "{% else %}" }}
-
-                    <div class="form-group m-b-20">
-                        <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}.{{defaultFieldName}}{{"'|trans}} "}}</div>
-                        <div class="col-sm-11">{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</div>
-                    </div>
-                    {{ "{% endif %}" }}    
-
-                {% endif %}
-            {% else %}
-
+            {% if fieldParam.object_name is defined %}{% set defaultFieldName=that.getDefaultField(fieldParam.object_name) %}{% endif %}
+            {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
                 <!-- Field {{field}} -->  
                 {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
                 <div class="form-group m-b-20">
-                    <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</div>
+                    <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}.{{defaultFieldName}}{{"'|trans}} "}}</div>
                     <div class="col-sm-11">
-                            {{ "{% if property %}{% for item in properties."}}{{field}}{{" %} "}}
+                        {{ "{% if property %}{% for item in properties."}}{{field}}{{" %} "}}
 
-                                {{ " {% if item %}{{item}}{% if not loop.last %},{% endif %}{% endif %}" }}
+                        {{ " {% if item %}{{item}}{% if not loop.last %},{% endif %}{% endif %}" }}
 
-                            {{ "{% endfor %}{% else %}-{% endif %}" }}
+                        {{ "{% endfor %}{% else %}-{% endif %}" }}
 
                     </div>
                 </div> 
                 {{ "{% else %}" }}
 
                 <div class="form-group m-b-20">
-                    <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</div>
+                    <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}.{{defaultFieldName}}{{"'|trans}} "}}</div>
                     <div class="col-sm-11">{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</div>
                 </div>
                 {{ "{% endif %}" }}    
 
-
             {% endif %}
+        {% else %}
+
+            <!-- Field {{field}} -->  
+            {{ "{%  if properties."}}{{field}}{{" is iterable %}" }}
+            <div class="form-group m-b-20">
+                <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</div>
+                <div class="col-sm-11">
+                    {{ "{% if property %}{% for item in properties."}}{{field}}{{" %} "}}
+
+                    {{ " {% if item %}{{item}}{% if not loop.last %},{% endif %}{% endif %}" }}
+
+                    {{ "{% endfor %}{% else %}-{% endif %}" }}
+
+                </div>
+            </div> 
+            {{ "{% else %}" }}
+
+            <div class="form-group m-b-20">
+                <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</div>
+                <div class="col-sm-11">{{ "{% if properties."}}{{field}}{{" %}{{properties."}}{{field}}{{"}}{% else %}-{% endif %}" }}</div>
+            </div>
+            {{ "{% endif %}" }}    
 
 
-        {% endfor %}
+        {% endif %}
 
-     </div> 
+
+    {% endfor %}
+
+</div> 
 </div> 
 <div class="row">
     <div class="col-md-12 col-sm-12">
 
+        <span class="pull-right">   
+            <a href="{{ "{{ path(deleteActionName, routeParams)}}" }}" class="btn btn-link lazy-loaded">
+                {{ "{{ 'Delete'|trans}} " }}
 
-        {% if isAssociated %}
-            <!--<a href="{{ "{{ path(listActionName, { 'entityName': entityName,'parentName': parentName,'parentId': parentId, containerName: 'container', actionId: 'default' })}}" }}" class="prevButton btn btn-link lazy-loaded">
-            {{ "{{ 'Cancel'|trans}}" }}
-        </a>-->
-            <span class="pull-right">   
-                <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId, containerName: 'container', actionId: 'default'})}}" }}" class="btn btn-link lazy-loaded">
-                    {{ "{{ 'Delete'|trans}} " }}
+            </a>
+            <a href="{{ "{{ path(editActionName, routeParams)}}" }}" class="btn btn-primary m-l-5 lazy-loaded">
+                {{ "{{ 'Edit'|trans}}" }}
+            </a>
+        </span>
 
-                </a>
-                <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id,'parentName': parentName,'parentId': parentId, containerName: 'container', actionId: 'default'})}}" }}" class="btn btn-primary m-l-5 lazy-loaded">
-                    {{ "{{ 'Edit'|trans}}" }}
-                </a>
-            </span>
-        {% else %}
-
-        <!--<a href="{{ "{{ path(listActionName, { 'entityName': entityName , containerName: 'container', actionId: 'default'})}}" }}" data-masked-element=".card" class=" prevButton btn btn-link lazy-loaded">
-            {{ "{{ 'Cancel'|trans}}" }}
-         </a>-->
-            <span class="pull-right"> 
-                <a href="{{ "{{ path(deleteActionName, { 'entityName': entityName,'id':entity.id, containerName: 'container', actionId: 'default'})}}" }}" data-masked-element=".card" class="btn btn-link lazy-loaded">
-                    {{ "{{ 'Delete'|trans}} " }}
-
-                </a>
-                <a href="{{ "{{ path(editActionName, { 'entityName': entityName,'id':entity.id, containerName: 'container', actionId: 'default'})}}" }}" data-masked-element=".card" class="btn btn-primary m-l-5 lazy-loaded">
-                    {{ "{{ 'Edit'|trans}}" }}
-                </a>
-            </span>
-
-        {% endif %}
 
     </div>
 </div>
 
-
-
-
-
-
 {{ "{% endblock element %}" }}
+
+{{ "{% block js %}"}}
+{{ "{{parent()}}"}}
+<script>
+    {{"
+    $(document).ready(function () {
+        $('#"}}{{objectName|lower}}{{"-insert-nav').find('.disabled > a').each(function () {
+
+            $(this).data('toggle', 'tab').attr('href', $(this).data('href'));
+
+            var routeParams = $(this).data('route-params');
+
+            if (routeParams !== 'undefined') {
+
+                if (routeParams.parentName) {
+                    routeParams.parentId = '{{entity.id}}';
+                }
+                else {
+                    routeParams.id = '{{entity.id}}';
+                }
+            }
+
+            $(this).closest('li').removeClass('disabled');
+
+            $(this).on('click', function (e) {
+                e.preventDefault();
+                $(this).tab('show')
+            });
+
+        });
+
+    });
+    "}}
+
+
+</script>
+
+{{ "{% endblock %}"}}

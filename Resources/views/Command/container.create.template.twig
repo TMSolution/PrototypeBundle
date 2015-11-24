@@ -1,49 +1,90 @@
 {{' {% extends app.request.isXmlHttpRequest() ? config.get("twig_base_ajax_index") : config.get("twig_base_index") %}'}}    
 {{'{% block content %}'}}    
+
+{{'{% if routeParams.containerName==\'container\' %}'}}    
 <div>
-  <!-- Nav tabs -->
-  <ul class="nav tab-nav tn-justified bgm-white" role="tablist">
-    <li role="presentation" class="{{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}} disabled"><a id="{{name}}-tab" class="lazy-loaded-tab not-lazy-loaded" href="#{{objectName|lower}}-{{name}}-show-tab" aria-controls="{{objectName|lower}}-{{name}}-tab" role="tab" data-toggle="tab" data-route="core_prototype_associationcontroller_view.{{"{{app.request.getLocale()}}"}}" data-route-params='{ "containerName": "element", "actionId": "default", "parentName":"{{ '{{classmapperservice.getEntityName(' }}"{{entityName}}"{{ ')}}' }}" , "parentId": "{{"{{entity.id}}"}}", "entityName": "{{ '{{classmapperservice.getEntityName(' }}"{{association.object_name}}"{{ ')}}' }}" }'  data-route-target="" >{{"{{ "}}"{{name|lower}}"{{"|trans}}"}}</a></li>
-    <li role="presentation" class="{{'{% if \''}}{{objectName|lower}}{{'\' in states %}active{% endif %}'}}"><a id="{{objectName|lower}}-tab" class="not-lazy-loaded" href="#{{objectName|lower}}-show-tab" aria-controls="{{objectName|lower}}-show-tab" role="tab" data-toggle="tab">{{"{{ "}}"{{objectName|lower}}"{{"|trans }}"}}</a></li>
-    {% for  name,association in associations %}
-    <li role="presentation" class="{{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}" disabled><a id="{{name}}-tab" class="lazy-loaded-tab not-lazy-loaded" href="#{{objectName|lower}}-{{name}}-show-tab" aria-controls="{{objectName|lower}}-{{name}}-tab" role="tab" data-toggle="tab" data-route="core_prototype_associationcontroller_list.{{"{{app.request.getLocale()}}"}}" data-route-params='{ "containerName": "element", "actionId": "default", "parentName":"{{ '{{classmapperservice.getEntityName(' }}"{{entityName}}"{{ ')}}' }}" , "parentId": "{{"{{entity.id}}"}}", "entityName": "{{ '{{classmapperservice.getEntityName(' }}"{{association.object_name}}"{{ ')}}' }}" }'  data-route-target="" >{{"{{ "}}"{{name|lower}}"{{"|trans}}"}}</a></li>
-    {% endfor %}
-  </ul>
+    <!-- Nav tabs -->
+    <ul id="{{objectName|lower}}-insert-nav" class="nav tab-nav tn-justified bgm-white" role="tablist">
 
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane tab-panel-container {{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-{{name}}-show-tab"  ></div>
-    <div role="tabpanel" class="tab-pane tab-panel-container {{'{% if \''}}{{objectName|lower}}{{'\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-show-tab" > 
-    
-        <div class="card">
-            <div class="card-header">
-                <h2 class="c-black"><i class="zmdi zmdi-border-color m-r-15"></i>Create<small class="p-l-35">It's just that simple. Turn your simple table into a sophisticated data table and offer your users a nice experience and great features without any effort.</small></h2>
+        <li role="presentation" class="disabled">
+            <a id="{{objectName|lower}}-view-tab" 
+               class="lazy-loaded-tab" 
+               data-href="#{{objectName|lower}}-view-pane" 
+               aria-controls="{{objectName|lower}}-view-pane" 
+               role="tab"  
+               data-toggle="tab"
+               data-masked-element=".card-container"
+               data-route="core_prototype_defaultcontroller_view.{{'{{app.request.getLocale()}}'}}" 
+               data-route-params='{ "id":"","containerName": "element", "actionId": "default",  "entityName": "{{objectName|lower}}" }'  
+               data-route-target="#{{objectName|lower}}-view-pane" >
+                {{'{{\'Informations\'|trans}}'}}
+            </a>
+        </li>
+        <li role="presentation" class="active"><a id="{{objectName|lower}}-show-tab"  href="#{{objectName|lower}}-show-pane" aria-controls="{{objectName|lower}}-show-pane" role="tab" data-toggle="tab">{{'{{\''}}{{objectName}}{{'\'|lower|trans}}'}}</a></li>
+        {% for  name,field in associations %}
+            {% if field.is_object==true and (field.association=='OneToMany' or field.association=='ManyToMany') %}
+                
+                <li role="presentation" class="disabled">
+                    <a id="{{objectName|lower}}-{{name}}-tab" 
+                        class="lazy-loaded-tab" 
+                        href="#{{objectName|lower}}-{{name}}-pane" 
+                        aria-controls="{{objectName|lower}}-{{name}}-pane" 
+                        role="tab"  
+                        data-toggle="tab"
+                        data-route="core_prototype_associationcontroller_list.{{'{{app.request.getLocale()}}'}}" 
+                        data-route-params='{ "containerName": "element", "actionId": "default", "parentName":"{{objectName|lower}}" , "parentId": "{{'{{entity.getId()}}'}}", "entityName": "{{name}}" }'  
+                        data-route-target="#{{objectName|lower}}-{{name}}-pane" >
+                        {{"{{ "}}"{{name|lower}}"{{"|trans}}"}}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane tab-panel-container" id="{{objectName|lower}}-view-pane"  ></div>
+        <div role="tabpanel" class="tab-pane tab-panel-container parameters-tab active" id="{{objectName|lower}}-show-pane" >
+            {{'{% endif %}'}}
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="c-black"><i class="zmdi zmdi-border-color m-r-15"></i>{{'{{\'New\'|trans}}'}}<small class="p-l-35">{{'{{\'create a new entry\'|trans}}'}}</small></h2>
+                </div>
+                <div class="card-body card-padding p-l-60">
+                    {{ '
+                        {% block container %}
+                            {% block element %}
+                            {% endblock element%}    
+                        {% endblock container%}
+                    ' }}
+                </div>
             </div>
-            <div class="card-body card-padding p-l-60">
-            {{ '{% block element %}'}}{{ '{% endblock %}' }}
-            </div>
+            {{'{% if routeParams.containerName==\'container\' %}'}}       
         </div>
+        {% for name,field in associations %}
+            
+             {% if field.is_object==true and (field.association=='OneToMany' or field.association=='ManyToMany') %}
+                <div role="tabpanel" class="tab-pane tab-panel-container {{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-{{name}}-pane"  >
+                {{'{% if name in states %}'}}
+                {{'{{ render(url(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default", "parentName":'}}{{objectName|lower}}{{' , "parentId": entity.getId(), "entityName": "'}}{{name}}{{'" } )) }}'}}
+                {{'{% endif %}'}}                        
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
-    {% for name,association in associations %}
-    <div role="tabpanel" class="tab-pane tab-panel-container {{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-{{name}}-show-tab"  ></div>
-    {% endfor %}
-  </div>
-
 </div>
+{{'{% endif %}'}}        
 {{ '{% endblock content %}' }}
 
-
 {{ '{% block js %}' }}
-    {{ '{{ parent() }}' }}
-    <script>
-    $(function () {    
-    {{'{% if \''}}{{objectName|lower}}{{'\' in states %}'}}
-        $('#{{objectName|lower}}-tab').click();
-    {% for name,association in associations %}{{'{% elseif \''}}{{name}}{{'\' in states %}'}}
-        $('#{{name}}-tab').click();
-    {% endfor %}{{'{% else %}'}}     
-        $('#{{objectName|lower}}-tab').click();     
-    {{'{% endif %}'}}
-    });
-    </script>
+{{ '{{ parent() }}' }}
+{{'{% if routeParams.containerName==\'container\' %}'}}   
+<script>
+    {{'$(\'.lazy-loaded-tab\').one(\'click\', function (e) {
+        e.preventDefault();
+        $().lazyLoader(\'load\', $(this), true, \'tab\');
+    });'}}
+</script>
+{{'{% endif %}'}}
 {{ '{% endblock %}' }}
