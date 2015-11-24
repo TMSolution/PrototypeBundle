@@ -8,7 +8,7 @@
  * the file LICENSE.md that was distributed with this source code.
  */
 
-namespace Core\PrototypeBundle\Command;
+namespace Core\PrototypeBundle\Command; 
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
