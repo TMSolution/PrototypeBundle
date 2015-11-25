@@ -23,14 +23,10 @@
         <li role="presentation" class="{{'{% if \'show\' in states or states is empty %}active{% endif %}'}}">
 
             <a  id="{{objectName|lower}}-show-tab"  
-                class="lazy-loaded-tab"
                 href="#{{objectName|lower}}-show-pane" 
                 aria-controls="{{objectName|lower}}-show-pane" 
                 role="tab" 
-                data-toggle="tab"
-                data-route="core_prototype_defaultcontroller_read.{{'{{app.request.getLocale()}}'}}" 
-                data-route-params='{ "id":"{{'{{entity.getId()}}'}}","containerName": "element", "actionId": "default", "entityName": "{{objectName|lower}}" }'  
-                data-route-target="#{{objectName|lower}}-show-pane">
+                data-toggle="tab">
                 {{'{{\''}}{{objectName}}{{'\'|lower|trans}}'}}
             </a>
         </li>

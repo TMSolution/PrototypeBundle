@@ -63,13 +63,13 @@
 </div> 
 <div class="row">
     <div class="col-md-12 col-sm-12">
-
+    
         <span class="pull-right">   
-            <a href="{{ "{{ path(deleteActionName, routeParams)}}" }}" class="btn btn-link lazy-loaded">
+            <a href="{{ "{{ path(deleteActionName, buttonRouteParams)}}" }}" data-route-target=".parameters-tab" class="btn btn-link lazy-loaded">
                 {{ "{{ 'Delete'|trans}} " }}
 
             </a>
-            <a href="{{ "{{ path(editActionName, routeParams)}}" }}" class="btn btn-primary m-l-5 lazy-loaded">
+            <a href="{{ "{{ path(editActionName, buttonRouteParams)}}" }}" data-route-target=".parameters-tab" class="btn btn-primary m-l-5 lazy-loaded">
                 {{ "{{ 'Edit'|trans}}" }}
             </a>
         </span>

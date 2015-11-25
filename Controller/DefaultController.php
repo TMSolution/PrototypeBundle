@@ -395,6 +395,11 @@ class DefaultController extends FOSRestController
         $routePrefix = $this->getRoutePrefix();
         $this->routeParams = $this->getRouteParams();
         $this->setContainerName($request);
+ 
+        $buttonRouteParams=$this->routeParams;
+        $buttonRouteParams['containerName']='element';
+        
+        
 
         $params = $this->get('prototype.controler.params');
         $params->setArray([
@@ -407,6 +412,7 @@ class DefaultController extends FOSRestController
             'deleteActionName' => $this->getAction('delete'),
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
+            'buttonRouteParams' => $buttonRouteParams,
             'states' => $this->getStates(),
             'defaultRoute' => $this->generateBaseRoute('read'),
             'parentName' => $this->getParentName(),

@@ -8,15 +8,10 @@
 
         <li role="presentation" class="{{'{% if \'view\' in states or states is empty %}active{% endif %}'}}">
             <a id="{{objectName|lower}}-view-tab" 
-               class="lazy-loaded-tab" 
                href="#{{objectName|lower}}-view-pane" 
                aria-controls="{{objectName|lower}}-view-pane" 
                role="tab"  
-               data-toggle="tab"
-               data-masked-element=".card-container"
-               data-route="core_prototype_defaultcontroller_view.{{'{{app.request.getLocale()}}'}}" 
-               data-route-params='{ "id":"","containerName": "element", "actionId": "default",  "entityName": "{{objectName|lower}}" }'  
-               data-route-target="#{{objectName|lower}}-view-pane" >
+               data-toggle="tab">
                 {{'{{\'Informations\'|lower|trans}}'}}
             </a>
         </li>
