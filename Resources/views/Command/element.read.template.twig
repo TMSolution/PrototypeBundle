@@ -84,35 +84,30 @@
 {{ "{{parent()}}"}}
 <script>
     {{"
-    $(document).ready(function () {
-        $('#"}}{{objectName|lower}}{{"-insert-nav').find('.disabled > a').each(function () {
-
-            $(this).data('toggle', 'tab').attr('href', $(this).data('href'));
-
-            var routeParams = $(this).data('route-params');
-
-            if (routeParams !== 'undefined') {
-
-                if (routeParams.parentName) {
-                    routeParams.parentId = '{{entity.id}}';
+   
+        var readElementFn = function(){
+        
+            $('#"}}{{objectName|lower}}{{"-insert-nav').find('.disabled > a').each(function () {
+                $(this).data('toggle', 'tab').attr('href', $(this).data('href'));
+                var routeParams = $(this).data('route-params');
+                if (routeParams !== 'undefined') {
+                    if (routeParams.parentName) {
+                        routeParams.parentId = '{{entity.id}}';
+                    }
+                    else {
+                        routeParams.id = '{{entity.id}}';
+                    }
                 }
-                else {
-                    routeParams.id = '{{entity.id}}';
-                }
-            }
+                $(this).closest('li').removeClass('disabled');
 
-            $(this).closest('li').removeClass('disabled');
-
-            $(this).on('click', function (e) {
-                e.preventDefault();
-                $(this).tab('show')
+                $(this).on('click', function (e) {
+                    e.preventDefault();
+                    $(this).tab('show')
+                });
             });
-
-        });
-
-    });
-
-    $().lazyLoader('setDefaultLocation', '{{ defaultRoute }}');
+            $().lazyLoader('setDefaultLocation', '{{ defaultRoute }}');
+        };
+        $().collector('addFunction', readElementFn);
 
     "}}
         
@@ -120,3 +115,5 @@
 </script>
 
 {{ "{% endblock %}"}}
+
+

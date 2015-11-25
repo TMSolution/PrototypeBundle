@@ -1,4 +1,4 @@
-{{'{% extends app.request.isXmlHttpRequest() ? config.get("twig_base_ajax_index") : config.get("twig_base_index") %}'}}    
+{{'{% extends app.request.isXmlHttpRequest() or routeParams.containerName=="element" ? config.get("twig_base_ajax_index") : config.get("twig_base_index") %}  '}}     
 {{'{% block content %}'}}    
 
 {{'{% if routeParams.containerName==\'container\' %}'}}    
@@ -9,7 +9,7 @@
         <li role="presentation" class="{{'{% if \'view\' in states or states is empty %}active{% endif %}'}}">
             <a id="{{objectName|lower}}-view-tab" 
                class="lazy-loaded-tab" 
-               data-href="#{{objectName|lower}}-view-pane" 
+               href="#{{objectName|lower}}-view-pane" 
                aria-controls="{{objectName|lower}}-view-pane" 
                role="tab"  
                data-toggle="tab"
@@ -77,7 +77,7 @@
         <div role="tabpanel" class="tab-pane tab-panel-container parameters-tab {{'{% if \'show\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-show-pane" >
             
             {{'{% if \'show\' in states %}'}}
-                {{'{{ render(url(\'core_prototype_defaultcontroller_read.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default","id":"{{entity.id}}", "entityName": "'}}{{objectName|lower}}{{'" } )) }}'}}
+                {{'{{ render(url(\'core_prototype_defaultcontroller_read.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default","id":entity.id, "entityName": "'}}{{objectName|lower}}{{'" } )) }}'}}
             {{'{% endif %}'}}                    
         
         </div>

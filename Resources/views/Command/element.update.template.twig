@@ -56,7 +56,12 @@
 {% if datepicker is defined %}
     <script src="{{ "{{ asset('assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"}}"></script>
 {% endif %}
-{{"$().lazyLoader('setDefaultLocation', '{{ defaultRoute }}');"}}
+<script>
+    var updateElementFn = function(){
+        $().lazyLoader('setDefaultLocation', '{{'{{ defaultRoute }}'}}');
+    }
+    $().collector('addFunction', updateElementFn);
+</script>
 {{ '{% endblock js %}' }}
 
 

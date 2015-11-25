@@ -477,7 +477,10 @@ class DefaultController extends FOSRestController
             $this->setRouteParam('containerName', 'element');
         }
         else{
-            $this->setRouteParam('containerName', 'container');
+            
+            
+            
+            $this->setRouteParam('containerName', $request->get('containerName'));
         }
     }
 

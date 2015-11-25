@@ -1,4 +1,4 @@
-{{' {% extends app.request.isXmlHttpRequest() ? config.get("twig_base_ajax_index") : config.get("twig_base_index") %}'}}    
+{{'{% extends app.request.isXmlHttpRequest() or routeParams.containerName=="element" ? config.get("twig_base_ajax_index") : config.get("twig_base_index") %}  '}}    
 {{'{% block content %}'}}    
 
 {{'{% if routeParams.containerName==\'container\' %}'}}    
@@ -46,7 +46,7 @@
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane tab-panel-container" id="{{objectName|lower}}-view-pane"  >
             {{'{% if \'view\' in states %}'}}
-                {{'{{ render(url(\'core_prototype_defaultcontroller_view.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default","id":"{{entity.id}}", "entityName": "'}}{{objectName|lower}}{{'" } )) }}'}}
+                {{'{{ render(url(\'core_prototype_defaultcontroller_view.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default","id":"entity.id", "entityName": "'}}{{objectName|lower}}{{'" } )) }}'}}
             {{'{% endif %}'}}    
         </div>
         <div role="tabpanel" class="tab-pane tab-panel-container parameters-tab active" id="{{objectName|lower}}-show-pane" >
