@@ -511,6 +511,7 @@ class DefaultController extends FOSRestController
             'cancelActionName' => $this->getAction('list'),
             'routeParams' => $this->routeParams,
             'config' => $this->getConfig(),
+            'defaultRoute' => $this->generateBaseRoute('new'),
             'states' => $this->getStates()
         ]);
 

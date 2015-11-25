@@ -107,7 +107,12 @@
             });
             $().lazyLoader('setDefaultLocation', '{{ defaultRoute }}');
         };
-        $().collector('addFunction', readElementFn);
+        
+        {% if app.request.isXmlHttpRequest() %}
+        readElementFn();
+        {% else %}
+        if(collector){collector.addFunction(readElementFn);}
+        {% endif %}
 
     "}}
         

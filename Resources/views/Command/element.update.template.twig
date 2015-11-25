@@ -57,10 +57,16 @@
     <script src="{{ "{{ asset('assets/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"}}"></script>
 {% endif %}
 <script>
+    {{'
     var updateElementFn = function(){
-        $().lazyLoader('setDefaultLocation', '{{'{{ defaultRoute }}'}}');
+        $().lazyLoader("setDefaultLocation", "{{ defaultRoute }}");
     }
-    $().collector('addFunction', updateElementFn);
+    {% if app.request.isXmlHttpRequest() %}
+    updateElementFn();
+    {% else %}
+    if(collector){collector.addFunction(updateElementFn);}
+    {% endif %}
+    '}}   
 </script>
 {{ '{% endblock js %}' }}
 

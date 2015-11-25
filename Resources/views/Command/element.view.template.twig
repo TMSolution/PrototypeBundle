@@ -15,10 +15,16 @@
 {{ '{% block js %}' }}
 {{ '{{ parent() }}' }}
 <script>
+    {{'
     var viewElementFn = function(){
-        $().lazyLoader('setDefaultLocation', '{{'{{ defaultRoute }}'}}');
+        $().lazyLoader("setDefaultLocation", "{{ defaultRoute }}");
     }
-    $().collector('addFunction', viewElementFn);
+    {% if app.request.isXmlHttpRequest() %}
+    viewElementFn();
+    {% else %}
+    if(collector){collector.addFunction(viewElementFn);}
+    {% endif %}
+    '}}
 </script>
 {{ '{% endblock js %}' }}
 
