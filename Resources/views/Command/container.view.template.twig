@@ -6,7 +6,7 @@
     <!-- Nav tabs -->
     <ul id="{{objectName|lower}}-view-nav" class="nav tab-nav tn-justified bgm-white" role="tablist">
 
-        <li role="presentation" class="{{'{% if \'view\' in states %}active{% endif %}'}}">
+        <li role="presentation" class="{{'{% if \'view\' in states or states is empty %}active{% endif %}'}}">
             <a id="{{objectName|lower}}-view-tab" 
                class="lazy-loaded-tab" 
                data-href="#{{objectName|lower}}-view-pane" 
@@ -22,8 +22,7 @@
         </li>
         <li role="presentation" class="{{'{% if \'show\' in states %}active{% endif %}'}}">
 
-            <a 
-                id="{{objectName|lower}}-show-tab"  
+            <a id="{{objectName|lower}}-show-tab"  
                 class="lazy-loaded-tab"
                 href="#{{objectName|lower}}-show-pane" 
                 aria-controls="{{objectName|lower}}-show-pane" 
@@ -75,7 +74,13 @@
         </div>
         {{'{% if routeParams.containerName==\'container\' %}'}}   
         </div>
-        <div role="tabpanel" class="tab-pane tab-panel-container parameters-tab {{'{% if \'show\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-show-pane" ></div>
+        <div role="tabpanel" class="tab-pane tab-panel-container parameters-tab {{'{% if \'show\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-show-pane" >
+            
+            {{'{% if \'show\' in states %}'}}
+                {{'{{ render(url(\'core_prototype_defaultcontroller_read.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default","id":"{{entity.id}}", "entityName": "'}}{{objectName|lower}}{{'" } )) }}'}}
+            {{'{% endif %}'}}                    
+        
+        </div>
         {% for name,field in associations %}
 
             {% if field.is_object==true and (field.association=='OneToMany' or field.association=='ManyToMany') %}

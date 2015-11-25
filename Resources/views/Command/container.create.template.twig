@@ -44,7 +44,11 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane tab-panel-container" id="{{objectName|lower}}-view-pane"  ></div>
+        <div role="tabpanel" class="tab-pane tab-panel-container" id="{{objectName|lower}}-view-pane"  >
+            {{'{% if \'view\' in states %}'}}
+                {{'{{ render(url(\'core_prototype_defaultcontroller_view.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default","id":"{{entity.id}}", "entityName": "'}}{{objectName|lower}}{{'" } )) }}'}}
+            {{'{% endif %}'}}    
+        </div>
         <div role="tabpanel" class="tab-pane tab-panel-container parameters-tab active" id="{{objectName|lower}}-show-pane" >
             {{'{% endif %}'}}
             <div class="card">
