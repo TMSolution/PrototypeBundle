@@ -473,15 +473,15 @@ class DefaultController extends FOSRestController
     protected function setContainerName(Request $request){
        
         
-        if ($request->isXmlHttpRequest()) {
+       /* if ($request->isXmlHttpRequest()) {
             $this->setRouteParam('containerName', 'element');
         }
-        else{
+        else{*/
             
             
             
             $this->setRouteParam('containerName', $request->get('containerName'));
-        }
+      /*  }*/
     }
 
     /**
@@ -498,6 +498,9 @@ class DefaultController extends FOSRestController
         $routePrefix = $this->getRoutePrefix();
         $this->routeParams = $this->getRouteParams();
         $this->setContainerName($request);
+        
+        
+        
 
         $formType = $this->getFormType($this->getEntityClass(), null, $model);
         $form = $this->makeForm($formType, $entity, 'POST', $this->getEntityName(), $this->getAction('create'), $this->routeParams);
@@ -683,6 +686,7 @@ class DefaultController extends FOSRestController
     protected function makeForm($formType, $entity, $method, $entityName, $action, $routeParams, $id = null, $class = null, $url = null)
     {
         $routeParams = $this->getRouteParams();
+        $routeParams['containerName']='element';
 
         if ($url && !$id) {
             $url = $this->generateUrl($url);

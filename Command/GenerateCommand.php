@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Bundle\DoctrineBundle\Mapping\DisconnectedMetadataFactory;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
@@ -46,10 +47,11 @@ class GenerateCommand extends ContainerAwareCommand
                 ->addOption('withViewElementTwig', null, InputOption::VALUE_NONE, 'Generate view twig element')
                 ->addOption('withUpdateElementTwig', null, InputOption::VALUE_NONE, 'Generate update twig element')
                 ->addOption('withReadContainerTwig', null, InputOption::VALUE_NONE, 'Generate read twig container')
-                 ->addOption('withCreateContainerTwig', null, InputOption::VALUE_NONE, 'Generate create twig container')
+                ->addOption('withCreateContainerTwig', null, InputOption::VALUE_NONE, 'Generate create twig container')
                 ->addOption('withUpdateContainerTwig', null, InputOption::VALUE_NONE, 'Generate update twig container')
                 ->addOption('withViewContainerTwig', null, InputOption::VALUE_NONE, 'Generate view twig container')
-                ->addOption('withAll', null, InputOption::VALUE_NONE, 'Generate update twig element');
+                ->addOption('withAll', null, InputOption::VALUE_NONE, 'Generate update twig element')
+                ->addOption('quiet', 'q', InputOption::VALUE_NONE, 'Disable all output of the program.');
     }
 
     protected function getConfigFilePath($manager, $input)
@@ -61,6 +63,10 @@ class GenerateCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (true === $input->getOption('quiet')) {
+            $output = new NullOutput();
+        }
+        
         $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
         $configFilePath = $this->getConfigFilePath($manager, $input);
 
@@ -100,7 +106,7 @@ class GenerateCommand extends ContainerAwareCommand
         $withCreateContainerTwig = true === $input->getOption('withCreateContainerTwig');
         $withUpdateContainerTwig = true === $input->getOption('withUpdateContainerTwig');
         $withViewContainerTwig = true === $input->getOption('withViewContainerTwig');
-        
+
         $withAll = true === $input->getOption('withAll');
 
         foreach ($entities as $entity) {
@@ -161,8 +167,8 @@ class GenerateCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:formtype');
                 $pathArr = explode('\\', $entity);
                 $path = array_pop($pathArr);
-                
-                
+
+
                 $arguments = array(
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder'),
@@ -202,7 +208,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
-            
+
             if ($withReadElementTwig || $withAll) {
                 $output->writeln(sprintf('Generate read element for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:element:read');
@@ -226,7 +232,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
-            
+
             if ($withCreateElementTwig || $withAll) {
                 $output->writeln(sprintf('Generate create element for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:element:create');
@@ -238,8 +244,8 @@ class GenerateCommand extends ContainerAwareCommand
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
-            
-            
+
+
 
             if ($withReadContainerTwig || $withAll) {
                 $output->writeln(sprintf('Generate read container for <info>%s</info>', $entity));
@@ -251,7 +257,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
-            
+
             if ($withCreateContainerTwig || $withAll) {
                 $output->writeln(sprintf('Generate create container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:create');
@@ -262,7 +268,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
-            
+
             if ($withUpdateContainerTwig || $withAll) {
                 $output->writeln(sprintf('Generate update container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:update');
@@ -273,7 +279,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
-            
+
             if ($withViewContainerTwig || $withAll) {
                 $output->writeln(sprintf('Generate view container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:view');
