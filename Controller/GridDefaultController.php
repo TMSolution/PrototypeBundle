@@ -33,7 +33,7 @@ class GridDefaultController extends DefaultController {
     public function listAction(Request $request) {
 
         
-
+        $this->init();
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
         
@@ -80,7 +80,7 @@ class GridDefaultController extends DefaultController {
 
     public function ajaxlistAction(Request $request) {
 
-        
+        $this->init();
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
         

@@ -16,6 +16,7 @@ use Core\PrototypeBundle\Event\Event;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Default controller.
@@ -37,6 +38,7 @@ class DefaultController extends FOSRestController
     protected $states = null;
     protected $dispatcher = null;
     protected $model=null;
+    protected $requestStack=null;
     //element praktycznie zawsze zmieniany, konfiguracja na zewnątrz
     protected $config = [
 
@@ -60,19 +62,23 @@ class DefaultController extends FOSRestController
     ];
     
     
-    public function __construct($container)
+    public function __construct($container,RequestStack $requestStack)
     {
         $this->setContainer($container);
-        $request=$this->container->get('request');
+        $this->requestStack=$requestStack;
+    }
+    
+    protected function init(){
+        $request=$this->requestStack->getCurrentRequest();
         $this->setObjectName($request);
         $this->testContainerNameType($request);
-        $this->model = $this->getModel($this->getEntityClass());
-        
-        $this->entityName = $this->getEntityName();
+        $this->model = $this->getModel($this->initEntityClass($request));
+        $this->entityName = $this->initEntityName($request);
         $this->setContainerName($request);
-        
         $this->initRoutePrefix();
+        $this->initRouteParams();
     }
+    
     
     protected function setObjectName($request){
         if ($request->attributes->get('entityName')) {
@@ -110,20 +116,12 @@ class DefaultController extends FOSRestController
      */
     public function createAction(Request $request)
     {
-
+        $this->init();
         $entity = $this->model->getEntity();
-        
         $routePrefix = $this->getRoutePrefix();
-        $this->getRouteParams();
-
-        
-
         $formType = $this->getFormType($this->getEntityClass(), $this->model);
         $form = $this->makeForm($formType, $entity, 'POST', $this->entityName, $this->getAction('create'), $this->routeParams);
         $form->handleRequest($request);
-
-
-
         //config parameters for render and event broadcast
         $params = $this->get('prototype.controler.params');
         $params->setArray([
@@ -184,13 +182,13 @@ class DefaultController extends FOSRestController
 
 
         
-       
+       $this->init();
         
         $entity = $this->model->getEntity();
         $queryBuilder = $this->model->getQueryBuilder('a');
         $query = $queryBuilder->getQuery();
 
-        $this->getRouteParams();
+    
 
 
 
@@ -239,14 +237,14 @@ class DefaultController extends FOSRestController
 
 
 
-
+$this->init();
         
 
         $formType = $this->getFormType($this->getEntityClass(), null, $this->model);
         $entity = $this->model->findOneById($id);
         
         $routePrefix = $this->getRoutePrefix();
-        $this->getRouteParams();
+
         
         $updateForm = $this->makeForm($formType, $entity, 'PUT', $this->entityName, $this->getAction('update'), $this->routeParams, $id);
 
@@ -306,11 +304,11 @@ class DefaultController extends FOSRestController
     public function deleteAction($id, Request $request)
     {
 
-        
+        $this->init();
         $entity = $this->model->findOneById($id);
         
         $routePrefix = $this->getRoutePrefix();
-        $this->getRouteParams();
+ 
 
         
 
@@ -337,16 +335,9 @@ class DefaultController extends FOSRestController
      */
     public function editAction($id, Request $request)
     {
-
-
-        
+        $this->init();
         $formType = $this->getFormType($this->getEntityClass(), null, $this->model);
         $entity = $this->model->findOneById($id);
-        
-        
-        $this->getRouteParams();
-        
-
         $editForm = $this->makeForm($formType, $entity, 'PUT', $this->entityName, $this->getAction('update'), $this->routeParams, $id);
 
         $params = $this->get('prototype.controler.params');
@@ -383,21 +374,15 @@ class DefaultController extends FOSRestController
      * @param $id Entity id
      * @return Response
      */
-    public function readAction($id, Request $request)
+    public function readAction($id)
     {
+        $this->init();
+        $request=$this->requestStack->getCurrentRequest();
+       
 
-        
         $entity = $this->model->findOneById($id);
-        
-    
-        $this->getRouteParams();
-        
-
         $buttonRouteParams = $this->routeParams;
         $buttonRouteParams['containerName'] = 'element';
-
-
-
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -494,20 +479,11 @@ class DefaultController extends FOSRestController
      */
     public function newAction(Request $request)
     {
+        $this->init();
         $this->testContainerNameType($request);
         $entity = $this->getModel($this->getEntityClass())->getEntity();
-        
-        
-        
-        $this->getRouteParams();
-        
-
-
-
-
         $formType = $this->getFormType($this->getEntityClass(), null, $this->model);
         $form = $this->makeForm($formType, $entity, 'POST', $this->entityName, $this->getAction('create'), $this->routeParams);
-
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -537,19 +513,9 @@ class DefaultController extends FOSRestController
 
     public function viewAction($id, Request $request)
     {
+        $this->init();
         $this->testContainerNameType($request);
-
-        
         $entity = $this->model->findOneById($id);
-        
-        
-
-        $this->getRouteParams();
-        
-
-
-
-
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -596,14 +562,41 @@ class DefaultController extends FOSRestController
      * 
      * @return string
      */
-    protected function getEntityClass()
+    protected function initEntityClass(Request $request)
     {
         if (null == $this->objectName) {
-            $this->objectName = $this->get('request')->attributes->get('objectName');
+            $this->objectName = $request->attributes->get('objectName');
         }
         return $this->objectName;
     }
+    
+    
+    /**
+     * Get class of controller entity.
+     * 
+     * @return string
+     */
+    protected function getEntityClass()
+    {
+        return $this->objectName;
+    }
 
+    
+    /**
+     * Get mapping name of controller entity.
+     * 
+     * @return string
+     */
+    protected function initEntityName(Request $request)
+    {
+        if (null == $this->entityName) {
+            $this->entityName = $request->attributes->get('entityName');
+        }
+        return $this->entityName;
+    }
+    
+    
+    
     /**
      * Get mapping name of controller entity.
      * 
@@ -611,9 +604,6 @@ class DefaultController extends FOSRestController
      */
     protected function getEntityName()
     {
-        if (null == $this->entityName) {
-            $this->entityName = $this->get('request')->attributes->get('entityName');
-        }
         return $this->entityName;
     }
 
@@ -776,12 +766,19 @@ class DefaultController extends FOSRestController
         return $this->configService;
     }
 
-    protected function getRouteParams()
+    
+    protected function initRouteParams()
     {
-        if(!$this->routeParams){
         $parametersArr = $this->get('request')->attributes->all();
         $this->routeParams = $parametersArr["_route_params"];
-        }
+    }
+    
+    
+    
+    
+    protected function getRouteParams()
+    {
+        
         return $this->routeParams;
     }
 
@@ -850,7 +847,7 @@ class DefaultController extends FOSRestController
     
     protected function testContainerNameType($request){
         
-        $this->getRouteParams();
+     
         
         if($this->isMasterRequest() && !$request->isXmlHttpRequest() && $this->routeParams['containerName']=='element'){
             throw $this->createNotFoundException('The site does not exist');

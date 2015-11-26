@@ -13,7 +13,7 @@ services:
 ###############################################################
     prototype.grid_controller:
         class: Core\PrototypeBundle\Controller\GridDefaultController
-        arguments: [@service_container]
+        arguments: [@service_container,@request_stack]
     
 ################################################################    
     data_collector.prototype:
