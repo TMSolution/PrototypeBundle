@@ -50,6 +50,7 @@ class GenerateCommand extends ContainerAwareCommand
                 ->addOption('withCreateContainerTwig', null, InputOption::VALUE_NONE, 'Generate create twig container')
                 ->addOption('withUpdateContainerTwig', null, InputOption::VALUE_NONE, 'Generate update twig container')
                 ->addOption('withViewContainerTwig', null, InputOption::VALUE_NONE, 'Generate view twig container')
+                ->addOption('withListContainerTwig', null, InputOption::VALUE_NONE, 'Generate list twig container')
                 ->addOption('withAll', null, InputOption::VALUE_NONE, 'Generate update twig element')
                 ->addOption('quiet', 'q', InputOption::VALUE_NONE, 'Disable all output of the program.');
     }
@@ -106,7 +107,8 @@ class GenerateCommand extends ContainerAwareCommand
         $withCreateContainerTwig = true === $input->getOption('withCreateContainerTwig');
         $withUpdateContainerTwig = true === $input->getOption('withUpdateContainerTwig');
         $withViewContainerTwig = true === $input->getOption('withViewContainerTwig');
-
+        $withListContainerTwig = true === $input->getOption('withListContainerTwig');
+        
         $withAll = true === $input->getOption('withAll');
 
         foreach ($entities as $entity) {
@@ -283,6 +285,17 @@ class GenerateCommand extends ContainerAwareCommand
             if ($withViewContainerTwig || $withAll) {
                 $output->writeln(sprintf('Generate view container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:view');
+                $arguments = array(
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder')
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
+            if ($withListContainerTwig || $withAll) {
+                $output->writeln(sprintf('Generate list container for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:container:list');
                 $arguments = array(
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder')
