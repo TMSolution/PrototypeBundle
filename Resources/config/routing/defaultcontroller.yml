@@ -1,21 +1,21 @@
 
 core_prototype_defaultcontroller_list:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/list/{states}", pl: "/{entityName}/{containerName}/{actionId}/lista/{states}" } 
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:list", states: "", format: ~ }
+    defaults: { _controller: "prototype.grid_controller:listAction", states: "", format: ~ }
     requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
-        
+  
 
 core_prototype_defaultcontroller_ajaxlist:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/ajaxlist/{states}", pl: "/{entityName}/{containerName}/{actionId}/listaajax/{states}" } 
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:ajaxlist", states: "", format: ~ }
+    defaults: { _controller: "prototype.grid_controller:ajaxlistAction", states: "", format: ~ }
     options:
         expose: true        
    
 core_prototype_defaultcontroller_read:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/read/{id}/{states}", pl: "/{entityName}/{containerName}/{actionId}/pokaz/{id}/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:read", states: "", format: ~ }   
+    defaults: { _controller: "prototype.grid_controller:readAction", states: "", format: ~ }   
     requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
@@ -23,42 +23,42 @@ core_prototype_defaultcontroller_read:
 
 core_prototype_defaultcontroller_new:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/new/{states}", pl: "/{entityName}/{containerName}/{actionId}/nowy/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:new", states: "", format: ~ }   
+    defaults: { _controller: "prototype.grid_controller:newAction", states: "", format: ~ }   
     requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
 
 core_prototype_defaultcontroller_create:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/create/{states}", pl: "/{entityName}/{containerName}/{actionId}/utworz/{states}" }
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:create", states: "", format: ~ }   
+    defaults: { _controller: "prototype.grid_controller:createAction", states: "", format: ~ }   
     requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true       
 
 core_prototype_defaultcontroller_delete:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/delete/{id}/{states}", pl: "/{entityName}/{containerName}/{actionId}/usun/{id}/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:delete", states: "", format: ~ }       
+    defaults: { _controller: "prototype.grid_controller:deleteAction", states: "", format: ~ }       
     requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
 
 core_prototype_defaultcontroller_edit:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/edit/{id}/{states}", pl: "/{entityName}/{containerName}/{actionId}/edytuj/{id}/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:edit", states: "", format: ~ }
+    defaults: { _controller: "prototype.grid_controller:editAction", states: "", format: ~ }
     requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true    
         
 core_prototype_defaultcontroller_update:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/update/{id}/{states}", pl: "/{entityName}/{containerName}/{actionId}/aktualizuj/{id}/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:update", states: "", format: ~ }   
+    defaults: { _controller: "prototype.grid_controller:updateAction", states: "", format: ~ }   
     requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
         
 core_prototype_defaultcontroller_view:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/view/{id}/{states}", pl: "/{entityName}/{containerName}/{actionId}/podglad/{id}/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:view", states: "", format: ~ }   
+    defaults: { _controller: "prototype.grid_controller:viewAction", states: "", format: ~ }   
     requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true        

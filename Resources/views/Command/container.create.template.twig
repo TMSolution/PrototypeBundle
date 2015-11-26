@@ -8,11 +8,10 @@
 
         <li role="presentation" class="disabled">
             <a id="{{objectName|lower}}-view-tab" 
-               class="lazy-loaded-tab" 
+               class="lazy-loaded-tab"
                data-href="#{{objectName|lower}}-view-pane" 
                aria-controls="{{objectName|lower}}-view-pane" 
                role="tab"  
-               data-toggle="tab"
                data-masked-element=".card-container"
                data-route="core_prototype_defaultcontroller_view.{{'{{app.request.getLocale()}}'}}" 
                data-route-params='{ "id":"","containerName": "element", "actionId": "default",  "entityName": "{{objectName|lower}}" }'  
@@ -26,11 +25,10 @@
                 
                 <li role="presentation" class="disabled">
                     <a id="{{objectName|lower}}-{{name}}-tab" 
-                        class="lazy-loaded-tab" 
-                        href="#{{objectName|lower}}-{{name}}-pane" 
+                        class="lazy-loaded-tab"
+                        data-href="#{{objectName|lower}}-{{name}}-pane" 
                         aria-controls="{{objectName|lower}}-{{name}}-pane" 
                         role="tab"  
-                        data-toggle="tab"
                         data-route="core_prototype_associationcontroller_list.{{'{{app.request.getLocale()}}'}}" 
                         data-route-params='{ "containerName": "element", "actionId": "default", "parentName":"{{objectName|lower}}" , "parentId": "{{'{{entity.getId()}}'}}", "entityName": "{{classmapperservice.getEntityName(field.object_name_stripslashes,0,'en')}}" }'  
                         data-route-target="#{{objectName|lower}}-{{name}}-pane" >
@@ -83,12 +81,4 @@
 
 {{ '{% block js %}' }}
 {{ '{{ parent() }}' }}
-{{'{% if routeParams.containerName==\'container\' %}'}}   
-<script>
-    {{'$(\'.lazy-loaded-tab\').one(\'click\', function (e) {
-        e.preventDefault();
-        $().lazyLoader(\'load\', $(this), true, \'tab\');
-    });'}}
-</script>
-{{'{% endif %}'}}
 {{ '{% endblock %}' }}

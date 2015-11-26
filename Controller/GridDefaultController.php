@@ -36,15 +36,15 @@ class GridDefaultController extends DefaultController {
 
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
-        $model = $this->getModel($this->getEntityClass());
+        
         $grid = $this->get('grid');
-        $source = new Entity($model);
+        $source = new Entity($this->model);
         $grid->setSource($source);
         $grid->resetSessionData();
         $this->buildGrid($grid);
         $grid->setId($routePrefix . '_' . $entityName);
         
-        $this->routeParams = $this->getRouteParams();
+        
 
         $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxlist", $grid->getRouteParameters()));
 
@@ -64,7 +64,7 @@ class GridDefaultController extends DefaultController {
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
-        $event->setModel($model);
+        $event->setModel($this->model);
         $event->setGrid($grid);
 
 
@@ -83,16 +83,16 @@ class GridDefaultController extends DefaultController {
         
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
-        $model = $this->getModel($this->getEntityClass());
+        
         $grid = $this->get('grid');
-        $source = new Entity($model);
+        $source = new Entity($this->model);
         $grid->setSource($source);
         $this->buildGrid($grid);
         $grid->setId($routePrefix . '_' . $entityName);
         $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxlist", $grid->getRouteParameters()));
         //config parameters for render and event broadcast
         
-        $this->routeParams = $this->getRouteParams();
+        
 
         $params = $params = $this->get('prototype.controler.params');
         $params->setArray(
@@ -108,7 +108,7 @@ class GridDefaultController extends DefaultController {
         //Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
-        $event->setModel($model);
+        $event->setModel($this->model);
         $event->setGrid($grid);
 
         $this->dispatch('before.list', $event);

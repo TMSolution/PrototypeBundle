@@ -9,7 +9,13 @@ parameters:
       
         
 services:
+
+###############################################################
+    prototype.grid_controller:
+        class: Core\PrototypeBundle\Controller\GridDefaultController
+        arguments: [@service_container]
     
+################################################################    
     data_collector.prototype:
         class: Core\PrototypeBundle\Profiler\PrototypeCollector
         arguments: []

@@ -65,11 +65,11 @@
     <div class="col-md-12 col-sm-12">
     
         <span class="pull-right">   
-            <a href="{{ "{{ path(deleteActionName, buttonRouteParams)}}" }}" data-route-target=".parameters-tab" class="btn btn-link lazy-loaded">
+            <a href="{{ "{{ path(deleteActionName, buttonRouteParams)}}" }}" data-masked-element=".card-container" data-route-target=".parameters-tab" class="btn btn-link lazy-loaded">
                 {{ "{{ 'Delete'|trans}} " }}
 
             </a>
-            <a href="{{ "{{ path(editActionName, buttonRouteParams)}}" }}" data-route-target=".parameters-tab" class="btn btn-primary m-l-5 lazy-loaded">
+            <a href="{{ "{{ path(editActionName, buttonRouteParams)}}" }}" data-masked-element=".card" data-route-target=".parameters-tab" class="btn btn-primary m-l-5 lazy-loaded">
                 {{ "{{ 'Edit'|trans}}" }}
             </a>
         </span>
@@ -104,6 +104,12 @@
                     e.preventDefault();
                     $(this).tab('show')
                 });
+
+                $(this).one(\'click\', function (e) {
+                    e.preventDefault();
+                    $().lazyLoader(\'load\', $(this), true, \'tab\');
+                });
+
             });
             $().lazyLoader('setDefaultLocation', '{{ defaultRoute }}');
         };

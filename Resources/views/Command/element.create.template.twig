@@ -45,7 +45,7 @@
         {% endfor %}
         <div class="button-rows" >    
             <button class="btn btn-primary pull-right waves-effect m-l-5" data-masked-element=".card" data-route-target=".parameters-tab" type="submit" >{{ "{{ 'Save'|trans}}" }}</button>
-            <a href="{{'{{ path(cancelActionName, routeParams)}}'}}" class="btn btn-link pull-right waves-effect lazy-loade" data-masked-element=".card" data-route-target=".card-container" type="button">{{ "{{ 'Cancel'|trans}}" }}</button>
+            <a href="{{'{{ path(cancelActionName, routeParams)}}'}}" class="btn btn-link pull-right waves-effect lazy-loade" data-masked-element=".card-container" data-route-target=".card-container" type="button">{{ "{{ 'Cancel'|trans}}" }}</a>
         </div>
         {{ "{{ form_end(form) }}" }}
     </div>

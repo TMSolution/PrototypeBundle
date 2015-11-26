@@ -1,62 +1,62 @@
 core_prototype_associationcontroller_list:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/list/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/lista/{parentName}/{parentId}/{states}" } 
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:list", states: "", _format: ~ }
+    defaults: { _controller: "prototype.grid_controller:listAction", states: "", _format: ~ }
     requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
     options:
         expose: true
         
 core_prototype_associationcontroller_ajaxlist:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/ajaxlist/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/listaajax/{parentName}/{parentId}/{states}" } 
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:ajaxlist", states: "", _format: ~ }
+    defaults: { _controller: "prototype.grid_controller:ajaxlistAction", states: "", _format: ~ }
     requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
     options:
         expose: true
         
 core_prototype_associationcontroller_read:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/read/{id}/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/pokaz/{id}/{parentName}/{parentId}/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:read", states: "", _format: ~ } 
+    defaults: { _controller: "prototype.grid_controller:readAction", states: "", _format: ~ } 
     requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
     options:
         expose: true    
 
 core_prototype_associationcontroller_new:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/new/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/nowy/{parentName}/{parentId}/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:new", states: "", _format: ~ }   
+    defaults: { _controller: "prototype.grid_controller:newAction", states: "", _format: ~ }   
     requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
     options:
         expose: true
 
 core_prototype_associationcontroller_create:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/create/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/utworz/{parentName}/{parentId}/{states}" }
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:create", states: "", _format: ~ }   
+    defaults: { _controller: "prototype.grid_controller:createAction", states: "", _format: ~ }   
     requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
     options:
         expose: true       
 
 core_prototype_associationcontroller_delete:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/delete/{id}/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/usun/{id}/{parentName}/{parentId}/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:delete", states: "", _format: ~ }       
+    defaults: { _controller: "prototype.grid_controller:deleteAction", states: "", _format: ~ }       
     requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
     options:
         expose: true
 
 core_prototype_associationcontroller_edit:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/edit/{id}/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/edytuj/{id}/{parentName}/{parentId}/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:edit", states: "", _format: ~ }
+    defaults: { _controller: "prototype.grid_controller:editAction", states: "", _format: ~ }
     requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
     options:
         expose: true
         
 core_prototype_associationcontroller_update:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/update/{id}/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/aktualizuj/{id}/{parentName}/{parentId}/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:update", states: "", _format: ~ }   
+    defaults: { _controller: "prototype.grid_controller:updateAction", states: "", _format: ~ }   
     requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
     options:
         expose: true
 
 core_prototype_associationcontroller_view:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/view/{id}/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/podglad/{id}/{parentName}/{parentId}/{states}"}
-    defaults: { _controller: "CorePrototypeBundle:GridDefault:view", states: "", _format: ~ }   
+    defaults: { _controller: "prototype.grid_controller:viewAction", states: "", _format: ~ }   
     requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
     options:
         expose: true
