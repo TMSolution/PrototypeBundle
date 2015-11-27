@@ -38,6 +38,7 @@ class ConfigPass implements CompilerPassInterface {
                     $entity = $attributes['entity'];
                 }
                 
+                
                 $parententity = null;
                 if (array_key_exists('parententity', $attributes)) {
                     $parententity = $attributes['parententity'];
