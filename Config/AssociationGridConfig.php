@@ -172,7 +172,7 @@ class AssociationGridConfig extends GridConfig
 
         $parametersArr = $this->request->attributes->all();
         $parameters = ["id", "containerName" => "container", "actionId" => "default"];
-        $parameters = array_merge($parameters, $parametersArr["_route_params"]);
+        $parameters = array_merge($parametersArr["_route_params"],$parameters);
 
 
         $parentId = $this->request->get("parentId");
@@ -186,7 +186,7 @@ class AssociationGridConfig extends GridConfig
         $rowAction->setRouteParameters($parameters);
         $grid->addRowAction($rowAction);*/
 
-        $rowAction = new RowAction('glyphicon glyphicon-remove', $routePrefix . '_delete', false, null, ['id' => 'button-id', 'class' => 'button-class button-delete', 'data-original-title' => 'Delete']);
+        $rowAction = new RowAction('glyphicon glyphicon-remove', $routePrefix . '_delete', false, null, ['id' => 'button-id', 'class' => 'button-class grid-button-delete', 'data-original-title' => 'Delete']);
         $rowAction->setRouteParameters($parameters);
         $grid->addRowAction($rowAction);
     }
