@@ -39,9 +39,8 @@ class DefaultController extends FOSRestController
     protected $dispatcher = null;
     protected $model = null;
     protected $requestStack = null;
-    //element praktycznie zawsze zmieniany, konfiguracja na zewnątrz
+//element praktycznie zawsze zmieniany, konfiguracja na zewnątrz
     protected $config = [
-
             /*
               //twig templates for Elements
               'twig_base_index'=>'CorePrototypeBundle:Default\Base:index.html.twig'
@@ -88,6 +87,15 @@ class DefaultController extends FOSRestController
         }
     }
 
+    protected function getParentEntityClassName()
+    {
+        $request=$this->requestStack->getCurrentRequest();
+        if($request->attributes->get('parentName')){
+            return $this->parentEntityClassName = $this->container->get("classmapperservice")->getEntityClass($request->attributes->get('parentName'), $request->getLocale());
+        }
+        return null;
+    }
+
     protected function getDispatchName($fireAction)
     {
         $routePrefix = $this->getRoutePrefix();
@@ -122,7 +130,7 @@ class DefaultController extends FOSRestController
         $formType = $this->getFormType($this->getEntityClass(), $this->model);
         $form = $this->makeForm($formType, $entity, 'POST', $this->entityName, $this->getAction('create'), $this->routeParams);
         $form->handleRequest($request);
-        //config parameters for render and event broadcast
+//config parameters for render and event broadcast
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -136,14 +144,14 @@ class DefaultController extends FOSRestController
             'states' => $this->getStates()
         ]);
 
-        //parent params 
+//parent params 
         $parentId = $request->get('parentId');
         $parentName = $request->get('parentName');
         if ($parentId && $parentName) {
             $params['parentId'] = $parentId;
             $params['parentName'] = $parentName;
         }
-        //Create event broadcast.
+//Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
@@ -163,10 +171,10 @@ class DefaultController extends FOSRestController
             return $this->handleView($view);
         }
 
-        //Event broadcast
+//Event broadcast
         $this->dispatch('on.invalidcreate', $event);
 
-        //Render
+//Render
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'));
         return $this->handleView($view);
     }
@@ -192,9 +200,9 @@ class DefaultController extends FOSRestController
 
 
 
-        //query
-        //pageNumber
-        //limit per page
+//query
+//pageNumber
+//limit per page
 
 
 
@@ -209,19 +217,19 @@ class DefaultController extends FOSRestController
         $this->setRouteParam('pagination', $pagination);
 
 
-        //Create event broadcast.
+//Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($this->routeParams);
         $event->setModel($this->model);
-        //$event->setList($list);
+//$event->setList($list);
 
 
         $this->dispatch('on.list', $event);
 
 
-        //  throw new \BadMethodCallException("Not implemented yet");
-        // parameters to template
-        //Render
+//  throw new \BadMethodCallException("Not implemented yet");
+// parameters to template
+//Render
         $view = $this->view($this->routeParams)->setTemplate($this->getConfig()->get('twig_element_list'));
         return $this->handleView($view);
     }
@@ -250,11 +258,11 @@ class DefaultController extends FOSRestController
 
         $updateForm->handleRequest($request);
 
-        //config parameters for render and event broadcast
+//config parameters for render and event broadcast
 
         $params = $this->get('prototype.controler.params');
 
-        //dump($params);
+//dump($params);
 
 
         $buttonRouteParams = $this->routeParams;
@@ -274,7 +282,7 @@ class DefaultController extends FOSRestController
             'states' => $this->getStates()
         ]);
 
-        //Create event broadcast.
+//Create event broadcast.
 
 
         $event = $this->get('prototype.event');
@@ -295,7 +303,7 @@ class DefaultController extends FOSRestController
 
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $this->entityName . '.' . $this->routeParams['actionId'] . '.' . 'invalid.update', $event);
 
-        //Render
+//Render
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'));
         return $this->handleView($view);
     }
@@ -318,7 +326,7 @@ class DefaultController extends FOSRestController
 
 
 
-        //Create event broadcast.
+//Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($this->routeParams);
         $event->setModel($this->model);
@@ -380,7 +388,7 @@ class DefaultController extends FOSRestController
             'form' => $editForm->createView(),
         ]);
 
-        //Create event broadcast.
+//Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
@@ -389,7 +397,7 @@ class DefaultController extends FOSRestController
         $this->dispatch('on.edit', $event);
 
 
-        //Render
+//Render
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'));
         return $this->handleView($view);
     }
@@ -427,14 +435,14 @@ class DefaultController extends FOSRestController
             'parentId' => $this->getParentId()
         ]);
 
-        //Create event broadcast.
+//Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
 
         $this->dispatch('on.read', $event);
 
-        //Render
+//Render
         $view = $this->view($params['entity'])->setTemplate($this->getConfig()->get('twig_element_read'))->setTemplateData($params->getArray());
         return $this->handleView($view);
     }
@@ -522,7 +530,7 @@ class DefaultController extends FOSRestController
             'states' => $this->getStates()
         ]);
 
-        //Create event broadcast.
+//Create event broadcast.
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
@@ -531,7 +539,7 @@ class DefaultController extends FOSRestController
         $this->dispatch('on.new', $event);
 
 
-        //Render
+//Render
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'));
         return $this->handleView($view);
     }
@@ -559,7 +567,7 @@ class DefaultController extends FOSRestController
         $this->dispatch('on.view', $event);
 
 
-        //Render
+//Render
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_view'));
         return $this->handleView($view);
     }
@@ -658,6 +666,16 @@ class DefaultController extends FOSRestController
 
         return $this->model;
     }
+    
+    
+    protected function getActionId(){
+       $request=$this->requestStack->getCurrentRequest();
+       $actionId=$request->attributes->get('actionId');
+       if($actionId && $actionId!='default'){
+           return $actionId;
+       }
+       return null;
+    }
 
     /**
      * Get form type class for entity.
@@ -670,7 +688,7 @@ class DefaultController extends FOSRestController
     {
 
         $configurator = $this->get("prototype.formtype.configurator.service");
-        $formType = $configurator->getService($this->getRouteName(), $this->getEntityClass());
+        $formType = $configurator->getService($this->getRouteName(), $this->getEntityClass(),$this->getParentEntityClassName(),$this->getActionId());
         if (get_class($formType) == 'Core\PrototypeBundle\Form\FormType') {
             $formType->setModel($this->getModel($objectName));
         }
@@ -710,7 +728,7 @@ class DefaultController extends FOSRestController
           $url = $this->generateUrl($action, $params);
           } */ else {
 
-            //@todo: moze byc z tym problem
+//@todo: moze byc z tym problem
             $url = $this->generateUrl($action, $routeParams);
         }
 
@@ -766,7 +784,9 @@ class DefaultController extends FOSRestController
     {
 
         $configurator = $this->get("prototype.configurator.service");
-        $config = $configurator->getService($this->getRouteName(), $this->getEntityClass());
+
+
+        $config = $configurator->getService($this->getRouteName(), $this->getEntityClass(),$this->getParentEntityClassName(),$this->getActionId());
         return $config;
     }
 

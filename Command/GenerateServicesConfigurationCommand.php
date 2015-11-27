@@ -164,7 +164,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 
             switch ($tag) {
                 case 'prototype.config':
-                    
+
 
                     if ($associated) {
                         $parametersName = $this->createParametersName($entity, $tag, $rootSpace);
@@ -186,7 +186,6 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                             'twig_element_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
                             'twig_element_create' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:create.html.twig',
                             'twig_element_update' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig'
-                            
                         ];
                     }
                     break;
@@ -240,7 +239,10 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                     }
                     if ($key2 == 'tags' && is_array($value2) && substr($value2[0]['entity'], 0, 1) != "'") {
                         $yamlArr['services'][$key][$key2][0]['entity'] = "'" . $value2[0]['entity'] . "'";
-                        $yamlArr['services'][$key][$key2][0]['parentEntity'] = "'" . $value2[0]['parentEntity'] . "'";
+
+                        if (array_key_exists('parentEntity', $value2[0])) {
+                            $yamlArr['services'][$key][$key2][0]['parentEntity'] = "'" . $value2[0]['parentEntity'] . "'";
+                        }
                     }
                 }
             }
@@ -261,7 +263,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 $serviceName = str_replace('\\', '.', str_replace('bundle\\entity', '', strtolower($entity)));
                 $serviceName .= '.' . strtolower($tagName);
 
-                
+
                 if ($associationName) {
                     $original = explode('.', $serviceName);
 
@@ -273,7 +275,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                     array_splice($original, 2, 0, $inserted);
                     $serviceName = implode('.', $original);
                 }
-            
+
                 break;
         }
 
@@ -316,7 +318,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 if ($associationName) {
 
                     if ($rootSpace && $rootSpace != $associationName) {
-                        $className = str_replace('\\Config\\', '\\Config\\' . $rootSpace.'\\'.$associationName . '\\', $className);
+                        $className = str_replace('\\Config\\', '\\Config\\' . $rootSpace . '\\' . $associationName . '\\', $className);
                     } else {
                         $className = str_replace('\\Config\\', '\\Config\\' . $associationName . '\\', $className);
                     }
@@ -325,10 +327,10 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             case 'prototype.formtype':
                 $className = str_replace('\\Entity', '\\Config', $entity) . '\\FormType';
                 if ($rootSpace && $rootSpace != $associationName) {
-                        $className = str_replace('\\Config\\', '\\Config\\' . $rootSpace.'\\'.$associationName . '\\', $className);
-                    } else {
-                        $className = str_replace('\\Config\\', '\\Config\\' . $associationName . '\\', $className);
-                    }
+                    $className = str_replace('\\Config\\', '\\Config\\' . $rootSpace . '\\' . $associationName . '\\', $className);
+                } else {
+                    $className = str_replace('\\Config\\', '\\Config\\' . $associationName . '\\', $className);
+                }
                 break;
         }
 
@@ -349,7 +351,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 $rootLast = array_pop($arr);
                 $arr = explode('\\', $value['object_name']);
                 $last = array_pop($arr);
-                $parameterName = $this->addParameters($yamlArr, $value['object_name'], $input->getArgument('tag'), $bundleName, $rootSpace.DIRECTORY_SEPARATOR.$objectName, $last, $output, true);
+                $parameterName = $this->addParameters($yamlArr, $value['object_name'], $input->getArgument('tag'), $bundleName, $rootSpace . DIRECTORY_SEPARATOR . $objectName, $last, $output, true);
                 $this->addService($output, $yamlArr, $value['object_name'], $input->getArgument('tag'), 'core_prototype_associationcontroller_', $entity, $rootLast, $parameterName, $rootSpace);
             }
         }
@@ -396,10 +398,10 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 
         //generate assoc services
         if (true === $input->getOption('withAssociated')) {
-            $this->runAssociatedObjectsRecursively($fieldsInfo, $yamlArr, $input, $output, $rootSpace, $objectName, $bundleName,$entity);
+            $this->runAssociatedObjectsRecursively($fieldsInfo, $yamlArr, $input, $output, $rootSpace, $objectName, $bundleName, $entity);
         }
 
-      
+
         $this->writeYml($configFullPath, $yamlArr, $output);
     }
 

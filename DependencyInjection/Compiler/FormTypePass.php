@@ -37,10 +37,20 @@ class FormTypePass implements CompilerPassInterface
                 if (array_key_exists('entity', $attributes)) {
                     $entity = $attributes['entity'];
                 }
+                
+                $parententity = null;
+                if (array_key_exists('parententity', $attributes)) {
+                    $parententity = $attributes['parententity'];
+                }
+                
+                $actionid = null;
+                if (array_key_exists('actionid', $attributes)) {
+                    $actionid = $attributes['actionid'];
+                }
 
                 $definition->addMethodCall(
                 'addService',
-                array(new Reference($id),$route,$entity,$id)
+                array(new Reference($id),$route,$entity,$id,$parententity,$actionid)
                 );
             }
         }
