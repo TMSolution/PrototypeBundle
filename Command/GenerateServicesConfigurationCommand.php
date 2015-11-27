@@ -181,7 +181,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                             'twig_container_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:read.html.twig',
                             'twig_container_create' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:create.html.twig',
                             'twig_container_update' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:update.html.twig',
-                            'twig_container_list' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:list.html.twig',
+                            'twig_container_grid' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:grid.html.twig',
                             'twig_element_view' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:view.html.twig',
                             'twig_element_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
                             'twig_element_create' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:create.html.twig',

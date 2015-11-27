@@ -23,14 +23,14 @@ use UnexpectedValueException;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTwigContainerListCommand extends ContainerAwareCommand
+class GenerateTwigContainerGridCommand extends ContainerAwareCommand
 {
 
     
     protected function configure()
     {
-        $this->setName('prototype:generate:twig:container:list')
-                ->setDescription('Generate container twig for list action.')
+        $this->setName('prototype:generate:twig:container:grid')
+                ->setDescription('Generate container twig for grid action.')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity class name')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder');
     }
@@ -132,14 +132,14 @@ class GenerateTwigContainerListCommand extends ContainerAwareCommand
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
         $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder);
-        $fileName = $directory . DIRECTORY_SEPARATOR . "list.html.twig";
+        $fileName = $directory . DIRECTORY_SEPARATOR . "grid.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
         $associations = $this->getAssociatedObjects($fieldsInfo);
         $classmapperservice=$this->getContainer()->get("classmapperservice");
 
 
-        $renderedConfig = $templating->render("CorePrototypeBundle:Command:container.list.template.twig", [
+        $renderedConfig = $templating->render("CorePrototypeBundle:Command:container.grid.template.twig", [
             "namespace" => $entityNamespace,
             "entityName" => str_replace('\\', '\\\\', $entityName),
             "objectName" => $objectName,
@@ -149,7 +149,7 @@ class GenerateTwigContainerListCommand extends ContainerAwareCommand
         ]);
 
         file_put_contents($fileName, $renderedConfig);
-        $output->writeln("Twig:containter:list generated");
+        $output->writeln("Twig:containter:grid generated");
     }
 
 }

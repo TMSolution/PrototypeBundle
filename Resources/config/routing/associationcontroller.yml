@@ -12,6 +12,20 @@ core_prototype_associationcontroller_ajaxlist:
     options:
         expose: true
         
+core_prototype_associationcontroller_grid:
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/grid/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/grid/{parentName}/{parentId}/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:gridAction", states: "", _format: ~ }
+    requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
+    options:
+        expose: true
+        
+core_prototype_associationcontroller_ajaxgrid:
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/ajaxgrid/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/ajaxgrid/{parentName}/{parentId}/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:ajaxgridAction", states: "", _format: ~ }
+    requirements: {"containerName": main|container|element ,  "states": ".+", "parentId": "\d+" }
+    options:
+        expose: true
+        
 core_prototype_associationcontroller_read:
     locales:  { en: "/{entityName}/{containerName}/{actionId}/read/{id}/{parentName}/{parentId}/{states}", pl: "/{entityName}/{containerName}/{actionId}/pokaz/{id}/{parentName}/{parentId}/{states}"}
     defaults: { _controller: "prototype.grid_controller:readAction", states: "", _format: ~ } 

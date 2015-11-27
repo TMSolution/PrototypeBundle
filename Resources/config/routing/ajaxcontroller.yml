@@ -12,7 +12,23 @@ core_prototype_ajaxcontroller_ajaxlist:
     defaults: { _controller: "prototype.grid_controller:ajaxlistAction", states: "", _format: ~ }
     requirements: { "containerName": main|container|element ,  "states": ".+"}
     options:
-        expose: true        
+        expose: true    
+        
+#swieta nazwa - nie wolno jej zmieniać PO CO TO?
+core_prototype_ajaxcontroller_grid:
+    locales:  { en: "/ajax/{entityName}/{containerName}/{actionId}/grid/{states}", pl: "/ajax/{entityName}/{containerName}/{actionId}/grid/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:gridAction", states: "", _format: ~ }
+    requirements: { "containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+        
+#swieta nazwa - nie wolno jej zmieniać PO CO TO?
+core_prototype_ajaxcontroller_ajaxgrid:
+    locales:  { en: "/ajax/{entityName}/{containerName}/{actionId}/ajaxgrid/{states}", pl: "/ajax/{entityName}/{containerName}/{actionId}/gridajax/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:ajaxgridAction", states: "", _format: ~ }
+    requirements: { "containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true            
        
 #swieta nazwa - nie wolno jej zmieniać    
 core_prototype_ajaxcontroller_read:

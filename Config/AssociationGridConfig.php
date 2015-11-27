@@ -62,7 +62,7 @@ class AssociationGridConfig extends GridConfig
 
     protected function getParentFieldNameFromRequest()
     {
-        $this->request = $this->getContainer()->get('request');
+       // $this->request = $this->getContainer()->get('request');
         $objectName = $this->request->get('objectName');
         $model = $this->getContainer()->get('model_factory')->getModel($objectName);
         $parentName = $this->request->get('parentName');

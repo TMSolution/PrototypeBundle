@@ -11,7 +11,21 @@ core_prototype_api_defaultcontroller_ajaxlist:
     locales:  { en: "/{entityName}/{actionId}/ajaxlist/{states}", pl: "/{entityName}/{actionId}/listaajax/{states}" } 
     defaults: { _controller: "prototype.grid_controller:ajaxlistAction", states: "", format: ~ }
     options:
-        expose: true        
+        expose: true   
+        
+core_prototype_api_defaultcontroller_grid:
+    locales:  { en: "/{entityName}/{actionId}/list/{states}", pl: "/{entityName}/{actionId}/lista/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:listAction", states: "", format: ~ }
+    requirements: {  "states": ".+"}
+    options:
+        expose: true
+        
+
+core_prototype_api_defaultcontroller_ajaxgrid:
+    locales:  { en: "/{entityName}/{actionId}/ajaxgrid/{states}", pl: "/{entityName}/{actionId}/ajaxgrid/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:ajaxgridAction", states: "", format: ~ }
+    options:
+        expose: true   
    
 core_prototype_api_defaultcontroller_read:
     locales:  { en: "/{entityName}/{actionId}/read/{id}/{states}", pl: "/{entityName}/{actionId}/pokaz/{id}/{states}"}

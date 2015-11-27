@@ -26,11 +26,11 @@ use Core\PrototypeBundle\Controller\DefaultController;
 class GridDefaultController extends DefaultController {
 
     /**
-     * List action.
+     * grid action.
      * 
      * @return Response
      */
-    public function listAction(Request $request) {
+    public function gridAction(Request $request) {
 
         
         $this->init();
@@ -44,9 +44,12 @@ class GridDefaultController extends DefaultController {
         $this->buildGrid($grid);
         $grid->setId($routePrefix . '_' . $entityName);
         
+        $buttonRouteParams = $this->routeParams;
+        $buttonRouteParams['containerName'] = 'container';
+
         
 
-        $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxlist", $grid->getRouteParameters()));
+        $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxgrid", $grid->getRouteParameters()));
 
         //config parameters for render and event broadcast
         $params = $this->get('prototype.controler.params');
@@ -58,6 +61,7 @@ class GridDefaultController extends DefaultController {
             'containerName'=> 'container',
             'actionId' => 'default',
             'routeParams' => $this->routeParams,
+            'buttonRouteParams' => $buttonRouteParams
         ]);
 
 
@@ -68,9 +72,9 @@ class GridDefaultController extends DefaultController {
         $event->setGrid($grid);
 
 
-        $this->dispatch('before.list', $event);
-        $gridConfig = $grid->getGridConfig($this->getConfig()->get('twig_element_list'), $params->getArray());
-       
+        $this->dispatch('before.grid', $event);
+        $gridConfig = $grid->getGridConfig($this->getConfig()->get('twig_element_grid'), $params->getArray());
+        $this->dispatch('after.grid', $event);
         $view = $this->view($grid->getResult($grid->getResult()))
                 ->setTemplate($gridConfig->view)
                 ->setTemplateData($gridConfig->parameters);
@@ -78,7 +82,7 @@ class GridDefaultController extends DefaultController {
         return $this->handleView($view);
     }
 
-    public function ajaxlistAction(Request $request) {
+    public function ajaxgridAction(Request $request) {
 
         $this->init();
         $entityName = $this->getEntityName();
@@ -89,10 +93,11 @@ class GridDefaultController extends DefaultController {
         $grid->setSource($source);
         $this->buildGrid($grid);
         $grid->setId($routePrefix . '_' . $entityName);
-        $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxlist", $grid->getRouteParameters()));
+        $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxgrid", $grid->getRouteParameters()));
         //config parameters for render and event broadcast
         
-        
+        $buttonRouteParams = $this->routeParams;
+        $buttonRouteParams['containerName'] = 'container';
 
         $params = $params = $this->get('prototype.controler.params');
         $params->setArray(
@@ -101,7 +106,8 @@ class GridDefaultController extends DefaultController {
                     'newActionName' => $this->getAction('new'),
                     'routeName' => $routePrefix . '_new',
                     'config' => $this->getConfig(),
-                    'routeParams' => $this->routeParams
+                    'routeParams' => $this->routeParams,
+                    'buttonRouteParams' => $buttonRouteParams
         ]);
 
 
@@ -111,13 +117,13 @@ class GridDefaultController extends DefaultController {
         $event->setModel($this->model);
         $event->setGrid($grid);
 
-        $this->dispatch('before.list', $event);
+        $this->dispatch('before.grid', $event);
 
-        $gridConfig = $grid->getGridConfig($this->getConfig()->get('twig_element_ajaxlist'), $params);
+        $gridConfig = $grid->getGridConfig($this->getConfig()->get('twig_element_ajaxgrid'), $params);
         $view = $this->view($grid->getResult())
                 ->setTemplate($gridConfig->view)
                 ->setTemplateData($gridConfig->parameters);
-
+        $this->dispatch('after.grid', $event);
         return $this->handleView($view);
     }
 
@@ -125,6 +131,7 @@ class GridDefaultController extends DefaultController {
 
         $configurator = $this->get("prototype.gridconfig.configurator.service");
         $gridConfig = $configurator->getService($this->getRouteName(), $this->getEntityClass(),$this->getParentEntityClassName(),$this->getActionId());
+       
         if (!$gridConfig) {
             $gridConfigFactory = $this->get("prototype_grid_config_factory");
             $gridConfig = $gridConfigFactory->getGridConfig($this->getEntityClass());

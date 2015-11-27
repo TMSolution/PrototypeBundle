@@ -50,7 +50,7 @@ class GenerateCommand extends ContainerAwareCommand
                 ->addOption('withCreateContainerTwig', null, InputOption::VALUE_NONE, 'Generate create twig container')
                 ->addOption('withUpdateContainerTwig', null, InputOption::VALUE_NONE, 'Generate update twig container')
                 ->addOption('withViewContainerTwig', null, InputOption::VALUE_NONE, 'Generate view twig container')
-                ->addOption('withListContainerTwig', null, InputOption::VALUE_NONE, 'Generate list twig container')
+                ->addOption('withGridContainerTwig', null, InputOption::VALUE_NONE, 'Generate grid twig container')
                 ->addOption('withAll', null, InputOption::VALUE_NONE, 'Generate update twig element')
                 ->addOption('quiet', 'q', InputOption::VALUE_NONE, 'Disable all output of the program.');
     }
@@ -107,7 +107,7 @@ class GenerateCommand extends ContainerAwareCommand
         $withCreateContainerTwig = true === $input->getOption('withCreateContainerTwig');
         $withUpdateContainerTwig = true === $input->getOption('withUpdateContainerTwig');
         $withViewContainerTwig = true === $input->getOption('withViewContainerTwig');
-        $withListContainerTwig = true === $input->getOption('withListContainerTwig');
+        $withGridContainerTwig = true === $input->getOption('withGridContainerTwig');
         
         $withAll = true === $input->getOption('withAll');
 
@@ -293,9 +293,9 @@ class GenerateCommand extends ContainerAwareCommand
                 $returnCode = $command->run($inputCommand, $output);
             }
             
-            if ($withListContainerTwig || $withAll) {
-                $output->writeln(sprintf('Generate list container for <info>%s</info>', $entity));
-                $command = $this->getApplication()->find('prototype:generate:twig:container:list');
+            if ($withGridContainerTwig || $withAll) {
+                $output->writeln(sprintf('Generate grid container for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:container:grid');
                 $arguments = array(
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder')

@@ -27,11 +27,12 @@ class DefaultController extends FOSRestController
 {
 
     protected $objectName = null;
+    protected $request=null;
     protected $routePrefix = null;
     protected $entityName;
     protected $parentName = null;
     protected $parentId = null;
-    protected $routeName;
+    protected $routeName = null;
     protected $routeParams = null;
     protected $configLoaded = false;
     protected $configService;
@@ -40,25 +41,7 @@ class DefaultController extends FOSRestController
     protected $model = null;
     protected $requestStack = null;
 //element praktycznie zawsze zmieniany, konfiguracja na zewnątrz
-    protected $config = [
-            /*
-              //twig templates for Elements
-              'twig_base_index'=>'CorePrototypeBundle:Default\Base:index.html.twig'
-              'twig_base_ajax_index'=>CorePrototypeBundle:Default\Base:ajax_index.html.twig'
-              'twig_element_create' => 'CorePrototypeBundle:Default/Element:create.html.twig',
-              'twig_element_list' => 'CorePrototypeBundle:Default/Element:list.html.twig',
-              'twig_element_ajax_list' => 'CorePrototypeBundle:Default/Element:list.ajax.html.twig',
-              'twig_element_update' => 'CorePrototypeBundle:Default/Element:update.html.twig',
-              'twig_element_read' => 'CorePrototypeBundle:Default/Element:read.html.twig',
-              'twig_element_error' => 'CorePrototypeBundle:Default/Element:error.html.twig',
-              //twig templates for Containers
-              'twig_container_create' => 'CorePrototypeBundle:Default/Container:create.html.twig',
-              'twig_container_list' => 'CorePrototypeBundle:Default/Container:list.html.twig',
-              'twig_container_update' => 'CorePrototypeBundle:Default/Container:update.html.twig',
-              'twig_container_read' => 'CorePrototypeBundle:Default/Container:read.html.twig',
-              'twig_container_error' => 'CorePrototypeBundle:Default/Container:error.html.twig',
-             */
-    ];
+    protected $config = [];
 
     public function __construct($container, RequestStack $requestStack)
     {
@@ -68,14 +51,16 @@ class DefaultController extends FOSRestController
 
     protected function init()
     {
-        $request = $this->requestStack->getCurrentRequest();
+        $this->request = $this->requestStack->getCurrentRequest();
+        $this->initRouteName();
         $this->initRoutePrefix();
         $this->initRouteParams();
-        $this->setObjectName($request);
-        $this->testContainerNameType($request);
-        $this->model = $this->getModel($this->initEntityClass($request));
-        $this->entityName = $this->initEntityName($request);
-        $this->setContainerName($request);
+        
+        $this->setObjectName($this->request);
+        $this->testContainerNameType($this->request);
+        $this->model = $this->getModel($this->initEntityClass($this->request));
+        $this->entityName = $this->initEntityName($this->request);
+        $this->setContainerName($this->request);
     }
 
     protected function setObjectName($request)
@@ -139,7 +124,7 @@ class DefaultController extends FOSRestController
             'form' => $form->createView(),
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
-            'cancelActionName' => $this->getAction('list'),
+            'cancelActionName' => $this->getAction('grid'),
             'defaultRoute' => $this->generateBaseRoute('create'),
             'states' => $this->getStates()
         ]);
@@ -273,7 +258,7 @@ class DefaultController extends FOSRestController
             'form' => $updateForm->createView(),
             'model' => $this->model,
             'entityName' => $this->entityName,
-            'cancelActionName' => $this->getAction('list'),
+            'cancelActionName' => $this->getAction('grid'),
             'updateActionName' => $this->getAction('update'),
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
@@ -335,7 +320,7 @@ class DefaultController extends FOSRestController
         $response['status'] = 'success';
         $response['message'] = '';
         $this->routeParams["containerName"] = "container";
-        $response['redirectUrl'] = $this->generateUrl($routePrefix . '_list', $this->routeParams);
+        $response['redirectUrl'] = $this->generateUrl($routePrefix . '_grid', $this->routeParams);
 
         if (null != $entity) {
             $this->dispatch('before.delete', $event);
@@ -378,7 +363,7 @@ class DefaultController extends FOSRestController
             'entity' => $entity,
             'entityName' => $this->entityName,
             'model' => $this->model,
-            'cancelActionName' => $this->getAction('list'),
+            'cancelActionName' => $this->getAction('grid'),
             'updateActionName' => $this->getAction('update'),
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
@@ -424,7 +409,7 @@ class DefaultController extends FOSRestController
             'entityName' => $this->entityName,
             'model' => $this->model,
             'editActionName' => $this->getAction('edit'),
-            'listActionName' => $this->getAction('list'),
+            'listActionName' => $this->getAction('grid'),
             'deleteActionName' => $this->getAction('delete'),
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
@@ -523,7 +508,7 @@ class DefaultController extends FOSRestController
             'form' => $form->createView(),
             'entityName' => $this->entityName,
             'model' => $this->model,
-            'cancelActionName' => $this->getAction('list'),
+            'cancelActionName' => $this->getAction('grid'),
             'routeParams' => $this->routeParams,
             'config' => $this->getConfig(),
             'defaultRoute' => $this->generateBaseRoute('new'),
@@ -552,7 +537,7 @@ class DefaultController extends FOSRestController
         $params->setArray([
             'entity' => $entity,
             'entityName' => $this->entityName,
-            'cancelActionName' => $this->getAction('list'),
+            'cancelActionName' => $this->getAction('grid'),
             'model' => $this->model,
             'defaultRoute' => $this->generateBaseRoute('view'),
             'routeParams' => $this->routeParams,
@@ -745,12 +730,22 @@ class DefaultController extends FOSRestController
      * 
      * @return string Current route
      */
+    protected function initRouteName()
+    {
+       // if (null == $this->routeName) {
+            $this->routeName = $this->request->attributes->get('_route');
+        //}
+        return $this->routeName;
+    }
+    
+    /**
+     * Get current route.
+     * 
+     * @return string Current route
+     */
     protected function getRouteName()
     {
-        if (null == $this->routeName) {
-            $this->routeName = $this->get('request')->attributes->get('_route');
-        }
-        return $this->routeName;
+       return $this->routeName;
     }
 
     /**
@@ -807,7 +802,7 @@ class DefaultController extends FOSRestController
 
     protected function initRouteParams()
     {
-        $parametersArr = $this->get('request')->attributes->all();
+        $parametersArr = $this->request->attributes->all();
         $this->routeParams = $parametersArr["_route_params"];
     }
 

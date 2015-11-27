@@ -39,21 +39,20 @@ class ConfigPass implements CompilerPassInterface {
                 }
                 
                 
-                $parententity = null;
-                if (array_key_exists('parententity', $attributes)) {
-                    $parententity = $attributes['parententity'];
+                $parentEntity = null;
+                if (array_key_exists('parentEntity', $attributes)) {
+                    $parentEntity = $attributes['parentEntity'];
                 }
-                
-                $actionid = null;
-                if (array_key_exists('actionid', $attributes)) {
-                    $actionid = $attributes['actionid'];
+
+                $actionId = null;
+                if (array_key_exists('actionId', $attributes)) {
+                    $actionId = $attributes['actionId'];
                 }
-               
-                
-               
+
+
+
                 $definition->addMethodCall(
-                'addService',
-                array(new Reference($id),$route,$entity,$id,$parententity,$actionid)
+                        'addService', array(new Reference($id), $route, $entity, $id, $parentEntity, $actionId)
                 );
             }
         }

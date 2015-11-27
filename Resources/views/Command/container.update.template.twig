@@ -32,7 +32,7 @@
                         aria-controls="{{objectName|lower}}-{{name}}-pane" 
                         role="tab"  
                         data-toggle="tab"
-                        data-route="core_prototype_associationcontroller_list.{{'{{app.request.getLocale()}}'}}" 
+                        data-route="core_prototype_associationcontroller_grid.{{'{{app.request.getLocale()}}'}}" 
                         data-route-params='{ "containerName": "element", "actionId": "default", "parentName":"{{objectName|lower}}" , "parentId": "{{'{{entity.getId()}}'}}", "entityName": "{{classmapperservice.getEntityName(field.object_name_stripslashes,0,'en')}}" }'  
                         data-route-target="#{{objectName|lower}}-{{name}}-pane" >
                         {{"{{ "}}"{{name|lower}}"{{"|trans}}"}}
@@ -72,7 +72,7 @@
              {% if field.is_object==true and (field.association=='OneToMany' or field.association=='ManyToMany') %}
                 <div role="tabpanel" class="tab-pane tab-panel-container {{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-{{name}}-pane"  >
                 {{'{% if \''}}{{name}}{{'\' in states %}'}}
-                {{'{{ render(url(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default", "parentName":'}}{{objectName|lower}}{{' , "parentId": entity.getId(), "entityName": "'}}{{classmapperservice.getEntityName(field.object_name_stripslashes,0,'en')}}{{'" } )) }}'}}
+                {{'{{ render(url(\'core_prototype_associationcontroller_grid.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default", "parentName":'}}{{objectName|lower}}{{' , "parentId": entity.getId(), "entityName": "'}}{{classmapperservice.getEntityName(field.object_name_stripslashes,0,'en')}}{{'" } )) }}'}}
                 {{'{% endif %}'}}                        
                 </div>
             {% endif %}
