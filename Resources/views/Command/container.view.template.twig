@@ -95,10 +95,15 @@
 {{ '{{ parent() }}' }}
 {{'{% if routeParams.containerName==\'container\' %}'}}   
 <script>
-    {{'$(\'.lazy-loaded-tab\').one(\'click\', function (e) {
-        e.preventDefault();
-        $().lazyLoader(\'load\', $(this), true, \'tab\');
-    });'}}
+     {{"$('.lazy-loaded-tab').one('click', function (e) {
+                e.preventDefault();
+                e.stopImmediatePropagation()
+                
+                var that=$(this);
+                $().lazyLoader('load', $(this), true, 'tab',function(){
+                    that.tab('show');
+                });
+            });"}}
 </script>
 {{'{% endif %}'}}
 {{'{% endblock %}'}}

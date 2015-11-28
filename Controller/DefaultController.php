@@ -27,7 +27,7 @@ class DefaultController extends FOSRestController
 {
 
     protected $objectName = null;
-    protected $request=null;
+    protected $request = null;
     protected $routePrefix = null;
     protected $entityName;
     protected $parentName = null;
@@ -55,7 +55,7 @@ class DefaultController extends FOSRestController
         $this->initRouteName();
         $this->initRoutePrefix();
         $this->initRouteParams();
-        
+
         $this->setObjectName($this->request);
         $this->testContainerNameType($this->request);
         $this->model = $this->getModel($this->initEntityClass($this->request));
@@ -74,8 +74,8 @@ class DefaultController extends FOSRestController
 
     protected function getParentEntityClassName()
     {
-        $request=$this->requestStack->getCurrentRequest();
-        if($request->attributes->get('parentName')){
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request->attributes->get('parentName')) {
             return $this->parentEntityClassName = $this->container->get("classmapperservice")->getEntityClass($request->attributes->get('parentName'), $request->getLocale());
         }
         return null;
@@ -126,7 +126,8 @@ class DefaultController extends FOSRestController
             'routeParams' => $this->routeParams,
             'cancelActionName' => $this->getAction('grid'),
             'defaultRoute' => $this->generateBaseRoute('create'),
-            'states' => $this->getStates()
+            'states' => $this->getStates(),
+            'isMasterRequest' => $this->isMasterRequest()
         ]);
 
 //parent params 
@@ -264,7 +265,8 @@ class DefaultController extends FOSRestController
             'routeParams' => $this->routeParams,
             'buttonRouteParams' => $buttonRouteParams,
             'defaultRoute' => $this->generateBaseRoute('update'),
-            'states' => $this->getStates()
+            'states' => $this->getStates(),
+            'isMasterRequest' => $this->isMasterRequest()
         ]);
 
 //Create event broadcast.
@@ -371,6 +373,7 @@ class DefaultController extends FOSRestController
             'defaultRoute' => $this->generateBaseRoute('edit'),
             'states' => $this->getStates(),
             'form' => $editForm->createView(),
+            'isMasterRequest' => $this->isMasterRequest()
         ]);
 
 //Create event broadcast.
@@ -417,7 +420,8 @@ class DefaultController extends FOSRestController
             'states' => $this->getStates(),
             'defaultRoute' => $this->generateBaseRoute('read'),
             'parentName' => $this->getParentName(),
-            'parentId' => $this->getParentId()
+            'parentId' => $this->getParentId(),
+            'isMasterRequest' => $this->isMasterRequest()
         ]);
 
 //Create event broadcast.
@@ -512,7 +516,8 @@ class DefaultController extends FOSRestController
             'routeParams' => $this->routeParams,
             'config' => $this->getConfig(),
             'defaultRoute' => $this->generateBaseRoute('new'),
-            'states' => $this->getStates()
+            'states' => $this->getStates(),
+            'isMasterRequest' => $this->isMasterRequest()
         ]);
 
 //Create event broadcast.
@@ -542,7 +547,8 @@ class DefaultController extends FOSRestController
             'defaultRoute' => $this->generateBaseRoute('view'),
             'routeParams' => $this->routeParams,
             'config' => $this->getConfig(),
-            'states' => $this->getStates()
+            'states' => $this->getStates(),
+            'isMasterRequest' => $this->isMasterRequest()
         ]);
 
         $event = $this->get('prototype.event');
@@ -651,15 +657,15 @@ class DefaultController extends FOSRestController
 
         return $this->model;
     }
-    
-    
-    protected function getActionId(){
-       $request=$this->requestStack->getCurrentRequest();
-       $actionId=$request->attributes->get('actionId');
-       if($actionId && $actionId!='default'){
-           return $actionId;
-       }
-       return null;
+
+    protected function getActionId()
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        $actionId = $request->attributes->get('actionId');
+        if ($actionId && $actionId != 'default') {
+            return $actionId;
+        }
+        return null;
     }
 
     /**
@@ -673,7 +679,7 @@ class DefaultController extends FOSRestController
     {
 
         $configurator = $this->get("prototype.formtype.configurator.service");
-        $formType = $configurator->getService($this->getRouteName(), $this->getEntityClass(),$this->getParentEntityClassName(),$this->getActionId());
+        $formType = $configurator->getService($this->getRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
         if (get_class($formType) == 'Core\PrototypeBundle\Form\FormType') {
             $formType->setModel($this->getModel($objectName));
         }
@@ -732,12 +738,12 @@ class DefaultController extends FOSRestController
      */
     protected function initRouteName()
     {
-       // if (null == $this->routeName) {
-            $this->routeName = $this->request->attributes->get('_route');
+        // if (null == $this->routeName) {
+        $this->routeName = $this->request->attributes->get('_route');
         //}
         return $this->routeName;
     }
-    
+
     /**
      * Get current route.
      * 
@@ -745,7 +751,7 @@ class DefaultController extends FOSRestController
      */
     protected function getRouteName()
     {
-       return $this->routeName;
+        return $this->routeName;
     }
 
     /**
@@ -781,7 +787,7 @@ class DefaultController extends FOSRestController
         $configurator = $this->get("prototype.configurator.service");
 
 
-        $config = $configurator->getService($this->getRouteName(), $this->getEntityClass(),$this->getParentEntityClassName(),$this->getActionId());
+        $config = $configurator->getService($this->getRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
         return $config;
     }
 
