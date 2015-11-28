@@ -32,6 +32,7 @@ class DefaultController extends FOSRestController
     protected $entityName;
     protected $parentName = null;
     protected $parentId = null;
+    protected $parentEntity = null;
     protected $routeName = null;
     protected $routeParams = null;
     protected $configLoaded = false;
@@ -100,6 +101,24 @@ class DefaultController extends FOSRestController
         $this->dispatcher->dispatch($this->getDispatchName($name), $event);
     }
 
+    protected function getParentEntity($request)
+    {
+        $parentId = $request->get('parentId');
+        $parentName = $request->get('parentName');
+        
+        if ($parentId && $parentName ) {
+            $parentEntityClassName = $this->container->get("classmapperservice")->getEntityClass($parentName, $request->getLocale());
+            $parentModel = $this->container->get("model_factory")->getModel($parentEntityClassName);
+            $parentEntity = $parentModel->findOneById($parentId);
+            
+            if($parentEntity){
+                return $parentEntity;
+            }
+            
+        }
+        return null;
+    }
+
     /**
      * Create action.
      * 
@@ -119,7 +138,9 @@ class DefaultController extends FOSRestController
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
+            'parentEntity'=> $this->getParentEntity($request),
             'entityName' => $this->entityName,
+            'parentName' => $this->getParentName(),
             'model' => $this->model,
             'form' => $form->createView(),
             'config' => $this->getConfig(),
@@ -256,6 +277,8 @@ class DefaultController extends FOSRestController
 
         $params->setArray([
             'entity' => $entity,
+            'parentEntity'=> $this->getParentEntity($request),
+            'parentName' => $this->getParentName(),
             'form' => $updateForm->createView(),
             'model' => $this->model,
             'entityName' => $this->entityName,
@@ -363,6 +386,8 @@ class DefaultController extends FOSRestController
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
+            'parentEntity'=> $this->getParentEntity($request),
+            'parentName' => $this->getParentName(),
             'entityName' => $this->entityName,
             'model' => $this->model,
             'cancelActionName' => $this->getAction('grid'),
@@ -408,6 +433,7 @@ class DefaultController extends FOSRestController
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
+            'parentEntity'=> $this->getParentEntity($request),
             'properties' => $this->prepareProperties($this->model, $entity),
             'entityName' => $this->entityName,
             'model' => $this->model,
@@ -509,6 +535,8 @@ class DefaultController extends FOSRestController
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
+            'parentEntity'=> $this->getParentEntity($request),
+            'parentName' => $this->getParentName(),
             'form' => $form->createView(),
             'entityName' => $this->entityName,
             'model' => $this->model,
@@ -541,6 +569,8 @@ class DefaultController extends FOSRestController
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
+            'parentEntity'=> $this->getParentEntity($request),
+            'parentName' => $this->getParentName(),
             'entityName' => $this->entityName,
             'cancelActionName' => $this->getAction('grid'),
             'model' => $this->model,
