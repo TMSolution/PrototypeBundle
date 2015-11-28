@@ -114,7 +114,7 @@
             $().lazyLoader('setDefaultLocation', '{{ defaultRoute }}');
         };
         
-        {% if app.request.isXmlHttpRequest() %}
+        {% if isMasterRequest %}
         readElementFn();
         {% else %}
         if(collector){collector.addFunction(readElementFn);}

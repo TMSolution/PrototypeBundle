@@ -64,7 +64,7 @@
     var createElementFn = function(){
         $().lazyLoader("setDefaultLocation", "{{ defaultRoute }}");
     }
-    {% if app.request.isXmlHttpRequest() %}
+    {% if isMasterRequest %}
     createElementFn();
     {% else %}
     if(collector){collector.addFunction(createElementFn);}

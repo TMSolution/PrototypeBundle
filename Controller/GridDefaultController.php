@@ -23,31 +23,33 @@ use Core\PrototypeBundle\Controller\DefaultController;
  * 
  * @copyright (c) 2014-current, TMSolution
  */
-class GridDefaultController extends DefaultController {
+class GridDefaultController extends DefaultController
+{
 
     /**
      * grid action.
      * 
      * @return Response
      */
-    public function gridAction(Request $request) {
+    public function gridAction(Request $request)
+    {
 
-        
+
         $this->init();
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
-        
+
         $grid = $this->get('grid');
         $source = new Entity($this->model);
         $grid->setSource($source);
         $grid->resetSessionData();
         $this->buildGrid($grid);
         $grid->setId($routePrefix . '_' . $entityName);
-        
+
         $buttonRouteParams = $this->routeParams;
         $buttonRouteParams['containerName'] = 'container';
 
-        
+
 
         $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxgrid", $grid->getRouteParameters()));
 
@@ -58,10 +60,11 @@ class GridDefaultController extends DefaultController {
             'newActionName' => $this->getAction('new'),
             'routeName' => $routePrefix . '_new',
             'config' => $this->getConfig(),
-            'containerName'=> 'container',
+            'containerName' => 'container',
             'actionId' => 'default',
             'routeParams' => $this->routeParams,
-            'buttonRouteParams' => $buttonRouteParams
+            'buttonRouteParams' => $buttonRouteParams,
+            'isMasterRequest' => $this->isMasterRequest()
         ]);
 
 
@@ -82,12 +85,13 @@ class GridDefaultController extends DefaultController {
         return $this->handleView($view);
     }
 
-    public function ajaxgridAction(Request $request) {
+    public function ajaxgridAction(Request $request)
+    {
 
         $this->init();
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
-        
+
         $grid = $this->get('grid');
         $source = new Entity($this->model);
         $grid->setSource($source);
@@ -95,7 +99,7 @@ class GridDefaultController extends DefaultController {
         $grid->setId($routePrefix . '_' . $entityName);
         $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxgrid", $grid->getRouteParameters()));
         //config parameters for render and event broadcast
-        
+
         $buttonRouteParams = $this->routeParams;
         $buttonRouteParams['containerName'] = 'container';
 
@@ -107,7 +111,8 @@ class GridDefaultController extends DefaultController {
                     'routeName' => $routePrefix . '_new',
                     'config' => $this->getConfig(),
                     'routeParams' => $this->routeParams,
-                    'buttonRouteParams' => $buttonRouteParams
+                    'buttonRouteParams' => $buttonRouteParams,
+                    'isMasterRequest' => $this->isMasterRequest()
         ]);
 
 
@@ -127,11 +132,12 @@ class GridDefaultController extends DefaultController {
         return $this->handleView($view);
     }
 
-    protected function getGridConfig() {
+    protected function getGridConfig()
+    {
 
         $configurator = $this->get("prototype.gridconfig.configurator.service");
-        $gridConfig = $configurator->getService($this->getRouteName(), $this->getEntityClass(),$this->getParentEntityClassName(),$this->getActionId());
-       
+        $gridConfig = $configurator->getService($this->getRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
+
         if (!$gridConfig) {
             $gridConfigFactory = $this->get("prototype_grid_config_factory");
             $gridConfig = $gridConfigFactory->getGridConfig($this->getEntityClass());
@@ -139,7 +145,8 @@ class GridDefaultController extends DefaultController {
         return $gridConfig;
     }
 
-    protected function buildGrid($grid) {
+    protected function buildGrid($grid)
+    {
         //@todo sprawdź czy jest ustawiony w configu
 
         $gridConfig = $this->getGridConfig();
@@ -154,7 +161,8 @@ class GridDefaultController extends DefaultController {
      * @param type $entityName
      * @return RowAction
      */
-    protected function setGridActionRouteParameters(RowAction $actionObject, $entityName = null) {
+    protected function setGridActionRouteParameters(RowAction $actionObject, $entityName = null)
+    {
         $actionObject->setRouteParameters(['entityName' => $entityName ? $entityName : $this->getEntityName(), 'id']);
         return $actionObject;
     }
@@ -167,7 +175,8 @@ class GridDefaultController extends DefaultController {
      * @param string $entityName
      * @return \TMSolution\DataGridBundle\Grid\Action\RowAction
      */
-    protected function setGridActionRouteParametersWithout(\TMSolution\DataGridBundle\Grid\Action\RowAction $actionObject, $action, $entityName = null) {
+    protected function setGridActionRouteParametersWithout(\TMSolution\DataGridBundle\Grid\Action\RowAction $actionObject, $action, $entityName = null)
+    {
         if ($entityName === null) {
             $actionObject->setRouteParameters(array('entityName' => $entityName, 'action' => $action, 'id'));
         } else {

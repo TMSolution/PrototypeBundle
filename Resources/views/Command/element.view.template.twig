@@ -19,7 +19,7 @@
     var viewElementFn = function(){
         $().lazyLoader("setDefaultLocation", "{{ defaultRoute }}");
     }
-    {% if app.request.isXmlHttpRequest() %}
+    {% if isMasterRequest %}
     viewElementFn();
     {% else %}
     if(collector){collector.addFunction(viewElementFn);}
