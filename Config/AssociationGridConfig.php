@@ -103,10 +103,10 @@ class AssociationGridConfig extends GridConfig
             foreach ($analizedFieldsInfo as $field => $fieldParam) {
 
                 if (array_key_exists('association', $fieldParam) && ($fieldParam['association'] == 'ManyToOne' || $fieldParam['association'] == 'OneToOne' )) {
-                    echo "jestem1\r\n";
+                   
                     $fields[] = "_{$field}.{$fieldParam['default_field']} as {$field}::{$fieldParam['default_field']}";
                     if ($fieldParam['default_field'] != 'id') {
-                        echo "jestem2\r\n";
+                       
                         $fields[] = "_{$field}.id as {$field}::id";
                     }
                    
@@ -123,14 +123,14 @@ class AssociationGridConfig extends GridConfig
 
             $fieldsArr = [];
 
-           /* foreach ($analizedFieldsInfo as $field => $fieldParam) {
+            foreach ($analizedFieldsInfo as $field => $fieldParam) {
 
                 if (array_key_exists('association', $fieldParam) && ($fieldParam['association'] == 'ManyToOne' || $fieldParam['association'] == 'OneToOne' )) {
 
                     $queryBuilder->leftJoin("$tableAlias.{$field}", "_{$field}");
                     $fieldsArr[] = $field;
                 }
-            }*/
+            }
 
 
             if ($this->manyToManyRelationExists) {
@@ -149,6 +149,9 @@ class AssociationGridConfig extends GridConfig
             $queryBuilder->Where("_{$parentFieldName}.id=:$parentFieldName");
             $queryBuilder->setParameter("$parentFieldName", (int) $parentId);
             
+            }
+            else{
+                throw new \Exception('Parent field name doesn\'t exists!');
             }
             
        
