@@ -37,9 +37,13 @@ class PrototypeCollector implements DataCollectorInterface
 
         try {
             $route = $router->match($data["uri"]);
-
+            
+            if (!array_key_exists("_route", $route) || !array_key_exists("_controller", $route) ){
+                return;
+            }
             $data["route"] = $route["_route"];
-            $data["controller"] = $route["_controller"];
+            $data["controller"] = $route["_controller"]; 
+            
             if (array_key_exists("_locale", $route)) {
                 $data["locale"] = $route["_locale"];
 
@@ -63,6 +67,7 @@ class PrototypeCollector implements DataCollectorInterface
                 $configuratorService->getService($data["route"], $data["entityClass"]);
                 $data['formtype'] = $this->printServiceInfo('Form Type', $configuratorService);
             }
+            
         } catch (Symfony\Component\Routing\Exception\ResourceNotFoundException $e) {
       
         }

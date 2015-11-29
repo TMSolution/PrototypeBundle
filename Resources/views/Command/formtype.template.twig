@@ -44,7 +44,7 @@ $builder
         //    'class' => 'css class name',
         //]   
         ])
-    {% elseif fieldParam.formType=='datetime' %}->add('{{field}}', '{{fieldParam.formType}}', [
+    {% elseif fieldParam.formType=='datetime' %}->add('{{field}}', 'datepicker', [
         'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}',
         'widget' => 'single_text',
         //'required' => true,
@@ -55,7 +55,7 @@ $builder
         'data-provide' => 'datepicker'
         ]   
         ]) 
-    {% elseif fieldParam.formType=='date' %}->add('{{field}}', '{{fieldParam.formType}}', [
+    {% elseif fieldParam.formType=='date' %}->add('{{field}}', 'datepicker', [
         'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}',
         'widget' => 'single_text',
         //'required' => true,

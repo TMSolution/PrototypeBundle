@@ -52,12 +52,17 @@ class AssociationGridConfig extends GridConfig
     {
         $fieldsInfo = $model->getFieldsInfo();
 
+       
+       
         foreach ($fieldsInfo as $fieldName => $fieldInfo) {
+            
+           
             if ($fieldInfo["is_object"] == true && $fieldInfo["object_name"] == $parentEntity && in_array($fieldInfo["association"], ["ManyToOne", "OneToOne", "ManyToMany"])) {
 
                 return $fieldName;
             }
         }
+        
     }
 
     protected function getParentFieldNameFromRequest()
@@ -74,6 +79,7 @@ class AssociationGridConfig extends GridConfig
     protected function manipulateQuery($grid)
     {
 
+        
         $parentId = $this->request->get("parentId");
         $tableAlias = $grid->getSource()->getTableAlias();
         $parentFieldName = $this->getParentFieldNameFromRequest();
@@ -86,7 +92,7 @@ class AssociationGridConfig extends GridConfig
 
         $analizedFieldsInfo = $this->analizedFieldsInfo;
         $queryBuilderFn = function ($queryBuilder) use($tableAlias, $grid, $analizedFieldsInfo, $parentFieldName, $parentId) {
-
+           
 
 
             $queryBuilder->resetDQLPart('select');
@@ -97,10 +103,13 @@ class AssociationGridConfig extends GridConfig
             foreach ($analizedFieldsInfo as $field => $fieldParam) {
 
                 if (array_key_exists('association', $fieldParam) && ($fieldParam['association'] == 'ManyToOne' || $fieldParam['association'] == 'OneToOne' )) {
+                    echo "jestem1\r\n";
                     $fields[] = "_{$field}.{$fieldParam['default_field']} as {$field}::{$fieldParam['default_field']}";
                     if ($fieldParam['default_field'] != 'id') {
+                        echo "jestem2\r\n";
                         $fields[] = "_{$field}.id as {$field}::id";
                     }
+                   
                 } else {
 
                     $fields[] = "{$tableAlias}.{$field}";
@@ -114,27 +123,35 @@ class AssociationGridConfig extends GridConfig
 
             $fieldsArr = [];
 
-            foreach ($analizedFieldsInfo as $field => $fieldParam) {
+           /* foreach ($analizedFieldsInfo as $field => $fieldParam) {
 
                 if (array_key_exists('association', $fieldParam) && ($fieldParam['association'] == 'ManyToOne' || $fieldParam['association'] == 'OneToOne' )) {
 
                     $queryBuilder->leftJoin("$tableAlias.{$field}", "_{$field}");
                     $fieldsArr[] = $field;
                 }
-            }
+            }*/
 
 
             if ($this->manyToManyRelationExists) {
                 $queryBuilder->addGroupBy($tableAlias . '.id');
             }
 
-
+;
+ 
+            if($parentFieldName){
             if (!in_array($parentFieldName, $fieldsArr)) {
+                
+                dump($parentFieldName);
                 $queryBuilder->leftJoin("$tableAlias.$parentFieldName", "_{$parentFieldName}");
             }
             
             $queryBuilder->Where("_{$parentFieldName}.id=:$parentFieldName");
             $queryBuilder->setParameter("$parentFieldName", (int) $parentId);
+            
+            }
+            
+       
         };
 
 

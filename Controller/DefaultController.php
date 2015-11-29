@@ -147,6 +147,7 @@ class DefaultController extends FOSRestController
             'routeParams' => $this->routeParams,
             'cancelActionName' => $this->getAction('grid'),
             'defaultRoute' => $this->generateBaseRoute('create'),
+            'parentActionName' => $this->getAction('view'),
             'states' => $this->getStates(),
             'isMasterRequest' => $this->isMasterRequest()
         ]);
@@ -284,6 +285,7 @@ class DefaultController extends FOSRestController
             'entityName' => $this->entityName,
             'cancelActionName' => $this->getAction('grid'),
             'updateActionName' => $this->getAction('update'),
+            'parentActionName' => $this->getAction('view'),
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
             'buttonRouteParams' => $buttonRouteParams,
@@ -392,6 +394,7 @@ class DefaultController extends FOSRestController
             'model' => $this->model,
             'cancelActionName' => $this->getAction('grid'),
             'updateActionName' => $this->getAction('update'),
+            'parentActionName' => $this->getAction('view'),
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
             'buttonRouteParams' => $buttonRouteParams,
@@ -440,6 +443,7 @@ class DefaultController extends FOSRestController
             'editActionName' => $this->getAction('edit'),
             'listActionName' => $this->getAction('grid'),
             'deleteActionName' => $this->getAction('delete'),
+            'parentActionName' => $this->getAction('view'),
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
             'buttonRouteParams' => $buttonRouteParams,
@@ -535,12 +539,14 @@ class DefaultController extends FOSRestController
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
+            
             'parentEntity'=> $this->getParentEntity($request),
             'parentName' => $this->getParentName(),
             'form' => $form->createView(),
             'entityName' => $this->entityName,
             'model' => $this->model,
             'cancelActionName' => $this->getAction('grid'),
+            'parentActionName' => $this->getAction('view'),
             'routeParams' => $this->routeParams,
             'config' => $this->getConfig(),
             'defaultRoute' => $this->generateBaseRoute('new'),
@@ -566,6 +572,10 @@ class DefaultController extends FOSRestController
     {
         $this->init();
         $entity = $this->model->findOneById($id);
+        
+
+        
+        
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -575,6 +585,7 @@ class DefaultController extends FOSRestController
             'cancelActionName' => $this->getAction('grid'),
             'model' => $this->model,
             'defaultRoute' => $this->generateBaseRoute('view'),
+            'parentActionName' => $this->getAction('view'),
             'routeParams' => $this->routeParams,
             'config' => $this->getConfig(),
             'states' => $this->getStates(),

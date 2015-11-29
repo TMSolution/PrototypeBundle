@@ -29,6 +29,9 @@ use UnexpectedValueException;
 class GenerateTranslationCommand extends ContainerAwareCommand
 {
 
+    protected $output;
+    protected $language;
+
     protected function configure()
     {
         /*
@@ -105,7 +108,7 @@ class GenerateTranslationCommand extends ContainerAwareCommand
         $yaml = new Dumper();
         $yamlData = $yaml->dump($yamlArr, 4, 0, false, true);
         file_put_contents($fileName, str_replace("'@service_container'", "@service_container", $yamlData));
-        $output->writeln("Services configuration file <info>" . $fileName . "</info> generated.");
+        //$output->writeln("Services configuration file <info>" . $fileName . "</info> generated.");
     }
 
     protected function checkKeyExist($yamlArr, $objectName, $key, $nameSpace)
@@ -151,10 +154,16 @@ class GenerateTranslationCommand extends ContainerAwareCommand
 
     protected function getDefaultField($entityName)
     {
-        $model = $this->getContainer()->get("model_factory")->getModel($entityName);
-        if ($model->checkPropertyByName("name")) {
-            return "name";
-        } else {
+        try {
+            $entityClass = $this->getContainer()->get("classmapperservice")->getEntityClass($entityName, $this->language);
+            $model = $this->getContainer()->get("model_factory")->getModel($entityClass);
+
+            if ($model->checkPropertyByName("name")) {
+                return "name";
+            } else {
+                return "id";
+            }
+        } catch (\Exception $e) {
             return "id";
         }
     }
@@ -185,10 +194,11 @@ class GenerateTranslationCommand extends ContainerAwareCommand
         $methods = $entityReflection->getMethods();
 
         foreach ($methods as $method) {
+            
+             $name = $method->getName();
 
 
-
-            $name = $method->getName();
+           
 
             if ($method->isPublic() && (substr($name, 0, 3) == 'get' || substr($name, 0, 3) == 'has')) {
                 $name = strtolower(substr($name, 3));
@@ -198,9 +208,10 @@ class GenerateTranslationCommand extends ContainerAwareCommand
                 if (!$this->checkKeyExist($yamlArr, $objectName, $name, $lowerNameSpace)) {
 
                     if ($this->checkAssociation($entityName, $name)) {
-                        $defaultField = $this->getDefaultField($entityName);
+                        $defaultField = $this->getDefaultField($name);
                         $yamlArr[$lowerNameSpace][$objectName][$name][$defaultField] = $name;
                     } else {
+                        
                         $yamlArr[$lowerNameSpace][$objectName][$name] = $name;
                     }
                 }
@@ -211,15 +222,15 @@ class GenerateTranslationCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-
-        $language = $input->getArgument('shortLanguage');
+        $this->output = $output;
+        $this->language = $input->getArgument('shortLanguage');
 
         $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
         $entities = [];
 
         try {
             $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('entityOrBundle'));
-            $output->writeln(sprintf('Generating translation for bundle "<info>%s</info>"', $bundle->getName()));
+            // $output->writeln(sprintf('Generating translation for bundle "<info>%s</info>"', $bundle->getName()));
             $bundleMetadata = $manager->getBundleMetadata($bundle);
             foreach ($bundleMetadata->getMetadata() as $metadata) {
                 $entities[] = $metadata->getName();
@@ -246,7 +257,7 @@ class GenerateTranslationCommand extends ContainerAwareCommand
             $directory = $this->createTranslationDirectory($classPath, $entityReflection->getNamespaceName());
             $shortObjectName = $entityReflection->getShortName();
 
-            $configFullPath = $directory . DIRECTORY_SEPARATOR . "messages." . $language . ".yml";
+            $configFullPath = $directory . DIRECTORY_SEPARATOR . "messages." . $this->language . ".yml";
 
             $lowerNameSpace = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityReflection->getNamespaceName())));
 
@@ -259,9 +270,9 @@ class GenerateTranslationCommand extends ContainerAwareCommand
             }
 
             $this->writeYml($configFullPath, $yamlArr, $output);
-            $output->writeln("Translation file <info>" . $configFullPath . "</info> generated.");
+            // $this->output->writeln("Translation file <info>" . $configFullPath . "</info> generated.");
         } else {
-            $output->writeln("<error>No entities !!!.</error>");
+            // $output->writeln("<error>No entities !!!.</error>");
         }
     }
 
