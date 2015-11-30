@@ -929,5 +929,18 @@ class DefaultController extends FOSRestController
             throw $this->createNotFoundException('The site does not exist');
         }
     }
+    
+    
+    protected function getListConfig()
+    {
+        $configurator = $this->get("prototype.listconfig.configurator.service");
+        $listConfig = $configurator->getService($this->getRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
+
+        if (!$listConfig) {
+            $gridConfigFactory = $this->get("prototype.listconfig");
+            $listConfig = $listConfigFactory->getlistConfig($this->getEntityClass());
+        }
+        return $listConfig;
+    }
 
 }

@@ -37,6 +37,7 @@ class CorePrototypeBundle extends Bundle// implements BundleDependencyInterface
         parent::build($container);
         $container->addCompilerPass(new ConfigPass());
         $container->addCompilerPass(new GridConfigPass());
+        $container->addCompilerPass(new ListConfigPass());
         $container->addCompilerPass(new FormTypePass());
     }
 }

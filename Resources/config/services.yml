@@ -56,7 +56,18 @@ services:
         arguments: [@service_container]        
         tags:
             -  { name: prototype.gridconfig }
-################################################################               
+############################################################    
+    prototype.listconfig.configurator.service:
+        class: Core\PrototypeBundle\Service\ListConfigConfigurator
+        arguments: [@service_container] 
+    #niezgrabna 
+    prototype.listconfig:
+        class: Core\PrototypeBundle\Config\ListConfig
+        arguments: [@service_container]        
+        tags:
+            -  { name: prototype.listconfig }
+################################################################
+
     prototype.formtype.configurator.service:
         class: Core\PrototypeBundle\Service\FormTypeConfigurator
         arguments: [@service_container] 
