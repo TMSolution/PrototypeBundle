@@ -21,32 +21,55 @@ class FormType extends BaseFormType {
         $this->model = $model;
     }
 
+    public function getLabelPrefix($entityClass) {
+
+        $entityClassArr = explode("\\", $entityClass);
+        $namespaceArr = [];
+        foreach ($entityClassArr as $element) {
+            
+            if($element=='Entity'){
+               
+                break;
+            }
+            $namespaceArr[] = strtolower($element);
+        }
+        $namespaceArr[count($namespaceArr)-1]=  str_replace('bundle','',$namespaceArr[count($namespaceArr)-1]);
+        return implode(".",$namespaceArr);
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
 
+        //nazwa obiektu
         //caly array
         $test = $this->model->getFieldsInfo();
-        //dump($test);exit;
+        $entityClass = $this->model->getEntityClass();
+        $objectName = $this->getLabelPrefix($entityClass).'.'.$this->model->getEntityName();
+        
         //get type, it works
         //dump(array_values($test)[0]["type"]);exit;
         //get length, it works
         //dump(array_values($test)[1]["length"]);exit;
         foreach ($this->model->getFieldsinfo() as $key => $object) {
 
+            $label = $objectName . '.' . strtolower($key);
             if (!array_key_exists("association", $object) || $object["association"] != "OneToMany") {
                 if ($object["type"] == "datetime") {
-                    $builder->add($key, "datetime",
-                    ['widget' => 'single_text',
-                    'format' => 'dd.MM.yyyy',
-                    'attr' => [
-                    'placeholder' => '',
-                    'class' => 'datepicker',
-                    'data-date-format'=>"dd.mm.yyyy",
-                    'data-provide' => 'datepicker']]
+                    $builder->add($key, "datetime", [
+                        'label' => $label,
+                        'widget' => 'single_text',
+                        'format' => 'dd.MM.yyyy',
+                        'attr' => [
+                            'placeholder' => '',
+                            'class' => 'datepicker',
+                            'data-date-format' => "dd.mm.yyyy",
+                            'data-provide' => 'datepicker']]
                     );
                 } else {
 
-                    $builder->add($key);
+                    $builder->add($key, null, [
+                        'label' => $label
+                    ]);
                 }
                 //for block to display 'id' in form
 
