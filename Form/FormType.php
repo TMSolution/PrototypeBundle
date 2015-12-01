@@ -7,14 +7,13 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class FormType extends BaseFormType {
 
-
     protected $model = null;
 
     /**
      * @param string $class The Group class name
      */
     public function __construct(/* $class = null, $metadata = null, */$model = null) {
-        
+
         $this->model = $model;
     }
 
@@ -34,19 +33,30 @@ class FormType extends BaseFormType {
         //dump(array_values($test)[1]["length"]);exit;
         foreach ($this->model->getFieldsinfo() as $key => $object) {
 
-           if(!array_key_exists("association", $object) ||  $object["association"]!="OneToMany")
-            {
-            //for block to display 'id' in form
-            $builder->add($key);
-            if ($key == "id") {
-                $builder->add('id', 'hidden', [
-                    'mapped' => false,                   
-                ]);
-            }
+            if (!array_key_exists("association", $object) || $object["association"] != "OneToMany") {
+                if ($object["type"] == "datetime") {
+                    $builder->add($key, "datetime",
+                    ['widget' => 'single_text',
+                    'format' => 'dd.MM.yyyy',
+                    'attr' => [
+                    'placeholder' => '',
+                    'class' => 'datepicker',
+                    'data-date-format'=>"dd.mm.yyyy",
+                    'data-provide' => 'datepicker']]
+                    );
+                } else {
+
+                    $builder->add($key);
+                }
+                //for block to display 'id' in form
+
+                if ($key == "id") {
+                    $builder->add('id', 'hidden', [
+                        'mapped' => false,
+                    ]);
+                }
             }
         }
-        
-       
     }
 
     public function getName() {

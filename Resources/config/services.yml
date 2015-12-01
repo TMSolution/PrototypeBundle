@@ -102,3 +102,11 @@ services:
         arguments: [@prototype.config,%prototype.association.config.list.parameters%]        
         tags:
             -  { name: prototype.config, route: core_prototype_ajaxcontroller_ }
+
+
+
+    prototype.twig_extension:
+        class: Core\PrototypeBundle\Twig\UcWordsExtension
+        public: true
+        tags:
+            - { name: twig.extension }
