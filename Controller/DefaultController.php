@@ -194,53 +194,151 @@ class DefaultController extends FOSRestController
      * @return Response
      * @throws \BadMethodCallException Not implemented yet
      */
+    /*
     public function listAction(Request $request)
     {
 
 
+        $this->init();
+        $entityName = $this->getEntityName();
+        $routePrefix = $this->getRoutePrefix();
+
+        $grid = $this->get('grid');
+        $source = new Entity($this->model);
+        $grid->setSource($source);
+        $grid->resetSessionData();
+        $this->buildGrid($grid);
+        $grid->setId($routePrefix . '_' . $entityName);
+
+        $buttonRouteParams = $this->routeParams;
+        $buttonRouteParams['containerName'] = 'container';
+
+
+
+        $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxgrid", $grid->getRouteParameters()));
+
+        //config parameters for render and event broadcast
+        $params = $this->get('prototype.controler.params');
+        $params->setArray([
+            'entityName' => $entityName,
+            'newActionName' => $this->getAction('new'),
+            'parentName' => $this->getParentName(),
+            'parentId' => $this->getParentId(),
+            'routeName' => $routePrefix . '_new',
+            'config' => $this->getConfig(),
+            'containerName' => 'container',
+            'actionId' => 'default',
+            'routeParams' => $this->routeParams,
+            'buttonRouteParams' => $buttonRouteParams,
+            'isMasterRequest' => $this->isMasterRequest()
+        ]);
+
+
+        //Create event broadcast.
+        $event = $this->get('prototype.event');
+        $event->setParams($params);
+        $event->setModel($this->model);
+        $event->setGrid($grid);
+
+
+        $this->dispatch('before.grid', $event);
+        $gridConfig = $grid->getGridConfig($this->getConfig()->get('twig_element_grid'), $params->getArray());
+        $this->dispatch('after.grid', $event);
+        $view = $this->view($grid->getResult($grid->getResult()))
+                ->setTemplate($gridConfig->view)
+                ->setTemplateData($gridConfig->parameters);
+
+        return $this->handleView($view);
+    }*/
+
+    public function listAction(Request $request)
+    {
 
         $this->init();
-
-        $entity = $this->model->getEntity();
-        $queryBuilder = $this->model->getQueryBuilder('a');
-        $query = $queryBuilder->getQuery();
-
-
-
-
-
-//query
-//pageNumber
-//limit per page
-
-
-
+        $entityName = $this->getEntityName();
+        $routePrefix = $this->getRoutePrefix();
+        
+        $listConfig=$this->getListConfig();
+        
+        $query=$listConfig->getQuery($this->model);
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
                 $query, $request->query->getInt('page', 1)/* page number */, 10/* limit per page */
         );
 
+        $buttonRouteParams = $this->routeParams;
+        $buttonRouteParams['containerName'] = 'container';
 
-        $this->setRouteParam('entity', $entity);
-        $this->setRouteParam('config', $this->getConfig());
+        $params = $params = $this->get('prototype.controler.params');
+        $params->setArray(
+                [
+                    'entityName' => $entityName,
+                    'parentName' => $this->getParentName(),
+                    'parentId' => $this->getParentId(),
+                    'newActionName' => $this->getAction('new'),
+                    'routeName' => $routePrefix . '_new',
+                    'config' => $this->getConfig(),
+                    'routeParams' => $this->routeParams,
+                    'buttonRouteParams' => $buttonRouteParams,
+                    'isMasterRequest' => $this->isMasterRequest(),
+                    'defaultRoute' => $this->generateBaseRoute('list'),
+                    'pagination'=>$pagination,
+                    'fieldsNames'=>$listConfig->getFieldsNames($this->model),
+                    'routePrefix'=>$routePrefix,
+                    'fieldsAliases'=>$listConfig->getFieldsAliases()
+        ]);
+        
         $this->setRouteParam('pagination', $pagination);
 
-
-//Create event broadcast.
         $event = $this->get('prototype.event');
-        $event->setParams($this->routeParams);
+        $event->setParams($params);
         $event->setModel($this->model);
-//$event->setList($list);
-
-
-        $this->dispatch('on.list', $event);
-
-
-//  throw new \BadMethodCallException("Not implemented yet");
-// parameters to template
-//Render
-        $view = $this->view($this->routeParams)->setTemplate($this->getConfig()->get('twig_element_list'));
+        
+    
+        $this->dispatch('before.list', $event);
+        $view = $this->view($params->getArray())
+                ->setTemplate($this->getConfig()->get('twig_element_list'))
+                ->setTemplateData();
+                ;
+        $this->dispatch('after.list', $event);
         return $this->handleView($view);
+              
+
+//        $this->init();
+//
+//        $entity = $this->model->getEntity();
+//        $queryBuilder = $this->model->getQueryBuilder('a');
+//        $query = $queryBuilder->getQuery();
+//
+//
+//
+//
+//
+//
+//
+//
+//        $paginator = $this->get('knp_paginator');
+//        $pagination = $paginator->paginate(
+//                $query, $request->query->getInt('page', 1)/* page number */, 10/* limit per page */
+//        );
+//        $this->setRouteParam('pagination', $pagination);
+//
+//
+////Create event broadcast.
+//        $event = $this->get('prototype.event');
+//        $event->setParams($this->routeParams);
+//        $event->setModel($this->model);
+////$event->setList($list);
+//
+//
+//        $this->dispatch('on.list', $event);
+//
+//
+////  throw new \BadMethodCallException("Not implemented yet");
+//// parameters to template
+////Render
+//        $view = $this->view($this->routeParams)->setTemplate($this->getConfig()->get('twig_element_list'));
+//        return $this->handleView($view);
     }
 
     /**
@@ -592,6 +690,7 @@ class DefaultController extends FOSRestController
             'defaultRoute' => $this->generateBaseRoute('view'),
             'parentActionName' => $this->getAction('view'),
             'routeParams' => $this->routeParams,
+            
             'config' => $this->getConfig(),
             'states' => $this->getStates(),
             'isMasterRequest' => $this->isMasterRequest()
@@ -945,6 +1044,8 @@ class DefaultController extends FOSRestController
             $gridConfigFactory = $this->get("prototype.listconfig");
             $listConfig = $listConfigFactory->getlistConfig($this->getEntityClass());
         }
+        
+        $listConfig->setModel($this->model);
         return $listConfig;
     }
 

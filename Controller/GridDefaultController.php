@@ -58,6 +58,8 @@ class GridDefaultController extends DefaultController
         $params->setArray([
             'entityName' => $entityName,
             'newActionName' => $this->getAction('new'),
+            'parentName' => $this->getParentName(),
+            'parentId' => $this->getParentId(),
             'routeName' => $routePrefix . '_new',
             'config' => $this->getConfig(),
             'containerName' => 'container',
@@ -107,6 +109,8 @@ class GridDefaultController extends DefaultController
         $params->setArray(
                 [
                     'entityName' => $entityName,
+                    'parentName' => $this->getParentName(),
+                    'parentId' => $this->getParentId(),
                     'newActionName' => $this->getAction('new'),
                     'routeName' => $routePrefix . '_new',
                     'config' => $this->getConfig(),
