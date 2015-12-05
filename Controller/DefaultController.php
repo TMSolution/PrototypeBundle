@@ -675,6 +675,8 @@ class DefaultController extends FOSRestController
         $this->init();
         $entity = $this->model->findOneById($id);
         
+        $viewConfig=$this->getViewConfig();
+        
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -691,7 +693,8 @@ class DefaultController extends FOSRestController
             'states' => $this->getStates(),
             'isMasterRequest' => $this->isMasterRequest()
         ]);
-
+        
+        $viewConfig->getView($params);
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
@@ -1035,14 +1038,17 @@ class DefaultController extends FOSRestController
     {
         $configurator = $this->get("prototype.listconfig.configurator.service");
         $listConfig = $configurator->getService($this->getRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
-
-        if (!$listConfig) {
-            $gridConfigFactory = $this->get("prototype.listconfig");
-            $listConfig = $listConfigFactory->getlistConfig($this->getEntityClass());
-        }
-        
         $listConfig->setModel($this->model);
         return $listConfig;
+    }
+    
+    
+    protected function getViewConfig()
+    {
+        $configurator = $this->get("prototype.viewconfig.configurator.service");
+        $viewConfig = $configurator->getService($this->getRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
+        $viewConfig->setModel($this->model);
+        return $viewConfig;
     }
 
 }
