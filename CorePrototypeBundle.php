@@ -9,6 +9,7 @@ use Core\PrototypeBundle\DependencyInjection\Compiler\ConfigPass;
 use Core\PrototypeBundle\DependencyInjection\Compiler\GridConfigPass;
 use Core\PrototypeBundle\DependencyInjection\Compiler\FormTypePass;
 use Core\PrototypeBundle\DependencyInjection\Compiler\ListConfigPass;
+use Core\PrototypeBundle\DependencyInjection\Compiler\ViewConfigPass;
 
 class CorePrototypeBundle extends Bundle// implements BundleDependencyInterface
 {
