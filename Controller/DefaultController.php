@@ -677,6 +677,8 @@ class DefaultController extends FOSRestController
         
         $viewConfig=$this->getViewConfig();
         
+        $viewConfig->setModel($this->model);
+        
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -702,7 +704,7 @@ class DefaultController extends FOSRestController
         $this->dispatch('on.view', $event);
 
 
-//Render
+        //Render
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_view'));
         return $this->handleView($view);
     }
