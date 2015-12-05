@@ -675,9 +675,6 @@ class DefaultController extends FOSRestController
         $this->init();
         $entity = $this->model->findOneById($id);
         
-
-        
-        
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -690,7 +687,6 @@ class DefaultController extends FOSRestController
             'defaultRoute' => $this->generateBaseRoute('view'),
             'parentActionName' => $this->getAction('view'),
             'routeParams' => $this->routeParams,
-            
             'config' => $this->getConfig(),
             'states' => $this->getStates(),
             'isMasterRequest' => $this->isMasterRequest()

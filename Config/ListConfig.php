@@ -120,7 +120,7 @@ class ListConfig {
                 if ($fieldParam['default_field'] != 'id') {
                     $fieldAlias="{$field}__id";
                     $fieldName=strtolower($labelPrefix.$this->model->getEntityName().".{$field}.id");
-                    $this->fieldsNames[$fieldName]=['name'=>$fieldAlias,'isAssociatedObjectId'=>true,'association'=>true];
+                    $this->fieldsNames[$fieldName]=['name'=>strtolower($fieldAlias),'isAssociatedObjectId'=>true,'association'=>true];
                     $this->fieldsAliases[$fieldAlias]=$fieldName;
                     $this->fields[] = "_{$field}.id as $fieldAlias";
                 }
