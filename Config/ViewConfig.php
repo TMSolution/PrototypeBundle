@@ -26,7 +26,7 @@ class ViewConfig {
     public function setModel($model)
     {
         $this->model=$model;
-        $this->prepareFields();
+       
     }
     
     public function getView($options)
