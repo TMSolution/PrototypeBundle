@@ -67,6 +67,17 @@ services:
         tags:
             -  { name: prototype.listconfig }
 ################################################################
+    prototype.viewconfig.configurator.service:
+        class: Core\PrototypeBundle\Service\ViewConfigConfigurator
+        arguments: [@service_container] 
+    #niezgrabna 
+    prototype.viewconfig:
+        class: Core\PrototypeBundle\Config\ViewConfig
+        arguments: [@service_container]        
+        tags:
+            -  { name: prototype.viewconfig }
+################################################################
+
 
     prototype.formtype.configurator.service:
         class: Core\PrototypeBundle\Service\FormTypeConfigurator
