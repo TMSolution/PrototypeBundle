@@ -35,6 +35,7 @@ class GenerateTwigElementViewCommand extends ContainerAwareCommand
          */
         $this->setName('prototype:generate:twig:element:view')
                 ->setDescription('Generate twig element view template.')
+                ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
                 ->addArgument('entity', InputArgument::OPTIONAL, 'Insert entity class name')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder')
                 ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
@@ -153,6 +154,37 @@ class GenerateTwigElementViewCommand extends ContainerAwareCommand
             }
         }
     }
+    
+    protected function getConfigEntityName($input,$output)
+    {
+        $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
+                
+       
+        try {
+
+            $configBundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('configBundle'));
+            $configBundleMetadata = $manager->getBundleMetadata($configBundle);
+            $configMetadata = $configBundleMetadata->getMetadata();
+            $configEntityName = $configMetadata[0]->getName();
+        } catch (\InvalidArgumentException $e) {
+            try {
+                $configModel = $this->getContainer()->get("model_factory")->getModel($input->getArgument('configBundle'));
+                $configMetadata = $configModel->getMetadata();
+                $configEntityName = $configMetadata->getName();
+            } catch (\Exception $e) {
+                $output->writeln("<error>Argument configBundle:\"" . $input->getArgument('configBundle') . "\" not exist.</error>");
+                exit;
+            }
+        }
+
+        
+        if (!$configEntityName) {
+            $output->writeln("<error>Argument configEntityName not exist.</error>");
+            exit;
+        }
+        
+        return $configEntityName;
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -163,6 +195,10 @@ class GenerateTwigElementViewCommand extends ContainerAwareCommand
         $fieldsInfo = $model->getFieldsInfo();
         $entityReflection = new ReflectionClass($entityName);
         $objectName = $entityReflection->getShortName();
+        
+        //configNameSpace
+        $configEntityName=$this->getConfigEntityName($input,$output);
+        
         $this->addFile($entityName, $fieldsInfo, $rootFolder);
 
 

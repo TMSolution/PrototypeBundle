@@ -67,7 +67,7 @@ class GenerateCommand extends ContainerAwareCommand
         if (true === $input->getOption('quiet')) {
             $output = new NullOutput();
         }
-        
+
         $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
         $configFilePath = $this->getConfigFilePath($manager, $input);
 
@@ -108,7 +108,7 @@ class GenerateCommand extends ContainerAwareCommand
         $withUpdateContainerTwig = true === $input->getOption('withUpdateContainerTwig');
         $withViewContainerTwig = true === $input->getOption('withViewContainerTwig');
         $withGridContainerTwig = true === $input->getOption('withGridContainerTwig');
-        
+
         $withAll = true === $input->getOption('withAll');
 
         foreach ($entities as $entity) {
@@ -205,6 +205,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('Generate view element for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:element:view');
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder'),
                     '--withAssociated' => null
@@ -217,6 +218,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('Generate read element for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:element:read');
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder'),
                     '--withAssociated' => null
@@ -229,6 +231,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('Generate update element for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:element:update');
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder'),
                     '--withAssociated' => null
@@ -241,6 +244,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('Generate create element for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:element:create');
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder'),
                     '--withAssociated' => null
@@ -255,6 +259,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('Generate read container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:read');
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder')
                 );
@@ -266,6 +271,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('Generate create container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:create');
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder')
                 );
@@ -277,6 +283,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('Generate update container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:update');
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder')
                 );
@@ -288,17 +295,19 @@ class GenerateCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('Generate view container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:view');
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder')
                 );
                 $inputCommand = new ArrayInput($arguments);
                 $returnCode = $command->run($inputCommand, $output);
             }
-            
+
             if ($withGridContainerTwig || $withAll) {
                 $output->writeln(sprintf('Generate grid container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:grid');
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder')
                 );

@@ -31,6 +31,7 @@ class GenerateTwigContainerCreateCommand extends ContainerAwareCommand
     {
         $this->setName('prototype:generate:twig:container:create')
                 ->setDescription('Generate container twig for create action.')
+                ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity class name')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder');
     }
@@ -61,10 +62,13 @@ class GenerateTwigContainerCreateCommand extends ContainerAwareCommand
         return implode("\\", $entityNameArr);
     }
 
-    protected function createDirectory($classPath, $entityNamespace, $objectName, $rootFolder)
+    protected function createDirectory($classPath, $entityNamespace, $objectName, $rootFolder,$configEntityName)
     {
 
-
+        $confgEntityReflection = new ReflectionClass($configEntityName);
+        $configEntityNamespace = $confgEntityReflection->getNamespaceName();
+        $entityNamespace=$configEntityNamespace;
+        
         $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
         $directory = $this->replaceLast("Entity", "Resources" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . $rootFolder . DIRECTORY_SEPARATOR . $objectName . DIRECTORY_SEPARATOR . "Container", $directory);
 
@@ -119,6 +123,37 @@ class GenerateTwigContainerCreateCommand extends ContainerAwareCommand
 
         return $associations;
     }
+    
+    protected function getConfigEntityName($input,$output)
+    {
+        $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
+                
+       
+        try {
+
+            $configBundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('configBundle'));
+            $configBundleMetadata = $manager->getBundleMetadata($configBundle);
+            $configMetadata = $configBundleMetadata->getMetadata();
+            $configEntityName = $configMetadata[0]->getName();
+        } catch (\InvalidArgumentException $e) {
+            try {
+                $configModel = $this->getContainer()->get("model_factory")->getModel($input->getArgument('configBundle'));
+                $configMetadata = $configModel->getMetadata();
+                $configEntityName = $configMetadata->getName();
+            } catch (\Exception $e) {
+                $output->writeln("<error>Argument configBundle:\"" . $input->getArgument('configBundle') . "\" not exist.</error>");
+                exit;
+            }
+        }
+
+        
+        if (!$configEntityName) {
+            $output->writeln("<error>Argument configEntityName not exist.</error>");
+            exit;
+        }
+        
+        return $configEntityName;
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -128,10 +163,14 @@ class GenerateTwigContainerCreateCommand extends ContainerAwareCommand
         $model = $this->getContainer()->get("model_factory")->getModel($entityName);
         $fieldsInfo = $model->getFieldsInfo();
         $classPath = $this->getClassPath($entityName);
+        
+        //configNameSpace
+        $configEntityName=$this->getConfigEntityName($input,$output);
+        
         $entityReflection = new ReflectionClass($entityName);
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
-        $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder);
+        $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder,$configEntityName);
         $fileName = $directory . DIRECTORY_SEPARATOR . "create.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
