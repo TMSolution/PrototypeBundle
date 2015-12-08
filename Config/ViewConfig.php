@@ -46,7 +46,7 @@ class ViewConfig
                 elseif ($i < 5) {
                     $chartsArr[] = $this->getEasyPiePanelChart($i, $key, $fieldsInfo[$key]["object_name"]);
                 }
-                elseif ($i < 8) {
+                else {
                     $chartsArr[] = $this->getSparklinePanelChart($i, $key, $fieldsInfo[$key]["object_name"]);
                 }
                 
