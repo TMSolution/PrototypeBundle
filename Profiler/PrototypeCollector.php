@@ -32,13 +32,19 @@ class PrototypeCollector implements DataCollectorInterface
         $container = $kernel->getContainer();
         $router = $container->get('router');
         $classmapper = $container->get('classmapperservice');
+        $data=[];
         $data["header"] = "Url configuration";
         $data["uri"] = $request->getPathInfo();
-
+        if($data["uri"]=="/login_check")
+        {
+            return;
+        }
+        
         try {
+            
             $route = $router->match($data["uri"]);
             
-            if (!array_key_exists("_route", $route) || !array_key_exists("_controller", $route) ){
+            if (!array_key_exists("_route", $route) || !array_key_exists("_controller", $route) || !array_key_exists("entityName", $route)  ){
                 return;
             }
             $data["route"] = $route["_route"];
