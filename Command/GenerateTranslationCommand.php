@@ -40,6 +40,7 @@ class GenerateTranslationCommand extends ContainerAwareCommand
          */
         $this->setName('prototype:generate:translation')
                 ->setDescription('Generate translation file for bundle or entity')
+                ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
                 ->addArgument('entityOrBundle', InputArgument::REQUIRED, 'Insert bundle name or entity path')
                 ->addArgument('shortLanguage', InputArgument::OPTIONAL, 'Insert language shortcut (pl,en,etc...)', 'en');
     }
@@ -194,11 +195,11 @@ class GenerateTranslationCommand extends ContainerAwareCommand
         $methods = $entityReflection->getMethods();
 
         foreach ($methods as $method) {
-            
-             $name = $method->getName();
+
+            $name = $method->getName();
 
 
-           
+
 
             if ($method->isPublic() && (substr($name, 0, 3) == 'get' || substr($name, 0, 3) == 'has')) {
                 $name = strtolower(substr($name, 3));
@@ -211,12 +212,42 @@ class GenerateTranslationCommand extends ContainerAwareCommand
                         $defaultField = $this->getDefaultField($name);
                         $yamlArr[$lowerNameSpace][$objectName][$name][$defaultField] = $name;
                     } else {
-                        
+
                         $yamlArr[$lowerNameSpace][$objectName][$name] = $name;
                     }
                 }
             }
         }
+    }
+
+    protected function getConfigEntityNameSpace($input,$output,$manager)
+    {
+        $configEntityNamespace = null;
+        try {
+
+            $configBundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('configBundle'));
+            $configBundleMetadata = $manager->getBundleMetadata($configBundle);
+            $configMetadata = $configBundleMetadata->getMetadata();
+            $configEntity = $configMetadata[0]->getName();
+        } catch (\InvalidArgumentException $e) {
+            try {
+                $configModel = $this->getContainer()->get("model_factory")->getModel($input->getArgument('configBundle'));
+                $configMetadata = $configModel->getMetadata();
+                $configEntity = $configMetadata->getName();
+            } catch (\Exception $e) {
+                $output->writeln("<error>Argument configBundle:\"" . $input->getArgument('configBundle') . "\" not exist.</error>");
+                exit;
+            }
+        }
+
+        $confgEntityReflection = new ReflectionClass($configEntity);
+        $configEntityNamespace = $confgEntityReflection->getNamespaceName();
+        if (!$configEntityNamespace) {
+            $output->writeln("<error>Argument configEntityNamespace not exist.</error>");
+            exit;
+        }
+        
+        return $configEntityNamespace;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -228,7 +259,15 @@ class GenerateTranslationCommand extends ContainerAwareCommand
         $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
         $entities = [];
 
+
+        //configNameSpace
+        $configEntityNamespace=$this->getConfigEntityNameSpace($input,$output,$manager);
+
+        // dump($configEntityNamespace);
+
+
         try {
+
             $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('entityOrBundle'));
             // $output->writeln(sprintf('Generating translation for bundle "<info>%s</info>"', $bundle->getName()));
             $bundleMetadata = $manager->getBundleMetadata($bundle);
@@ -241,7 +280,7 @@ class GenerateTranslationCommand extends ContainerAwareCommand
                 $metadata = $model->getMetadata();
                 $entities[] = $metadata->getName();
             } catch (\Exception $e) {
-                $output->writeln("<error>Argument \"" . $input->getArgument('entityOrBundle') . "\" not exist.</error>");
+                $output->writeln("<error>Argument entityOrBundle:\"" . $input->getArgument('entityOrBundle') . "\" not exist.</error>");
                 exit;
             }
         }
@@ -254,7 +293,7 @@ class GenerateTranslationCommand extends ContainerAwareCommand
 
             $entityReflection = new ReflectionClass($entities[0]);
             $classPath = $this->getClassPath($entities[0], $manager);
-            $directory = $this->createTranslationDirectory($classPath, $entityReflection->getNamespaceName());
+            $directory = $this->createTranslationDirectory($classPath, /* $entityReflection->getNamespaceName() */ $configEntityNamespace);
             $shortObjectName = $entityReflection->getShortName();
 
             $configFullPath = $directory . DIRECTORY_SEPARATOR . "messages." . $this->language . ".yml";

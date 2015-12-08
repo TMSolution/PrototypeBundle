@@ -114,7 +114,7 @@ class GenerateCommand extends ContainerAwareCommand
         foreach ($entities as $entity) {
 
             $output->writeln(sprintf('Entity: "<info>%s</info>"', $entity));
-
+            //services
             if ($withConfigServices || $withAll) {
                 $output->writeln('Generate grid services.');
                 $command = $this->getApplication()->find('prototype:generate:services');
@@ -163,7 +163,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $returnCode = $command->run($inputCommand, $output);
             }
 
-
+            //formtypes
             if ($withFormTypes || $withAll) {
                 $output->writeln('Generate form types.');
                 $command = $this->getApplication()->find('prototype:generate:formtype');
@@ -172,6 +172,7 @@ class GenerateCommand extends ContainerAwareCommand
 
 
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder'),
                     'path' => $path,
@@ -304,7 +305,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $returnCode = $command->run($inputCommand, $output);
             }
 
-            //translation for bundle
+            //translation for bundle +
             if ($withTranslation || $withAll) {
 
                 $output->writeln(sprintf('Generate translation file for <info>%s</info>', $entity));
@@ -312,6 +313,7 @@ class GenerateCommand extends ContainerAwareCommand
 
                 //for polish
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entityOrBundle' => $entity, //$bundleName,
                     'shortLanguage' => 'pl'
                 );
@@ -320,6 +322,7 @@ class GenerateCommand extends ContainerAwareCommand
 
                 //for english
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entityOrBundle' => $entity,
                     'shortLanguage' => 'en'
                 );
