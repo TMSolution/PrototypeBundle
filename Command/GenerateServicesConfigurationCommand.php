@@ -159,6 +159,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
     protected function addParameters(&$yamlArr, $entity, $tag, $bundleName, $rootSpace, $objectName, $output, $associated = false, $configBundleName)
     {
 
+        $configBundleName=str_replace('\\','',$configBundleName);
         $parametersName = '';
         if (!$this->checkParametersKeyExist($yamlArr, $parametersName, $output)) {
 

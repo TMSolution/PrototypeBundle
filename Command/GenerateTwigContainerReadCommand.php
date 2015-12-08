@@ -61,10 +61,13 @@ class GenerateTwigContainerReadCommand extends ContainerAwareCommand
         return implode("\\", $entityNameArr);
     }
 
-    protected function createDirectory($classPath, $entityNamespace, $objectName, $rootFolder)
+    protected function createDirectory($classPath, $entityNamespace, $objectName, $rootFolder,$configEntityName)
     {
 
-
+        $confgEntityReflection = new ReflectionClass($configEntityName);
+        $configEntityNamespace = $confgEntityReflection->getNamespaceName();
+        $entityNamespace=$configEntityNamespace;
+        
         $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
         $directory = $this->replaceLast("Entity", "Resources" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . $rootFolder . DIRECTORY_SEPARATOR . $objectName . DIRECTORY_SEPARATOR . "Container", $directory);
 
@@ -166,7 +169,7 @@ class GenerateTwigContainerReadCommand extends ContainerAwareCommand
         $entityReflection = new ReflectionClass($entityName);
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
-        $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder);
+        $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder,$configEntityName);
         $fileName = $directory . DIRECTORY_SEPARATOR . "read.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
