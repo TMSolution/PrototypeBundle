@@ -188,6 +188,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $pathArr = explode('\\', $entity);
                 $path = array_pop($pathArr);
                 $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
                     'rootFolder' => $input->getArgument('rootFolder'),
                     'path' => $path,
