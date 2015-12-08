@@ -135,10 +135,10 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         }
     }
 
-    protected function addService($output, &$yamlArr, $entity, $tag = '', $route = '', $parentEntity = '', $associatedName = null, $parameterName = '', $rootSpace = '')
+    protected function addService($output, &$yamlArr, $entity, $configBundleName, $tag = '', $route = '', $parentEntity = '', $associatedName = null, $parameterName = '', $rootSpace = '')
     {
         $serviceName = $this->createServiceName($entity, $tag, $associatedName, $rootSpace);
-        $className = $this->createClassName($entity, $tag, $associatedName, $rootSpace);
+        $className = $this->createClassName($entity, $tag, $configBundleName, $associatedName, $rootSpace, $configBundleName);
         if (!$this->checkServicesKeyExist($yamlArr, $serviceName, $output)) {
             switch ($tag) {
                 case 'prototype.config':
@@ -156,7 +156,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         }
     }
 
-    protected function addParameters(&$yamlArr, $entity, $tag, $bundleName, $rootSpace, $objectName, $output, $associated = false)
+    protected function addParameters(&$yamlArr, $entity, $tag, $bundleName, $rootSpace, $objectName, $output, $associated = false, $configBundleName)
     {
 
         $parametersName = '';
@@ -169,23 +169,23 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                     if ($associated) {
                         $parametersName = $this->createParametersName($entity, $tag, $rootSpace);
                         $yamlArr['parameters'][$parametersName] = [
-                            'twig_element_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
-                            'twig_element_create' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:create.html.twig',
-                            'twig_element_update' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig',
-                            'twig_element_view' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:view.html.twig'
+                            'twig_element_read' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
+                            'twig_element_create' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:create.html.twig',
+                            'twig_element_update' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig',
+                            'twig_element_view' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:view.html.twig'
                         ];
                     } else {
                         $parametersName = $this->createParametersName($entity, $tag, $rootSpace);
                         $yamlArr['parameters'][$parametersName] = [
-                            'twig_container_view' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:view.html.twig',
-                            'twig_container_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:read.html.twig',
-                            'twig_container_create' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:create.html.twig',
-                            'twig_container_update' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:update.html.twig',
-                            'twig_container_grid' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:grid.html.twig',
-                            'twig_element_view' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:view.html.twig',
-                            'twig_element_read' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
-                            'twig_element_create' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:create.html.twig',
-                            'twig_element_update' => $bundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig'
+                            'twig_container_view' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:view.html.twig',
+                            'twig_container_read' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:read.html.twig',
+                            'twig_container_create' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:create.html.twig',
+                            'twig_container_update' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:update.html.twig',
+                            'twig_container_grid' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:grid.html.twig',
+                            'twig_element_view' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:view.html.twig',
+                            'twig_element_read' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
+                            'twig_element_create' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:create.html.twig',
+                            'twig_element_update' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig'
                         ];
                     }
                     break;
@@ -306,7 +306,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         return str_replace('.config', '', $parametersName);
     }
 
-    protected function createClassName($entity, $tag, $associationName = null, $rootSpace = null)
+    protected function createClassName($entity, $tag, $configBundleName, $associationName = null, $rootSpace = null)
     {
 
         switch ($tag) {
@@ -314,7 +314,11 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 $className = 'Core\\PrototypeBundle\\Service\\Config';
                 break;
             case 'prototype.gridconfig':
+
                 $className = str_replace('\\Entity', '\\Config', $entity) . '\\GridConfig';
+                $classNamePrefix = substr($className, 0, strpos($className, 'Bundle', 0) + 6);
+                $className = str_replace($classNamePrefix, $configBundleName, $className);
+
                 if ($associationName) {
 
                     if ($rootSpace && $rootSpace != $associationName) {
@@ -325,7 +329,12 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 }
                 break;
             case 'prototype.formtype':
+
                 $className = str_replace('\\Entity', '\\Config', $entity) . '\\FormType';
+                $classNamePrefix = substr($className, 0, strpos($className, 'Bundle', 0) + 6);
+                $className = str_replace($classNamePrefix, $configBundleName, $className);
+
+
                 if ($rootSpace && $rootSpace != $associationName) {
                     $className = str_replace('\\Config\\', '\\Config\\' . $rootSpace . '\\' . $associationName . '\\', $className);
                 } else {
@@ -337,10 +346,8 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         return $className;
     }
 
-    protected function runAssociatedObjectsRecursively($fieldsInfo, &$yamlArr, $input, $output, $rootSpace, $objectName, $bundleName, $entity)
+    protected function runAssociatedObjectsRecursively($fieldsInfo, &$yamlArr, $input, $output, $rootSpace, $objectName, $bundleName, $entity, $configBundleName)
     {
-
-
         $associations = [];
         foreach ($fieldsInfo as $key => $value) {
 
@@ -351,10 +358,41 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 $rootLast = array_pop($arr);
                 $arr = explode('\\', $value['object_name']);
                 $last = array_pop($arr);
-                $parameterName = $this->addParameters($yamlArr, $value['object_name'], $input->getArgument('tag'), $bundleName, $rootSpace . DIRECTORY_SEPARATOR . $objectName, $last, $output, true);
-                $this->addService($output, $yamlArr, $value['object_name'], $input->getArgument('tag'), 'core_prototype_associationcontroller_', $entity, $rootLast, $parameterName, $rootSpace);
+                $parameterName = $this->addParameters($yamlArr, $value['object_name'], $input->getArgument('tag'), $bundleName, $rootSpace . DIRECTORY_SEPARATOR . $objectName, $last, $output, true, $configBundleName);
+                $this->addService($output, $yamlArr, $value['object_name'], $configBundleName, $input->getArgument('tag'), 'core_prototype_associationcontroller_', $entity, $rootLast, $parameterName, $rootSpace);
             }
         }
+    }
+
+    protected function getConfigBundleName($input, $output, $manager)
+    {
+
+
+
+        try {
+
+            $configBundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('configBundle'));
+
+
+            $bundleClass = get_class($configBundle);
+            $configBundleName = substr($bundleClass, 0, strpos($bundleClass, 'Bundle', 0) + 6);
+        } catch (\InvalidArgumentException $e) {
+            try {
+                $class = get_class($input->getArgument('configBundle'));
+                $configBundleName = substr($class, 0, strpos($class, 'Bundle', 0) + 6);
+            } catch (\Exception $e) {
+                $output->writeln("<error>Argument configBundle:\"" . $input->getArgument('configBundle') . "\" not exist.</error>");
+                exit;
+            }
+        }
+
+
+        if (!$configBundleName) {
+            $output->writeln("<error>Argument configEntityName not exist.</error>");
+            exit;
+        }
+
+        return $configBundleName;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -370,6 +408,8 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 
         $rootSpace = $input->getArgument('rootSpace');
 
+        //configNameSpace
+        $configBundleName = $this->getConfigBundleName($input, $output, $manager);
 
 
         $serviceName = '';
@@ -391,14 +431,14 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 
         //add service
         if ($configFullPath && $yamlArr) {
-            $parameterName = $this->addParameters($yamlArr, $entity, $tag, $bundleName, $rootSpace, $objectName, $output, false);
-            $this->addService($output, $yamlArr, $entity, $tag, $route, $parentEntity, $rootSpace, $parameterName, $rootSpace);
+            $parameterName = $this->addParameters($yamlArr, $entity, $tag, $bundleName, $rootSpace, $objectName, $output, false, $configBundleName);
+            $this->addService($output, $yamlArr, $entity, $configBundleName, $tag, $route, $parentEntity, $rootSpace, $parameterName, $rootSpace);
         }
 
 
         //generate assoc services
         if (true === $input->getOption('withAssociated')) {
-            $this->runAssociatedObjectsRecursively($fieldsInfo, $yamlArr, $input, $output, $rootSpace, $objectName, $bundleName, $entity);
+            $this->runAssociatedObjectsRecursively($fieldsInfo, $yamlArr, $input, $output, $rootSpace, $objectName, $bundleName, $entity, $configBundleName);
         }
 
 
