@@ -41,11 +41,15 @@ class ViewConfig
             if (array_key_exists("association", $fieldsInfo[$key]) && ( $fieldsInfo[$key]["association"] == "ManyToMany" || $fieldsInfo[$key]["association"] == "OneToMany" )) {
 
                 if ($i < 4) {
-                    $chartsArr[] = $this->getSparklineMiniChart($key, $fieldsInfo[$key]["object_name"]);
+                    $chartsArr[] = $this->getSparklineMiniChart($i, $key, $fieldsInfo[$key]["object_name"]);
+                } 
+                elseif ($i < 5) {
+                    $chartsArr[] = $this->getEasyPiePanelChart($i, $key, $fieldsInfo[$key]["object_name"]);
                 }
-                elseif($i < 8){
-                    $chartsArr[] = $this->getSparklinePanelChart($key, $fieldsInfo[$key]["object_name"]);
+                elseif ($i < 8) {
+                    $chartsArr[] = $this->getSparklinePanelChart($i, $key, $fieldsInfo[$key]["object_name"]);
                 }
+                
                 $i++;
             }
         }
@@ -53,7 +57,7 @@ class ViewConfig
         return $chartsArr;
     }
 
-    protected function getSparklineMiniChart($key, $objectName)
+    protected function getSparklineMiniChart($i, $key, $objectName)
     {
         $chart = $this->getContainer()->get('charts.sparkline.' . $this->chartTypes[rand(0, 2)] . '.generate');
         $chartOptions = [
@@ -61,25 +65,47 @@ class ViewConfig
             'htmlContainerId' => $key,
             'title' => $key,
             'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
-            'counter' => $this->getNumberOf($objectName),
+            'value' => $this->getNumberOf($objectName),
             'data' => [rand(1, 50), rand(1, 50), rand(1, 50), rand(1, 50), rand(1, 50)]
         ];
         $chart->setOptions($chartOptions);
 
         return $chart->render();
     }
-    
-    protected function getSparklinePanelChart($key, $objectName)
+
+    protected function getEasyPiePanelChart($i, $key, $objectName)
+    {
+
+        $chart = $this->getContainer()->get('charts.easy.pie.generate');
+        $chartOptions = [
+            'type' => "panel",
+            'htmlContainerId' => $key,
+            'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
+            'title' => $key,
+            'value' => $this->getNumberOf($objectName),
+            'listData' => [['title' => 'Quantity', 'value' => $this->getNumberOf($objectName)]],
+            'trackColor' => 'rgba(255,255,255,0.2)',
+            'scaleColor' => 'rgba(255,255,255,0.5)',
+            'barColor' => 'rgba(255,255,255,0.7)',
+            'lineWidth' => 7,
+            'lineCap' => 'butt'
+        ];
+
+        $chart->setOptions($chartOptions);
+
+        return $chart->render();
+    }
+
+    protected function getSparklinePanelChart($i, $key, $objectName)
     {
         $chart = $this->getContainer()->get('charts.sparkline.' . $this->chartTypes[rand(0, 2)] . '.generate');
         $chartOptions = [
             'type' => "panel",
             'htmlContainerId' => $key,
             'title' => $key,
-            'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
-            
+            'backgroundColorClass' => $this->backgroundColorClass[$i],
             'data' => [rand(1, 50), rand(1, 50), rand(1, 50), rand(1, 50), rand(1, 50)],
-            'listData' => [['title'=>'Quantity','value'=>$this->getNumberOf($objectName)]]
+            'listData' => [['title' => 'Quantity', 'value' => $this->getNumberOf($objectName)]]
         ];
         $chart->setOptions($chartOptions);
 
