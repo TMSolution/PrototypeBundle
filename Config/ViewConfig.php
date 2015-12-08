@@ -112,10 +112,7 @@ class ViewConfig
         return $chart->render();
     }
 
-    protected function getPanelChart()
-    {
-        
-    }
+  
 
     protected function getNumberOf($objectName)
     {
