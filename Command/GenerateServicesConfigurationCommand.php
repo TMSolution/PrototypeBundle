@@ -164,7 +164,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
     protected function addParameters(&$yamlArr, $entity, $tag, $bundleName, $rootSpace, $objectName, $output, $associated = false, $configBundleName)
     {
 
-        $configBundleName=str_replace('\\','',$configBundleName);
+        $configBundleName = str_replace('\\', '', $configBundleName);
         $parametersName = '';
         if (!$this->checkParametersKeyExist($yamlArr, $parametersName, $output)) {
 
@@ -216,7 +216,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             'tags' => [['name' => "'$tag'", 'route' => "'$route'", 'entity' => "'$entity'", 'parentEntity' => "'$parentEntity'"]]
         ];
     }
-    
+
     protected function addListConfigService(&$yamlArr, $serviceName, $class, $entity, $tag = '', $route = '', $parentEntity = '')
     {
         $yamlArr['services'][$serviceName] = [
@@ -225,7 +225,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             'tags' => [['name' => "'$tag'", 'route' => "'$route'", 'entity' => "'$entity'", 'parentEntity' => "'$parentEntity'"]]
         ];
     }
-    
+
     protected function addViewConfigService(&$yamlArr, $serviceName, $class, $entity, $tag = '', $route = '', $parentEntity = '')
     {
         $yamlArr['services'][$serviceName] = [
@@ -404,7 +404,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         return $className;
     }
 
-    protected function runAssociatedObjectsRecursively($fieldsInfo, &$yamlArr, $input, $output, $rootSpace, $objectName, $bundleName, $entity, $configBundleName)
+    protected function runAssociatedObjectsRecursively($fieldsInfo, &$yamlArr, $input, $output, $rootSpace, $objectName, $bundleName, $entity, $configBundleName, $routeName)
     {
         $associations = [];
         foreach ($fieldsInfo as $key => $value) {
@@ -417,7 +417,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 $arr = explode('\\', $value['object_name']);
                 $last = array_pop($arr);
                 $parameterName = $this->addParameters($yamlArr, $value['object_name'], $input->getArgument('tag'), $bundleName, $rootSpace . DIRECTORY_SEPARATOR . $objectName, $last, $output, true, $configBundleName);
-                $this->addService($output, $yamlArr, $value['object_name'], $configBundleName, $input->getArgument('tag'), 'core_prototype_associationcontroller_', $entity, $rootLast, $parameterName, $rootSpace);
+                $this->addService($output, $yamlArr, $value['object_name'], $configBundleName, $input->getArgument('tag'), /* 'core_prototype_associationcontroller_' */ $routeName . '_association_', $entity, $rootLast, $parameterName, $rootSpace);
             }
         }
     }
@@ -482,25 +482,27 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             $entityReflection = new ReflectionClass($entity);
             $objectName = $entityReflection->getShortName();
             $yamlArr = $this->readYml($configFullPath);
+
+            $routeName = strtolower(str_replace('\\', '_', rtrim($metadata->namespace, "\\Entity")) . '_' . $rootSpace . '_');
+
+            //Repair apotrophes on class path
+            $this->repairApostrophes($yamlArr);
+
+            //add service
+            if ($configFullPath && $yamlArr) {
+                $parameterName = $this->addParameters($yamlArr, $entity, $tag, $bundleName, $rootSpace, $objectName, $output, false, $configBundleName);
+                $this->addService($output, $yamlArr, $entity, $configBundleName, $tag, $routeName, $parentEntity, $rootSpace, $parameterName, $rootSpace);
+            }
+
+
+            //generate assoc services
+            if (true === $input->getOption('withAssociated')) {
+                $this->runAssociatedObjectsRecursively($fieldsInfo, $yamlArr, $input, $output, $rootSpace, $objectName, $bundleName, $entity, $configBundleName, $routeName);
+            }
+
+
+            $this->writeYml($configFullPath, $yamlArr, $output);
         }
-
-        //Repair apotrophes on class path
-        $this->repairApostrophes($yamlArr);
-
-        //add service
-        if ($configFullPath && $yamlArr) {
-            $parameterName = $this->addParameters($yamlArr, $entity, $tag, $bundleName, $rootSpace, $objectName, $output, false, $configBundleName);
-            $this->addService($output, $yamlArr, $entity, $configBundleName, $tag, $route, $parentEntity, $rootSpace, $parameterName, $rootSpace);
-        }
-
-
-        //generate assoc services
-        if (true === $input->getOption('withAssociated')) {
-            $this->runAssociatedObjectsRecursively($fieldsInfo, $yamlArr, $input, $output, $rootSpace, $objectName, $bundleName, $entity, $configBundleName);
-        }
-
-
-        $this->writeYml($configFullPath, $yamlArr, $output);
     }
 
 }
