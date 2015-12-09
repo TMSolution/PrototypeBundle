@@ -95,11 +95,11 @@
                              </a>
                              <ul class="dropdown-menu pull-right">
                                  <li>
-                                     <a data-route-target=".content" data-original-title="View" class="list-button-view lazy-loaded" id="button-id" href="{{'{{path(routePrefix~\'_read\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": objectName|lower})}}'}}">
+                                     <a data-route-target=".content" data-original-title="View" class="list-button-view lazy-loaded" id="button-id" href="{{'{{path(routePrefix~\'_read\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": "'}}{{objectName}}{{'"|lower})}}'}}">
                                          <i class="glyphicon glyphicon-eye-open"></i> {{'{{\'View\'|trans}}'}}</a>
                                  </li>
                                  <li>
-                                     <a data-original-title="Delete" class="list-button-delete " id="button-id" href="{{'{{path(routePrefix~\'_delete\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": objectName|lower })}}'}}">
+                                     <a data-original-title="Delete" class="list-button-delete " id="button-id" href="{{'{{path(routePrefix~\'_delete\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": "'}}{{objectName}}{{'"|lower })}}'}}">
                                          <i class="glyphicon glyphicon-remove">
                                          </i>
                                          {{'{{\'Delete\'|trans}}'}}
