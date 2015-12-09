@@ -36,6 +36,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         $this->setName('prototype:generate:services')
                 ->setDescription('Generate services configuration in bundle prototype.services.yml')
                 ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert configuration Bundle')
+                ->addArgument('applicationName', InputArgument::REQUIRED, 'Application name (ex. cco_callcenter,...)')
                 ->addArgument('rootSpace', InputArgument::REQUIRED, 'Insert rootSpace')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity path')
                 ->addArgument('tag', InputArgument::REQUIRED, 'Insert tagname (example:prototype.config,prototype.formtype)')
@@ -482,8 +483,11 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             $entityReflection = new ReflectionClass($entity);
             $objectName = $entityReflection->getShortName();
             $yamlArr = $this->readYml($configFullPath);
+            
+            
+            $applicationName=$input->getArgument('configBundle');
 
-            $routeName = strtolower(str_replace('\\', '_', rtrim($metadata->namespace, "Bundle\\Entity")) . '_' . $rootSpace . '_');
+            $routeName = strtolower($applicationName . '_' . $rootSpace . '_');
 
             //Repair apotrophes on class path
             $this->repairApostrophes($yamlArr);

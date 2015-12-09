@@ -36,6 +36,7 @@ class GenerateCommand extends ContainerAwareCommand
                 ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert configBundle')
                 ->addArgument('entityOrBundle', InputArgument::REQUIRED, 'Insert Entity or Bundle')
                 ->addArgument('rootFolder', InputArgument::REQUIRED, 'Insert rootFolder(SuperAdmin,Admin,Agent,...)')
+                ->addArgument('applicationName', InputArgument::REQUIRED, 'Application name (ex. cco_callcenter,...)')
                 ->addOption('withConfigServices', null, InputOption::VALUE_NONE, 'Generate config services file')
                 ->addOption('withGridServices', null, InputOption::VALUE_NONE, 'Generate grid services file')
                 ->addOption('withListServices', null, InputOption::VALUE_NONE, 'Generate list services file')
@@ -140,6 +141,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:services');
                 $arguments = array(
                     'configBundle' => $input->getArgument('configBundle'),
+                    'applicationName' => $input->getArgument('applicationName'),
                     'rootSpace' => $input->getArgument('rootFolder'),
                     'entity' => $entity,
                     'tag' => 'prototype.config',
@@ -156,6 +158,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:services');
                 $arguments = array(
                     'configBundle' => $input->getArgument('configBundle'),
+                    'applicationName' => $input->getArgument('applicationName'),
                     'rootSpace' => $input->getArgument('rootFolder'),
                     'entity' => $entity,
                     'tag' => 'prototype.gridconfig',
@@ -172,6 +175,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:services');
                 $arguments = array(
                     'configBundle' => $input->getArgument('configBundle'),
+                    'applicationName' => $input->getArgument('applicationName'),
                     'rootSpace' => $input->getArgument('rootFolder'),
                     'entity' => $entity,
                     'tag' => 'prototype.listconfig',
@@ -188,6 +192,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:services');
                 $arguments = array(
                     'configBundle' => $input->getArgument('configBundle'),
+                    'applicationName' => $input->getArgument('applicationName'),
                     'rootSpace' => $input->getArgument('rootFolder'),
                     'entity' => $entity,
                     'tag' => 'prototype.viewconfig',
@@ -204,6 +209,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:services');
                 $arguments = array(
                     'configBundle' => $input->getArgument('configBundle'),
+                    'applicationName' => $input->getArgument('applicationName'),
                     'rootSpace' => $input->getArgument('rootFolder'),
                     'entity' => $entity,
                     'tag' => 'prototype.formtype',
