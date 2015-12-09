@@ -52,6 +52,7 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
     {
         $this->setName('prototype:generate:formtype')
                 ->setDescription('Generate formtype for entity')
+                ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity class name')
                 ->addArgument('path', InputArgument::OPTIONAL, 'Insert form type path')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert form type path')
@@ -72,6 +73,7 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
     protected function getClassPath($entityName)
     {
         $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
+        
         $classPath = $manager->getClassMetadata($entityName)->getPath();
         return $classPath;
     }
@@ -119,13 +121,13 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         return $subject;
     }
 
-    protected function getFormTypeNamespaceName($entityName, $path,$rootFolder)
+    protected function getFormTypeNamespaceName($entityName,$configEntityName, $path,$rootFolder)
     {
         $directory = "Config\\".$rootFolder;
         if ($path) {
             $directory = str_replace(DIRECTORY_SEPARATOR, "\\", "Config\\".$rootFolder."\\" . $path);
         }
-        $entityNameArr = explode("\\", str_replace("Entity", $directory, $entityName));
+        $entityNameArr = explode("\\", str_replace("Entity", $directory, $configEntityName/*$entityName*/));
         unset($entityNameArr[count($entityNameArr) - 1]);
         return implode("\\", $entityNameArr);
     }
@@ -140,20 +142,25 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         }
     }
 
-    protected function addFile($entityName, $path, $fieldsInfo, $rootFolder, $output)
+    protected function addFile($entityName, $path, $fieldsInfo, $rootFolder, $output,$configEntityName)
     {
-        $classPath = $this->getClassPath($entityName);
+        $confgEntityReflection = new ReflectionClass($configEntityName);
+        $configEntityNamespace = $confgEntityReflection->getNamespaceName();
+        
+        
+        
+        $classPath = $this->getClassPath($configEntityName);
         $entityReflection = new ReflectionClass($entityName);
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
         
         $lowerNameSpaceForTranslate = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityNamespace)));
                
-        $directory = $this->createDirectory($path, $classPath, $entityNamespace, $objectName, $rootFolder);
+        $directory = $this->createDirectory($path, $classPath, $configEntityNamespace/*$entityNamespace*/, $objectName, $rootFolder);
         $fileName = $directory . DIRECTORY_SEPARATOR . "FormType.php";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
-        $formTypeNamespaceName = $this->getFormTypeNamespaceName($entityName, $path, $rootFolder);
+        $formTypeNamespaceName = $this->getFormTypeNamespaceName($entityName, $configEntityName, $path, $rootFolder);
         $formTypeName = strtolower(str_replace('\\', '_', $entityNamespace).'_'.$objectName);
 
         foreach ($fieldsInfo as $key => $field) {
@@ -175,7 +182,7 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
         $output->writeln("Form type " . $entityName . " generated");
     }
 
-    protected function runAssociatedObjectsRecursively($fieldsInfo, $rootPath, $rootFolder, $output)
+    protected function runAssociatedObjectsRecursively($fieldsInfo, $rootPath, $rootFolder, $output,$configEntityName)
     {
         $associations = [];
         foreach ($fieldsInfo as $key => $value) {
@@ -189,28 +196,74 @@ class GenerateFormTypeCommand extends ContainerAwareCommand
                 
                 $arr = explode('\\', $value['object_name']);
                 $path = array_pop($arr);
-                $this->addFile($value['object_name'], $rootPath.DIRECTORY_SEPARATOR.$path, $assocObjectFieldsInfo, $rootFolder, $output);
+                
+                
+                
+                $this->addFile($value['object_name'], $rootPath.DIRECTORY_SEPARATOR.$path, $assocObjectFieldsInfo, $rootFolder, $output,$configEntityName);
             }
         }
     }
+    
+    protected function getConfigEntityName($input,$output)
+    {
+        $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
+                
+       
+        try {
+
+            $configBundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('configBundle'));
+            $configBundleMetadata = $manager->getBundleMetadata($configBundle);
+            $configMetadata = $configBundleMetadata->getMetadata();
+            $configEntityName = $configMetadata[0]->getName();
+        } catch (\InvalidArgumentException $e) {
+            try {
+                $configModel = $this->getContainer()->get("model_factory")->getModel($input->getArgument('configBundle'));
+                $configMetadata = $configModel->getMetadata();
+                $configEntityName = $configMetadata->getName();
+            } catch (\Exception $e) {
+                $output->writeln("<error>Argument configBundle:\"" . $input->getArgument('configBundle') . "\" not exist.</error>");
+                exit;
+            }
+        }
+
+        
+        if (!$configEntityName) {
+            $output->writeln("<error>Argument configEntityName not exist.</error>");
+            exit;
+        }
+        
+        return $configEntityName;
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output)
+            
+            
     {
         //add form type
         $path = $input->getArgument('path');
         $entity = $input->getArgument('entity');
         $rootFolder = $input->getArgument('rootFolder');
         
+        
+        
+        
+        
+        
         $entityName = $this->getEntityName($entity);
         $model = $this->getContainer()->get("model_factory")->getModel($entityName);
         $fieldsInfo = $model->getFieldsInfo();
-        $this->addFile($entityName, $path, $fieldsInfo, $rootFolder, $output);
+        
+        
+        //configNameSpace
+        $configEntityName=$this->getConfigEntityName($input,$output);
+        
+        $this->addFile($entityName, $path, $fieldsInfo, $rootFolder, $output,$configEntityName);
 
 
         //generate assoc form types
         if (true === $input->getOption('withAssociated')) {
 
-            $this->runAssociatedObjectsRecursively($fieldsInfo,$path, $rootFolder,$output);
+            $this->runAssociatedObjectsRecursively($fieldsInfo,$path, $rootFolder,$output,$configEntityName);
         }
     }
 

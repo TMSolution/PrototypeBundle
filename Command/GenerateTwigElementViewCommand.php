@@ -35,6 +35,7 @@ class GenerateTwigElementViewCommand extends ContainerAwareCommand
          */
         $this->setName('prototype:generate:twig:element:view')
                 ->setDescription('Generate twig element view template.')
+                ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
                 ->addArgument('entity', InputArgument::OPTIONAL, 'Insert entity class name')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder')
                 ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
@@ -67,10 +68,13 @@ class GenerateTwigElementViewCommand extends ContainerAwareCommand
         return implode("\\", $entityNameArr);
     }
 
-    protected function createDirectory($classPath, $entityNamespace, $objectName, $rootFolder)
+    protected function createDirectory($classPath, $entityNamespace, $objectName, $rootFolder,$configEntityName)
     {
 
-
+        $confgEntityReflection = new ReflectionClass($configEntityName);
+        $configEntityNamespace = $confgEntityReflection->getNamespaceName();
+        $entityNamespace=$configEntityNamespace;
+        
         $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($classPath . "\\" . $entityNamespace));
         $directory = $this->replaceLast("Entity", "Resources" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . $rootFolder . DIRECTORY_SEPARATOR . $objectName . DIRECTORY_SEPARATOR . "Element", $directory);
 
@@ -108,13 +112,13 @@ class GenerateTwigElementViewCommand extends ContainerAwareCommand
         return $subject;
     }
     
-    protected function addFile($entityName, $fieldsInfo, $rootFolder)
+    protected function addFile($entityName, $fieldsInfo, $rootFolder,$configEntityName)
     {
-        $classPath = $this->getClassPath($entityName);
+        $classPath = $this->getClassPath($configEntityName);
         $entityReflection = new ReflectionClass($entityName);
         $entityNamespace = $entityReflection->getNamespaceName();
         $objectName = $entityReflection->getShortName();
-        $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder);
+        $directory = $this->createDirectory($classPath, $entityNamespace, $objectName, $rootFolder,$configEntityName);
         $fileName = $directory . DIRECTORY_SEPARATOR . "view.html.twig";
         $this->isFileNameBusy($fileName);
         $templating = $this->getContainer()->get('templating');
@@ -133,7 +137,7 @@ class GenerateTwigElementViewCommand extends ContainerAwareCommand
         return $directory;
     }
 
-    protected function runAssociatedObjectsRecursively($fieldsInfo, $rootFolder,$objectName, $output)
+    protected function runAssociatedObjectsRecursively($fieldsInfo, $rootFolder,$objectName, $output,$configEntityName)
     {
         $associations = [];
         foreach ($fieldsInfo as $key => $value) {
@@ -149,9 +153,40 @@ class GenerateTwigElementViewCommand extends ContainerAwareCommand
                 $path = array_pop($arr);
                
                 //$this->addFile($value['object_name'], $rootPath . DIRECTORY_SEPARATOR . $path, $assocObjectFieldsInfo, $rootFolder, $output);
-                $this->addFile($value['object_name'], $assocObjectFieldsInfo, $rootFolder.DIRECTORY_SEPARATOR.$objectName);
+                $this->addFile($value['object_name'], $assocObjectFieldsInfo, $rootFolder.DIRECTORY_SEPARATOR.$objectName,$configEntityName);
             }
         }
+    }
+    
+    protected function getConfigEntityName($input,$output)
+    {
+        $manager = new DisconnectedMetadataFactory($this->getContainer()->get('doctrine'));
+                
+       
+        try {
+
+            $configBundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('configBundle'));
+            $configBundleMetadata = $manager->getBundleMetadata($configBundle);
+            $configMetadata = $configBundleMetadata->getMetadata();
+            $configEntityName = $configMetadata[0]->getName();
+        } catch (\InvalidArgumentException $e) {
+            try {
+                $configModel = $this->getContainer()->get("model_factory")->getModel($input->getArgument('configBundle'));
+                $configMetadata = $configModel->getMetadata();
+                $configEntityName = $configMetadata->getName();
+            } catch (\Exception $e) {
+                $output->writeln("<error>Argument configBundle:\"" . $input->getArgument('configBundle') . "\" not exist.</error>");
+                exit;
+            }
+        }
+
+        
+        if (!$configEntityName) {
+            $output->writeln("<error>Argument configEntityName not exist.</error>");
+            exit;
+        }
+        
+        return $configEntityName;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -163,13 +198,17 @@ class GenerateTwigElementViewCommand extends ContainerAwareCommand
         $fieldsInfo = $model->getFieldsInfo();
         $entityReflection = new ReflectionClass($entityName);
         $objectName = $entityReflection->getShortName();
-        $this->addFile($entityName, $fieldsInfo, $rootFolder);
+        
+        //configNameSpace
+        $configEntityName=$this->getConfigEntityName($input,$output);
+        
+        $this->addFile($entityName, $fieldsInfo, $rootFolder,$configEntityName);
 
 
         //generate assoc form types
         if (true === $input->getOption('withAssociated')) {
 
-            $this->runAssociatedObjectsRecursively($fieldsInfo, $rootFolder,$objectName, $output);
+            $this->runAssociatedObjectsRecursively($fieldsInfo, $rootFolder,$objectName, $output,$configEntityName);
         }
 
 

@@ -13,7 +13,7 @@
                 <div class="form-group m-b-20">
                     <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}.{{defaultFieldName}}{{"'|trans}} "}}</div>
                     <div class="col-sm-11">
-                        {{ "{% if property %}{% for item in properties."}}{{field}}{{" %} "}}
+                         {{ "{% if properties."}}{{field}}{{" is defined %}{% for item in properties."}}{{field}}{{" %} "}}
 
                         {{ " {% if item %}{{item}}{% if not loop.last %},{% endif %}{% endif %}" }}
 
@@ -37,7 +37,7 @@
             <div class="form-group m-b-20">
                 <div class="col-sm-1 f-700">{{" {{'"}}{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field}}{{"'|trans}} "}}</div>
                 <div class="col-sm-11">
-                    {{ "{% if property %}{% for item in properties."}}{{field}}{{" %} "}}
+                    {{ "{% if properties."}}{{field}}{{" is defined %}{% for item in properties."}}{{field}}{{" %} "}}
 
                     {{ " {% if item %}{{item}}{% if not loop.last %},{% endif %}{% endif %}" }}
 
