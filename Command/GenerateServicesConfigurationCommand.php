@@ -147,6 +147,11 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 case 'prototype.gridconfig':
                     $this->addGridConfigService($yamlArr, $serviceName, $className, $entity, $tag, $route, $parentEntity);
                     break;
+                case 'prototype.listconfig':
+                    $this->addListConfigService($yamlArr, $serviceName, $className, $entity, $tag, $route, $parentEntity);
+                case 'prototype.viewconfig':
+                    $this->addViewConfigService($yamlArr, $serviceName, $className, $entity, $tag, $route, $parentEntity);
+                    break;
                 case 'prototype.formtype':
                     $this->addFormTypeService($yamlArr, $serviceName, $className, $entity, $tag, $route, $parentEntity);
                     break;
@@ -173,7 +178,8 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                             'twig_element_read' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
                             'twig_element_create' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:create.html.twig',
                             'twig_element_update' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig',
-                            'twig_element_view' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:view.html.twig'
+                            'twig_element_view' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:view.html.twig',
+                            'twig_element_list' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:list.html.twig'
                         ];
                     } else {
                         $parametersName = $this->createParametersName($entity, $tag, $rootSpace);
@@ -183,10 +189,12 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                             'twig_container_create' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:create.html.twig',
                             'twig_container_update' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:update.html.twig',
                             'twig_container_grid' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:grid.html.twig',
+                            'twig_container_list' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Container:list.html.twig',
                             'twig_element_view' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:view.html.twig',
                             'twig_element_read' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:read.html.twig',
                             'twig_element_create' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:create.html.twig',
-                            'twig_element_update' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig'
+                            'twig_element_update' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:update.html.twig',
+                            'twig_element_list' => /* $bundleName */$configBundleName . ':' . $rootSpace . '\\' . $objectName . '\\Element:list.html.twig'
                         ];
                     }
                     break;
@@ -201,6 +209,24 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
     }
 
     protected function addGridConfigService(&$yamlArr, $serviceName, $class, $entity, $tag = '', $route = '', $parentEntity = '')
+    {
+        $yamlArr['services'][$serviceName] = [
+            'class' => "'$class'",
+            'arguments' => ["@service_container"],
+            'tags' => [['name' => "'$tag'", 'route' => "'$route'", 'entity' => "'$entity'", 'parentEntity' => "'$parentEntity'"]]
+        ];
+    }
+    
+    protected function addListConfigService(&$yamlArr, $serviceName, $class, $entity, $tag = '', $route = '', $parentEntity = '')
+    {
+        $yamlArr['services'][$serviceName] = [
+            'class' => "'$class'",
+            'arguments' => ["@service_container"],
+            'tags' => [['name' => "'$tag'", 'route' => "'$route'", 'entity' => "'$entity'", 'parentEntity' => "'$parentEntity'"]]
+        ];
+    }
+    
+    protected function addViewConfigService(&$yamlArr, $serviceName, $class, $entity, $tag = '', $route = '', $parentEntity = '')
     {
         $yamlArr['services'][$serviceName] = [
             'class' => "'$class'",
@@ -260,6 +286,8 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
         switch ($tag) {
             case 'prototype.config':
             case 'prototype.gridconfig':
+            case 'prototype.listconfig':
+            case 'prototype.viewconfig':
             case 'prototype.formtype':
                 $serviceName = str_replace('\\', '.', str_replace('bundle\\entity', '', strtolower($entity)));
                 $serviceName .= '.' . strtolower($tagName);
@@ -292,7 +320,6 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
 
         switch ($tag) {
             case 'prototype.config':
-                //case 'prototype.gridconfig':
                 $parametersName = 'parameters.' . str_replace('\\', '.', str_replace('bundle\\entity', '', strtolower($entity)));
                 $parametersName .= '.' . strtolower($tagName);
                 if ($associationName) {
@@ -317,6 +344,36 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             case 'prototype.gridconfig':
 
                 $className = str_replace('\\Entity', '\\Config', $entity) . '\\GridConfig';
+                $classNamePrefix = substr($className, 0, strpos($className, 'Bundle', 0) + 6);
+                $className = str_replace($classNamePrefix, $configBundleName, $className);
+
+                if ($associationName) {
+
+                    if ($rootSpace && $rootSpace != $associationName) {
+                        $className = str_replace('\\Config\\', '\\Config\\' . $rootSpace . '\\' . $associationName . '\\', $className);
+                    } else {
+                        $className = str_replace('\\Config\\', '\\Config\\' . $associationName . '\\', $className);
+                    }
+                }
+                break;
+            case 'prototype.listconfig':
+
+                $className = str_replace('\\Entity', '\\Config', $entity) . '\\ListConfig';
+                $classNamePrefix = substr($className, 0, strpos($className, 'Bundle', 0) + 6);
+                $className = str_replace($classNamePrefix, $configBundleName, $className);
+
+                if ($associationName) {
+
+                    if ($rootSpace && $rootSpace != $associationName) {
+                        $className = str_replace('\\Config\\', '\\Config\\' . $rootSpace . '\\' . $associationName . '\\', $className);
+                    } else {
+                        $className = str_replace('\\Config\\', '\\Config\\' . $associationName . '\\', $className);
+                    }
+                }
+                break;
+            case 'prototype.viewconfig':
+
+                $className = str_replace('\\Entity', '\\Config', $entity) . '\\ListConfig';
                 $classNamePrefix = substr($className, 0, strpos($className, 'Bundle', 0) + 6);
                 $className = str_replace($classNamePrefix, $configBundleName, $className);
 

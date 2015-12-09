@@ -1,0 +1,51 @@
+{{'{% extends app.request.isXmlHttpRequest() or routeParams.containerName=="element" ? config.get("twig_base_ajax_index") : config.get("twig_base_index") %}  '}}  
+{{'{% block content %}'}}    
+{{"{% if routeParams.containerName=='container' %}"}}
+<!--dodane-->
+<div  id="main-container" class="main-container container"  >
+
+    <div class="block-header m-t-30 m-b-30 p-l-10 main-block-header">
+        <div>
+            <a class="btn m-btn bgm-blue btn-float waves-effect waves-circle waves-float pulsateIcon"><i class="zmdi zmdi-home"></i></a>
+        </div>
+        <h2 style="padding-top: 10px;"><b>{{"{{entityName|trans}}"}}</b> / {{"{{'List'|trans}}"}} </h2><small>{{"{{'a list of all elements'|trans}}"}}</small>
+
+        <ul class="actions" style="padding-top: 9px;">
+            <li>
+                <a id="{{objectName|lower}}-attachment-button" class="attachment-button" href="">
+                    <i class="zmdi zmdi zmdi-attachment-alt"></i>
+                </a>
+            </li>
+            <li>
+                <a id="{{objectName|lower}}-help-button" class="help-button" href="">
+                    <i class="zmdi zmdi-help-outline"></i>
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+    <div class='card-container'>
+        <!--dodane-->
+
+        {{"{% endif %}"}}
+        <div class="card">
+            <a href="{{'{{ path(newActionName, buttonRouteParams)}}'}}" class="btn btn-float btn-danger m-btn waves-effect waves-circle waves-float lazy-loaded"><i class="zmdi zmdi-plus"></i></a>
+
+            <div class="card-header">
+                <h2 class="c-black"><i class="zmdi zmdi-search m-r-20"></i>{{'{{\'List\'|trans}}'}}<small class="p-l-35">{{'{{\'list of elements\'|trans}}'}}</small></h2>
+            </div>
+
+            {{'{% block container %}
+            {% block element %}
+            {% endblock element%}    
+        {% endblock container%}'}}    
+
+        </div>
+        {{"{% if routeParams.containerName=='container' %}"}}  
+    </div>
+</div>
+<!--dodane-->
+{{"{% endif %}"}}
+{{'{% endblock content %}'}}            
+
