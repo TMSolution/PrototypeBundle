@@ -142,7 +142,7 @@ class AssociationGridConfig extends GridConfig
             if($parentFieldName){
             if (!in_array($parentFieldName, $fieldsArr)) {
                 
-                dump($parentFieldName);
+              //  dump($parentFieldName);
                 $queryBuilder->leftJoin("$tableAlias.$parentFieldName", "_{$parentFieldName}");
             }
             
