@@ -485,7 +485,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             $yamlArr = $this->readYml($configFullPath);
             
             
-            $applicationName=$input->getArgument('configBundle');
+            $applicationName=$input->getArgument('applicationName');
 
             $routeName = strtolower($applicationName . '_' . $rootSpace . '_');
 
