@@ -417,7 +417,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 $arr = explode('\\', $value['object_name']);
                 $last = array_pop($arr);
                 $parameterName = $this->addParameters($yamlArr, $value['object_name'], $input->getArgument('tag'), $bundleName, $rootSpace . DIRECTORY_SEPARATOR . $objectName, $last, $output, true, $configBundleName);
-                $this->addService($output, $yamlArr, $value['object_name'], $configBundleName, $input->getArgument('tag'), /* 'core_prototype_associationcontroller_' */ $routeName . '_association_', $entity, $rootLast, $parameterName, $rootSpace);
+                $this->addService($output, $yamlArr, $value['object_name'], $configBundleName, $input->getArgument('tag'), /* 'core_prototype_associationcontroller_' */ $routeName . 'association_', $entity, $rootLast, $parameterName, $rootSpace);
             }
         }
     }
@@ -483,7 +483,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
             $objectName = $entityReflection->getShortName();
             $yamlArr = $this->readYml($configFullPath);
 
-            $routeName = strtolower(str_replace('\\', '_', rtrim($metadata->namespace, "\\Entity")) . '_' . $rootSpace . '_');
+            $routeName = strtolower(str_replace('\\', '_', rtrim($metadata->namespace, "Bundle\\Entity")) . '_' . $rootSpace . '_');
 
             //Repair apotrophes on class path
             $this->repairApostrophes($yamlArr);

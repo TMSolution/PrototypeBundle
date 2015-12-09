@@ -128,6 +128,10 @@ class GenerateCommand extends ContainerAwareCommand
         $withAll = true === $input->getOption('withAll');
 
         foreach ($entities as $entity) {
+            
+            
+            
+            
 
             $output->writeln(sprintf('Entity: "<info>%s</info>"', $entity));
             //services
