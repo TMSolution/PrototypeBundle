@@ -20,8 +20,18 @@ use Core\PrototypeBundle\Config\ViewConfig as BaseViewConfig;
 class ViewConfig extends BaseViewConfig
 {
 
- 
+    protected function prepareCharts()
+    {
+
+        $chartsArr = [];
+        return $chartsArr;
+    }
     
+    public function getView($options)
+    {
+        $options['chartWidgets'] = $this->prepareCharts();
+        return $options;
+    }
   
 
 }
