@@ -134,6 +134,8 @@ class DefaultController extends FOSRestController
         $formType = $this->getFormType($this->getEntityClass(), $this->model);
         $form = $this->makeForm($formType, $entity, 'POST', $this->entityName, $this->getAction('create'), $this->routeParams);
         $form->handleRequest($request);
+        
+        $submitType=$request->get('submittype')?$request->get('submittype'):'read';
 //config parameters for render and event broadcast
         $params = $this->get('prototype.controler.params');
         $params->setArray([
@@ -150,7 +152,8 @@ class DefaultController extends FOSRestController
             'defaultRoute' => $this->generateBaseRoute('create'),
             'parentActionName' => $this->getAction('view'),
             'states' => $this->getStates(),
-            'isMasterRequest' => $this->isMasterRequest()
+            'isMasterRequest' => $this->isMasterRequest(),
+            'submitType'=>$submitType
         ]);
 
 //parent params 
@@ -176,7 +179,9 @@ class DefaultController extends FOSRestController
             $this->dispatch('after.create', $event);
 
             $this->routeParams['id'] = $entity->getId();
-            $view = $this->redirectView($this->generateUrl($routePrefix . '_read', $this->routeParams), 301);
+            
+            $this->routeParams['submittype']=$submitType;
+            $view = $this->redirectView($this->generateUrl($routePrefix . '_'.$submitType , $this->routeParams), 301);
             return $this->handleView($view);
         }
 
@@ -184,72 +189,10 @@ class DefaultController extends FOSRestController
         $this->dispatch('on.invalidcreate', $event);
 
 //Render
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'));
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'))
+               ->setHeader('Location',$this->getLocationUrl('create'));
         return $this->handleView($view);
     }
-
-    /**
-     * Read action.
-     * 
-     * @return Response
-     * @throws \BadMethodCallException Not implemented yet
-     */
-    /*
-    public function listAction(Request $request)
-    {
-
-
-        $this->init();
-        $entityName = $this->getEntityName();
-        $routePrefix = $this->getRoutePrefix();
-
-        $grid = $this->get('grid');
-        $source = new Entity($this->model);
-        $grid->setSource($source);
-        $grid->resetSessionData();
-        $this->buildGrid($grid);
-        $grid->setId($routePrefix . '_' . $entityName);
-
-        $buttonRouteParams = $this->routeParams;
-        $buttonRouteParams['containerName'] = 'container';
-
-
-
-        $grid->setRouteUrl($this->generateUrl($routePrefix . "_ajaxgrid", $grid->getRouteParameters()));
-
-        //config parameters for render and event broadcast
-        $params = $this->get('prototype.controler.params');
-        $params->setArray([
-            'entityName' => $entityName,
-            'newActionName' => $this->getAction('new'),
-            'parentName' => $this->getParentName(),
-            'parentId' => $this->getParentId(),
-            'routeName' => $routePrefix . '_new',
-            'config' => $this->getConfig(),
-            'containerName' => 'container',
-            'actionId' => 'default',
-            'routeParams' => $this->routeParams,
-            'buttonRouteParams' => $buttonRouteParams,
-            'isMasterRequest' => $this->isMasterRequest()
-        ]);
-
-
-        //Create event broadcast.
-        $event = $this->get('prototype.event');
-        $event->setParams($params);
-        $event->setModel($this->model);
-        $event->setGrid($grid);
-
-
-        $this->dispatch('before.grid', $event);
-        $gridConfig = $grid->getGridConfig($this->getConfig()->get('twig_element_grid'), $params->getArray());
-        $this->dispatch('after.grid', $event);
-        $view = $this->view($grid->getResult($grid->getResult()))
-                ->setTemplate($gridConfig->view)
-                ->setTemplateData($gridConfig->parameters);
-
-        return $this->handleView($view);
-    }*/
 
     public function listAction(Request $request)
     {
@@ -293,52 +236,14 @@ class DefaultController extends FOSRestController
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
-        
     
         $this->dispatch('before.list', $event);
         $view = $this->view($params->getArray())
                 ->setTemplate($this->getConfig()->get('twig_element_list'))
-                ->setTemplateData();
+                ->setTemplateData()->setHeader('Location',$this->getLocationUrl('list'));
                 ;
         $this->dispatch('after.list', $event);
         return $this->handleView($view);
-              
-
-//        $this->init();
-//
-//        $entity = $this->model->getEntity();
-//        $queryBuilder = $this->model->getQueryBuilder('a');
-//        $query = $queryBuilder->getQuery();
-//
-//
-//
-//
-//
-//
-//
-//
-//        $paginator = $this->get('knp_paginator');
-//        $pagination = $paginator->paginate(
-//                $query, $request->query->getInt('page', 1)/* page number */, 10/* limit per page */
-//        );
-//        $this->setRouteParam('pagination', $pagination);
-//
-//
-////Create event broadcast.
-//        $event = $this->get('prototype.event');
-//        $event->setParams($this->routeParams);
-//        $event->setModel($this->model);
-////$event->setList($list);
-//
-//
-//        $this->dispatch('on.list', $event);
-//
-//
-////  throw new \BadMethodCallException("Not implemented yet");
-//// parameters to template
-////Render
-//        $view = $this->view($this->routeParams)->setTemplate($this->getConfig()->get('twig_element_list'));
-//        return $this->handleView($view);
     }
 
     /**
@@ -349,8 +254,6 @@ class DefaultController extends FOSRestController
      */
     public function updateAction($id, Request $request)
     {
-
-
 
         $this->init();
 
@@ -416,7 +319,7 @@ class DefaultController extends FOSRestController
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $this->entityName . '.' . $this->routeParams['actionId'] . '.' . 'invalid.update', $event);
 
 //Render
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'));
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'))->setHeader('Location',$this->getLocationUrl('update'));
         return $this->handleView($view);
     }
 
@@ -515,7 +418,7 @@ class DefaultController extends FOSRestController
 
 
 //Render
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'));
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'))->setHeader('Location',$this->getLocationUrl('edit'));;
         return $this->handleView($view);
     }
 
@@ -562,10 +465,23 @@ class DefaultController extends FOSRestController
 
         $this->dispatch('on.read', $event);
 
-//Render
-        $view = $this->view($params['entity'])->setTemplate($this->getConfig()->get('twig_element_read'))->setTemplateData($params->getArray());
+       
+        //Render
+        $view = $this->view($params['entity'])->setTemplate($this->getConfig()->get('twig_element_read'))
+                ->setTemplateData($params->getArray())
+                ->setHeader('Location',$this->getLocationUrl('read'));
         return $this->handleView($view);
     }
+    
+    protected function getLocationUrl($action)
+    {
+        $routePrefix = $this->getRoutePrefix();
+        $routeParams=$this->getRouteParams();
+        $routeParams["containerName"]="container";
+        $url=$this->generateUrl($routePrefix . '_'.$action,$routeParams );
+        return $url;
+    }
+    
 
     protected function prepareProperties($model, $entity)
     {
@@ -614,16 +530,7 @@ class DefaultController extends FOSRestController
     protected function setContainerName(Request $request)
     {
 
-
-        /* if ($request->isXmlHttpRequest()) {
-          $this->setRouteParam('containerName', 'element');
-          }
-          else{ */
-
-
-
         $this->setRouteParam('containerName', $request->get('containerName'));
-        /*  } */
     }
 
     /**
@@ -640,7 +547,6 @@ class DefaultController extends FOSRestController
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
-            
             'parentEntity'=> $this->getParentEntity($request),
             'parentName' => $this->getParentName(),
             'parentId' => $this->getParentId(),
@@ -653,7 +559,8 @@ class DefaultController extends FOSRestController
             'config' => $this->getConfig(),
             'defaultRoute' => $this->generateBaseRoute('new'),
             'states' => $this->getStates(),
-            'isMasterRequest' => $this->isMasterRequest()
+            'isMasterRequest' => $this->isMasterRequest(),
+            'submitType'=>$request->get('submittype')?$request->get('submittype'):'read' 
         ]);
 
 //Create event broadcast.
@@ -666,7 +573,8 @@ class DefaultController extends FOSRestController
 
 
 //Render
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'));
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'))
+                 ->setHeader('Location',$this->getLocationUrl('new'));
         return $this->handleView($view);
     }
 
