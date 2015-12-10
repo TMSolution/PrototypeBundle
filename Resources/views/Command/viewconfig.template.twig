@@ -1,0 +1,38 @@
+<?php 
+/**
+ * Copyright (c) 2014, TMSolution
+ * All rights reserved.
+ *
+ * For the full copyright and license information, please view
+ * the file LICENSE.md that was distributed with this source code.
+ */
+namespace  {{viewConfigNamespaceName}};
+
+
+use Core\PrototypeBundle\Config\ViewConfig as BaseViewConfig;
+
+
+/**
+ * ViewConifg  for '{{entityName}}'.
+ *
+ * Generated with {@see TMSolution\PrototypeBundle\Command\GenerateViewConfigCommand}.
+ */
+class ViewConfig extends BaseViewConfig
+{
+
+    protected function prepareCharts()
+    {
+
+        $chartsArr = [];
+        return $chartsArr;
+    }
+    
+    public function getView($options)
+    {
+        $options['chartWidgets'] = $this->prepareCharts();
+        return $options;
+    }
+  
+
+}
+

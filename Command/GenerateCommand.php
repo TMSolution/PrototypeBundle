@@ -36,23 +36,32 @@ class GenerateCommand extends ContainerAwareCommand
                 ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert configBundle')
                 ->addArgument('entityOrBundle', InputArgument::REQUIRED, 'Insert Entity or Bundle')
                 ->addArgument('rootFolder', InputArgument::REQUIRED, 'Insert rootFolder(SuperAdmin,Admin,Agent,...)')
+                ->addArgument('applicationName', InputArgument::REQUIRED, 'Application name (ex. cco_callcenter,...)')
                 ->addOption('withConfigServices', null, InputOption::VALUE_NONE, 'Generate config services file')
                 ->addOption('withGridServices', null, InputOption::VALUE_NONE, 'Generate grid services file')
+                ->addOption('withListServices', null, InputOption::VALUE_NONE, 'Generate list services file')
+                ->addOption('withViewServices', null, InputOption::VALUE_NONE, 'Generate view services file')
                 ->addOption('withFormTypeServices', null, InputOption::VALUE_NONE, 'Generate formtype services file')
                 ->addOption('withFormTypes', null, InputOption::VALUE_NONE, 'Generate Formtype files')
                 ->addOption('withGridConfig', null, InputOption::VALUE_NONE, 'Generate Gridconfig files')
+                ->addOption('withListConfig', null, InputOption::VALUE_NONE, 'Generate Listconfig files')
+                ->addOption('withViewConfig', null, InputOption::VALUE_NONE, 'Generate Viewconfig files')
                 ->addOption('withTranslation', null, InputOption::VALUE_NONE, 'Generate Translation files')
                 ->addOption('withReadElementTwig', null, InputOption::VALUE_NONE, 'Generate read twig element')
                 ->addOption('withCreateElementTwig', null, InputOption::VALUE_NONE, 'Generate create twig element')
                 ->addOption('withViewElementTwig', null, InputOption::VALUE_NONE, 'Generate view twig element')
+                ->addOption('withListElementTwig', null, InputOption::VALUE_NONE, 'Generate list twig element')
                 ->addOption('withUpdateElementTwig', null, InputOption::VALUE_NONE, 'Generate update twig element')
                 ->addOption('withReadContainerTwig', null, InputOption::VALUE_NONE, 'Generate read twig container')
                 ->addOption('withCreateContainerTwig', null, InputOption::VALUE_NONE, 'Generate create twig container')
                 ->addOption('withUpdateContainerTwig', null, InputOption::VALUE_NONE, 'Generate update twig container')
                 ->addOption('withViewContainerTwig', null, InputOption::VALUE_NONE, 'Generate view twig container')
                 ->addOption('withGridContainerTwig', null, InputOption::VALUE_NONE, 'Generate grid twig container')
+                ->addOption('withListContainerTwig', null, InputOption::VALUE_NONE, 'Generate list twig container')
                 ->addOption('withAll', null, InputOption::VALUE_NONE, 'Generate update twig element')
                 ->addOption('quiet', 'q', InputOption::VALUE_NONE, 'Disable all output of the program.');
+
+
     }
 
     protected function getConfigFilePath($manager, $input)
@@ -108,10 +117,22 @@ class GenerateCommand extends ContainerAwareCommand
         $withUpdateContainerTwig = true === $input->getOption('withUpdateContainerTwig');
         $withViewContainerTwig = true === $input->getOption('withViewContainerTwig');
         $withGridContainerTwig = true === $input->getOption('withGridContainerTwig');
+        
+        
+        $withListServices = true === $input->getOption('withListServices');
+        $withViewServices = true === $input->getOption('withViewServices');
+        $withViewConfig = true === $input->getOption('withViewConfig');
+        $withListConfig = true === $input->getOption('withListConfig');
+        $withListContainerTwig = true === $input->getOption('withListContainerTwig');
+        $withListElementTwig = true === $input->getOption('withListElementTwig');
 
         $withAll = true === $input->getOption('withAll');
 
         foreach ($entities as $entity) {
+            
+            
+            
+            
 
             $output->writeln(sprintf('Entity: "<info>%s</info>"', $entity));
             //services
@@ -120,6 +141,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:services');
                 $arguments = array(
                     'configBundle' => $input->getArgument('configBundle'),
+                    'applicationName' => $input->getArgument('applicationName'),
                     'rootSpace' => $input->getArgument('rootFolder'),
                     'entity' => $entity,
                     'tag' => 'prototype.config',
@@ -136,9 +158,44 @@ class GenerateCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:services');
                 $arguments = array(
                     'configBundle' => $input->getArgument('configBundle'),
+                    'applicationName' => $input->getArgument('applicationName'),
                     'rootSpace' => $input->getArgument('rootFolder'),
                     'entity' => $entity,
                     'tag' => 'prototype.gridconfig',
+                    'route' => 'core_prototype_',
+                    'parentEntity' => '',
+                    '--withAssociated' => null,
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
+             if ($withListServices || $withAll) {
+                $output->writeln('Generate grid services.');
+                $command = $this->getApplication()->find('prototype:generate:services');
+                $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
+                    'applicationName' => $input->getArgument('applicationName'),
+                    'rootSpace' => $input->getArgument('rootFolder'),
+                    'entity' => $entity,
+                    'tag' => 'prototype.listconfig',
+                    'route' => 'core_prototype_',
+                    'parentEntity' => '',
+                    '--withAssociated' => null,
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
+            if ($withViewServices || $withAll) {
+                $output->writeln('Generate grid services.');
+                $command = $this->getApplication()->find('prototype:generate:services');
+                $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
+                    'applicationName' => $input->getArgument('applicationName'),
+                    'rootSpace' => $input->getArgument('rootFolder'),
+                    'entity' => $entity,
+                    'tag' => 'prototype.viewconfig',
                     'route' => 'core_prototype_',
                     'parentEntity' => '',
                     '--withAssociated' => null,
@@ -152,6 +209,7 @@ class GenerateCommand extends ContainerAwareCommand
                 $command = $this->getApplication()->find('prototype:generate:services');
                 $arguments = array(
                     'configBundle' => $input->getArgument('configBundle'),
+                    'applicationName' => $input->getArgument('applicationName'),
                     'rootSpace' => $input->getArgument('rootFolder'),
                     'entity' => $entity,
                     'tag' => 'prototype.formtype',
@@ -200,6 +258,43 @@ class GenerateCommand extends ContainerAwareCommand
                 $returnCode = $command->run($inputCommand, $output);
             }
 
+            if ($withListConfig || $withAll) {
+                $output->writeln(sprintf('Generate Listconfig file for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:listconfig');
+                $pathArr = explode('\\', $entity);
+                $path = array_pop($pathArr);
+                $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder'),
+                    'path' => $path,
+                    '--associated' => null
+                );
+
+                $inputCommand = new ArrayInput($arguments);
+
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
+            if ($withViewConfig || $withAll) {
+                $output->writeln(sprintf('Generate Viewconfig file for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:viewconfig');
+                $pathArr = explode('\\', $entity);
+                $path = array_pop($pathArr);
+                $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder'),
+                    'path' => $path,
+                    '--associated' => null
+                );
+
+                $inputCommand = new ArrayInput($arguments);
+
+                $returnCode = $command->run($inputCommand, $output);
+            }
+
+            
             //twigs
             if ($withViewElementTwig || $withAll) {
                 $output->writeln(sprintf('Generate view element for <info>%s</info>', $entity));
@@ -243,6 +338,19 @@ class GenerateCommand extends ContainerAwareCommand
             if ($withCreateElementTwig || $withAll) {
                 $output->writeln(sprintf('Generate create element for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:element:create');
+                $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder'),
+                    '--withAssociated' => null
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
+            if ($withListElementTwig || $withAll) {
+                $output->writeln(sprintf('Generate list element for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:element:list');
                 $arguments = array(
                     'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
@@ -306,6 +414,18 @@ class GenerateCommand extends ContainerAwareCommand
             if ($withGridContainerTwig || $withAll) {
                 $output->writeln(sprintf('Generate grid container for <info>%s</info>', $entity));
                 $command = $this->getApplication()->find('prototype:generate:twig:container:grid');
+                $arguments = array(
+                    'configBundle' => $input->getArgument('configBundle'),
+                    'entity' => $entity,
+                    'rootFolder' => $input->getArgument('rootFolder')
+                );
+                $inputCommand = new ArrayInput($arguments);
+                $returnCode = $command->run($inputCommand, $output);
+            }
+            
+            if ($withListContainerTwig || $withAll) {
+                $output->writeln(sprintf('Generate list container for <info>%s</info>', $entity));
+                $command = $this->getApplication()->find('prototype:generate:twig:container:list');
                 $arguments = array(
                     'configBundle' => $input->getArgument('configBundle'),
                     'entity' => $entity,
