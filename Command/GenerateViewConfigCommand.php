@@ -142,7 +142,7 @@ EOT
         foreach ($fieldsInfo as $key => $value) {
 
 
-            if (array_key_exists("association", $fieldsInfo[$key]) && ( $fieldsInfo[$key]["association"] == "ManyToOne" || $fieldsInfo[$key]["association"] == "OneToOne" )) {
+            if (array_key_exists("association", $fieldsInfo[$key]) /*&& ( $fieldsInfo[$key]["association"] == "ManyToOne" || $fieldsInfo[$key]["association"] == "OneToOne" )*/) {
 
                 if ($fieldsInfo[$key]["association"] == "ManyToMany") {
                     $this->manyToManyRelationExists = true;
@@ -157,9 +157,7 @@ EOT
                     $fieldsInfo[$key]["default_field"] = "id";
                     $fieldsInfo[$key]["default_field_type"] = "Number";
                 }
-            } elseif (array_key_exists("association", $fieldsInfo[$key]) && ( $fieldsInfo[$key]["association"] == "ManyToMany" || $fieldsInfo[$key]["association"] == "OneToMany" )) {
-                unset($fieldsInfo[$key]);
-            }
+            } 
         }
 
         return $fieldsInfo;
@@ -264,7 +262,10 @@ EOT
         $associated = true === $input->getOption('associated');
         $model = $this->getContainer()->get("model_factory")->getModel($entityName);
         $fieldsInfo = $model->getFieldsInfo();
-        $analyzeFieldsInfo = $this->analizeFieldName($model->getFieldsInfo());
+        
+        
+        
+        $analyzeFieldsInfo = $this->analizeFieldName($fieldsInfo);
 
         //configNameSpace
         $configEntityName = $this->getConfigEntityName($input, $output);

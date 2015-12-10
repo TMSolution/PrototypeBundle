@@ -374,7 +374,7 @@ class GenerateServicesConfigurationCommand extends ContainerAwareCommand
                 break;
             case 'prototype.viewconfig':
 
-                $className = str_replace('\\Entity', '\\Config', $entity) . '\\ListConfig';
+                $className = str_replace('\\Entity', '\\Config', $entity) . '\\ViewConfig';
                 $classNamePrefix = substr($className, 0, strpos($className, 'Bundle', 0) + 6);
                 $className = str_replace($classNamePrefix, $configBundleName, $className);
 

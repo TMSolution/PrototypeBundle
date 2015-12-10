@@ -67,6 +67,37 @@ class GenerateTwigElementListCommand extends ContainerAwareCommand
         unset($entityNameArr[count($entityNameArr) - 1]);
         return implode("\\", $entityNameArr);
     }
+    
+     protected function analizeFieldName($fieldsInfo)
+    {
+
+
+        foreach ($fieldsInfo as $key => $value) {
+
+
+            if (array_key_exists("association", $fieldsInfo[$key]) && ( $fieldsInfo[$key]["association"] == "ManyToOne" || $fieldsInfo[$key]["association"] == "OneToOne" )) {
+
+                if ($fieldsInfo[$key]["association"] == "ManyToMany") {
+                    $this->manyToManyRelationExists = true;
+                }
+
+
+                $model = $this->getContainer()->get("model_factory")->getModel($fieldsInfo[$key]["object_name"]);
+                if ($model->checkPropertyByName("name")) {
+                    $fieldsInfo[$key]["default_field"] = "name";
+                    $fieldsInfo[$key]["default_field_type"] = "Text";
+                } else {
+                    $fieldsInfo[$key]["default_field"] = "id";
+                    $fieldsInfo[$key]["default_field_type"] = "Number";
+                }
+            } elseif (array_key_exists("association", $fieldsInfo[$key]) && ( $fieldsInfo[$key]["association"] == "ManyToMany" || $fieldsInfo[$key]["association"] == "OneToMany" )) {
+                unset($fieldsInfo[$key]);
+            }
+        }
+
+        return $fieldsInfo;
+    }
+
 
     protected function createDirectory($classPath, $entityNamespace, $objectName, $rootFolder,$configEntityName)
     {
@@ -139,15 +170,17 @@ class GenerateTwigElementListCommand extends ContainerAwareCommand
 
             $associationTypes = ["OneToMany", "ManyToMany"];
             $field = $fieldsInfo[$key];
+            
+       
             if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) {
 
                 $model = $this->getContainer()->get("model_factory")->getModel($value['object_name']);
-                $assocObjectFieldsInfo = $model->getFieldsInfo();
+                $assocObjectFieldsInfo = $this->analizeFieldName($model->getFieldsInfo());
 
+                
                 $arr = explode('\\', $value['object_name']);
                 $path = array_pop($arr);
                
-                //$this->addFile($value['object_name'], $rootPath . DIRECTORY_SEPARATOR . $path, $assocObjectFieldsInfo, $rootFolder, $output);
                 $this->addFile($value['object_name'], $assocObjectFieldsInfo, $rootFolder.DIRECTORY_SEPARATOR.$objectName,$configEntityName);
             }
         }
@@ -197,6 +230,8 @@ class GenerateTwigElementListCommand extends ContainerAwareCommand
         //configNameSpace
         $configEntityName=$this->getConfigEntityName($input,$output);
         
+        
+        $fieldsInfo = $this->analizeFieldName($fieldsInfo);
         $this->addFile($entityName, $fieldsInfo, $rootFolder,$configEntityName);
 
 

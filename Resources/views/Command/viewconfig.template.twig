@@ -20,11 +20,102 @@ use Core\PrototypeBundle\Config\ViewConfig as BaseViewConfig;
 class ViewConfig extends BaseViewConfig
 {
 
+    protected function prepareCharts()
+    {
+
+       
+        $chartsArr = [];
+        {% for field, fieldParam in fieldsInfo %}{% if  fieldParam.association is defined and ( fieldParam.association == 'OneToMany' or fieldParam.association == 'ManyToMany' ) %}
+                //{{fieldParam.association}}
+                $miniChart{{field|ucwords}} = $this->getContainer()->get('charts.sparkline.line.generate');//you can change the chart type on 'line', 'bar' or 'pie'
+                $miniChartValues{{field|ucwords}}=$this->get{{field|ucwords}}ValueData('{{fieldParam.object_name}}');
+                $miniChartOptions{{field|ucwords}} = [
+                    'type' => 'mini', //or panel
+                    //'listData' => $this->get{{field|ucwords}}ListArrayData('{{fieldParam.object_name}}'), //for panel only
+                    'htmlContainerId' => '{{field}}',
+                    'title' => '{{field|lower|trans}}',
+                    'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
+                    'value' =>  $miniChartValues{{field|ucwords}},
+                    'data' => $this->get{{field|ucwords}}ChartArrayData('{{fieldParam.object_name}}')
+                ];
+                $miniChart{{field|ucwords}}->setOptions($miniChartOptions{{field|ucwords}});
+                $chartsArr[] = $miniChart{{field|ucwords}}->render();
+
+                /*
+                $chartPanel{{field|ucwords}} = $this->getContainer()->get('charts.easy.pie.generate');
+                $chartPanelValues{{field|ucwords}}=$this->get{{field|ucwords}}ValueData('{{fieldParam.object_name}}');
+                $chartPanelOptions{{field|ucwords}} = [
+                    'type' => "panel",
+                    'htmlContainerId' => '{{field}}',
+                    'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
+                    'title' => '{{field|lower|trans}}',
+                    'value' => $chartPanelValues{{field|ucwords}},
+                    'listData' => $this->get{{field|ucwords}}ListArrayData('{{fieldParam.object_name}}'),
+                    'trackColor' => 'rgba(255,255,255,0.2)',
+                    'scaleColor' => 'rgba(255,255,255,0.5)',
+                    'barColor' => 'rgba(255,255,255,0.7)',
+                    'lineWidth' => 7,
+                    'lineCap' => 'butt'
+                ];
+                $chartPanel{{field|ucwords}}->setOptions($chartPanelOptions{{field|ucwords}});
+                $chartsArr[] = $chartPanel{{field|ucwords}}->render();
+                */
+                
+
+            {% endif %}
+
+        {%  endfor %}        
+                
+
+        return $chartsArr;
+    }
+    
+{% for field, fieldParam in fieldsInfo %}{% if  fieldParam.association is defined and ( fieldParam.association == 'OneToMany' or fieldParam.association == 'ManyToMany' ) %}
+protected function get{{field|ucwords}}ValueData()
+{
+
+    $model = $this->getContainer()->get("model_factory")->getModel('{{entityName}}');
+    $queryBuilder = $model->getQueryBuilder('u');
+    $queryBuilder->select("count(_{{field}}.id) as counter");
+    $queryBuilder->leftJoin("u.{{field}}", "_{{field}}");
+    $result = $queryBuilder->getQuery()->getSingleScalarResult();
+     
+    return $result;
+} 
+
+protected function get{{field|ucwords}}ListArrayData()
+{
+
+    $model = $this->getContainer()->get("model_factory")->getModel('{{entityName}}');
+    $queryBuilder = $model->getQueryBuilder('u');
+    $queryBuilder->select("_{{field}}.{{fieldParam.default_field}} as title, count(_{{field}}.{{fieldParam.default_field}}) as value");
+    $queryBuilder->leftJoin("u.{{field}}", "_{{field}}");
+    $queryBuilder->groupBy("_{{field}}.{{fieldParam.default_field}}");
+    $queryBuilder->orderBy("_{{field}}.{{fieldParam.default_field}}","ASC");
+    $result = $queryBuilder->getQuery()->getScalarResult();
+    
+   
+     
+    return $result;
+
+} 
+
+protected function get{{field|ucwords}}ChartArrayData()
+{
+    return [1,3,2,5,4,7];
+} 
+
+
+
+
+
+{% endif %}{%  endfor %}              
     
     
+
     public function getView($options)
     {
-       
+        $options['chartWidgets'] = $this->prepareCharts();
         return $options;
     }
   

@@ -2,132 +2,131 @@
 
 {{'{% block element %}'}}
 
-    <div class="row">
-        <div class="col-md-12 col-sm-12 form-horizontal">
-            <div class="table-responsive ">
-                <table class="table table-striped table-hover table-full-width bootgrid-table fix-table">
-                    <thead>
-                        <tr>
-                            {# sorting of properties based on query components #}
+<div class="row">
+    <div class="col-md-12 col-sm-12 form-horizontal">
+        <div class="table-responsive ">
+            <table class="table table-striped table-hover table-full-width bootgrid-table fix-table">
+                <thead>
+                    <tr> 
+                        {% for field, fieldParam in fieldsInfo %}
+                            {% if  fieldParam.association is defined and ( fieldParam.association == 'ManyToOne' or fieldParam.association == 'OneToOne' )  %}
+                                <th  nowrap="" {{'{% if pagination.isSorted('}}{{field}}__{{fieldParam.default_field}}{{') %}'}} class="sorted"{{'{% endif %}'}}> {{'{{ knp_pagination_sortable(pagination, '}}{{field|lower}}{{'|trans, '}}{{field}}__{{fieldParam.default_field}}{{',{\'direction\': \'asc\', \'class\':\'lazy-loaded-list column-header-anchor\', \'data-route-target\':\'.content\'}) }}'}}</th>
+                                {% else %}
+                                <th  nowrap="" {{'{% if pagination.isSorted('}}{{field}}{{') %}'}} class="sorted"{{'{% endif %}'}}> {{'{{ knp_pagination_sortable(pagination, '}}{{field|lower}}{{'|trans, '}}{{field}}{{',{\'direction\': \'asc\', \'class\':\'lazy-loaded-list column-header-anchor\', \'data-route-target\':\'.content\'}) }}'}}</th>
+                                {% endif %}
+                            {% endfor %}      
+                        <th>{{"Actions"|trans}}</th>       
+                    </tr>
+                </thead>
 
-                            {{'{% for key,config in fieldsNames %}
-                                {% if config.isAssociatedObjectId==false%}     
-                                    <th  nowrap="" {% if pagination.isSorted(config.name) %} class="sorted"{% endif %}> {{ knp_pagination_sortable(pagination, key|lower|trans, config.name,{\'direction\': \'asc\', \'class\':\'lazy-loaded-list column-header-anchor\', \'data-route-target\':\'.content\'}) }}</th>
-                                    {% endif %}        
-                            {% endfor %}'}}
-
-                            <th >{{'{{"Actions"|trans}}'}}</th>
-                            {{'{# <th{% if pagination.isSorted(\'a.name\') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, \'Name\', \'a.name\') }}</th>#}'}}
-
-                        </tr>
-                    </thead>
-                    {# table body #}
-
-
-        {{' {% for record in pagination %}
+                {{' {% for record in pagination %}
 
              <tr {% if loop.index is odd %}class="color"{% endif %}>
                  {% for key,field in record %}
+        '}}           
+                {% for field, fieldParam in fieldsInfo %}
+                    {% if fieldParam.is_object %}     
 
-                     {% set fieldId= attribute(fieldsAliases,key) %}
-                     {% if fieldId%}
-                         {% set config= attribute(fieldsNames,fieldId) %}
-                     {% endif %}
+                        {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
+                            
+                            {{'
+                                <td>{% if attribute(record, config.idField)%}<a class="lazy-loaded" data-route-target=".content" href="{{path(\'core_prototype_defaultcontroller_view\',{"id":attribute(record, calculate_id_column_name(key)), "containerName": "container", "actionId": "default",  "entityName": calculate_object_name(key) })}}" >
+                                        {{ field}}</a>
+                                    {% else %}
+                                        {{ field}}
+                                    {% endif %}
+                                </td>
+                            '}}
+                        {% endif %}   
+                    {% else %}
+                        {{'   
+                            {% if  field is null %}
+                                    <td>--</td>
+                            {% else %}
+                                {% if field.timestamp is defined %}  
+                                    <td>{{ field|date(date_format("datetime"))}}</td>
+                                {% elseif field is iterable  %}  
+                                    <td>
+                                        {% for value in field %}
+                                            value{% if not loop.last %},{% endif %} 
+                                        {% endfor %}
+                                    </td>    
+                                {% else %}
+                                    <td>{{field}}</td>
+                                {% endif%}
+                            {% endif%}
+                        '}}
+                    {% endif %}
+                {% endfor %}    
+                {{'            
+                 {% endfor %}           
+                    <td class="actions">{{block("actions",{"id": record.id })}}</td>
+             </tr>
+        {% endfor %}
+        '}}
+            </table>
+        </div>
 
-                     {% if  config and config.isAssociatedObjectId==false %}
-                         {% if  field is null %}
-                             <td>--</td>
-                         {% else %}
-                             {% if field.timestamp is defined %}  
-                                 <td>{{ field|date(date_format(\'datetime\'))}}</td>
+        <div class="count card-body card-padding row grid_footer form-inline">
+            <div class="col-sm-3 col-md-3">
+                <h5 class='list-counter'>{{'{% include \'Paginator/counter.html.twig\'%}'}}</h5>
+            </div>
+            <div  class="col-sm-9 col-md-9">
+                <div class="navigation pull-right" >
+                    {{'{{ knp_pagination_render(pagination) }}'}}
+                </div>    
+            </div>
 
-                             {% elseif field  is iterable  %}  
-                                 <td>
-                                     {% for value in field %}
-                                         value 
-                                     {% endfor %}
-                                 </td>    
-
-                             {% elseif config.association==true %}
-
-                                 <td>{% if attribute(record, config.idField)%}<a class="lazy-loaded" data-route-target=".content" href="{{path(\'core_prototype_defaultcontroller_read\',{"id":attribute(record, calculate_id_column_name(key)), "containerName": "container", "actionId": "default",  "entityName": calculate_object_name(key) })}}" >
-                                         {{ field}}</a>
-                                     {% else %}
-                                         {{ field}}
-                                     {% endif %}
-                             </td>
-                         {% else %}
-                             <td>{{ field}}</td>
-                         {% endif%}
-                     {% endif%}
-                     {% endif %}   
-                         {% endfor %}
-                             <td class="actions">{{block("actions",{"id": record.id })}}</td>
-                         </tr>
-                         {% endfor %}'}}
-                         </table>
-                     </div>
-                     {# display navigation #}
-                     <div class="count card-body card-padding row grid_footer form-inline">
-                         <div class="col-sm-3 col-md-3">
-                             <h5 class='list-counter'>{{'{% include \'Paginator/counter.html.twig\'%}'}}</h5>
-                         </div>
-                         <div  class="col-sm-9 col-md-9">
-                             <div class="navigation pull-right" >
-                                 {{'{{ knp_pagination_render(pagination) }}'}}
-                             </div>    
-                         </div>
-
-                     </div>
-                 </div>
-             </div>   
-
-
-             {{'{% endblock element %}'}}
-
-                {{' {% block actions %} '}}   
-                     <ul class="actions">
-                         <li class="dropdown">
-                             <a aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" class="not-lazy-loaded">
-                                 <i class="zmdi zmdi-more-vert">
-
-                                 </i>
-                             </a>
-                             <ul class="dropdown-menu pull-right">
-                                 <li>
-                                     <a data-route-target=".content" data-original-title="View" class="list-button-view lazy-loaded" id="button-id" href="{{'{{path(routePrefix~\'_read\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": "'}}{{objectName}}{{'"|lower})}}'}}">
-                                         <i class="glyphicon glyphicon-eye-open"></i> {{'{{\'View\'|trans}}'}}</a>
-                                 </li>
-                                 <li>
-                                     <a data-original-title="Delete" class="list-button-delete " id="button-id" href="{{'{{path(routePrefix~\'_delete\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": "'}}{{objectName}}{{'"|lower })}}'}}">
-                                         <i class="glyphicon glyphicon-remove">
-                                         </i>
-                                         {{'{{\'Delete\'|trans}}'}}
-                                     </a>
-                                 </li>
-                             </ul>
-                         </li>
-                     </ul>
-                {{' {% endblock actions %}'}}   
-
-                {{' {% block js %}
-                     {{parent()}}
-                     <script>
-
-                         var viewElementFn = function () {
-                             $().lazyLoader("setDefaultLocation", "{{ defaultRoute }}");
-
-                             $(".fix-table").tableHeadFixer({"head": false, "right": 1});
+        </div>
+    </div>
+</div>   
 
 
-                         }
-                         {% if isMasterRequest %}
-                             viewElementFn();
-                         {% else %}
-                             if (collector) {
-                                 collector.addFunction(viewElementFn);
-                             }
-                         {% endif %}
+{{'{% endblock element %}'}}
 
-                     </script>
-                 {% endblock %}'}}
+{{' {% block actions %} '}}   
+<ul class="actions">
+    <li class="dropdown">
+        <a aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" class="not-lazy-loaded">
+            <i class="zmdi zmdi-more-vert">
+
+            </i>
+        </a>
+        <ul class="dropdown-menu pull-right">
+            <li>
+                <a data-route-target=".content" data-original-title="View" class="list-button-view lazy-loaded" id="button-id" href="{{'{{path(routePrefix~\'_view\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": "'}}{{objectName|lower}}{{'"})}}'}}">
+                    <i class="glyphicon glyphicon-eye-open"></i> {{'{{\'View\'|trans}}'}}</a>
+            </li>
+            <li>
+                <a data-original-title="Delete" class="list-button-delete " id="button-id" href="{{'{{path(routePrefix~\'_delete\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": "'}}{{objectName|lower}}{{'"})}}'}}">
+                    <i class="glyphicon glyphicon-remove">
+                    </i>
+                    {{'{{\'Delete\'|trans}}'}}
+                </a>
+            </li>
+        </ul>
+    </li>
+</ul>
+{{' {% endblock actions %}'}}   
+
+{{' {% block js %}
+     {{parent()}}
+     <script>
+
+         var viewElementFn = function () {
+             $().lazyLoader("setDefaultLocation", "{{ defaultRoute }}");
+
+             $(".fix-table").tableHeadFixer({"head": false, "right": 1});
+
+
+         }
+         {% if isMasterRequest %}
+             viewElementFn();
+         {% else %}
+             if (collector) {
+                 collector.addFunction(viewElementFn);
+             }
+         {% endif %}
+
+     </script>
+ {% endblock %}'}}

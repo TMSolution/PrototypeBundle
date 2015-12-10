@@ -10,8 +10,8 @@ namespace  {{listConfigNamespaceName}};
 
 
 
-{% if associated %}use Core\PrototypeBundle\Config\AssociationListConfig as BaseListConfig;
-{% else %}use use Core\PrototypeBundle\Config\ListConfig as BaseListConfig;{% endif %}
+{% if associated %}use Core\PrototypeBundle\Config\AssociationListConfig as AssociationGridConfig;
+{% else %}use Core\PrototypeBundle\Config\ListConfig as BaseListConfig;{% endif %}
 
 
 /**
@@ -19,7 +19,7 @@ namespace  {{listConfigNamespaceName}};
  *
  * Generated with {@see TMSolution\PrototypeBundle\Command\GenerateListConfigCommand}.
  */
-class ListConfig extends  extends {% if associated %}AssociationGridConfig{% else %}BaseListConfig{% endif %}
+class ListConfig extends {% if associated %}AssociationGridConfig{% else %}BaseListConfig{% endif %}
 {
  
     public function getQuery() {
@@ -35,22 +35,14 @@ class ListConfig extends  extends {% if associated %}AssociationGridConfig{% els
         $this->prepareFields($tableAlias,$this->model);
         $queryBuilder = $this->model->getQueryBuilder($tableAlias);
         $fieldsSql = implode(',', $this->fields);
-        $queryBuilder->select({% for field, fieldParam in fieldsInfo %}{% if  fieldParam.association is defined and ( fieldParam.association == 'ManyToOne' or fieldParam.association == 'OneToOne' )  %} '_{{field}}.{{fieldParam.default_field}} as {{field}}::{{fieldParam.default_field}} {% if fieldParam.default_field!='id' %},'.'_{{field}}.id as {{field}}::id {% endif %}{% if not loop.last %},'.{% else %}'{% endif %}{% else %}$tableAlias.'.{{field}}{% if  not loop.last %},'.{% else %}'{% endif %}{% endif %}{% endfor %});
-
-
-        {% for field, fieldParam in fieldsInfo %}
-            {% if  fieldParam.association is defined and ( fieldParam.association == 'ManyToOne' or fieldParam.association == 'OneToOne' ) %}
-                {% if associated %}$fieldsArr[] = "{{field}}";{% endif %}
-                $queryBuilder->leftJoin("$tableAlias.{{field}}","_{{field}}");
-            {%  endif %}
-
+        $queryBuilder->select({% for field, fieldParam in fieldsInfo %}{% if  fieldParam.association is defined and ( fieldParam.association == 'ManyToOne' or fieldParam.association == 'OneToOne' )  %} '_{{field}}.{{fieldParam.default_field}} as {{field}}__{{fieldParam.default_field}} {% if fieldParam.default_field!='id' %},'.'_{{field}}.id as {{field}}__id {% endif %}{% if not loop.last %},'.{% else %}'{% endif %}{% else %}$tableAlias.'.{{field}}{% if  not loop.last %},'.{% else %}'{% endif %}{% endif %}{% endfor %});
+        {% for field, fieldParam in fieldsInfo %}{% if  fieldParam.association is defined and ( fieldParam.association == 'ManyToOne' or fieldParam.association == 'OneToOne' ) %}{% if associated %}$fieldsArr[] = "{{field}}";{% endif %}
+                $queryBuilder->leftJoin("$tableAlias.{{field}}","_{{field}}");{% endif %}
         {%  endfor %}
-        
         {% if associated %}
             if (!in_array($parentFieldName, $fieldsArr)) {
                 $queryBuilder->leftJoin("$tableAlias.$parentFieldName", "_{$parentFieldName}");
             }
-            
             $queryBuilder->Where("_$parentFieldName.id=:$parentFieldName");        
             $queryBuilder->setParameter("$parentFieldName", (int)$parentId);
         {%  endif %}

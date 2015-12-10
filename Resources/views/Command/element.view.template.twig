@@ -3,11 +3,13 @@
 
 {{ "{% block element %}" }}
 
-    <div class="row">
-        <div class="col-md-12 col-sm-12">
-           BEAUTIFUL PANEL !
+<div class="row">
+    {{'{% for chartWidget in chartWidgets %}
+        <div class="col-md-3 col-sm-3 col-xs-12 form-horizontal">
+            {{chartWidget|raw}}
         </div>
-    </div>   
+    {% endfor %}'}}
+</div>   
 
 {{ "{% endblock element %}" }}
 
