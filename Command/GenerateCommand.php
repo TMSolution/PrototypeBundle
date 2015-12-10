@@ -68,6 +68,7 @@ class GenerateCommand extends ContainerAwareCommand
     {
         $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('configBundle'));
         $bundleMetadata = $manager->getBundleMetadata($bundle);
+       
         return str_replace('/', DIRECTORY_SEPARATOR, $bundleMetadata->getPath()) . DIRECTORY_SEPARATOR . $bundleMetadata->getNamespace() . DIRECTORY_SEPARATOR;
     }
 
@@ -85,11 +86,13 @@ class GenerateCommand extends ContainerAwareCommand
         try {
             $bundle = $this->getApplication()->getKernel()->getBundle($input->getArgument('entityOrBundle'));
             $bundleName = $bundle->getName();
+             
             $bundleMetadata = $manager->getBundleMetadata($bundle);
             foreach ($bundleMetadata->getMetadata() as $metadata) {
                 $entities[] = $metadata->getName();
             }
         } catch (\InvalidArgumentException $e) {
+           
             try {
                 $model = $this->getContainer()->get("model_factory")->getModel($input->getArgument('entityOrBundle'));
                 $metadata = $model->getMetadata();
