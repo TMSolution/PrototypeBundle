@@ -18,6 +18,13 @@ class UcWordsExtension extends \Twig_Extension
         ];
     }
 
+    public function ucwords($text)
+    {
+        return ucfirst($text);
+        
+    }
+    
+    
     public function getName()
     {
         return 'ext.ucwords';

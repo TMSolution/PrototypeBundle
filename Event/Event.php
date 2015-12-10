@@ -26,7 +26,7 @@ class Event extends DispatcherEvent
     public function setParams($params)
     {
         $this->params = $params;
-               
+        return $this;       
     }
 
     public function getModel()
@@ -41,6 +41,7 @@ class Event extends DispatcherEvent
     public function setModel($model)
     {
         $this->model = $model;
+        return $this;
     }
 
     public function getForm()
@@ -55,6 +56,7 @@ class Event extends DispatcherEvent
     public function setForm($form)
     {
         $this->form = $form;
+        return $this;
     }
 
     public function getList()
@@ -69,6 +71,7 @@ class Event extends DispatcherEvent
     public function setList($list)
     {
         $this->list = $list;
+        return $this;
     }
 
     public function getGrid()
@@ -83,6 +86,7 @@ class Event extends DispatcherEvent
     public function setGrid($grid)
     {
         $this->grid = $grid;
+        return $this;
     }
 
 }
