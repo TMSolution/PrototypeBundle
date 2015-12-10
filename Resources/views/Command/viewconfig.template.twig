@@ -33,7 +33,7 @@ class ViewConfig extends BaseViewConfig
                     'type' => 'mini', //or panel
                     //'listData' => $this->get{{field|ucwords}}ListArrayData('{{fieldParam.object_name}}'), //for panel only
                     'htmlContainerId' => '{{field}}',
-                    'title' => '{{field|lower|trans}}',
+                    'title' => '{{field|lower}}',
                     'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
                     'value' =>  $miniChartValues{{field|ucwords}},
                     'data' => $this->get{{field|ucwords}}ChartArrayData('{{fieldParam.object_name}}')
@@ -48,7 +48,7 @@ class ViewConfig extends BaseViewConfig
                     'type' => "panel",
                     'htmlContainerId' => '{{field}}',
                     'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
-                    'title' => '{{field|lower|trans}}',
+                    'title' => '{{field|lower}}',
                     'value' => $chartPanelValues{{field|ucwords}},
                     'listData' => $this->get{{field|ucwords}}ListArrayData('{{fieldParam.object_name}}'),
                     'trackColor' => 'rgba(255,255,255,0.2)',
