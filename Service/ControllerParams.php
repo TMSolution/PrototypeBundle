@@ -13,6 +13,12 @@ class ControllerParams implements \ArrayAccess, \Countable
         
     }
     
+    public function merge(array $_values)
+    {
+        $this->_values=array_merge($this->_values,$_values);
+    }
+    
+    
     public function getArray()
     {
         return $this->_values;
