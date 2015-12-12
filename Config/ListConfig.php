@@ -102,7 +102,7 @@ class ListConfig {
         
         $tableAlias=$this->model->getEntityName();
           
-        if(!$this->prepared){
+     //   if(!$this->prepared){
          $analizedFieldsInfo = $this->analizeFieldsInfo($this->model->getFieldsInfo());
          $this->fields = [];
          
@@ -131,8 +131,9 @@ class ListConfig {
                 $this->fieldsAliases[$field]=$labelPrefix.$fieldName;
                 $this->fieldsNames[$labelPrefix.$fieldName]= ['name'=>$fieldName,'isAssociatedObjectId'=>false,'association'=>false];
             }
-        }}
-        $this->prepared=true;
+        }
+        //}
+        //$this->prepared=true;
         return $this->fields;
         
     }

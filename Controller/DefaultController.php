@@ -52,6 +52,8 @@ class DefaultController extends FOSRestController
 
     protected function init()
     {
+        $this->configService=null;
+        
         $this->request = $this->requestStack->getCurrentRequest();
         $this->initRouteName();
         $this->initRoutePrefix();
@@ -196,18 +198,21 @@ class DefaultController extends FOSRestController
         $this->init();
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
-        
+       
         $listConfig=$this->getListConfig();
         
-        $query=$listConfig->getQuery($this->model);
+        $query=$listConfig->getQuery();
+        
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-                $query, $request->query->getInt('page', 1)/* page number */, 10/* limit per page */
+                $query, $this->request->query->getInt('page', 1)/* page number */, 10/* limit per page */
         );
-
-        $buttonRouteParams = $this->routeParams;
+        
+        $buttonRouteParams = $this->getRouteParams();
         $buttonRouteParams['containerName'] = 'container';
 
+        
+        
         $params = $params = $this->get('prototype.controler.params');
         $params->setArray(
                 [
@@ -217,7 +222,7 @@ class DefaultController extends FOSRestController
                     'newActionName' => $this->getAction('new'),
                     'routeName' => $routePrefix . '_new',
                     'config' => $this->getConfig(),
-                    'routeParams' => $this->routeParams,
+                    'routeParams' => $this->getRouteParams(),
                     'buttonRouteParams' => $buttonRouteParams,
                     'isMasterRequest' => $this->isMasterRequest(),
                     'defaultRoute' => $this->generateBaseRoute('list'),
@@ -232,7 +237,7 @@ class DefaultController extends FOSRestController
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
-    
+     
         $this->dispatch('before.list', $event);
         $view = $this->view($params->getArray())
                 ->setTemplate($this->getConfig()->get('twig_element_list'))
@@ -935,7 +940,7 @@ class DefaultController extends FOSRestController
     {
 
         if ($this->isMasterRequest() && !$request->isXmlHttpRequest() && $this->routeParams['containerName'] == 'element') {
-            throw $this->createNotFoundException('The site does not exist');
+           // throw $this->createNotFoundException('The site does not exist');
         }
     }
     
