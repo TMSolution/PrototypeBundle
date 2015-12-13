@@ -237,7 +237,7 @@ class DefaultController extends FOSRestController
         
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-                $query, $this->request->query->getInt('page', 1)/* page number */, 10/* limit per page */
+                $query, $this->request->query->getInt('page', 1)/* page number */, 2/* limit per page */
         );
         
         $buttonRouteParams = $this->getRouteParams();
