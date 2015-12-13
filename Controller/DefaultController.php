@@ -156,6 +156,8 @@ class DefaultController extends FOSRestController
             $routeName=str_replace('*',$this->getRoutePrefix().'_',$routeName);
             if(is_array($routeConfig["route_params"])){
                 
+               
+                
               $route_params=  array_merge($this->getRouteParams(),$routeConfig["route_params"]);
             }
             else

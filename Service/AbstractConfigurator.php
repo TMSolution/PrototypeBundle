@@ -123,38 +123,46 @@ class AbstractConfigurator
 
     public function getService($route, $entity, $parententity = null, $actionid = null)
     {
+        
 
         $forAll = [];
         $forEntityAndParentEntity = [];
         $forEntityAndActionId = [];
+        $forActionId = [];
         $forEntity = [];
         $universal = [];
-
-        
-        
+    
         foreach ($this->servicesConfigs as $serviceConfig) {
 
             if ($serviceConfig['entity'] == $entity && $parententity && $serviceConfig['parententity'] == $parententity && $actionid && $serviceConfig['actionid'] == $actionid) {
-               
+           
                 $forAll[] = $serviceConfig;
             }
             elseif ($serviceConfig['entity'] == $entity && $parententity && $serviceConfig['parententity'] == $parententity ) {
+             
                 $forEntityAndParentEntity[] = $serviceConfig;
             }
             elseif ($serviceConfig['entity'] == $entity && $actionid && $serviceConfig['actionid'] == $actionid ) {
-                
-                
+         
                 $forEntityAndActionId[] = $serviceConfig;
             }
+            elseif ($actionid && $serviceConfig['actionid'] == $actionid ) {
+         
+                $forActionId[] = $serviceConfig;
+            }
             elseif ($serviceConfig['entity'] == $entity) {
+             
                 $forEntity[] = $serviceConfig;
             } 
             elseif (!$serviceConfig['entity']) {
 
+              
                 $universal[] = $serviceConfig;
             }
         }
         
+    
+       
         $serviceConfig = null;
 
         if (count($forAll) > 0) {
@@ -168,6 +176,11 @@ class AbstractConfigurator
         if (!$serviceConfig && !empty($forEntityAndActionId)) {
             $serviceConfig = $this->findByBestSuitedRoute($route, $forEntityAndActionId);
         }
+        
+        if (!$serviceConfig && !empty($forActionId)) {
+            $serviceConfig = $this->findByBestSuitedRoute($route, $forActionId);
+        }
+        
         
         if (!$serviceConfig && !empty($forEntity)) {
             $serviceConfig = $this->findByBestSuitedRoute($route, $forEntity);
