@@ -10,12 +10,13 @@ class ControllerParams implements \ArrayAccess, \Countable
     public function setArray(array $_values)
     {
         $this->_values = $_values;
-        
+        return $this;
     }
     
     public function merge(array $_values)
     {
         $this->_values=array_merge($this->_values,$_values);
+        return $this;
     }
     
     

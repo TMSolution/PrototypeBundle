@@ -110,7 +110,7 @@ class AbstractConfigurator
             if ($serviceConfigRoute) {
                 if (\mb_substr($route, 0, mb_strlen($serviceConfigRoute)) == $serviceConfigRoute) {
                     $score = similar_text($route, $serviceConfigRoute);
-                    if ($score > $bestScore) {
+                    if ($score >= $bestScore) {
                         $bestScore = $score;
                         $bestServiceConfig = $serviceConfig;
                     }
