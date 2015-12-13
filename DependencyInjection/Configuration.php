@@ -43,8 +43,23 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('twig_container_read')->defaultValue('CorePrototypeBundle:Default\Container:read.html.twig')->end()
                 ->scalarNode('twig_container_error')->defaultValue('CorePrototypeBundle:Default\sContainer:error.html.twig')->end()
                 ->scalarNode('twig_container_view')->defaultValue('CorePrototypeBundle:Default\Container:view.html.twig')->end()
+                ->arrayNode('routings')
+                    ->useAttributeAsKey('name')
+                            ->prototype('array')
+                                ->children()
+                                    ->scalarNode('route')->end()
+                                    ->arrayNode('route_params')
+                                       ////////////////////////////////////////////////
+                                       ->useAttributeAsKey('name')
+                                            ->prototype('scalar')
+                                            ->end()    
+                                       ///////////////////////////////////////////////
+                                    ->end()
+                                ->end()    
+                            ->end()
+                    ->end()
                 ->scalarNode('menu_id')->end()
-        ;
+                ;
 
         return $treeBuilder;
     }

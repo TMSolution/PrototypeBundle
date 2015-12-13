@@ -101,6 +101,7 @@ class PrototypeCollector implements DataCollectorInterface
        
         foreach ($config as $name => $path) {
 
+            if(!is_array($path)){
             if (strstr($path, 'CorePrototypeBundle:Default')) {
                 $output[] = ("<tr><th>$name</th><td>$path</td></tr>");
             }
@@ -111,7 +112,7 @@ class PrototypeCollector implements DataCollectorInterface
             else {
                 $this->twigChanges++;
                 $output[] = ("<tr><th>$name</th><td><span style='background-color: #ffcc00; border-radius: 6px; color: #000000; display: inline-block;margin-right: 2px;padding: 4px;'>$path</span></td></tr>");
-            }
+            }}
         }
         $output[] = "</tbody></table>";
         

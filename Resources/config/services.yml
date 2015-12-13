@@ -121,3 +121,10 @@ services:
         public: true
         tags:
             - { name: twig.extension }
+
+    prototype.container_aware_type:
+        class: Core\PrototypeBundle\Form\ContainerAwareType
+        calls:
+          - [setContainer, ['@service_container']]
+        tags:
+            - { name: form.type, alias: 'container_aware' }

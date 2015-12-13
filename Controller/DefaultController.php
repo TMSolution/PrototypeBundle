@@ -143,6 +143,36 @@ class DefaultController extends FOSRestController
     }
     
     
+    
+    protected function getNextRoute($name,$default="read")
+    {
+        
+        $routings=$this->getConfig()->get('routings');
+       
+        if($name && array_key_exists($name,$routings))
+        {
+            $routeConfig=$routings[$name];
+            $routeName=$routeConfig["route"];
+            $routeName=str_replace('*',$this->getRoutePrefix().'_',$routeName);
+            if(is_array($routeConfig["route_params"])){
+                
+              $route_params=  array_merge($this->getRouteParams(),$routeConfig["route_params"]);
+            }
+            else
+            { 
+               $route_params=  $this->getRouteParams();
+            }
+            
+            return $this->generateUrl($routeName,$route_params);
+        }
+        else
+        {
+            return $this->generateUrl($this->getRoutePrefix().'_'.$default, $this->getRouteParams());
+        }
+        
+    }
+    
+    
     /**
      * Create action.
      * 
@@ -183,7 +213,7 @@ class DefaultController extends FOSRestController
             $this->dispatch('after.create', $event);
             $this->routeParams['id'] = $entity->getId();
             $this->routeParams['submittype']=$submitType;
-            $view = $this->redirectView($this->generateUrl($routePrefix . '_'.$submitType , $this->routeParams), 301);
+            $view = $this->redirectView($this->getNextRoute($submitType), 301);
             return $this->handleView($view);
         }
 
@@ -313,7 +343,7 @@ class DefaultController extends FOSRestController
             $this->model->update($entity, true);
             $this->dispatch('after.update', $event);
 
-            $view = $this->redirectView($this->generateUrl($routePrefix . '_read', $this->routeParams), 301);
+            $view = $this->redirectView($this->getNextRoute($submitType), 301);
             return $this->handleView($view);
         }
 
@@ -541,6 +571,8 @@ class DefaultController extends FOSRestController
      */
     public function newAction(Request $request)
     {
+        
+        dump($this->getConfig());
         $this->init();
         $entity = $this->getModel($this->getEntityClass())->getEntity();
         $formType = $this->getFormType($this->getEntityClass(), null, $this->model);
