@@ -20,8 +20,12 @@ use Symfony\Component\Form\AbstractType;
 class FormType extends AbstractType
 {
 
+protected $container;
+
 public function buildForm(FormBuilderInterface $builder, array $options)
 {
+
+
 
 $builder
 {% for field, fieldParam in fieldsInfo %}
@@ -156,6 +160,13 @@ $resolver->setDefaults(array(
 public function getName()
 {
 return '{{formTypeName}}';
+}
+
+
+
+public function setContainer($container)
+{
+    $this->container=$container;
 }
 
 }

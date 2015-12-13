@@ -972,7 +972,7 @@ class DefaultController extends FOSRestController
     {
 
         if ($this->isMasterRequest() && !$request->isXmlHttpRequest() && $this->routeParams['containerName'] == 'element') {
-           // throw $this->createNotFoundException('The site does not exist');
+            throw $this->createNotFoundException('The site does not exist');
         }
     }
     
