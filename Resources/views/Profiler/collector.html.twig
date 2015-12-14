@@ -121,6 +121,19 @@
             {{ line | raw  }}   
         {% endfor %}
     {% endif %}
+    
+    {% if collector.data.listconfig is defined %}
+        {% for line in collector.data.listconfig %}
+            {{ line | raw  }}   
+        {% endfor %}
+    {% endif %}
+    
+    {% if collector.data.viewconfig is defined %}
+        {% for line in collector.data.viewconfig %}
+            {{ line | raw  }}   
+        {% endfor %}
+    {% endif %}
+    
 
     {% if collector.data.formtype is defined %}
         {% for line in collector.data.formtype %}

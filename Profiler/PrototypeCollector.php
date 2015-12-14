@@ -51,26 +51,49 @@ class PrototypeCollector implements DataCollectorInterface
             $data["controller"] = $route["_controller"]; 
             
             if (array_key_exists("_locale", $route)) {
+                
+                $this->twigYellowChanges=0;
+                $this->twigChanges=0;
+                
                 $data["locale"] = $route["_locale"];
 
                 $data["entityName"] = $route["entityName"];
+                
+                $data["parentName"] = array_key_exists("parentName", $route)?$route["parentName"]:null;
+                $data["actionId"] = array_key_exists("actionId", $route)?$route["actionId"]:null;
                 $data["entityClass"] = $classmapper->getEntityClass($route["entityName"], $data["locale"]);
-
+                
+                if($data["parentName"]){
+                $data["parentEntityClass"] = $classmapper->getEntityClass($data["parentName"], $data["locale"]);
+                }
+                else{
+                    $data["parentEntityClass"] =  null;
+                }
                 $configuratorService = $container->get('prototype.configurator.service');
                 $namesOfServices = $configuratorService->getNamesOfServices();
-                $service = $configuratorService->getService($data["route"], $data["entityClass"]);
+                $service = $configuratorService->getService($data["route"], $data["entityClass"], $data["parentEntityClass"], $data["actionId"]);
 
                 $data['config'] = $this->printServiceInfo('Config', $configuratorService);
                 $data['twigs'] = $this->printTwigConfig($service->getConfig());
 
                 $configuratorService = $container->get('prototype.gridconfig.configurator.service');
                 $namesOfServices = $configuratorService->getNamesOfServices();
-                $configuratorService->getService($data["route"], $data["entityClass"]);
+                $configuratorService->getService($data["route"], $data["entityClass"], $data["parentEntityClass"], $data["actionId"]);
                 $data['gridconfig'] = $this->printServiceInfo('Grid', $configuratorService);
+                
+                $configuratorService = $container->get('prototype.listconfig.configurator.service');
+                $namesOfServices = $configuratorService->getNamesOfServices();
+                $configuratorService->getService($data["route"], $data["entityClass"], $data["parentEntityClass"], $data["actionId"]);
+                $data['listconfig'] = $this->printServiceInfo('List', $configuratorService);
+                
+                $configuratorService = $container->get('prototype.viewconfig.configurator.service');
+                $namesOfServices = $configuratorService->getNamesOfServices();
+                $configuratorService->getService($data["route"], $data["entityClass"], $data["parentEntityClass"], $data["actionId"]);
+                $data['viewconfig'] = $this->printServiceInfo('View', $configuratorService);
 
                 $configuratorService = $container->get('prototype.formtype.configurator.service');
                 $namesOfServices = $configuratorService->getNamesOfServices();
-                $configuratorService->getService($data["route"], $data["entityClass"]);
+                $configuratorService->getService($data["route"], $data["entityClass"], $data["parentEntityClass"], $data["actionId"]);
                 $data['formtype'] = $this->printServiceInfo('Form Type', $configuratorService);
             }
             
