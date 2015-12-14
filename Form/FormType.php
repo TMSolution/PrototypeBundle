@@ -52,6 +52,8 @@ class FormType extends BaseFormType {
         //dump(array_values($test)[1]["length"]);exit;
         foreach ($this->model->getFieldsinfo() as $key => $object) {
 
+
+      
             $label = $objectName . '.' . strtolower($key);
             if (!array_key_exists("association", $object) || $object["association"] != "OneToMany") {
                 if ($object["type"] == "datetime") {
