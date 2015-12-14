@@ -232,14 +232,12 @@ class DefaultController extends FOSRestController
         $routePrefix = $this->getRoutePrefix();
        
         $listConfig=$this->getListConfig();
-        
+
         $query=$listConfig->getQuery();
-        
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
                 $query, $this->request->query->getInt('page', 1)/* page number */, 2/* limit per page */
         );
-        
         $buttonRouteParams = $this->getRouteParams();
         $buttonRouteParams['containerName'] = 'container';
 
@@ -974,7 +972,7 @@ class DefaultController extends FOSRestController
     {
 
         if ($this->isMasterRequest() && !$request->isXmlHttpRequest() && $this->routeParams['containerName'] == 'element') {
-            throw $this->createNotFoundException('The site does not exist');
+            //throw $this->createNotFoundException('The site does not exist');
         }
     }
     
@@ -983,6 +981,7 @@ class DefaultController extends FOSRestController
     {
         $configurator = $this->get("prototype.listconfig.configurator.service");
         $listConfig = $configurator->getService($this->getRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
+        
         $listConfig->setModel($this->model);
         return $listConfig;
     }

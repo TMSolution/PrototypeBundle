@@ -99,7 +99,8 @@ class ListConfig {
     
     protected function prepareFields()
     {
-        
+    
+       
         $tableAlias=$this->model->getEntityName();
           
      //   if(!$this->prepared){
@@ -154,6 +155,7 @@ class ListConfig {
 
             if (array_key_exists('association', $fieldParam) && ($fieldParam['association'] == 'ManyToOne' || $fieldParam['association'] == 'OneToOne' )) {
 
+                
                 $queryBuilder->leftJoin("$tableAlias.{$field}", "_{$field}");
             }
         }
@@ -162,7 +164,6 @@ class ListConfig {
             $queryBuilder->addGroupBy($tableAlias . '.id');
         }
 
-      //  die();
    
        return $queryBuilder->getQuery(\Doctrine\ORM\Query::HYDRATE_ARRAY);
     }
