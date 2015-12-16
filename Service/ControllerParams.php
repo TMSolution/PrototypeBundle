@@ -20,6 +20,10 @@ class ControllerParams implements \ArrayAccess, \Countable
     }
     
     
+    
+    
+    
+    
     public function getArray()
     {
         return $this->_values;

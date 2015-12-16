@@ -147,14 +147,12 @@ class ListConfig
         }
 
         $formType->setModel($this->model);
+        dump($formType);
         return $formType;
     }
 
     public function getQuery()
     {
-
-
-
 
         return $this->getQueryBuilder()->getQuery(\Doctrine\ORM\Query::HYDRATE_ARRAY);
     }

@@ -100,6 +100,8 @@ class DefaultController extends FOSRestController
         if (null === $this->dispatcher) {
             $this->dispatcher = $this->get('event_dispatcher');
         }
+        
+        dump($this->getDispatchName($name));
         $this->dispatcher->dispatch($this->getDispatchName($name), $event);
     }
 
@@ -223,8 +225,8 @@ class DefaultController extends FOSRestController
         $listConfig = $this->getListConfig();
 
         $formType = $listConfig->getFormType();
-        $form = $this->makeForm($formType,   $this->model->getEntity(), 'POST', $entityName, $this->getAction('list'), $this->routeParams);
-        
+        $form = $this->makeForm($formType, $this->model->getEntity(), 'POST', $entityName, $this->getAction('list'), $this->routeParams);
+
         $queryBuilder = $listConfig->getQueryBuilder();
 //        $paginator = $this->get('knp_paginator');
 //          $pagination = $paginator->paginate(
@@ -232,7 +234,7 @@ class DefaultController extends FOSRestController
 //          ); 
 
         $pagination = $this->container->get("savvy.filter_nator")->filterNate(
-                $queryBuilder, $form, 'foo',  $this->request->query->getInt('page', 10)/* return 5 entities */,  1 /* starting from page 1 */
+                $queryBuilder, $form, 'foo', $this->request->query->getInt('page', 10)/* return 5 entities */, 1 /* starting from page 1 */
         );
 
         $buttonRouteParams = $this->getRouteParams();
@@ -257,8 +259,8 @@ class DefaultController extends FOSRestController
                     'fieldsNames' => $listConfig->getFieldsNames($this->model),
                     'routePrefix' => $routePrefix,
                     'fieldsAliases' => $listConfig->getFieldsAliases(),
-                    'form'=>$form,
-                    //'form'=>$form
+                    'form' => $form,
+                //'form'=>$form
         ]);
 
         $this->setRouteParam('pagination', $pagination);
@@ -349,6 +351,7 @@ class DefaultController extends FOSRestController
         $this->get('event_dispatcher')->dispatch($routePrefix . '.' . $this->entityName . '.' . $this->routeParams['actionId'] . '.' . 'invalid.update', $event);
 
 //Render
+        $this->dispatch('before.render', $event);
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'))->setHeader('Location', $this->getLocationUrl('update', 'simple'));
         return $this->handleView($view);
     }
