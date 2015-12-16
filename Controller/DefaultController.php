@@ -181,7 +181,7 @@ class DefaultController extends FOSRestController
         $form = $this->makeForm($formType, $entity, 'POST', $this->entityName, $this->getAction('create'), $this->routeParams);
         $form->handleRequest($request);
 
-        $submitType = $request->get('submittype') ? $request->get('submittype') : 'read';
+        
 //config parameters for render and event broadcast
         $params = $this->getDefaultParameters()
                 ->merge([
@@ -190,7 +190,7 @@ class DefaultController extends FOSRestController
             'cancelActionName' => $this->getAction('grid'),
             'defaultRoute' => $this->generateBaseRoute('create'),
             'parentActionName' => $this->getAction('view'),
-            'submitType' => $submitType
+            'submitType' => $this->getSubmitType($request)
         ]);
 
 //Create event broadcast.
@@ -203,8 +203,8 @@ class DefaultController extends FOSRestController
             $this->model->flush();
             $this->dispatch('after.create', $event);
             $this->routeParams['id'] = $entity->getId();
-            $this->routeParams['submittype'] = $submitType;
-            $view = $this->redirectView($this->getNextRoute($submitType), 301);
+            $this->routeParams['submittype'] = $this->getSubmitType($request);
+            $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
             return $this->handleView($view);
         }
 
@@ -324,7 +324,8 @@ class DefaultController extends FOSRestController
             'buttonRouteParams' => $buttonRouteParams,
             'defaultRoute' => $this->generateBaseRoute('update'),
             'states' => $this->getStates(),
-            'isMasterRequest' => $this->isMasterRequest()
+            'isMasterRequest' => $this->isMasterRequest(),
+            'submitType'=>$this->getSubmitType($request)    
         ]);
 
 //Create event broadcast.
@@ -341,8 +342,8 @@ class DefaultController extends FOSRestController
             $this->dispatch('before.update', $event);
             $this->model->update($entity, true);
             $this->dispatch('after.update', $event);
-
-            $view = $this->redirectView($this->getNextRoute($submitType), 301);
+            $this->routeParams['submittype'] = $this->getSubmitType($request);
+            $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
             return $this->handleView($view);
         }
 
@@ -418,6 +419,8 @@ class DefaultController extends FOSRestController
         $buttonRouteParams = $this->routeParams;
         $buttonRouteParams['containerName'] = 'container';
 
+       
+        
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -435,7 +438,8 @@ class DefaultController extends FOSRestController
             'defaultRoute' => $this->generateBaseRoute('edit'),
             'states' => $this->getStates(),
             'form' => $editForm->createView(),
-            'isMasterRequest' => $this->isMasterRequest()
+            'isMasterRequest' => $this->isMasterRequest(),
+            'submitType'=> $this->getSubmitType($request)  
         ]);
 
 //Create event broadcast.
@@ -571,7 +575,7 @@ class DefaultController extends FOSRestController
     public function newAction(Request $request)
     {
 
-        dump($this->getConfig());
+      
         $this->init();
         $entity = $this->getModel($this->getEntityClass())->getEntity();
         $formType = $this->getFormType($this->getEntityClass(), null, $this->model);
@@ -592,7 +596,7 @@ class DefaultController extends FOSRestController
             'defaultRoute' => $this->generateBaseRoute('new'),
             'states' => $this->getStates(),
             'isMasterRequest' => $this->isMasterRequest(),
-            'submitType' => $request->get('submittype') ? $request->get('submittype') : 'read'
+            'submitType' => $this->getSubmitType($request)
         ]);
 
 //Create event broadcast.
@@ -973,6 +977,13 @@ class DefaultController extends FOSRestController
             //throw $this->createNotFoundException('The site does not exist');
         }
     }
+    
+    protected function getSubmitType($request)
+    {
+        return  $submitType = $request->get('submittype') ? $request->get('submittype') : 'read';
+    }
+    
+    
 
     protected function getListConfig()
     {
@@ -990,5 +1001,8 @@ class DefaultController extends FOSRestController
         $viewConfig->setModel($this->model);
         return $viewConfig;
     }
+    
+    
+    
 
 }
