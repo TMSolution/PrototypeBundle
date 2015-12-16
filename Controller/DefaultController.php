@@ -101,7 +101,7 @@ class DefaultController extends FOSRestController
             $this->dispatcher = $this->get('event_dispatcher');
         }
         
-        dump($this->getDispatchName($name));
+       // dump($this->getDispatchName($name));
         $this->dispatcher->dispatch($this->getDispatchName($name), $event);
     }
 
@@ -340,11 +340,12 @@ class DefaultController extends FOSRestController
 
 
         if ($updateForm->isValid()) {
-
+            
             $this->dispatch('before.update', $event);
             $this->model->update($entity, true);
             $this->dispatch('after.update', $event);
             $this->routeParams['submittype'] = $this->getSubmitType($request);
+           
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
             return $this->handleView($view);
         }
