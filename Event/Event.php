@@ -9,6 +9,7 @@ class Event extends DispatcherEvent
 
     protected $params;
     protected $model;
+    protected $entity;
     protected $form;
     protected $list;
     protected $grid;
@@ -27,7 +28,25 @@ class Event extends DispatcherEvent
     {
         $this->params = $params;
         return $this;       
+
     }
+    
+    public function getEntity()
+    {
+        if ($this->entity) {
+            return $this->entity;
+        } else {
+            throw new \Exception('Parameter "entity" has not been set.');
+        }
+    }
+
+    public function setEntity($entity)
+    {
+        $this->entity = $entity;
+        return $this;
+    }
+    
+    
 
     public function getModel()
     {
