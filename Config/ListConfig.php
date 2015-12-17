@@ -147,7 +147,7 @@ class ListConfig
         }
 
         $formType->setModel($this->model);
-        dump($formType);
+       // dump($formType);
         return $formType;
     }
 
