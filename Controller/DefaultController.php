@@ -91,7 +91,9 @@ class DefaultController extends FOSRestController
         if (!$this->routeParams) {
             $routeParams = $this->getRouteParams();
         }
-
+        
+        dump( $routePrefix . '.' . $this->routeParams['entityName'] . '.' . $this->routeParams['actionId'] . '.' . $fireAction);
+        
         return $routePrefix . '.' . $this->routeParams['entityName'] . '.' . $this->routeParams['actionId'] . '.' . $fireAction;
     }
 
@@ -203,10 +205,12 @@ class DefaultController extends FOSRestController
             //tu chyba jest flush
             $entity = $this->model->create($entity, true);
             $this->model->flush();
+            $event->setEntity($entity);
             $this->dispatch('after.create', $event);
             $this->routeParams['id'] = $entity->getId();
             $this->routeParams['submittype'] = $this->getSubmitType($request);
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
+         
             return $this->handleView($view);
         }
 
@@ -259,6 +263,7 @@ class DefaultController extends FOSRestController
                     'fieldsNames' => $listConfig->getFieldsNames($this->model),
                     'routePrefix' => $routePrefix,
                     'fieldsAliases' => $listConfig->getFieldsAliases(),
+                    'submitType'=> $this->getSubmitType($request),
                     'form' => $form,
                 //'form'=>$form
         ]);
