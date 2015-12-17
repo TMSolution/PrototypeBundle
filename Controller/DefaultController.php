@@ -238,7 +238,7 @@ class DefaultController extends FOSRestController
 //          ); 
 
         $pagination = $this->container->get("savvy.filter_nator")->filterNate(
-                $queryBuilder, $form, 'foo', $this->request->query->getInt('page', 10)/* return 5 entities */, 1 /* starting from page 1 */
+                $queryBuilder, $form, 'foo',10, $this->request->query->getInt('page', 10)/* return 5 entities */, 1 /* starting from page 1 */
         );
 
         $buttonRouteParams = $this->getRouteParams();
