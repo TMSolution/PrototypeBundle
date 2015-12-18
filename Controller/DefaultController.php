@@ -103,7 +103,7 @@ class DefaultController extends FOSRestController
             $this->dispatcher = $this->get('event_dispatcher');
         }
         
-       // dump($this->getDispatchName($name));
+       //dump($this->getDispatchName($name));
         $this->dispatcher->dispatch($this->getDispatchName($name), $event);
     }
 
@@ -196,12 +196,14 @@ class DefaultController extends FOSRestController
             'parentActionName' => $this->getAction('view'),
             'submitType' => $this->getSubmitType($request)
         ]);
+      
 
-//Create event broadcast.
+        //Create event broadcast.
         $event = $this->get('prototype.event')->setParams($params)->setModel($this->model)->setForm($form);
         if ($form->isValid()) {
 
             $this->dispatch('before.create', $event);
+           
             //tu chyba jest flush
             $entity = $this->model->create($entity, true);
             $this->model->flush();
