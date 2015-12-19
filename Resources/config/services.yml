@@ -16,11 +16,11 @@ services:
         arguments: [@service_container,@request_stack]
     
 ################################################################    
-    data_collector.prototype:
-        class: Core\PrototypeBundle\Profiler\PrototypeCollector
-        arguments: []
-        tags:
-            - { name: data_collector, template: "CorePrototypeBundle:Profiler:collector", id: "prototype" }
+#    data_collector.prototype:
+#        class: Core\PrototypeBundle\Profiler\PrototypeCollector
+#        arguments: []
+#        tags:
+#            - { name: data_collector, template: "CorePrototypeBundle:Profiler:collector", id: "prototype" }
     
     prototype.event:
         class: Core\PrototypeBundle\Event\Event

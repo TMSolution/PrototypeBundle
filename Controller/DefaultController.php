@@ -182,6 +182,8 @@ class DefaultController extends FOSRestController
         $routePrefix = $this->getRoutePrefix();
 
         $formType = $this->getFormType($this->getEntityClass(), $this->model);
+        
+        
         $form = $this->makeForm($formType, $entity, 'POST', $this->entityName, $this->getAction('create'), $this->routeParams);
         $form->handleRequest($request);
 
@@ -198,9 +200,13 @@ class DefaultController extends FOSRestController
         ]);
 
 //Create event broadcast.
+        
+      //  $form->isValid();
+       // dump($form);
+       // die('dfdf');
         $event = $this->get('prototype.event')->setParams($params)->setModel($this->model)->setForm($form);
         if ($form->isValid()) {
-
+      
             $this->dispatch('before.create', $event);
             //tu chyba jest flush
             $entity = $this->model->create($entity, true);
@@ -214,6 +220,7 @@ class DefaultController extends FOSRestController
             return $this->handleView($view);
         }
 
+       
         $this->dispatch('on.invalidcreate', $event);
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'))->setHeader('Location', $this->getLocationUrl('create', 'simple'));
         return $this->handleView($view);
@@ -311,7 +318,7 @@ class DefaultController extends FOSRestController
 
 //dump($params);
 
-
+       
         $buttonRouteParams = $this->routeParams;
         $buttonRouteParams['containerName'] = 'container';
 
@@ -343,9 +350,11 @@ class DefaultController extends FOSRestController
         $event->setModel($this->model);
         $event->setForm($updateForm);
 
-
+            $updateForm->isValid();
+           
         if ($updateForm->isValid()) {
-            
+           
+             
             $this->dispatch('before.update', $event);
             $this->model->update($entity, true);
             $this->dispatch('after.update', $event);

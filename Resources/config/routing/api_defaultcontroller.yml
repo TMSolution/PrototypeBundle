@@ -1,78 +1,239 @@
 
 core_prototype_api_defaultcontroller_list:
-    locales:  { en: "/{entityName}/{actionId}/list/{states}", pl: "/{entityName}/{actionId}/lista/{states}" } 
-    defaults: { _controller: "prototype.grid_controller:listAction", states: "", format: ~ }
-    requirements: {  "states": ".+"}
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/list/{states}", pl: "/{entityName}/{containerName}/{actionId}/lista/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:listAction", states: "", _format: json }
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
-        
+  
 
 core_prototype_api_defaultcontroller_ajaxlist:
-    locales:  { en: "/{entityName}/{actionId}/ajaxlist/{states}", pl: "/{entityName}/{actionId}/listaajax/{states}" } 
-    defaults: { _controller: "prototype.grid_controller:ajaxlistAction", states: "", format: ~ }
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/ajaxlist/{states}", pl: "/{entityName}/{containerName}/{actionId}/listaajax/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:ajaxlistAction", states: "", _format: json }
     options:
         expose: true   
         
 core_prototype_api_defaultcontroller_grid:
-    locales:  { en: "/{entityName}/{actionId}/list/{states}", pl: "/{entityName}/{actionId}/lista/{states}" } 
-    defaults: { _controller: "prototype.grid_controller:listAction", states: "", format: ~ }
-    requirements: {  "states": ".+"}
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/grid/{states}", pl: "/{entityName}/{containerName}/{actionId}/grid/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:gridAction", states: "", _format: json }
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
-        
+  
 
 core_prototype_api_defaultcontroller_ajaxgrid:
-    locales:  { en: "/{entityName}/{actionId}/ajaxgrid/{states}", pl: "/{entityName}/{actionId}/ajaxgrid/{states}" } 
-    defaults: { _controller: "prototype.grid_controller:ajaxgridAction", states: "", format: ~ }
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/ajaxgrid/{states}", pl: "/{entityName}/{containerName}/{actionId}/listagrid/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:ajaxgridAction", states: "", _format: json }
     options:
         expose: true   
    
 core_prototype_api_defaultcontroller_read:
-    locales:  { en: "/{entityName}/{actionId}/read/{id}/{states}", pl: "/{entityName}/{actionId}/pokaz/{id}/{states}"}
-    defaults: { _controller: "prototype.grid_controller:readAction", states: "", format: ~ }   
-    requirements: {  "states": ".+"}
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/read/{id}/{states}", pl: "/{entityName}/{containerName}/{actionId}/pokaz/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:readAction", states: "", _format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
 
 
 core_prototype_api_defaultcontroller_new:
-    locales:  { en: "/{entityName}/{actionId}/new/{states}", pl: "/{entityName}/{actionId}/nowy/{states}"}
-    defaults: { _controller: "prototype.grid_controller:newAction", states: "", format: ~ }   
-    requirements: {  "states": ".+"}
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/new/{states}", pl: "/{entityName}/{containerName}/{actionId}/nowy/{states}"}
+    defaults: { _controller: "prototype.grid_controller:newAction", states: "", _format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
 
 core_prototype_api_defaultcontroller_create:
-    locales:  { en: "/{entityName}/{actionId}/create/{states}", pl: "/{entityName}/{actionId}/utworz/{states}" }
-    defaults: { _controller: "prototype.grid_controller:createAction", states: "", format: ~ }   
-    requirements: {  "states": ".+"}
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/create/{states}", pl: "/{entityName}/{containerName}/{actionId}/utworz/{states}" }
+    defaults: { _controller: "prototype.grid_controller:createAction", states: "", _format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true       
 
 core_prototype_api_defaultcontroller_delete:
-    locales:  { en: "/{entityName}/{actionId}/delete/{id}/{states}", pl: "/{entityName}/{actionId}/usun/{id}/{states}"}
-    defaults: { _controller: "prototype.grid_controller:deleteAction", states: "", format: ~ }       
-    requirements: {  "states": ".+"}
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/delete/{id}/{states}", pl: "/{entityName}/{containerName}/{actionId}/usun/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:deleteAction", states: "", _format: json }       
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
 
 core_prototype_api_defaultcontroller_edit:
-    locales:  { en: "/{entityName}/{actionId}/edit/{id}/{states}", pl: "/{entityName}/{actionId}/edytuj/{id}/{states}"}
-    defaults: { _controller: "prototype.grid_controller:editAction", states: "", format: ~ }
-    requirements: {  "states": ".+"}
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/edit/{id}/{states}", pl: "/{entityName}/{containerName}/{actionId}/edytuj/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:editAction", states: "", _format: json }
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true    
         
 core_prototype_api_defaultcontroller_update:
-    locales:  { en: "/{entityName}/{actionId}/update/{id}/{states}", pl: "/{entityName}/{actionId}/aktualizuj/{id}/{states}"}
-    defaults: { _controller: "prototype.grid_controller:updateAction", states: "", format: ~ }   
-    requirements: {  "states": ".+"}
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/update/{id}/{states}", pl: "/{entityName}/{containerName}/{actionId}/aktualizuj/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:updateAction", states: "", _format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
         expose: true
         
 core_prototype_api_defaultcontroller_view:
-    locales:  { en: "/{entityName}/{actionId}/view/{id}/{states}", pl: "/{entityName}/{actionId}/podglad/{id}/{states}"}
-    defaults: { _controller: "prototype.grid_controller:viewAction", states: "", format: ~ }   
-    requirements: {  "states": ".+"}
+    locales:  { en: "/{entityName}/{containerName}/{actionId}/view/{id}/{states}", pl: "/{entityName}/{containerName}/{actionId}/podglad/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:viewAction", states: "", _format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
     options:
-        expose: true        
+        expose: true  
+        
+        
+#####################################
+
+core_prototype_api_defaultcontroller_simplelist:
+    locales:  { en: "/{entityName}/list/{states}", pl: "/{entityName}/lista/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:listAction", states: "", "containerName": "container", "actionId": "default", _format: json }
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+  
+
+core_prototype_api_defaultcontroller_simpleajaxlist:
+    locales:  { en: "/{entityName}/ajaxlist/{states}", pl: "/{entityName}/listaajax/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:ajaxlistAction", states: "", "containerName": "container", "actionId": "default", _format: json }
+    options:
+        expose: true   
+        
+core_prototype_api_defaultcontroller_simplegrid:
+    locales:  { en: "/{entityName}/grid/{states}", pl: "/{entityName}/grid/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:gridAction", states: "", "containerName": "container", "actionId": "default", _format: json }
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+  
+
+core_prototype_api_defaultcontroller_simpleajaxgrid:
+    locales:  { en: "/{entityName}/ajaxgrid/{states}", pl: "/{entityName}/listagrid/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:ajaxgridAction", states: "", "containerName": "container", "actionId": "default", _format: json }
+    options:
+        expose: true   
+   
+core_prototype_api_defaultcontroller_simpleread:
+    locales:  { en: "/{entityName}/read/{id}/{states}", pl: "/{entityName}/pokaz/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:readAction", states: "", "containerName": "container",  "actionId": "default",_format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+
+
+core_prototype_api_defaultcontroller_simplenew:
+    locales:  { en: "/{entityName}/new/{states}", pl: "/{entityName}/nowy/{states}"}
+    defaults: { _controller: "prototype.grid_controller:newAction", states: "",  "containerName": "container",  "actionId": "default",_format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+
+core_prototype_api_defaultcontroller_simplecreate:
+    locales:  { en: "/{entityName}/create/{states}", pl: "/{entityName}/utworz/{states}" }
+    defaults: { _controller: "prototype.grid_controller:createAction", states: "",  "containerName": "container",  "actionId": "default", _format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true       
+
+core_prototype_api_defaultcontroller_simpledelete:
+    locales:  { en: "/{entityName}/delete/{id}/{states}", pl: "/{entityName}/usun/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:deleteAction", states: "", "containerName": "container",  "actionId": "default", _format: json }       
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+
+core_prototype_api_defaultcontroller_simpleedit:
+    locales:  { en: "/{entityName}/edit/{id}/{states}", pl: "/{entityName}/edytuj/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:editAction", states: "", "containerName": "container",  "actionId": "default", _format: json }
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true    
+        
+core_prototype_api_defaultcontroller_simpleupdate:
+    locales:  { en: "/{entityName}/update/{id}/{states}", pl: "/{entityName}/aktualizuj/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:updateAction", states: "", "containerName": "container", "actionId": "default",  _format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+        
+core_prototype_api_defaultcontroller_simpleview:
+    locales:  { en: "/{entityName}/view/{id}/{states}", pl: "/{entityName}/podglad/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:viewAction", states: "", "containerName": "container", "actionId": "default", _format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true 
+#########################################################
+
+
+core_prototype_api_defaultcontroller_actionlist:
+    locales:  { en: "/{entityName}/{actionId}/list/{states}", pl: "/{entityName}/{actionId}/lista/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:listAction", states: "", "containerName": "container", "actionId": "default", _format: json }
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+  
+
+core_prototype_api_defaultcontroller_actionajaxlist:
+    locales:  { en: "/{entityName}/{actionId}/ajaxlist/{states}", pl: "/{entityName}/{actionId}/listaajax/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:ajaxlistAction", states: "", "containerName": "container", "actionId": "default", _format: json }
+    options:
+        expose: true   
+        
+core_prototype_api_defaultcontroller_actiongrid:
+    locales:  { en: "/{entityName}/{actionId}/grid/{states}", pl: "/{entityName}/{actionId}/grid/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:gridAction", states: "", "containerName": "container", "actionId": "default", _format: json }
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+  
+
+core_prototype_api_defaultcontroller_actionajaxgrid:
+    locales:  { en: "/{entityName}/{actionId}/ajaxgrid/{states}", pl: "/{entityName}/{actionId}/listagrid/{states}" } 
+    defaults: { _controller: "prototype.grid_controller:ajaxgridAction", states: "", "containerName": "container", "actionId": "default", _format: json }
+    options:
+        expose: true   
+   
+core_prototype_api_defaultcontroller_actionread:
+    locales:  { en: "/{entityName}/{actionId}/read/{id}/{states}", pl: "/{entityName}/{actionId}/pokaz/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:readAction", states: "", "containerName": "container",  "actionId": "default",_format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+
+
+core_prototype_api_defaultcontroller_actionnew:
+    locales:  { en: "/{entityName}/{actionId}/new/{states}", pl: "/{entityName}/{actionId}/nowy/{states}"}
+    defaults: { _controller: "prototype.grid_controller:newAction", states: "",  "containerName": "container",  "actionId": "default",_format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+
+core_prototype_api_defaultcontroller_actioncreate:
+    locales:  { en: "/{entityName}/{actionId}/create/{states}", pl: "/{entityName}/{actionId}/utworz/{states}" }
+    defaults: { _controller: "prototype.grid_controller:createAction", states: "",  "containerName": "container",  "actionId": "default", _format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true       
+
+core_prototype_api_defaultcontroller_actiondelete:
+    locales:  { en: "/{entityName}/{actionId}/delete/{id}/{states}", pl: "/{entityName}/{actionId}/usun/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:deleteAction", states: "", "containerName": "container",  "actionId": "default", _format: json }       
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+
+core_prototype_api_defaultcontroller_actionedit:
+    locales:  { en: "/{entityName}/{actionId}/edit/{id}/{states}", pl: "/{entityName}/{actionId}/edytuj/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:editAction", states: "", "containerName": "container",  "actionId": "default", _format: json }
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true    
+        
+core_prototype_api_defaultcontroller_actionupdate:
+    locales:  { en: "/{entityName}/{actionId}/update/{id}/{states}", pl: "/{entityName}/{actionId}/aktualizuj/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:updateAction", states: "", "containerName": "container", "actionId": "default",  _format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true
+        
+core_prototype_api_defaultcontroller_actionview:
+    locales:  { en: "/{entityName}/{actionId}/view/{id}/{states}", pl: "/{entityName}/{actionId}/podglad/{id}/{states}"}
+    defaults: { _controller: "prototype.grid_controller:viewAction", states: "", "containerName": "container", "actionId": "default", _format: json }   
+    requirements: {"containerName": main|container|element ,  "states": ".+"}
+    options:
+        expose: true 
