@@ -91,9 +91,9 @@ class DefaultController extends FOSRestController
         if (!$this->routeParams) {
             $routeParams = $this->getRouteParams();
         }
-        
-        dump( $routePrefix . '.' . $this->routeParams['entityName'] . '.' . $this->routeParams['actionId'] . '.' . $fireAction);
-        
+
+        dump($routePrefix . '.' . $this->routeParams['entityName'] . '.' . $this->routeParams['actionId'] . '.' . $fireAction);
+
         return $routePrefix . '.' . $this->routeParams['entityName'] . '.' . $this->routeParams['actionId'] . '.' . $fireAction;
     }
 
@@ -102,8 +102,8 @@ class DefaultController extends FOSRestController
         if (null === $this->dispatcher) {
             $this->dispatcher = $this->get('event_dispatcher');
         }
-        
-       //dump($this->getDispatchName($name));
+
+        //dump($this->getDispatchName($name));
         $this->dispatcher->dispatch($this->getDispatchName($name), $event);
     }
 
@@ -185,7 +185,7 @@ class DefaultController extends FOSRestController
         $form = $this->makeForm($formType, $entity, 'POST', $this->entityName, $this->getAction('create'), $this->routeParams);
         $form->handleRequest($request);
 
-        
+
 //config parameters for render and event broadcast
         $params = $this->getDefaultParameters()
                 ->merge([
@@ -196,14 +196,14 @@ class DefaultController extends FOSRestController
             'parentActionName' => $this->getAction('view'),
             'submitType' => $this->getSubmitType($request)
         ]);
-      
+
 
         //Create event broadcast.
         $event = $this->get('prototype.event')->setParams($params)->setModel($this->model)->setForm($form);
         if ($form->isValid()) {
 
             $this->dispatch('before.create', $event);
-           
+
             //tu chyba jest flush
             $entity = $this->model->create($entity, true);
             $this->model->flush();
@@ -212,7 +212,7 @@ class DefaultController extends FOSRestController
             $this->routeParams['id'] = $entity->getId();
             $this->routeParams['submittype'] = $this->getSubmitType($request);
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
-         
+
             return $this->handleView($view);
         }
 
@@ -240,13 +240,13 @@ class DefaultController extends FOSRestController
 //          ); 
 
         $pagination = $this->container->get("savvy.filter_nator")->filterNate(
-                $queryBuilder, $form, 'foo',10, $this->request->query->getInt('page', 10)/* return 5 entities */, 1 /* starting from page 1 */
+                $queryBuilder, $form, 'foo', $this->request->query->getInt('page', 10)/* return 5 entities */, 1 /* starting from page 1 */
         );
 
         $buttonRouteParams = $this->getRouteParams();
         $buttonRouteParams['containerName'] = 'container';
 
-
+       
 
         $params = $params = $this->get('prototype.controler.params');
         $params->setArray(
@@ -265,7 +265,7 @@ class DefaultController extends FOSRestController
                     'fieldsNames' => $listConfig->getFieldsNames($this->model),
                     'routePrefix' => $routePrefix,
                     'fieldsAliases' => $listConfig->getFieldsAliases(),
-                    'submitType'=> $this->getSubmitType($request),
+                    'submitType' => $this->getSubmitType($request),
                     'form' => $form,
                 //'form'=>$form
         ]);
@@ -334,7 +334,7 @@ class DefaultController extends FOSRestController
             'defaultRoute' => $this->generateBaseRoute('update'),
             'states' => $this->getStates(),
             'isMasterRequest' => $this->isMasterRequest(),
-            'submitType'=>$this->getSubmitType($request)    
+            'submitType' => $this->getSubmitType($request)
         ]);
 
 //Create event broadcast.
@@ -347,12 +347,12 @@ class DefaultController extends FOSRestController
 
 
         if ($updateForm->isValid()) {
-            
+
             $this->dispatch('before.update', $event);
             $this->model->update($entity, true);
             $this->dispatch('after.update', $event);
             $this->routeParams['submittype'] = $this->getSubmitType($request);
-           
+
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
             return $this->handleView($view);
         }
@@ -430,8 +430,8 @@ class DefaultController extends FOSRestController
         $buttonRouteParams = $this->routeParams;
         $buttonRouteParams['containerName'] = 'container';
 
-       
-        
+
+
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'entity' => $entity,
@@ -450,7 +450,7 @@ class DefaultController extends FOSRestController
             'states' => $this->getStates(),
             'form' => $editForm->createView(),
             'isMasterRequest' => $this->isMasterRequest(),
-            'submitType'=> $this->getSubmitType($request)  
+            'submitType' => $this->getSubmitType($request)
         ]);
 
 //Create event broadcast.
@@ -586,7 +586,7 @@ class DefaultController extends FOSRestController
     public function newAction(Request $request)
     {
 
-      
+
         $this->init();
         $entity = $this->getModel($this->getEntityClass())->getEntity();
         $formType = $this->getFormType($this->getEntityClass(), null, $this->model);
@@ -988,13 +988,11 @@ class DefaultController extends FOSRestController
             //throw $this->createNotFoundException('The site does not exist');
         }
     }
-    
+
     protected function getSubmitType($request)
     {
-        return  $submitType = $request->get('submittype') ? $request->get('submittype') : 'read';
+        return $submitType = $request->get('submittype') ? $request->get('submittype') : 'read';
     }
-    
-    
 
     protected function getListConfig()
     {
@@ -1012,8 +1010,5 @@ class DefaultController extends FOSRestController
         $viewConfig->setModel($this->model);
         return $viewConfig;
     }
-    
-    
-    
 
 }
