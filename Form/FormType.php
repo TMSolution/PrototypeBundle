@@ -50,6 +50,7 @@ class FormType extends BaseFormType {
         //dump(array_values($test)[0]["type"]);exit;
         //get length, it works
         //dump(array_values($test)[1]["length"]);exit;
+        
         foreach ($this->model->getFieldsinfo() as $key => $object) {
 
 
