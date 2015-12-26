@@ -150,7 +150,7 @@ class AbstractConfigurator
          
                 throw new \Exception("ActionId ".$actionid." was set but entity not !!!");
             }*/
-            elseif ($serviceConfig['entity'] == $entity) {
+            elseif ($serviceConfig['entity'] == $entity && $serviceConfig['actionid'] ==null )  {
              
                 $forEntity[] = $serviceConfig;
             } 

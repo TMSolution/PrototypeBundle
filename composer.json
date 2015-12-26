@@ -23,7 +23,7 @@
         "tmsolution/model-bundle": "1.*",
         "tmsolution/datagrid-bundle2": "2.*",
         "friendsofsymfony/jsrouting-bundle": "1.*",
-        "boekkooi/jquery-validation-bundle": "0.3.0"
+        "boekkooi/jquery-validation-bundle": "1.1.0"
     },
     "require-dev": { 
         "phpunit/phpunit": "5.*",  

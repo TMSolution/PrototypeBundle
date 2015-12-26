@@ -229,18 +229,28 @@ class DefaultController extends FOSRestController {
 
         $listConfig = $this->getListConfig();
 
+
         $formType = $listConfig->getFormType();
+
+      
+
         $form = $this->makeForm($formType, $this->model->getEntity(), 'GET', $entityName, $this->getAction('list'), $this->getRouteParams());
 
         $queryBuilder = $listConfig->getQueryBuilder();
         $paginator = $this->container->get('knp_paginator');
         $lexik = $this->container->get('lexik_form_filter.query_builder_updater');
         $form->submit($this->request);
+
+
+
+
         $lexik->addFilterConditions($form, $queryBuilder);
         $query = $queryBuilder->getQuery(); //->getResult();
 
+        $query->setHydrationMode(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
         $pagination = $paginator->paginate(
-                $query, $this->request->query->getInt('page', 1), $limit=10
+                $query, $this->request->query->getInt('page', 1), $limit = $this->getConfig()->get('limit')
         );
 
         $buttonRouteParams = $this->getRouteParams();
@@ -249,39 +259,45 @@ class DefaultController extends FOSRestController {
 
         $buttonRouteParams = $this->getRouteParams();
         $params = $params = $this->get('prototype.controler.params');
-        $params->setArray(
-                [
-                    'entityName' => $entityName,
-                    'parentName' => $this->getParentName(),
-                    'parentId' => $this->getParentId(),
-                    'newActionName' => $this->getAction('new'),
-                    'routeName' => $routePrefix . '_new',
-                    'config' => $this->getConfig(),
-                    'routeParams' => $this->getRouteParams(),
-                    'buttonRouteParams' => $buttonRouteParams,
-                    'isMasterRequest' => $this->isMasterRequest(),
-                    'defaultRoute' => $this->generateBaseRoute('list'),
-                    'pagination' => $pagination,
-                    'fieldsNames' => $listConfig->getFieldsNames($this->model),
-                    'routePrefix' => $routePrefix,
-                    'fieldsAliases' => $listConfig->getFieldsAliases(),
-                    'submitType' => $this->getSubmitType($request),
-                    'form' => $form->createView(),
-                //'form'=>$form
-        ]);
+
+        if ($this->request->getRequestFormat() == 'html') {
+
+            $params->setArray(
+                    [
+                        'entityName' => $entityName,
+                        'parentName' => $this->getParentName(),
+                        'parentId' => $this->getParentId(),
+                        'newActionName' => $this->getAction('new'),
+                        'routeName' => $routePrefix . '_new',
+                        'config' => $this->getConfig(),
+                        'routeParams' => $this->getRouteParams(),
+                        'buttonRouteParams' => $buttonRouteParams,
+                        'isMasterRequest' => $this->isMasterRequest(),
+                        'defaultRoute' => $this->generateBaseRoute('list'),
+                        'pagination' => $pagination,
+                        'fieldsNames' => $listConfig->getFieldsNames($this->model),
+                        'routePrefix' => $routePrefix,
+                        'fieldsAliases' => $listConfig->getFieldsAliases(),
+                        'submitType' => $this->getSubmitType($request),
+                        'form' => $form->createView(),
+                    //'form'=>$form
+            ]);
+        }
 
         $this->setRouteParam('pagination', $pagination);
 
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
+        dump($pagination);
 
         $this->dispatch('before.list', $event);
         $view = $this->view([
                             "status" => "success",
                             "totalCount" => $pagination->getPageCount(),
                             "page" => $pagination->getCurrentPageNumber(),
-                            "items" => [$pagination->getItems()]
+                            "items" => $pagination->getItems(),
+                            "limit" =>$pagination->getItemNumberPerPage()   
                         ])
                         ->setTemplate($this->getConfig()->get('twig_element_list'))
                         ->setTemplateData($params->getArray())->setHeader('Location', $this->getLocationUrl('list'));
@@ -805,11 +821,12 @@ class DefaultController extends FOSRestController {
     protected function makeForm($formType, $entity, $method, $entityName, $action, $routeParams, $id = null, $class = null, $url = null) {
 
         $routeParams = array_merge($routeParams, ["containerName" => "element"]);
-
-        if ($url && !$id) {
-            $url = $this->generateUrl($url);
-        } else {
-            $url = $this->generateUrl($action, $routeParams);
+        if ($this->request->getRequestFormat() == 'html') {
+            if ($url && !$id) {
+                $url = $this->generateUrl($url);
+            } else {
+                $url = $this->generateUrl($action, $routeParams);
+            }
         }
 
         $form = $this->createForm($formType, $entity, array(
