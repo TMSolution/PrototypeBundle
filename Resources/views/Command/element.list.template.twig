@@ -10,9 +10,9 @@
                     <tr> 
                         {% for field, fieldParam in fieldsInfo %}
                             {% if  fieldParam.association is defined and ( fieldParam.association == 'ManyToOne' or fieldParam.association == 'OneToOne' )  %}
-                                <th  nowrap="" {{'{% if pagination.isSorted('}}{{field}}__{{fieldParam.default_field}}{{') %}'}} class="sorted"{{'{% endif %}'}}> {{'{{ knp_pagination_sortable(pagination, '}}{{field|lower}}{{'|trans, '}}{{field}}__{{fieldParam.default_field}}{{',{\'direction\': \'asc\', \'class\':\'lazy-loaded-list column-header-anchor\', \'data-route-target\':\'.content\'}) }}'}}</th>
+                                <th  nowrap="" {{'{% if pagination.isSorted("'}}{{field}}__{{fieldParam.default_field}}{{'") %}'}} class="sorted"{{'{% endif %}'}}> {{'{{ knp_pagination_sortable(pagination, '}}"{{field|lower}}"{{'|trans, '}}"{{field}}__{{fieldParam.default_field}}"{{',{\'direction\': \'asc\', \'class\':\'lazy-loaded-list column-header-anchor\', \'data-route-target\':\'.content\'}) }}'}}</th>
                                 {% else %}
-                                <th  nowrap="" {{'{% if pagination.isSorted('}}{{field}}{{') %}'}} class="sorted"{{'{% endif %}'}}> {{'{{ knp_pagination_sortable(pagination, '}}{{field|lower}}{{'|trans, '}}{{field}}{{',{\'direction\': \'asc\', \'class\':\'lazy-loaded-list column-header-anchor\', \'data-route-target\':\'.content\'}) }}'}}</th>
+                                <th  nowrap="" {{'{% if pagination.isSorted("'}}{{field}}{{'") %}'}} class="sorted"{{'{% endif %}'}}> {{'{{ knp_pagination_sortable(pagination, '}}"{{field|lower}}"{{'|trans, '}}"{{field}}"{{',{\'direction\': \'asc\', \'class\':\'lazy-loaded-list column-header-anchor\', \'data-route-target\':\'.content\'}) }}'}}</th>
                                 {% endif %}
                             {% endfor %}      
                         <th>{{"Actions"|trans}}</th>       
