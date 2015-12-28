@@ -243,11 +243,10 @@ class DefaultController extends FOSRestController {
 
 
 
-
         $lexik->addFilterConditions($form, $queryBuilder);
         $query = $queryBuilder->getQuery(); //->getResult();
 
-        $query->setHydrationMode(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        $query->setHydrationMode($this->getConfig()->get('hydrateMode'));
 
         $pagination = $paginator->paginate(
                 $query, $this->request->query->getInt('page', 1), $limit = $this->getConfig()->get('limit')
@@ -289,8 +288,7 @@ class DefaultController extends FOSRestController {
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
-        dump($pagination);
-
+       
         $this->dispatch('before.list', $event);
         $view = $this->view([
                             "status" => "success",

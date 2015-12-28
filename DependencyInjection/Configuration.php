@@ -44,6 +44,8 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('twig_container_error')->defaultValue('CorePrototypeBundle:Default\sContainer:error.html.twig')->end()
                 ->scalarNode('twig_container_view')->defaultValue('CorePrototypeBundle:Default\Container:view.html.twig')->end()
                 ->scalarNode('limit')->defaultValue(10)->end()
+                //HYDRATE_ARRAY
+                ->scalarNode('hydrateMode')->defaultValue(2)->end()
                 ->arrayNode('routings')
                     ->useAttributeAsKey('name')
                             ->prototype('array')
