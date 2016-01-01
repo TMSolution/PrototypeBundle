@@ -281,6 +281,7 @@ class DefaultController extends FOSRestController {
                         'fieldsAliases' => $listConfig->getFieldsAliases(),
                         'submitType' => $this->getSubmitType($request),
                         'form' => $form->createView(),
+                        'states' => $this->getStates()
                     //'form'=>$form
             ]);
         }
