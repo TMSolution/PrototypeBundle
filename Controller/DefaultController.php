@@ -230,6 +230,8 @@ class DefaultController extends FOSRestController {
                 $query, $this->request->query->getInt('page', 1), $limit = $this->getConfig()->get('limit')
         );
 
+        
+       
         $buttonRouteParams = $this->getRouteParams();
         $buttonRouteParams['containerName'] = 'container';
 
@@ -290,6 +292,8 @@ class DefaultController extends FOSRestController {
         $this->init();
 
         $formType = $this->getFormType($this->getEntityClass(), null, $this->model);
+        
+       
         $entity = $this->model->findOneById($id);
 
         $routePrefix = $this->getRoutePrefix();
