@@ -210,7 +210,6 @@ class AbstractConfigurator
 
     public function addService($service, $route, $entity, $id, $parententity = null, $actionid = null)
     {
-
         $phrase = $route . $this->divider . $entity. $this->divider . $parententity. $this->divider . $actionid;
         $this->servicesConfigs[$phrase] = ["phrase" => $phrase, "route" => $route, "entity" => $entity, "serviceid" => $id, "service" => $service, 'parententity' => $parententity, 'actionid' => $actionid];
     }

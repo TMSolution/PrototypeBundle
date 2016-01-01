@@ -140,7 +140,7 @@ class GridDefaultController extends DefaultController
     {
 
         $configurator = $this->get("prototype.gridconfig.configurator.service");
-        $gridConfig = $configurator->getService($this->getRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
+        $gridConfig = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
 
         if (!$gridConfig) {
             $gridConfigFactory = $this->get("prototype.gridconfig");

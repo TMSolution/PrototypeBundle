@@ -10,6 +10,10 @@ parameters:
         
 services:
 
+    prototype.routeservice:
+        class: Core\PrototypeBundle\Service\RouteService
+        arguments: [@service_container]
+
 ###############################################################
     prototype.grid_controller:
         class: Core\PrototypeBundle\Controller\GridDefaultController
