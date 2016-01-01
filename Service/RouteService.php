@@ -10,23 +10,48 @@ class RouteService {
         $this->container = $container;
     }
 
-    public function getRouteName($config, $name, $default = "read") {
-        $routings = $config->get('routings');
-        if ($name && array_key_exists($name, $routings)) {
+    protected function checkRoutingsExists($config, $name) {
+        return $config->has('routings') && array_key_exists($name, $config->get('routings'));
+    }
 
+    public function getRouteParams($config, $name, $routeParams = []) {
+
+        if ($this->checkRoutingsExists($config, $name)) {
+
+            $routings = $config->get('routings');
+            $routeConfig = $routings[$name];
+            if (array_key_exists("route_params", $routeConfig) && is_array($routeConfig["route_params"])) {
+
+                return array_merge($routeParams, $routeConfig["route_params"]);
+            } else {
+                return $routeParams;
+            }
+        } else {
+            return $routeParams;
+        }
+    }
+
+    public function getRouteName($config, $name) {
+
+        if ($this->checkRoutingsExists($config, $name)) {
+
+            $routings = $config->get('routings');
             $routeConfig = $routings[$name];
             $routeName = $routeConfig["route"];
             $routeName = str_replace('*', $this->getRoutePrefix() . '_', $routeName);
         } else {
 
-
-            $routeName = $this->getRoutePrefix() . '_' . $default;
-
-            $router = $this->container->get('router');
-            if (false == $router->getRouteCollection()->get($routeName)) {
-                throw new \Exception('Route ' . $routeName . ' doesn\'t exists!');
-            }
+            $routeName = $this->getRoutePrefix() . '_' . $name;
         }
+        $router = $this->container->get('router');
+
+
+        /*
+          if (false == $router->getRouteCollection()->get($routeName)) {
+          die('Route ' . $routeName . ' doesn\'t exists!');
+          throw new \Exception('Route ' . $routeName . ' doesn\'t exists!');
+          } */
+
         return $routeName;
     }
 
@@ -38,9 +63,9 @@ class RouteService {
     }
 
     protected function getBaseRouteName() {
+
         $request = $this->container->get('request_stack')->getCurrentRequest();
-        $request->attributes->get('_route');
-        return $request;
+        return $request->attributes->get('_route');
     }
 
 }

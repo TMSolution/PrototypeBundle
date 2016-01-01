@@ -30,7 +30,7 @@
 
         {{"{% endif %}"}}
         <div class="card">
-            <a href="{{'{{ path(newActionName, buttonRouteParams)}}'}}" class="btn btn-float btn-danger m-btn waves-effect waves-circle waves-float lazy-loaded"><i class="zmdi zmdi-plus"></i></a>
+            <a href="{{'{{ path(routeservice.getRouteName(config,'new'), buttonRouteParams)}}'}}" class="btn btn-float btn-danger m-btn waves-effect waves-circle waves-float lazy-loaded"><i class="zmdi zmdi-plus"></i></a>
 
             <div class="card-header">
                 <h2 class="c-black"><i class="zmdi zmdi-search m-r-20"></i>{{'{{\'List\'|trans}}'}}<small class="p-l-35">{{'{{\'list of elements\'|trans}}'}}</small></h2>

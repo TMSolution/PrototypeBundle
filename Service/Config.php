@@ -53,5 +53,13 @@ class Config {
             throw new \Exception(" $property doesn't exists in Config.");
         }
     }
+    
+    public function has($property) {
+        
+        $this->load();
+        if (array_key_exists($property, $this->config)) {
+            return true;
+        } 
+    }
 
 }
