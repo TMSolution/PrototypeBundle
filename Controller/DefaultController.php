@@ -104,7 +104,7 @@ class DefaultController extends FOSRestController {
             $this->dispatcher = $this->get('event_dispatcher');
         }
 
-        // dump($this->getDispatchName($name));
+         //dump($this->getDispatchName($name));die();
         $this->dispatcher->dispatch($this->getDispatchName($name), $event);
     }
 
