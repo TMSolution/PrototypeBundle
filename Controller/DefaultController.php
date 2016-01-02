@@ -248,7 +248,7 @@ class DefaultController extends FOSRestController {
 
 
         $buttonRouteParams = $this->getRouteParams();
-        $params = $params = $this->get('prototype.controler.params');
+        $params = $this->get('prototype.controler.params');
 
         if ($this->request->getRequestFormat() == 'html') {
 
@@ -304,7 +304,9 @@ class DefaultController extends FOSRestController {
 
         $formType = $this->getFormType($this->getEntityClass(), null, $this->model);
 
-
+        $event = $this->get('prototype.event');
+        $this->dispatch('before.find', $event);
+        
         $entity = $this->model->findOneById($id);
 
         $routePrefix = $this->getRoutePrefix();
@@ -327,7 +329,7 @@ class DefaultController extends FOSRestController {
         ]);
 
 
-        $event = $this->get('prototype.event');
+        
         $event->setParams($params);
         $event->setModel($this->model);
         $event->setForm($updateForm);
@@ -339,11 +341,10 @@ class DefaultController extends FOSRestController {
             $this->model->update($entity, true);
             $this->dispatch('after.update', $event);
             $this->routeParams['submittype'] = $this->getSubmitType($request);
-
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
             return $this->handleView($view);
         }
-
+        
         $this->dispatch('invalid.update', $event);
         $this->dispatch('before.render', $event);
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'))->setHeader('Location', $this->getLocationUrl('update'));
@@ -359,11 +360,15 @@ class DefaultController extends FOSRestController {
     public function deleteAction($id, Request $request) {
 
         $this->init();
+        
+        
+        $event = $this->get('prototype.event');
+        $this->dispatch('before.find', $event);
+        
         $entity = $this->model->findOneById($id);
 
         $routePrefix = $this->getRoutePrefix();
 
-        $event = $this->get('prototype.event');
         $event->setParams($this->routeParams);
         $event->setModel($this->model);
 
@@ -404,6 +409,10 @@ class DefaultController extends FOSRestController {
 
         $this->init();
         $formType = $this->getFormType($this->getEntityClass(), null, $this->model);
+        
+        $event = $this->get('prototype.event');
+        $this->dispatch('before.find', $event);
+        
         $entity = $this->model->findOneById($id);
         $editForm = $this->makeForm($formType, $entity, 'PUT', $this->entityName, $this->getRouteName('update'), $this->routeParams, $id);
 
@@ -420,7 +429,6 @@ class DefaultController extends FOSRestController {
             'submitType' => $this->getSubmitType($request)
         ]);
 
-        $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
         $event->setForm($editForm);
@@ -438,11 +446,15 @@ class DefaultController extends FOSRestController {
      * @param $id Entity id
      * @return Response
      */
-    public function readAction($id) {
+    public function readAction($id, Request $request) {
 
         $this->init();
         $request = $this->requestStack->getCurrentRequest();
 
+        $event = $this->get('prototype.event');
+        $this->dispatch('before.find', $event);
+        
+        
         $entity = $this->model->findOneById($id);
         $buttonRouteParams = $this->routeParams;
         $buttonRouteParams['containerName'] = 'element';
@@ -458,7 +470,6 @@ class DefaultController extends FOSRestController {
         ]);
 
 
-        $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
 
@@ -906,7 +917,7 @@ class DefaultController extends FOSRestController {
     }
 
     protected function getSubmitType($request) {
-        return $submitType = $request->get('submittype') ? $request->get('submittype') : 'read';
+        return $submitType = $request->get('submittype')!=null ? $request->get('submittype') : 'read';
     }
 
     protected function getListConfig() {

@@ -15,6 +15,10 @@ services:
         arguments: [@service_container]
 
 ###############################################################
+    prototype.extended_controller:
+        class: Core\PrototypeBundle\Controller\ExtendedController
+        arguments: [@service_container,@request_stack]
+    
     prototype.grid_controller:
         class: Core\PrototypeBundle\Controller\GridDefaultController
         arguments: [@service_container,@request_stack]
