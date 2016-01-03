@@ -19,11 +19,7 @@ class ControllerParams implements \ArrayAccess, \Countable
         return $this;
     }
     
-    
-    
-    
-    
-    
+
     public function getArray()
     {
         return $this->_values;
@@ -59,5 +55,6 @@ class ControllerParams implements \ArrayAccess, \Countable
             unset($this->_values[$offset]);
         }
     }
+
 
 }

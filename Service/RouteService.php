@@ -14,7 +14,7 @@ class RouteService {
         return $config->has('routings') && array_key_exists($name, $config->get('routings'));
     }
 
-    public function getRouteParams($config, $name, $routeParams = []) {
+    public function getRouteParams($config, $name,array $routeParams = []) {
 
         if ($this->checkRoutingsExists($config, $name)) {
 
