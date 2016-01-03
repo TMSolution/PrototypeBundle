@@ -207,7 +207,6 @@ class DefaultController extends FOSRestController {
             $this->dispatch('after.create', $event);
             $this->routeParams['id'] = $entity->getId();
             $this->routeParams['submittype'] = $this->getSubmitType($request);
-            // echo $this->getNextRoute($this->getSubmitType($request));
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
             return $this->handleView($view);
         }
@@ -496,6 +495,7 @@ class DefaultController extends FOSRestController {
         $routePrefix = $this->getRoutePrefix();
         $routeParams = $this->getRouteParams();
         $routeParams["containerName"] = "container";
+        //@todo
         $url = $this->generateUrl($routePrefix . '_' . $prefix . $action, $routeParams);
         return $url;
     }
@@ -815,8 +815,6 @@ class DefaultController extends FOSRestController {
     protected function loadConfig() {
 
         $configurator = $this->get("prototype.configurator.service");
-
-
         $config = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
         return $config;
     }

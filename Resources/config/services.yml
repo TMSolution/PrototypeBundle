@@ -65,6 +65,17 @@ services:
         tags:
             -  { name: prototype.gridconfig }
 ############################################################    
+    prototype.idfinder.configurator.service:
+        class: Core\PrototypeBundle\Service\IdFinderConfigurator
+        arguments: [@service_container] 
+#    #niezgrabna 
+#    prototype.idfinderconfig:
+#        class: Core\PrototypeBundle\Config\IdFinder
+#        arguments: [@service_container]        
+#        tags:
+#            -  { name: prototype.idfinder }            
+            
+############################################################    
     prototype.listconfig.configurator.service:
         class: Core\PrototypeBundle\Service\ListConfigConfigurator
         arguments: [@service_container] 

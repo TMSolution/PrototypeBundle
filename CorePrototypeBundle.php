@@ -10,6 +10,7 @@ use Core\PrototypeBundle\DependencyInjection\Compiler\GridConfigPass;
 use Core\PrototypeBundle\DependencyInjection\Compiler\FormTypePass;
 use Core\PrototypeBundle\DependencyInjection\Compiler\ListConfigPass;
 use Core\PrototypeBundle\DependencyInjection\Compiler\ViewConfigPass;
+use Core\PrototypeBundle\DependencyInjection\Compiler\IdFinderPass;
 
 class CorePrototypeBundle extends Bundle// implements BundleDependencyInterface
 {
@@ -42,5 +43,6 @@ class CorePrototypeBundle extends Bundle// implements BundleDependencyInterface
         $container->addCompilerPass(new ListConfigPass());
         $container->addCompilerPass(new FormTypePass());
         $container->addCompilerPass(new ViewConfigPass());
+        $container->addCompilerPass(new IdFinderPass());
     }
 }

@@ -23,23 +23,18 @@ use Core\PrototypeBundle\Controller\DefaultController;
  * 
  * @copyright (c) 2014-current, TMSolution
  */
-class ExtendedController extends DefaultController
-{
+class ExtendedController extends DefaultController {
 
-    
-    
-    
-    
     /**
      * Create action.
      * 
      * @param id Entity id
      * @return Response
      */
-    public function updateAction($id,Request $request) {
+    public function updateAction($id, Request $request) {
 
-        $id= 365;
-        return $this->updateAction($id,$request);
+
+        return $this->updateAction($this->getId(), $request);
     }
 
     /**
@@ -50,8 +45,8 @@ class ExtendedController extends DefaultController
      */
     public function deleteAction($id, Request $request) {
 
-        $id= doSomethingWithId;
-        return parent::deleteAction($id,$request);
+
+        return parent::deleteAction($this->getId(), $request);
     }
 
     /**
@@ -62,8 +57,8 @@ class ExtendedController extends DefaultController
      */
     public function editAction($id, Request $request) {
 
-        $id= 365;
-        return parent::editAction($id, $request);
+
+        return parent::editAction($this->getId(), $request);
     }
 
     /**
@@ -74,12 +69,11 @@ class ExtendedController extends DefaultController
      */
     public function readAction($id, Request $request) {
 
-        $id= doSomethingWithId;
-        return parent::readAction($id,$request);
+
+        return parent::readAction($this->getId(), $request);
     }
-    
-    
-     /**
+
+    /**
      * view action.
      * 
      * @param $id Entity id
@@ -87,11 +81,30 @@ class ExtendedController extends DefaultController
      */
     public function viewAction($id, Request $request) {
 
-        $id= doSomethingWithId;
-        return parent::viewAction($id,$request);
-        
+
+        return parent::viewAction($this->getId(), $request);
     }
-    
-    
+
+    protected function getIdFinder() {
+        $this->init();
+        $configurator = $this->get("prototype.idfinder.configurator.service");
+
+        $idFinder = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
+        if ($idFinder) {
+            return $idFinder;
+        } else {
+
+            throw new \Exception('IdFinder doesn\'t exists!');
+        }
+    }
+
+    public function getId() {
+        $id = $this->getIdFinder()->getId();
+        if ($id) {
+            return $id;
+        } else {
+            throw new \Excepiton('No id set');
+        }
+    }
 
 }
