@@ -89,22 +89,18 @@ class DefaultController extends FOSRestController
 
 
         $baseRoute = $this->getBaseRouteName();     //$this->getRoutePrefix();
-        if (!$this->routeParams) {
-            $routeParams = $this->getRouteParams();
-        }
+        $routeParams = $this->getRouteParams();
 
-        //   dump( $routePrefix . '.' . $this->routeParams['entityName'] . '.' . $this->routeParams['actionId'] . '.' . $fireAction);
-
-        if ($this->getParentName()) {
-            return $baseRoute . '.' . $this->routeParams['entityName'] . '.' . $this->routeParams['parentName'] . '.' . $this->routeParams['actionId'];
+        if (array_key_exists('parentName',$routeParams)) {
+            return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['parentName'] . '.' . $routeParams['actionId'];
         }
 
 
-        if ($this->getActionId()) {
-            return $baseRoute . '.' . $this->routeParams['entityName'] . '.' . $this->routeParams['actionId'];
+        if (array_key_exists('actionId',$routeParams)) {
+            return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['actionId'];
         }
 
-        return $baseRoute . '.' . $this->routeParams['entityName'];
+        return $baseRoute . '.' . $routeParams['entityName'];
     }
 
     protected function getDispatchName($fireAction)
