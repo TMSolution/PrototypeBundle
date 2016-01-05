@@ -33,8 +33,8 @@ class ExtendedController extends DefaultController {
      */
     public function updateAction($id, Request $request) {
 
-
-        return $this->updateAction($this->getId(), $request);
+    
+        return parent::updateAction($this->getId(), $request);
     }
 
     /**
