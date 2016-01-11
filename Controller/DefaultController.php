@@ -157,6 +157,10 @@ class DefaultController extends FOSRestController
         ]);
         return $params;
     }
+        
+  
+    
+    
 
     protected function getRouteName($name)
     {
@@ -516,6 +520,12 @@ class DefaultController extends FOSRestController
         $routeParams["containerName"] = "container";
         //@todo
         $url = $this->generateUrl($routePrefix . '_' . $prefix . $action, $routeParams);
+        if(!$url)
+        {
+         $url = $this->generateUrl($this->getBaseRouteName(), $routeParams);
+      
+        }
+        
         return $url;
     }
 
