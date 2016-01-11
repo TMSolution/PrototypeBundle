@@ -114,7 +114,7 @@ class DefaultController extends FOSRestController
             $this->dispatcher = $this->get('event_dispatcher');
         }
 
-        // dump($this->getDispatchName($name));die();
+       // dump($this->getDispatchName($name));die();
 
         $this->dispatcher->dispatch($this->getDispatchName($name), $event);
     }
@@ -343,6 +343,7 @@ class DefaultController extends FOSRestController
 
 
         
+        $event->setEntity($entity);
         $event->setParams($params);
         $event->setModel($this->model);
         $event->setForm($updateForm);
