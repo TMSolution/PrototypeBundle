@@ -24,11 +24,11 @@ services:
         arguments: [@service_container,@request_stack]
     
 ################################################################    
-    data_collector.prototype:
-        class: Core\PrototypeBundle\Profiler\PrototypeCollector
-        arguments: []
-        tags:
-           - { name: data_collector, template: "CorePrototypeBundle:Profiler:collector", id: "prototype" }
+#    data_collector.prototype:
+#        class: Core\PrototypeBundle\Profiler\PrototypeCollector
+#        arguments: []
+#        tags:
+#           - { name: data_collector, template: "CorePrototypeBundle:Profiler:collector", id: "prototype" }
     
     prototype.event:
         class: Core\PrototypeBundle\Event\Event
@@ -147,3 +147,10 @@ services:
           - [setContainer, ['@service_container']]
         tags:
             - { name: form.type, alias: 'container_aware' }
+
+
+    prototype.knp_paginator_listener:
+        class: Core\PrototypeBundle\EventListener\KnpPaginatorListener
+        arguments: [@service_container]  
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

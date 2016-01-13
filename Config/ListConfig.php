@@ -143,7 +143,8 @@ class ListConfig
             $formClass = $this->formTypeClass;
             $formType = new $formClass();
         } else {
-            $formType = new \Core\PrototypeBundle\Form\FilterFormType();
+          //  $formType = new \Core\PrototypeBundle\Form\FilterFormType();
+            return false;
         }
 
         $formType->setModel($this->model);
