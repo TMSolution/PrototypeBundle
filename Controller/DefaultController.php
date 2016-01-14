@@ -240,7 +240,7 @@ class DefaultController extends FOSRestController
         $queryBuilder = $listConfig->getQueryBuilder();
         $paginator = $this->container->get('knp_paginator');
         if ($formType) {
-            $form = $this->makeForm($formType, $this->model->getEntity(), 'GET', $entityName, $this->getAction('list'), $this->getRouteParams());
+            $form = $this->makeForm($formType, $this->model->getEntity(), 'GET', $entityName, $this->getRouteName("list"), $this->getRouteParams());
             
             $lexik = $this->container->get('lexik_form_filter.query_builder_updater');
             $form->submit($this->request);
