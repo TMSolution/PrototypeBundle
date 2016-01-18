@@ -65,8 +65,8 @@ class RouteService {
 
         /*
           if (false == $router->getRouteCollection()->get($routeName)) {
-          die('Route ' . $routeName . ' doesn\'t exists!');
-          throw new \Exception('Route ' . $routeName . ' doesn\'t exists!');
+          die('Route ' . $routeName . ' doesn\'t exist!');
+          throw new \Exception('Route ' . $routeName . ' doesn\'t exist!');
           } */
 
         return $routeName;

@@ -71,7 +71,7 @@ class DefaultController extends FOSRestController
         if ($request->attributes->get('entityName')) {
             $this->objectName = $this->container->get("classmapperservice")->getEntityClass($request->attributes->get('entityName'), $request->getLocale());
         } else {
-            throw new \Exception('Object name for entityName doesn\'t exists');
+            throw new \Exception('Object name for entityName doesn\'t exist');
         }
     }
 
@@ -531,6 +531,9 @@ class DefaultController extends FOSRestController
         $url = $this->generateUrl($routePrefix . '_' . $prefix . $action, $routeParams);
         if (!$url) {
             $url = $this->generateUrl($this->getBaseRouteName(), $routeParams);
+        }else
+        {
+          // throw new \Exception("Route {$this->getBaseRouteName()} doesn't exist!");
         }
 
         return $url;

@@ -50,7 +50,7 @@ class Config {
         if (array_key_exists($property, $this->config)) {
             return $this->config[$property];
         } else {
-            throw new \Exception(" $property doesn't exists in Config.");
+            throw new \Exception(" $property doesn't exist in Config.");
         }
     }
     

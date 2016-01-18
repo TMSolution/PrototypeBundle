@@ -151,7 +151,7 @@ class AssociationGridConfig extends GridConfig
             
             }
             else{
-                throw new \Exception('Parent field name doesn\'t exists!');
+                throw new \Exception('Parent field name doesn\'t exist!');
             }
             
        

@@ -94,7 +94,7 @@ class ExtendedController extends DefaultController {
             return $idFinder;
         } else {
 
-            throw new \Exception('IdFinder doesn\'t exists!');
+            throw new \Exception('IdFinder doesn\'t exist!');
         }
     }
 
