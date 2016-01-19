@@ -1,7 +1,9 @@
 parameters:
    
     prototype.association.config.list.parameters:
-        twig_base_index: 'CorePrototypeBundle:Association\Base:index.html.twig'
+        twig:
+            base:
+                index: 'CorePrototypeBundle:Association\Base:index.html.twig'
     
    # prototype.association.config.parameters:
       #  twig_element_read: 'CorePrototypeBundle:Association\Element:read.html.twig'
