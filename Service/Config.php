@@ -66,7 +66,7 @@ class Config {
                     $array['base']['templates'] = array_merge($this->config['base']['templates'], $array['base']['templates']);
                     $this->config['base'] = array_merge($this->config['base'], $array['base']);
                 }
-                if (array_key_exists('actions', $array) && is_array($array['actions']) ) {
+                if (array_key_exists('actions', $array) && is_array($array['actions'])) {
                     foreach ($array['actions'] as $action => $value) {
 
                         $array['actions'][$action]['templates'] = array_merge($this->config['actions'][$action]['templates'], $array['actions'][$action]['templates']);
@@ -96,19 +96,45 @@ class Config {
     public function get($property) {
 
         $this->load();
-        if (array_key_exists($property, $this->config)) {
-            return $this->config[$property];
-        } else {
-            throw new \Exception(" $property doesn't exist in Config.");
+        $propertyArr = explode('.', $property);
+
+
+        $result = null;
+        foreach ($propertyArr as $value) {
+            if (!$result) {
+                $result = $this->config[$value];
+            } else {
+                $result = $result[$value];
+            }
         }
+        return $result;
     }
 
     public function has($property) {
 
         $this->load();
-        if (array_key_exists($property, $this->config)) {
+        $propertyArr = explode('.', $property);
+        
+        $result = null;
+        foreach ($propertyArr as $value) {
+            if (!$result) {
+                if (array_key_exists($value, $this->config)) {
+                    $result = $this->config[$value];
+                }
+            } else {
+
+                if (array_key_exists($value, $result)) {
+                   $result = $result[$value];
+                }
+                
+            }
+        }
+        
+        if($result!=null)
+        {
             return true;
         }
+        
     }
 
 }

@@ -227,7 +227,7 @@ class DefaultController extends FOSRestController
 
 
         $this->dispatch('on.invalidcreate', $event);
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'))->setHeader('Location', $this->getLocationUrl('create'));
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('actions.create.templates.element'))->setHeader('Location', $this->getLocationUrl('create'));
         return $this->handleView($view);
     }
 
@@ -251,10 +251,10 @@ class DefaultController extends FOSRestController
         }
         $query = $queryBuilder->getQuery(); //->getResult();
 
-        $query->setHydrationMode($this->getConfig()->get('hydrateMode'));
-
+        $query->setHydrationMode($this->getConfig()->get('actions.list.hydrateMode'));
+ 
         $pagination = $paginator->paginate(
-                $query, $this->request->query->getInt('page', 1), $limit = $this->getConfig()->get('limit')
+                $query, $this->request->query->getInt('page', 1), $limit = $this->getConfig()->get('actions.list.limit')
         );
 
 
@@ -311,7 +311,7 @@ class DefaultController extends FOSRestController
                             "items" => $pagination->getItems(),
                             "limit" => $pagination->getItemNumberPerPage()
                         ])
-                        ->setTemplate($this->getConfig()->get('twig_element_list'))
+                        ->setTemplate($this->getConfig()->get('actions.list.templates.element'))
                         ->setTemplateData($params->getArray())->setHeader('Location', $this->getLocationUrl('list'));
 
         $this->dispatch('after.list', $event);
@@ -376,7 +376,7 @@ class DefaultController extends FOSRestController
 
         $this->dispatch('invalid.update', $event);
         $this->dispatch('before.render', $event);
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'))->setHeader('Location', $this->getLocationUrl('update'));
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('actions.update.templates.element'))->setHeader('Location', $this->getLocationUrl('update'));
         return $this->handleView($view);
     }
 
@@ -467,7 +467,7 @@ class DefaultController extends FOSRestController
         $this->dispatch('on.edit', $event);
 
 
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_update'))->setHeader('Location', $this->getLocationUrl('edit'));
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('actions.update.templates.element'))->setHeader('Location', $this->getLocationUrl('edit'));
         return $this->handleView($view);
     }
 
@@ -509,7 +509,7 @@ class DefaultController extends FOSRestController
 
 
         //Render
-        $view = $this->view($params['entity'])->setTemplate($this->getConfig()->get('twig_element_read'))
+        $view = $this->view($params['entity'])->setTemplate($this->getConfig()->get('actions.read.templates.element'))
                 ->setTemplateData($params->getArray())
                 ->setHeader('Location', $this->getLocationUrl('read'));
         return $this->handleView($view);
@@ -623,7 +623,7 @@ class DefaultController extends FOSRestController
 
 
 //Render
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_create'))
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('actions.create.templates.element'))
                 ->setHeader('Location', $this->getLocationUrl('new'));
         return $this->handleView($view);
     }
@@ -657,7 +657,7 @@ class DefaultController extends FOSRestController
 
 
         //Render
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('twig_element_view'));
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('actions.view.templates.element'));
         return $this->handleView($view);
     }
 
