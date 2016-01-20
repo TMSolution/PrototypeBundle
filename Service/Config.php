@@ -32,16 +32,16 @@ class Config {
 //    }
 
 
-    protected function load($action) {
+    protected function load() {
 
         if ($this->loaded == false) {
 
 
             foreach ($this->configComponents as $component) {
                 if (is_array($component)) {
-                    $this->config = $this->mergeSubArray($component, $action);
+                    $this->mergeSubArray($component);
                 } else if (is_object($component) && get_class($component) == "Core\PrototypeBundle\Service\Config") {
-                    $this->config = array_merge($this->config, $component->getConfig());
+                    $this->mergeSubArray($component->getConfig());
                 } else {
                     throw new \Exception('Bad type of component, you can pass only arrays or Core\PrototypeBundle\Service\Config objects to this class ');
                 }
@@ -52,19 +52,33 @@ class Config {
         }
     }
 
-    public function mergeSubArray($array, $action) {
-        if (empty($this->config)) {
+    public function mergeSubArray($array) {
 
-            $this->config = $array;
-        } else {
-            $array['base']['template'] = array_merge($this->config['base']['template'], $array['base']['template']);
-            $this->config['base'] = array_merge($this->config['base'], $array['base']);
-            $array['actions'][$action]['template'] = array_merge($this->config['base'][$action]['template'], $array['base'][$action]['template']);
-            $this->config['actions'][$action] = array_merge($this->config['actions'][$action], $array['actions'][$action]);
-            $this->config['routings'] = array_merge($this->config['routings'], $array['routings']);
+        if (is_array($array)) {
+
+
+            if (empty($this->config)) {
+
+                $this->config = $array;
+            } else {
+
+                if (array_key_exists('base', $array) && is_array($array['base'])) {
+                    $array['base']['templates'] = array_merge($this->config['base']['templates'], $array['base']['templates']);
+                    $this->config['base'] = array_merge($this->config['base'], $array['base']);
+                }
+                if (array_key_exists('actions', $array) && is_array($array['actions']) ) {
+                    foreach ($array['actions'] as $action => $value) {
+
+                        $array['actions'][$action]['templates'] = array_merge($this->config['actions'][$action]['templates'], $array['actions'][$action]['templates']);
+                        $this->config['actions'][$action] = array_merge($this->config['actions'][$action], $array['actions'][$action]);
+                    }
+                }
+
+                if (array_key_exists('routings', $array) && is_array($array['routings'])) {
+                    $this->config['routings'] = array_merge($this->config['routings'], $array['routings']);
+                }
+            }
         }
-
-       
     }
 
     public function getConfig() {
@@ -76,7 +90,7 @@ class Config {
     public function merge(array $config) {
 
         $this->load();
-        $this->config = array_merge($this->config, $config);
+        $this->config = $this->mergeSubArray($config);
     }
 
     public function get($property) {

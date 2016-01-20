@@ -36,6 +36,7 @@ class DefaultController extends FOSRestController
     protected $routeName = null;
     protected $routeParams = null;
     protected $configLoaded = false;
+    protected $actionName = null;
     protected $configService;
     protected $states = null;
     protected $dispatcher = null;
@@ -58,7 +59,7 @@ class DefaultController extends FOSRestController
         $this->initBaseRouteName();
         $this->initRoutePrefix();
         $this->initRouteParams();
-
+  
         $this->setObjectName($this->request);
         $this->testContainerNameType($this->request);
         $this->model = $this->getModel($this->initEntityClass($this->request));
@@ -140,6 +141,7 @@ class DefaultController extends FOSRestController
 
     protected function getDefaultParameters()
     {
+        
         /* @todo defaultRoute warto się pozbyć jeśli można */
         $params = $this->get('prototype.controler.params');
         $params->setArray([
@@ -886,9 +888,6 @@ class DefaultController extends FOSRestController
         if (false == $this->configService) {
 
             $this->configService = $this->loadConfig();
-
-
-
             $this->configService->merge($this->config);
         }
         return $this->configService;
@@ -896,10 +895,14 @@ class DefaultController extends FOSRestController
 
     protected function initRouteParams()
     {
+       
         $parametersArr = $this->request->attributes->all();
         $this->routeParams = $parametersArr["_route_params"];
     }
 
+    
+  
+    
     protected function getRouteParams()
     {
 
