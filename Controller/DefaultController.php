@@ -377,7 +377,9 @@ class DefaultController extends FOSRestController
 
         $this->dispatch('invalid.update', $event);
         $this->dispatch('before.render', $event);
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('actions.update.templates.element'))->setHeader('Location', $this->getLocationUrl('update'));
+        $view = $this->view($params['entity'])
+                ->setTemplateData($params->getArray())
+                ->setTemplate($this->getConfig()->get('actions.update.templates.element'))->setHeader('Location', $this->getLocationUrl('update'));
         return $this->handleView($view);
     }
 
@@ -468,7 +470,11 @@ class DefaultController extends FOSRestController
         $this->dispatch('on.edit', $event);
 
 
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('actions.update.templates.element'))->setHeader('Location', $this->getLocationUrl('edit'));
+        $view = $this->view($params['entity'])
+               
+                ->setTemplate($this->getConfig()->get('actions.update.templates.element'))
+                 ->setTemplateData($params->getArray())
+                ->setHeader('Location', $this->getLocationUrl('edit'));
         return $this->handleView($view);
     }
 
