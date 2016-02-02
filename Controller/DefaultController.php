@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 /**
  * Copyright (c) 2014-current. TMSolution
  * All rights reserved.
@@ -194,7 +193,7 @@ class DefaultController extends FOSRestController
      */
     public function createAction(Request $request)
     {
-
+        
         $this->init();
         $entity = $this->model->getEntity();
 
@@ -233,7 +232,7 @@ class DefaultController extends FOSRestController
 
     public function listAction(Request $request)
     {
-
+        
         $this->init();
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
@@ -285,6 +284,7 @@ class DefaultController extends FOSRestController
                     //'form'=>$form
             ]);
             
+            
             if(isset($form)){
                 $params['form'] = $form->createView();
             }
@@ -326,7 +326,7 @@ class DefaultController extends FOSRestController
      */
     public function updateAction($id, Request $request)
     {
-
+        
         $this->init();
 
         $formType = $this->getFormType($this->getEntityClass(), null, $this->model);
@@ -335,11 +335,19 @@ class DefaultController extends FOSRestController
         $this->dispatch('before.find', $event);
 
         $entity = $this->model->findOneById($id);
-
+        
+        
         $routePrefix = $this->getRoutePrefix();
-
+        
         $updateForm = $this->makeForm($formType, $entity, 'PUT', $this->entityName, $this->getAction('update'), $this->routeParams, $id);
+
+        
         $updateForm->handleRequest($request);
+        
+//                dump($updateForm);
+//        exit();
+
+        
         $params = $this->get('prototype.controler.params');
 
         $buttonRouteParams = $this->routeParams;
