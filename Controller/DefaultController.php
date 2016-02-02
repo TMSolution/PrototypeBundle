@@ -105,6 +105,7 @@ class DefaultController extends FOSRestController
 
     protected function getDispatchName($fireAction)
     {
+        dump($this->getRouteSymbol() . '.' . $fireAction);
         return $this->getRouteSymbol() . '.' . $fireAction;
     }
 
