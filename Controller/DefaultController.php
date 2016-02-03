@@ -105,7 +105,7 @@ class DefaultController extends FOSRestController
 
     protected function getDispatchName($fireAction)
     {
-        dump($this->getRouteSymbol() . '.' . $fireAction);
+        //dump($this->getRouteSymbol() . '.' . $fireAction);
         return $this->getRouteSymbol() . '.' . $fireAction;
     }
 
@@ -380,6 +380,7 @@ class DefaultController extends FOSRestController
             $this->dispatch('after.update', $event);
             $this->routeParams['submittype'] = $this->getSubmitType($request);
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
+//            dump($view);exit;
             return $this->handleView($view);
         }
 
