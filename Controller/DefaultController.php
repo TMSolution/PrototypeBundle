@@ -361,25 +361,24 @@ class DefaultController extends FOSRestController {
 
 
         $redirectUpdate = $this->getConfig()->get('actions.update.redirect');
-        $isValid = $updateForm->isValid();
-        //w warunku ponizej && redirect
-        if ($isValid && $redirectUpdate) {
+        
+        $isValid = $updateForm->isValid();        
+        if ($isValid) {
             $this->dispatch('before.update', $event);
             $this->model->update($entity, true);
             $this->dispatch('after.update', $event);
+        }
+        
+        if ($isValid && $redirectUpdate) {
             $this->routeParams['submittype'] = $this->getSubmitType($request);
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
             return $this->handleView($view);
-
-//
-//            if (isset($params['redirect']) && $params['redirect'] == true) {
-//            }
         }
 
         if (!$isValid) {
-            
             $this->dispatch('invalid.update', $event);
         }
+        
         $this->dispatch('before.render', $event);
 
         $view = $this->view($params['entity'])
