@@ -1,4 +1,4 @@
-{{'{% extends config.get("twig_container_list") %}'}}
+{{'{% extends config.get("actions.list.templates.container") %}'}}
 
 {{'{% block element %}'}}
 
@@ -24,7 +24,7 @@
              <tr {% if loop.index is odd %}class="color"{% endif %}>
                  {% for key,field in record %}
         '}}           
-                {% for field, fieldParam in fieldsInfo %}
+            {#    {% for field, fieldParam in fieldsInfo %}
                     {% if fieldParam.is_object %}     
 
                         {% if fieldParam.association !='OneToMany' and  fieldParam.association !='ManyToMany' %}
@@ -39,7 +39,11 @@
                             '}}
                         {% endif %}   
                     {% else %}
-                        {{'   
+                    
+                    {% endif %}
+                {% endfor %}#}    
+                
+                    {{'   
                             {% if  field is null %}
                                     <td>--</td>
                             {% else %}
@@ -56,8 +60,6 @@
                                 {% endif%}
                             {% endif%}
                         '}}
-                    {% endif %}
-                {% endfor %}    
                 {{'            
                  {% endfor %}           
                     <td class="actions">{{block("actions",{"id": record.id })}}</td>
@@ -94,11 +96,13 @@
         </a>
         <ul class="dropdown-menu pull-right">
             <li>
-                <a data-route-target=".content" data-original-title="View" class="list-button-view lazy-loaded" id="button-id" href="{{'{{path(routePrefix~\'_view\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": "'}}{{objectName|lower}}{{'"})}}'}}">
+                {#<a data-route-target=".content" data-original-title="View" class="list-button-view lazy-loaded" id="button-id" href="{{'{{path(routePrefix~\'_view\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": "'}}{{objectName|lower}}{{'"})}}'}}">#}
+                <a data-route-target=".content" data-original-title="View" class="list-button-view lazy-loaded" id="button-id" href="{{'{{ path(routeservice.getRouteName(config,\'new\'), buttonRouteParams)}}'}}">
                     <i class="glyphicon glyphicon-eye-open"></i> {{'{{\'View\'|trans}}'}}</a>
             </li>
             <li>
-                <a data-original-title="Delete" class="list-button-delete " id="button-id" href="{{'{{path(routePrefix~\'_delete\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": "'}}{{objectName|lower}}{{'"})}}'}}">
+                {#<a data-original-title="Delete" class="list-button-delete " id="button-id" href="{{'{{path(routePrefix~\'_delete\',{"id":record.id, "containerName": "container", "actionId": "default",  "entityName": "'}}{{objectName|lower}}{{'"})}}'}}">#}
+                <a data-original-title="Delete" class="list-button-delete " id="button-id" href="{{'{{ path(routeservice.getRouteName(config,\'delete\'), buttonRouteParams)}}'}}">
                     <i class="glyphicon glyphicon-remove">
                     </i>
                     {{'{{\'Delete\'|trans}}'}}
