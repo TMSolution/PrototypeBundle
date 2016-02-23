@@ -177,7 +177,14 @@ class PrototypeCollector implements DataCollectorInterface {
                 $volume+=$obj->volume;
             } else {
                 
-                $obj->value = $value;
+                if(is_bool($value))
+                {
+                   $obj->value=$value?'true':'false';
+                }
+                else
+                {    
+                    $obj->value = $value;
+                }
                 $volume++;
             }
             $n++;
