@@ -11,6 +11,7 @@ class Config {
     public function __construct(/* you can pass many Config objects and/or arrays */) {
 
         $this->configComponents = func_get_args();
+        
     }
 
 //    protected function load() {
