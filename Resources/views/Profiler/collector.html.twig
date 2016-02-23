@@ -82,62 +82,143 @@
             </svg>
         </span>
         <strong>Prototype</strong>
-     
+
         <span class="count" alt="amount of changed twigs">
             <span>{% if collector.data.twigYellowChanges is defined %}{{ collector.data.twigYellowChanges }}{% else %}0{% endif %}</span>
             <span style="background-color: #ffcc00;color:#000000;">{% if collector.data.twigChanges is defined %}{{ collector.data.twigChanges }}{% else %}0{% endif %}</span>
         </span>
 
-        
+
     </span>
 {% endblock menu %}
 
+
+{% block serviceInfo %}
+    
+    {% for service in collector.data.services%}
+
+      
+        {% if service.name is defined %}
+
+            <h3>{{service.name}}</h3>
+
+        {% endif %}        
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% if service.params.phrase is defined %}
+                    <tr>
+                        <th>
+                            <strong>phrase</strong>
+                        </th>
+                        <td>
+                            {{service.params.phrase}} 
+                        </td>
+                    </tr>
+                {% endif%}
+
+                {% if service.params.serviceid is defined%}
+                <tr>
+                    <th>
+                        <strong>servicename:</strong>
+                    </th>
+                    <td>{{service.params.serviceid}} </td>
+                </tr>
+               {% else %}
+                <tr>
+                    <th>
+                        <strong>servicename:</strong>
+                    </th>
+                    <td>
+                        none
+                    </td>
+                </tr>
+               {% endif %}
+
+                {% if service.className is defined %}
+                <tr>
+                    <th>
+                        <strong>class</strong>
+                    </th>
+                    <td>
+                        {{service.className}}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <th>
+                        <strong>class</strong>
+                    </th>
+                    <td>
+                        none
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+    {% endfor %}   
+
+{% endblock serviceInfo %}   
+
+
 {% block panel %}
     {# Optional, for showing the most details. #}
-    <h1>Prototype</h1>
-    <h2>{% if collector.data.header is defined %}{{ collector.data.header }}{% else %}none{% endif %}</h2>
-    <div><strong>URI</strong>: {% if collector.data.uri is defined %}{{ collector.data.uri }}{% else %}none{% endif %}</div>
-    <div><strong>Route</strong>: {% if collector.data.route is defined %}{{ collector.data.route }}{% else %}none{% endif %}</div>
-    <div><strong>Controller</strong>: {% if collector.data.controller is defined %}{{ collector.data.controller }}{% else %}none{% endif %}</div>
-    <div><strong>Locale</strong>: {% if collector.data.locale is defined %}{{ collector.data.locale }}{% else %}none{% endif %}</div>
-    <div><strong>EntityName</strong>: {% if collector.data.entityName is defined %}{{ collector.data.entityName }}{% else %}none{% endif %}</div>
-    <div><strong>EntityClass</strong>: {% if collector.data.entityClass is defined %}{{ collector.data.entityClass }}{% else %}none{% endif %}</div>
-
-
-    {% if collector.data.config is defined %}
-        {% for line in collector.data.config %}
-            {{ line | raw }}   
-        {% endfor %}
-    {% endif %}
-
-    {% if collector.data.twigs is defined %}
-        {% for line in collector.data.twigs %}
-            {{ line | raw  }}   
-        {% endfor %}
-    {% endif %}
-
-    {% if collector.data.gridconfig is defined %}
-        {% for line in collector.data.gridconfig %}
-            {{ line | raw  }}   
-        {% endfor %}
-    {% endif %}
+    <h2>Prototype</h2>
+    <h3>{% if collector.data.header is defined %}{{ collector.data.header }}{% else %}none{% endif %}</h3>
+   
+    <table>
+        <tr>
+            <th>URI</th>
+            <td>{% if collector.data.uri is defined %}{{ collector.data.uri }}{% else %}none{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Route</th>
+            <td>{% if collector.data.route is defined %}{{ collector.data.route }}{% else %}none{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Controller</th>
+            <td>{% if collector.data.controller is defined %}{{ collector.data.controller }}{% else %}none{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Locale</th>
+            <td>{% if collector.data.locale is defined %}{{ collector.data.locale }}{% else %}none{% endif %}</td>
+        </tr>
+        <tr>
+            <th>EntityName</th>
+            <td>{% if collector.data.entityName is defined %}{{ collector.data.entityName }}{% else %}none{% endif %}</td>
+        </tr>
+        <tr>
+            <th>EntityClass</th>
+            <td>{% if collector.data.entityClass is defined %}{{ collector.data.entityClass }}{% else %}none{% endif %}</td>
+        </tr>
+    </table>
     
-    {% if collector.data.listconfig is defined %}
-        {% for line in collector.data.listconfig %}
-            {{ line | raw  }}   
-        {% endfor %}
-    {% endif %}
-    
-    {% if collector.data.viewconfig is defined %}
-        {% for line in collector.data.viewconfig %}
-            {{ line | raw  }}   
-        {% endfor %}
-    {% endif %}
-    
-
-    {% if collector.data.formtype is defined %}
-        {% for line in collector.data.formtype %}
-            {{ line | raw  }}   
-        {% endfor %}
-    {% endif %}
+    <h3>Config params</h3>    
+    <table>    
+    {% for row in collector.data.config%}
+        <tr>
+        {% for column in row%}
+            <th {% if column.volume> 1 %} rowspan="{{column.volume}}" {% endif %}>
+                {{column.name}}
+                
+            </th>
+            {% if column.value is not null %}
+            <td>
+                {{column.value}}
+            </td>
+            {% endif %}   
+        {% endfor%}
+        </tr>
+     {% endfor%}
+    </table>
+    {{block('serviceInfo')}}
+  
 {% endblock panel %}
