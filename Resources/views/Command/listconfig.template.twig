@@ -22,7 +22,7 @@ namespace  {{listConfigNamespaceName}};
 class ListConfig extends {% if associated %}AssociationGridConfig{% else %}BaseListConfig{% endif %}
 {
  
-    public function getQuery() {
+    public function getQueryBuilder() {
 
         {% if associated %}  
           $parentId=$this->request->get("parentId");
@@ -51,7 +51,7 @@ class ListConfig extends {% if associated %}AssociationGridConfig{% else %}BaseL
             $queryBuilder->addGroupBy($tableAlias.'.id');
         {% endif %} 
    
-        return $queryBuilder->getQuery(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        return $queryBuilder;
     }
     
     
