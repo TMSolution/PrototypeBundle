@@ -2,8 +2,10 @@
 
 namespace Core\PrototypeBundle\Service;
 
+
 class Config {
 
+    protected $overrided=false;
     protected $config = [];
     protected $configComponents = [];
     protected $loaded = false;
@@ -11,38 +13,22 @@ class Config {
     public function __construct(/* you can pass many Config objects and/or arrays */) {
 
         $this->configComponents = func_get_args();
-        
     }
 
-//    protected function load() {
-//    
-//        if ($this->loaded == false) {
-//            foreach ($this->configComponents as $component) {
-//                if (is_array($component)) {
-//                    $this->config = array_merge($this->config, $component);
-//                } else if (is_object($component) && get_class($component) == "Core\PrototypeBundle\Service\Config") {
-//                    $this->config = array_merge($this->config, $component->getConfig());
-//                } else {
-//                    throw new \Exception('Bad type of component, you can pass only arrays or Core\PrototypeBundle\Service\Config objects to this class ');
-//                }
-//            }
-//        } else {
-//            $this->loaded=true;
-//            return $this->config;
-//        }
-//    }
-
+    public function getConfigComponents()
+    {
+        return $this->configComponents;
+    }
 
     protected function load() {
 
         if ($this->loaded == false) {
 
-
             foreach ($this->configComponents as $component) {
                 if (is_array($component)) {
-                    $this->mergeSubArray($component);
+                    $this->mergeComponents($component);
                 } else if (is_object($component) && get_class($component) == "Core\PrototypeBundle\Service\Config") {
-                    $this->mergeSubArray($component->getConfig());
+                    $this->mergeComponents($component->getConfig());
                 } else {
                     throw new \Exception('Bad type of component, you can pass only arrays or Core\PrototypeBundle\Service\Config objects to this class ');
                 }
@@ -53,31 +39,14 @@ class Config {
         }
     }
 
-    public function mergeSubArray($array) {
+    protected function mergeComponents($array) {
 
         if (is_array($array)) {
-
-
             if (empty($this->config)) {
-
                 $this->config = $array;
             } else {
 
-                if (array_key_exists('base', $array) && is_array($array['base'])) {
-                    $array['base']['templates'] = array_merge($this->config['base']['templates'], $array['base']['templates']);
-                    $this->config['base'] = array_merge($this->config['base'], $array['base']);
-                }
-                if (array_key_exists('actions', $array) && is_array($array['actions'])) {
-                    foreach ($array['actions'] as $action => $value) {
-
-                        $array['actions'][$action]['templates'] = array_merge($this->config['actions'][$action]['templates'], $array['actions'][$action]['templates']);
-                        $this->config['actions'][$action] = array_merge($this->config['actions'][$action], $array['actions'][$action]);
-                    }
-                }
-
-                if (array_key_exists('routings', $array) && is_array($array['routings'])) {
-                    $this->config['routings'] = array_merge($this->config['routings'], $array['routings']);
-                }
+                $this->config = array_replace_recursive($this->config, $array);
             }
         }
     }
@@ -88,10 +57,11 @@ class Config {
         return $this->config;
     }
 
+
     public function merge(array $config) {
 
         $this->load();
-        $this->config = $this->mergeSubArray($config);
+        $this->config = $this->mergeComponents($config);
     }
 
     public function get($property) {
@@ -115,27 +85,28 @@ class Config {
 
         $this->load();
         $propertyArr = explode('.', $property);
-        
+
         $result = null;
         foreach ($propertyArr as $value) {
             if (!$result) {
-                if (array_key_exists($value, $this->config)) {
+                if (isset($this->config[$value])) {
                     $result = $this->config[$value];
                 }
             } else {
 
-                if (array_key_exists($value, $result)) {
-                   $result = $result[$value];
+                if (isset($result[$value])) {
+                    $result = $result[$value];
                 }
-                
             }
         }
-        
-        if($result!=null)
-        {
+
+        if ($result != null) {
             return true;
         }
-        
     }
+
+
+    
+   
 
 }

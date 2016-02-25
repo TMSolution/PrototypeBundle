@@ -16,8 +16,6 @@ class PrototypeCollector implements DataCollectorInterface {
 
     private $data = [];
     protected $container;
-    private $twigYellowChanges = 0;
-    private $twigChanges = 0;
     protected $servicesInfo = [];
     protected $services = [
         'prototype.configurator.service' => 'Base Config',
@@ -37,10 +35,7 @@ class PrototypeCollector implements DataCollectorInterface {
         'grid' => 'grid',
         'error' => 'error'
     ];
-
-    public function __construct() {
-        
-    }
+    protected $usedConfigParams = [];
 
     protected function calculateAction($actionPath) {
 
@@ -85,6 +80,39 @@ class PrototypeCollector implements DataCollectorInterface {
         return $services;
     }
 
+    protected function prepareConfig() {
+
+        $baseConfig = $this->data["services"]["Base Config"];
+        $configService = $baseConfig->params["service"];
+        $resulConfig = [];
+        $devConfig = new \Core\PrototypeBundle\Service\DevConfig($configService);
+        $config = $devConfig->getConfigWithDifferences();
+        $this->prepareUsedParams($config);
+        $this->processConfig($config, $resulConfig);
+        $this->data['config'] = $resulConfig;
+        $this->data['overrided'] = $devConfig->isOverrided();
+    }
+
+    public function prepareUsedParams($config) {
+        $result = [];
+        $configAction = $this->actionMap[$this->data["actionName"]];
+        $this->calculateUsedParams('actions.' . $configAction, $config['actions'][$configAction], $result);
+        $this->calculateUsedParams('base', $config['base'], $result);
+        $this->usedConfigParams = array_merge($result, ["base", "actions", "actions." . $this->data["actionName"]]);
+    }
+
+    public function calculateUsedParams($basePath, $array, &$result) {
+        foreach ($array as $key => $element) {
+
+            $newPath = $basePath . '.' . $key;
+            $result[] = $newPath;
+            if (is_array($element)) {
+
+                $this->calculateUsedParams($newPath, $element, $result);
+            }
+        }
+    }
+
     public function collect(Request $request, Response $response, Exception $exception = null) {
 
         $kernel = new \AppKernel('dev', true);
@@ -108,17 +136,16 @@ class PrototypeCollector implements DataCollectorInterface {
             }
             $this->data["route"] = $route["_route"];
             $this->data["controller"] = $route["_controller"];
+            $actionName = $this->requestedAction($route["_controller"]);
+
+            $this->data["actionName"] = $actionName;
+
 
 
             if (array_key_exists("_locale", $route)) {
 
-                $this->twigYellowChanges = 0;
-                $this->twigChanges = 0;
-
                 $this->data["locale"] = $route["_locale"];
-
                 $this->data["entityName"] = $route["entityName"];
-
                 $this->data["parentName"] = array_key_exists("parentName", $route) ? $route["parentName"] : null;
                 $this->data["actionId"] = array_key_exists("actionId", $route) ? $route["actionId"] : null;
                 $this->data["entityClass"] = $classmapper->getEntityClass($route["entityName"], $this->data["locale"]);
@@ -130,21 +157,11 @@ class PrototypeCollector implements DataCollectorInterface {
                 }
 
                 $this->data["services"] = $this->configureServices();
-                $baseConfig = $this->data["services"]["Base Config"];
-                $configService = $baseConfig->params["service"];
-                $resulConfig = [];
-                $this->prepareConfig($configService->getConfig(), $resulConfig);
-
-                $this->data['config'] = $resulConfig;
+                $this->prepareConfig();
             }
         } catch (Symfony\Component\Routing\Exception\ResourceNotFoundException $e) {
             
         }
-
-
-        $this->data['twigChanges'] = $this->twigChanges;
-        $this->data['twigYellowChanges'] = $this->twigYellowChanges;
-        $this->data = $this->data;
     }
 
     public function getData() {
@@ -155,34 +172,42 @@ class PrototypeCollector implements DataCollectorInterface {
         return "prototype";
     }
 
-    protected function prepareConfig(array $paramsArray, &$resultArr, &$n = 0) {
+    protected function processConfig(array $paramsArray, &$resultArr, &$n = 0, $path = '') {
 
         $volume = 0;
-        
-//        if(!$n){
-//            $n=0;
-//        }
-        
+
+
         foreach ($paramsArray as $name => $value) {
             $obj = new \stdClass();
             $obj->name = $name;
             $obj->volume = 0;
-            $resultArr[$n][]=$obj;
+            $resultArr[$n][] = $obj;
+
+            if ($path) {
+                $newPath = $path . '.' . $name;
+            } else {
+                $newPath = $name;
+            }
+
+            if (in_array($newPath, $this->usedConfigParams)) {
+                $obj->used = true;
+            } else {
+
+                $obj->used = false;
+            }
 
             if (is_array($value)) {
-                $obj->volume = $this->prepareConfig($value,$resultArr, $n);
+                $obj->volume = $this->processConfig($value, $resultArr, $n, $newPath);
                 $obj->value = null;
-                if($obj->volume==0)
-                {$obj->volume=1;}
+                if ($obj->volume == 0) {
+                    $obj->volume = 1;
+                }
                 $volume+=$obj->volume;
             } else {
-                
-                if(is_bool($value))
-                {
-                   $obj->value=$value?'true':'false';
-                }
-                else
-                {    
+
+                if (is_bool($value)) {
+                    $obj->value = $value ? 'true' : 'false';
+                } else {
                     $obj->value = $value;
                 }
                 $volume++;
@@ -193,126 +218,11 @@ class PrototypeCollector implements DataCollectorInterface {
         return $volume;
     }
 
-    /*
+    public function requestedAction($controllerName) {
+        $controllerNameArray = explode(":", $controllerName);
+        $actionName = substr(end($controllerNameArray), 0, -6);
 
-      protected function renderTemplates($name, $path, $actionName, &$output) {
-      if (!is_array($path)) {
-      if (strstr($path, 'CorePrototypeBundle:Default')) {
-      $output[] = ("<tr><th>$name</th><td>$path</td></tr>");
-      } elseif (strstr($path, 'Default')) {
-      $this->twigYellowChanges++;
-      $output[] = ("<tr><th>$name</th><td><span style='background-color: #aacd4e; border-radius: 6px; color: #fff; display: inline-block;margin-right: 2px;padding: 4px;'>$path</span></td></tr>");
-      } else {
-      $this->twigChanges++;
-      $output[] = ("<tr><th>$name</th><td><span style='background-color: #ffcc00; border-radius: 6px; color: #000000; display: inline-block;margin-right: 2px;padding: 4px;'>$path</span></td></tr>");
-      }
-      }
-      }
+        return $actionName;
+    }
 
-      protected function printConfig($config, $controllerName) {
-
-      $currentActionName = $this->calculateAction($controllerName);
-      $output = [];
-
-
-      $this->printBase($config['base'], $output);
-
-      $this->printActions($config['actions'], $currentActionName, $output);
-
-
-
-      return $output;
-      }
-
-      protected function printBase($config, &$output) {
-
-      if (isset($config['templates'])) {
-      $output[] = "<br/><h2>Base twigs</h2>";
-      $output[] = "<table><thead><tr><th>Type</th><th>Twig</th></tr></thead><tbody>";
-
-      if (isset($config['templates'])) {
-      foreach ($config['templates'] as $name => $path) {
-      $this->renderTemplates($name, $path, 'base', $output);
-      }
-      }
-      $output[] = "</tbody></table>";
-      }
-      }
-
-      protected function printValue($value, $result = []) {
-      if (is_array($value)) {
-      foreach ($value as $partParam => $partValue) {
-
-      $result[] = $partParam;
-      $result = array_merge($result, $this->printValue($partValue));
-      }
-      } elseif (is_bool($value)) {
-      if ($value === true) {
-      $result[] = 'true';
-      } else {
-      $result[] = 'false';
-      }
-      } else {
-      $result[] = $value;
-      }
-
-      return $result;
-      }
-
-      protected function printParameters($actionName, $parameters, &$output) {
-      foreach ($parameters as $parameter => $value) {
-
-      $result = '';
-      $resultArr = [];
-
-      $resultArr = $this->printValue($value);
-
-      if (count($resultArr) > 1) {
-      $rowspan = 2;
-      }
-
-      $result = '<td rowspan="' . $rowspan . '">' . $parameter . '</td>';
-      $checker = true;
-      foreach ($resultArr as $value) {
-
-
-      $result.='<td>' . $value . '</td>';
-
-      if ($checker == false) {
-      $result.='</tr><tr>';
-      }
-
-      $checker = !$checker;
-      }
-
-      $output[] = '<tr>' . $result . '</tr>';
-      }
-
-
-
-      //            if (isset($parameters['templates'])) {
-      //                foreach ($parameters['templates'] as $name => $path) {
-      //
-      //                    $this->renderTemplates($name, $path, $actionName, $output);
-      //                }
-      //            }else
-      //            {
-      //                  $output[]="<tr><td colspan=''>".(string) $parameter."</td></tr>";
-      //
-      //            }
-      }
-
-      function printActions($config, $currentActionName, &$output) {
-
-      foreach ($config as $actionName => $parameters) {
-
-      $used = ($currentActionName == $actionName) ? ' - used' : NULL;
-      $output[] = "<br/><h2>" . strtoupper($actionName) . ' ' . $used . "</h2>";
-      $output[] = "<table><thead><th>Parameters</th><th>Values</th></tr></thead><tbody>";
-      $this->printParameters($actionName, $parameters, $output);
-      $output[] = "</tbody></table>";
-      }
-      return $output;
-      }
-     */
 }

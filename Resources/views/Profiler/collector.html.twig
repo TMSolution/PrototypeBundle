@@ -20,12 +20,8 @@
             </svg>
         </span>
         <span class="sf-toolbar-status">Prototype</span>
-        <span class="sf-toolbar-status sf-toolbar-status-green">
-            <span>{% if collector.data.twigYellowChanges is defined %}{{ collector.data.twigYellowChanges }}{% else %}0{% endif %}</span>
-        </span>
-        <span class="sf-toolbar-status sf-toolbar-status-yellow">
-            <span>{% if collector.data.twigChanges is defined %}{{ collector.data.twigChanges }}{% else %}0{% endif %}</span>
-        </span>
+        <span class="sf-toolbar-status sf-toolbar-status-yellow">{% if collector.data.overrided %}Overrided{% endif %}</span>
+
     {% endset %}
 
     {% set text %}
@@ -45,11 +41,7 @@
             <b>EntityClass</b>
             <span>{% if collector.data.entityClass is defined %}{{ collector.data.entityClass }}{% else %}none{% endif %}</span>
         </div>
-        <div class="sf-toolbar-info-piece">
-            <b>Changed twigs</b>
-            <span class="sf-toolbar-status sf-toolbar-status-green">{% if collector.data.twigYellowChanges is defined %}{{ collector.data.twigYellowChanges }}{% else %}0{% endif %}</span>
-            <span class="sf-toolbar-status sf-toolbar-status-yellow">{% if collector.data.twigChanges is defined %}{{ collector.data.twigChanges }}{% else %}0{% endif %}</span>
-        </div>
+
 
     {% endset %}
 
@@ -84,8 +76,8 @@
         <strong>Prototype</strong>
 
         <span class="count" alt="amount of changed twigs">
-            <span>{% if collector.data.twigYellowChanges is defined %}{{ collector.data.twigYellowChanges }}{% else %}0{% endif %}</span>
-            <span style="background-color: #ffcc00;color:#000000;">{% if collector.data.twigChanges is defined %}{{ collector.data.twigChanges }}{% else %}0{% endif %}</span>
+            <span style="background-color: #ffcc00;color:#000000;">{% if collector.data.overrided %}Overrided{% endif %}</span>
+
         </span>
 
 
@@ -94,10 +86,10 @@
 
 
 {% block serviceInfo %}
-    
+
     {% for service in collector.data.services%}
 
-      
+
         {% if service.name is defined %}
 
             <h3>{{service.name}}</h3>
@@ -125,41 +117,41 @@
                 {% endif%}
 
                 {% if service.params.serviceid is defined%}
-                <tr>
-                    <th>
-                        <strong>servicename:</strong>
-                    </th>
-                    <td>{{service.params.serviceid}} </td>
-                </tr>
-               {% else %}
-                <tr>
-                    <th>
-                        <strong>servicename:</strong>
-                    </th>
-                    <td>
-                        none
-                    </td>
-                </tr>
-               {% endif %}
+                    <tr>
+                        <th>
+                            <strong>servicename:</strong>
+                        </th>
+                        <td>{{service.params.serviceid}} </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <th>
+                            <strong>servicename:</strong>
+                        </th>
+                        <td>
+                            none
+                        </td>
+                    </tr>
+                {% endif %}
 
                 {% if service.className is defined %}
-                <tr>
-                    <th>
-                        <strong>class</strong>
-                    </th>
-                    <td>
-                        {{service.className}}
-                    </td>
-                </tr>
+                    <tr>
+                        <th>
+                            <strong>class</strong>
+                        </th>
+                        <td>
+                            {{service.className}}
+                        </td>
+                    </tr>
                 {% else %}
-                <tr>
-                    <th>
-                        <strong>class</strong>
-                    </th>
-                    <td>
-                        none
-                    </td>
-                </tr>
+                    <tr>
+                        <th>
+                            <strong>class</strong>
+                        </th>
+                        <td>
+                            none
+                        </td>
+                    </tr>
                 {% endif %}
             </tbody>
         </table>
@@ -170,55 +162,96 @@
 
 
 {% block panel %}
-    {# Optional, for showing the most details. #}
-    <h2>Prototype</h2>
-    <h3>{% if collector.data.header is defined %}{{ collector.data.header }}{% else %}none{% endif %}</h3>
-   
-    <table>
-        <tr>
-            <th>URI</th>
-            <td>{% if collector.data.uri is defined %}{{ collector.data.uri }}{% else %}none{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Route</th>
-            <td>{% if collector.data.route is defined %}{{ collector.data.route }}{% else %}none{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Controller</th>
-            <td>{% if collector.data.controller is defined %}{{ collector.data.controller }}{% else %}none{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Locale</th>
-            <td>{% if collector.data.locale is defined %}{{ collector.data.locale }}{% else %}none{% endif %}</td>
-        </tr>
-        <tr>
-            <th>EntityName</th>
-            <td>{% if collector.data.entityName is defined %}{{ collector.data.entityName }}{% else %}none{% endif %}</td>
-        </tr>
-        <tr>
-            <th>EntityClass</th>
-            <td>{% if collector.data.entityClass is defined %}{{ collector.data.entityClass }}{% else %}none{% endif %}</td>
-        </tr>
-    </table>
+
+    <style>
+        .rounded{ 
+            background-color: #ffcc00;
+            color:#000000;
+            border-radius: 6px;
+            display: inline-block;
+
+            margin-right: 2px;
+            padding: 4px;}
+        
+      .marked{ 
+            background-color: #aacd4e;
+            color:#000000;
+            border-radius: 6px;
+            display: inline-block;
+
+            margin-right: 2px;
+            padding: 4px;}
+        </style>
     
-    <h3>Config params</h3>    
-    <table>    
-    {% for row in collector.data.config%}
-        <tr>
-        {% for column in row%}
-            <th {% if column.volume> 1 %} rowspan="{{column.volume}}" {% endif %}>
-                {{column.name}}
-                
-            </th>
-            {% if column.value is not null %}
-            <td>
-                {{column.value}}
-            </td>
-            {% endif %}   
+    
+    </style>
+        
+        
+        
+
+        {# Optional, for showing the most details. #}
+        <h2>Prototype</h2>
+        <h3>{% if collector.data.header is defined %}{{ collector.data.header }}{% else %}none{% endif %}</h3>
+
+        <table>
+            <tr>
+                <th>URI</th>
+                <td>{% if collector.data.uri is defined %}{{ collector.data.uri }}{% else %}none{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Route</th>
+                <td>{% if collector.data.route is defined %}{{ collector.data.route }}{% else %}none{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Controller</th>
+                <td>{% if collector.data.controller is defined %}{{ collector.data.controller }}{% else %}none{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Action Name</th>
+                <td>{% if collector.data.actionName is defined %}{{ collector.data.actionName }}{% else %}none{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Locale</th>
+                <td>{% if collector.data.locale is defined %}{{ collector.data.locale }}{% else %}none{% endif %}</td>
+            </tr>
+            <tr>
+                <th>EntityName</th>
+                <td>{% if collector.data.entityName is defined %}{{ collector.data.entityName }}{% else %}none{% endif %}</td>
+            </tr>
+            <tr>
+                <th>EntityClass</th>
+                <td>{% if collector.data.entityClass is defined %}{{ collector.data.entityClass }}{% else %}none{% endif %}</td>
+            </tr>
+
+        </table>
+
+        <h3>Config params</h3>    
+        <table>    
+            {% for row in collector.data.config%}
+                <tr>
+                    {% for column in row%}
+                        <th {% if column.volume> 1 %} rowspan="{{column.volume}}" {% endif %}>
+                            {{column.name}}{%if column.used %}<span class='marked'></span>{%endif%}
+                            
+
+                        </th>
+                        {% if column.value is not null %}
+                            <td>
+                                {% if column.value.changed is defined %}
+                                    {% if column.value %}
+                                       <span class='rounded'>{{column.value|raw}}</span>
+                                    {% else %}
+                                       <span class='rounded'>NULL</span>
+                                    {% endif %}
+                            {% else %}
+                                {{column.value|raw}}
+                            {% endif %}
+                        </td>
+                    {% endif %}   
+                {% endfor%}
+            </tr>
         {% endfor%}
-        </tr>
-     {% endfor%}
     </table>
     {{block('serviceInfo')}}
-  
+
 {% endblock panel %}
