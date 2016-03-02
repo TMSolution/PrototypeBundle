@@ -20,6 +20,7 @@ class ListConfig
     protected $fields;
     protected $prepared;
     protected $fieldsAliases = [];
+    protected $formTypeClass;
 
     public function __construct($container, $formTypeClass=null)
     {
@@ -138,7 +139,7 @@ class ListConfig
 
     public function getFormType()
     {
-
+        
         if ($this->formTypeClass) {
             $formClass = $this->formTypeClass;
             $formType = new $formClass();
