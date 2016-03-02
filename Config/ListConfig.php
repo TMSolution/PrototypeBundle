@@ -60,9 +60,7 @@ class ListConfig
     protected function analizeFieldsInfo($fieldsInfo)
     {
 
-
-
-        foreach ($fieldsInfo as $key => $value) {
+     foreach ($fieldsInfo as $key => $value) {
 
             if (array_key_exists("association", $fieldsInfo[$key]) && ( $fieldsInfo[$key]["association"] == "ManyToOne" || $fieldsInfo[$key]["association"] == "OneToOne" )) {
 
@@ -144,12 +142,11 @@ class ListConfig
             $formClass = $this->formTypeClass;
             $formType = new $formClass();
         } else {
-          //  $formType = new \Core\PrototypeBundle\Form\FilterFormType();
             return false;
         }
 
         $formType->setModel($this->model);
-       // dump($formType);
+       
         return $formType;
     }
 
