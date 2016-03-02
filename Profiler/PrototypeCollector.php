@@ -90,7 +90,7 @@ class PrototypeCollector implements DataCollectorInterface {
         $this->prepareUsedParams($config);
         $this->processConfig($config, $resulConfig);
         $this->data['config'] = $resulConfig;
-        $this->data['overrided'] = $devConfig->isOverrided();
+        $this->data['overriden'] = $devConfig->isOverriden();
     }
 
     public function prepareUsedParams($config) {

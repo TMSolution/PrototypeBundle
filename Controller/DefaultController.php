@@ -227,7 +227,7 @@ class DefaultController extends FOSRestController {
         $routePrefix = $this->getRoutePrefix();
         $listConfig = $this->getListConfig();
         $formType = $listConfig->getFormType();
-        $queryBuilder = $listConfig->getQueryBuilder();
+        $queryBuilder = $listConfig->getQueryBuilder($request);
         $paginator = $this->container->get('knp_paginator');
         if ($formType) {
             $form = $this->makeForm($formType, $this->model->getEntity(), 'GET', $entityName, $this->getRouteName("list"), $this->getRouteParams());

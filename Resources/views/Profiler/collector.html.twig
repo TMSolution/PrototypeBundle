@@ -20,7 +20,7 @@
             </svg>
         </span>
         <span class="sf-toolbar-status">Prototype</span>
-        <span class="sf-toolbar-status sf-toolbar-status-yellow">{% if collector.data.overrided %}Overrided{% endif %}</span>
+        <span class="sf-toolbar-status sf-toolbar-status-yellow">{% if collector.data.overriden %}Overriden{% endif %}</span>
 
     {% endset %}
 
@@ -76,7 +76,7 @@
         <strong>Prototype</strong>
 
         <span class="count" alt="amount of changed twigs">
-            <span style="background-color: #ffcc00;color:#000000;">{% if collector.data.overrided %}Overrided{% endif %}</span>
+            <span style="background-color: #ffcc00;color:#000000;">{% if collector.data.overriden %}Overriden{% endif %}</span>
 
         </span>
 
@@ -238,11 +238,8 @@
                         {% if column.value is not null %}
                             <td>
                                 {% if column.value.changed is defined %}
-                                    {% if column.value %}
                                        <span class='rounded'>{{column.value|raw}}</span>
-                                    {% else %}
-                                       <span class='rounded'>NULL</span>
-                                    {% endif %}
+                                    
                             {% else %}
                                 {{column.value|raw}}
                             {% endif %}

@@ -4,7 +4,7 @@ namespace Core\PrototypeBundle\Service;
 
 class DevConfig {
 
-    protected $overrided = false;
+    protected $overriden = false;
     protected $cofnig= null;
     
     public function __construct($config)
@@ -68,13 +68,13 @@ class DevConfig {
                     $resultArray[$key] = $value;
                 } else {
 
-                    $this->overrided = true;
+                    $this->overriden = true;
                     $resultArray[$key] = new ValueObject($value);
                 }
             } else {
                 if (!is_array($value)) {
 
-                    $this->overrided = true;
+                    $this->overriden = true;
                     $resultArray[$key] = new ValueObject($value);
                 } else {
                     $resultArray[$key] = $value;
@@ -84,9 +84,9 @@ class DevConfig {
         return $resultArray;
     }
 
-    function isOverrided() {
+    function isOverriden() {
 
-        return $this->overrided;
+        return $this->overriden;
     }
 
 }
