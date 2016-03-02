@@ -25,8 +25,10 @@ class SearchConfig extends ListConfig {
     public function getQueryBuilder() {
         $request = $this->getContainer()->get('request_stack')->getCurrentRequest();
         $fieldFromRequest = $request->get('field');
+        
         $field = $this->mapField($fieldFromRequest);
         $queryBuilder = $this->listConfig->getQueryBuilder();
+        $queryBuilder->resetDQLPart('select');
         $queryBuilder->select("DISTINCT $field as value ");
         return $queryBuilder;
     }
@@ -38,7 +40,7 @@ class SearchConfig extends ListConfig {
     protected function mapField($field) {
         $output = null;
         parse_str($field, $output);
-        dump($output);
+       
         if (is_array($output)) {
             return $this->testValue($output, $this->map);
         }
