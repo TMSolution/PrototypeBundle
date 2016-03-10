@@ -84,7 +84,7 @@ class DevConfig {
         return $resultArray;
     }
 
-    function isOverriden() {
+    function isOverridden() {
 
         return $this->overriden;
     }
