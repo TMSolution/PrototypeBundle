@@ -20,33 +20,34 @@
             </svg>
         </span>
         <span class="sf-toolbar-status">Prototype</span>
-        <span class="sf-toolbar-status sf-toolbar-status-yellow">{% if collector.data.overridden is defined%}Overridden{% endif %}</span>
-
+        {% if collector.data.debug == true %}             
+            <span class="sf-toolbar-status sf-toolbar-status-yellow">{% if collector.data.overridden is defined%}Overridden{% endif %}</span>
+ 
+        {% endif %}
     {% endset %}
-
     {% set text %}
-        <div class="sf-toolbar-info-piece">
-            <b>URI</b>
-            <span>{% if collector.data.uri is defined %}{{ collector.data.uri }}{% else %}none{% endif %}</span>
-        </div>
-        <div class="sf-toolbar-info-piece">
-            <b>Locale</b>
-            <span>{% if collector.data.locale is defined %}{{ collector.data.locale }}{% else %}none{% endif %}</span>
-        </div>
-        <div class="sf-toolbar-info-piece">
-            <b>EntityName</b>
-            <span>{% if collector.data.entityName is defined %}{{ collector.data.entityName }}{% else %}none{% endif %}</span>
-        </div>
-        <div class="sf-toolbar-info-piece">
-            <b>EntityClass</b>
-            <span>{% if collector.data.entityClass is defined %}{{ collector.data.entityClass }}{% else %}none{% endif %}</span>
-        </div>
-
-
+        {% if collector.data.debug == true %}            
+            <div class="sf-toolbar-info-piece">
+                <b>URI</b>
+                <span>{% if collector.data.uri is defined %}{{ collector.data.uri }}{% else %}none{% endif %}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Locale</b>
+                <span>{% if collector.data.locale is defined %}{{ collector.data.locale }}{% else %}none{% endif %}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>EntityName</b>
+                <span>{% if collector.data.entityName is defined %}{{ collector.data.entityName }}{% else %}none{% endif %}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>EntityClass</b>
+                <span>{% if collector.data.entityClass is defined %}{{ collector.data.entityClass }}{% else %}none{% endif %}</span>
+            </div>
+        {% else %}
+            <span class="sf-toolbar-status sf-toolbar-status-red">debug: off</span>                     
+        {% endif %}
     {% endset %}
-
-    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
-
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': collector.data.debug }) }}
 {% endblock %}
 
 {% block head %}
@@ -54,140 +55,142 @@
 {% endblock %}
 
 {% block menu %}
-    <span class="label">
-        <span class="icon">
-            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                 width="30px" viewBox="0 0 466.227 466.227"
-                 xml:space="preserve" style="color:red">
+    {% if collector.data.debug == true %}    
+        <span class="label">
+            <span class="icon">
+                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                     width="30px" viewBox="0 0 466.227 466.227"
+                     xml:space="preserve" style="color:red">
 
-                <path d="M463.36,2.852c-1.906-1.805-4.188-2.712-6.854-2.712c-49.677,0-90.694,6.755-123.051,20.271
-                      c-32.353,13.518-66.424,38.072-102.208,73.662c-15.225,15.418-31.977,33.977-50.248,55.675l-108.205,5.708
-                      c-3.046,0.387-5.52,1.906-7.423,4.57L1.418,269.666c-2.285,3.806-1.807,7.519,1.427,11.136l18.271,18.271
-                      c1.714,1.714,3.901,2.569,6.567,2.569c1.143,0,1.997-0.096,2.568-0.287l78.802-24.273l80.228,80.232l-24.269,78.795
-                      c-0.949,3.43-0.188,6.472,2.285,9.138l18.272,18.274c2.094,1.707,4.285,2.566,6.567,2.566c1.716,0,3.238-0.384,4.569-1.144
-                      l109.639-63.953c2.666-1.902,4.186-4.373,4.568-7.419l5.708-108.209c21.7-18.274,40.262-35.022,55.676-50.251
-                      c33.89-34.074,58.009-68.378,72.375-102.923c14.373-34.547,21.556-75.519,21.556-122.91C466.224,6.804,465.273,4.664,463.36,2.852z
-                      M394.277,110.92c-5.325,5.326-11.8,7.994-19.414,7.994s-14.082-2.665-19.414-7.994c-5.325-5.33-7.994-11.802-7.994-19.417
-                      c0-7.611,2.666-14.084,7.994-19.414c5.328-5.327,11.8-7.993,19.414-7.993s14.086,2.663,19.414,7.993s7.994,11.803,7.994,19.414
-                      C402.271,99.119,399.612,105.586,394.277,110.92z"/>
+                    <path d="M463.36,2.852c-1.906-1.805-4.188-2.712-6.854-2.712c-49.677,0-90.694,6.755-123.051,20.271
+                          c-32.353,13.518-66.424,38.072-102.208,73.662c-15.225,15.418-31.977,33.977-50.248,55.675l-108.205,5.708
+                          c-3.046,0.387-5.52,1.906-7.423,4.57L1.418,269.666c-2.285,3.806-1.807,7.519,1.427,11.136l18.271,18.271
+                          c1.714,1.714,3.901,2.569,6.567,2.569c1.143,0,1.997-0.096,2.568-0.287l78.802-24.273l80.228,80.232l-24.269,78.795
+                          c-0.949,3.43-0.188,6.472,2.285,9.138l18.272,18.274c2.094,1.707,4.285,2.566,6.567,2.566c1.716,0,3.238-0.384,4.569-1.144
+                          l109.639-63.953c2.666-1.902,4.186-4.373,4.568-7.419l5.708-108.209c21.7-18.274,40.262-35.022,55.676-50.251
+                          c33.89-34.074,58.009-68.378,72.375-102.923c14.373-34.547,21.556-75.519,21.556-122.91C466.224,6.804,465.273,4.664,463.36,2.852z
+                          M394.277,110.92c-5.325,5.326-11.8,7.994-19.414,7.994s-14.082-2.665-19.414-7.994c-5.325-5.33-7.994-11.802-7.994-19.417
+                          c0-7.611,2.666-14.084,7.994-19.414c5.328-5.327,11.8-7.993,19.414-7.993s14.086,2.663,19.414,7.993s7.994,11.803,7.994,19.414
+                          C402.271,99.119,399.612,105.586,394.277,110.92z"/>
 
-            </svg>
+                </svg>
+            </span>
+            <strong>Prototype</strong>
+
+            <span class="count" alt="amount of changed twigs">
+                <span style="background-color: #ffcc00;color:#000000;">{% if collector.data.overridden is defined %}Overridden{% endif %}</span>
+
+            </span>
+
+
         </span>
-        <strong>Prototype</strong>
-
-        <span class="count" alt="amount of changed twigs">
-            <span style="background-color: #ffcc00;color:#000000;">{% if collector.data.overridden is defined %}Overridden{% endif %}</span>
-
-        </span>
-
-
-    </span>
+    {% endif %}
 {% endblock menu %}
 
 
 {% block serviceInfo %}
+    {% if collector.data.debug == true %}
+        {% for service in collector.data.services%}
 
-    {% for service in collector.data.services%}
 
+            {% if service.name is defined %}
 
-        {% if service.name is defined %}
+                <h3>{{service.name}}</h3>
 
-            <h3>{{service.name}}</h3>
+            {% endif %}        
 
-        {% endif %}        
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                {% if service.params.phrase is defined %}
+            <table>
+                <thead>
                     <tr>
-                        <th>
-                            <strong>phrase</strong>
-                        </th>
-                        <td>
-                            {{service.params.phrase}} 
-                        </td>
+                        <th>Name</th>
+                        <th>Value</th>
                     </tr>
-                {% endif%}
+                </thead>
+                <tbody>
 
-                {% if service.params.serviceid is defined%}
-                    <tr>
-                        <th>
-                            <strong>servicename:</strong>
-                        </th>
-                        <td>{{service.params.serviceid}} </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <th>
-                            <strong>servicename:</strong>
-                        </th>
-                        <td>
-                            none
-                        </td>
-                    </tr>
-                {% endif %}
+                    {% if service.params.phrase is defined %}
+                        <tr>
+                            <th>
+                                <strong>phrase</strong>
+                            </th>
+                            <td>
+                                {{service.params.phrase}} 
+                            </td>
+                        </tr>
+                    {% endif%}
 
-                {% if service.className is defined %}
-                    <tr>
-                        <th>
-                            <strong>class</strong>
-                        </th>
-                        <td>
-                            {{service.className}}
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <th>
-                            <strong>class</strong>
-                        </th>
-                        <td>
-                            none
-                        </td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
+                    {% if service.params.serviceid is defined%}
+                        <tr>
+                            <th>
+                                <strong>servicename:</strong>
+                            </th>
+                            <td>{{service.params.serviceid}} </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <th>
+                                <strong>servicename:</strong>
+                            </th>
+                            <td>
+                                none
+                            </td>
+                        </tr>
+                    {% endif %}
 
-    {% endfor %}   
+                    {% if service.className is defined %}
+                        <tr>
+                            <th>
+                                <strong>class</strong>
+                            </th>
+                            <td>
+                                {{service.className}}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <th>
+                                <strong>class</strong>
+                            </th>
+                            <td>
+                                none
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
 
+        {% endfor %}   
+    {% endif %}
 {% endblock serviceInfo %}   
 
 
 {% block panel %}
+    {% if collector.data.debug == true %}
+        <style>
+            .rounded{ 
+                background-color: #ffcc00;
+                color:#000000;
+                border-radius: 6px;
+                display: inline-block;
 
-    <style>
-        .rounded{ 
-            background-color: #ffcc00;
-            color:#000000;
-            border-radius: 6px;
-            display: inline-block;
+                margin-right: 2px;
+                padding: 4px;}
 
-            margin-right: 2px;
-            padding: 4px;}
-        
-      .marked{ 
-            background-color: #aacd4e;
-            color:#000000;
-            border-radius: 6px;
-            display: inline-block;
+            .marked{ 
+                background-color: #aacd4e;
+                color:#000000;
+                border-radius: 6px;
+                display: inline-block;
 
-            margin-right: 2px;
-            padding: 4px;}
+                margin-right: 2px;
+                padding: 4px;}
+            </style>
+
+
         </style>
-    
-    
-    </style>
-        
-        
-        
+
+
+
 
         {# Optional, for showing the most details. #}
         <h2>Prototype</h2>
@@ -225,21 +228,21 @@
 
         </table>
 
-        <h3>Config params</h3>    
+        <h3>Config params</h3>        
         <table>    
             {% for row in collector.data.config%}
                 <tr>
                     {% for column in row%}
                         <th {% if column.volume> 1 %} rowspan="{{column.volume}}" {% endif %}>
                             {{column.name}}{%if column.used %}<span class='marked'></span>{%endif%}
-                            
 
-                        </th>
-                        {% if column.value is not null %}
-                            <td>
-                                {% if column.value.changed is defined %}
-                                       <span class='rounded'>{{column.value|raw}}</span>
-                                    
+
+                    </th>
+                    {% if column.value is not null %}
+                        <td>
+                            {% if column.value.changed is defined %}
+                                <span class='rounded'>{{column.value|raw}}</span>
+
                             {% else %}
                                 {{column.value|raw}}
                             {% endif %}
@@ -250,5 +253,5 @@
         {% endfor%}
     </table>
     {{block('serviceInfo')}}
-
+{% endif %}
 {% endblock panel %}

@@ -73,7 +73,7 @@ class PrototypeCollector implements DataCollectorInterface {
 
         $services = [];
         foreach ($this->services as $serviceName => $friendlyName) {
-
+            
             $services[$friendlyName] = $this->getServiceInfo($friendlyName, $this->getConfiguratorService($serviceName));
         }
 
@@ -117,10 +117,16 @@ class PrototypeCollector implements DataCollectorInterface {
 
         $kernel = new \AppKernel('dev', true);
         $kernel->boot();
-        $this->container = $kernel->getContainer();
+        $this->container = $kernel->getContainer();        
+        if ($this->container->getParameter('prototype_debug') === false) {
+            $this->data["debug"] = false; 
+            return;
+        }
+        
         $router = $this->container->get('router');
         $classmapper = $this->container->get('classmapperservice');
-
+        
+        $this->data["debug"] = true; 
         $this->data["header"] = "Url configuration";
         $this->data["uri"] = $request->getPathInfo();
         if ($this->data["uri"] == "/login_check") {
