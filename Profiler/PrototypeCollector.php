@@ -122,6 +122,7 @@ class PrototypeCollector implements DataCollectorInterface {
             $this->data["debug"] = false; 
             return;
         }
+
         
         $router = $this->container->get('router');
         $classmapper = $this->container->get('classmapperservice');

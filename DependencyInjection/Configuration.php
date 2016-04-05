@@ -21,7 +21,6 @@ class Configuration implements ConfigurationInterface
 
 
 
-
         $treeBuilder = new TreeBuilder();
 
         $rootNode = $treeBuilder->root('core_prototype');
