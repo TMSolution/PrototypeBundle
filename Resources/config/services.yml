@@ -14,16 +14,16 @@ services:
 
     prototype.routeservice:
         class: Core\PrototypeBundle\Service\RouteService
-        arguments: [@service_container]
+        arguments: ["@service_container"]
 
 ###############################################################
     prototype.extended_controller:
         class: Core\PrototypeBundle\Controller\ExtendedController
-        arguments: [@service_container,@request_stack]
+        arguments: ["@service_container","@request_stack"]
     
     prototype.grid_controller:
         class: Core\PrototypeBundle\Controller\GridDefaultController
-        arguments: [@service_container,@request_stack]
+        arguments: ["@service_container","@request_stack"]
     
 ################################################################    
     data_collector.prototype:
@@ -40,16 +40,16 @@ services:
         
     prototype_formtype_factory:
         class: Core\PrototypeBundle\Form\FormTypeFactory
-        arguments: [@service_container]
+        arguments: ["@service_container"]
 
     prototype_grid_config_factory:
         class: Core\PrototypeBundle\Config\GridConfigFactory
-        arguments: [@service_container]   
+        arguments: ["@service_container"]   
            
 ############################################################    
     prototype.configurator.service:
         class: Core\PrototypeBundle\Service\Configurator
-        arguments: [@service_container] 
+        arguments: ["@service_container"] 
    
     prototype.config:
         class: Core\PrototypeBundle\Service\Config
@@ -59,42 +59,42 @@ services:
 ############################################################    
     prototype.gridconfig.configurator.service:
         class: Core\PrototypeBundle\Service\GridConfigConfigurator
-        arguments: [@service_container] 
+        arguments: ["@service_container"] 
     #niezgrabna 
     prototype.gridconfig:
         class: TMSolution\DataGridBundle\GridConfig\GridConfig
-        arguments: [@service_container]        
+        arguments: ["@service_container"]        
         tags:
             -  { name: prototype.gridconfig }
 ############################################################    
     prototype.idfinder.configurator.service:
         class: Core\PrototypeBundle\Service\IdFinderConfigurator
-        arguments: [@service_container] 
+        arguments: ["@service_container"] 
 #    #niezgrabna 
 #    prototype.idfinderconfig:
 #        class: Core\PrototypeBundle\Config\IdFinder
-#        arguments: [@service_container]        
+#        arguments: ["@service_container]        
 #        tags:
 #            -  { name: prototype.idfinder }            
             
 ############################################################    
     prototype.listconfig.configurator.service:
         class: Core\PrototypeBundle\Service\ListConfigConfigurator
-        arguments: [@service_container] 
+        arguments: ["@service_container"] 
     #niezgrabna 
     prototype.listconfig:
         class: Core\PrototypeBundle\Config\ListConfig
-        arguments: [@service_container]        
+        arguments: ["@service_container"]        
         tags:
             -  { name: prototype.listconfig }
 ################################################################
     prototype.viewconfig.configurator.service:
         class: Core\PrototypeBundle\Service\ViewConfigConfigurator
-        arguments: [@service_container] 
+        arguments: ["@service_container"] 
     #niezgrabna 
     prototype.viewconfig:
         class: Core\PrototypeBundle\Config\ViewConfig
-        arguments: [@service_container]        
+        arguments: ["@service_container"]        
         tags:
             -  { name: prototype.viewconfig }
 ################################################################
@@ -102,7 +102,7 @@ services:
 
     prototype.formtype.configurator.service:
         class: Core\PrototypeBundle\Service\FormTypeConfigurator
-        arguments: [@service_container] 
+        arguments: ["@service_container"] 
     
     prototype.formtype:
         class: Core\PrototypeBundle\Form\FormType
@@ -112,26 +112,26 @@ services:
 ################################################################
     prototype.association.list.config:
         class: Core\PrototypeBundle\Service\Config
-        arguments: [@prototype.config,%prototype.association.config.list.parameters%]        
+        arguments: ["@prototype.config",%prototype.association.config.list.parameters%]        
         tags:
             -  { name: prototype.config, route: core_prototype_associationcontroller_list }
             
     prototype.association.config:
         class: Core\PrototypeBundle\Service\Config
-        arguments: [@prototype.config]        
+        arguments: ["@prototype.config"]        
         tags:
             -  { name: prototype.config, route: core_prototype_associationcontroller_ }            
 
             
     prototype.gridconfig.associationgridconfig:
         class: Core\PrototypeBundle\Config\AssociationGridConfig
-        arguments: [@service_container]        
+        arguments: ["@service_container"]        
         tags:
             -  { name: prototype.gridconfig, route: core_prototype_associationcontroller_ }        
    
     prototype.ajax.config:
         class: Core\PrototypeBundle\Service\Config
-        arguments: [@prototype.config,%prototype.association.config.list.parameters%]        
+        arguments: ["@prototype.config",%prototype.association.config.list.parameters%]        
         tags:
             -  { name: prototype.config, route: core_prototype_ajaxcontroller_ }
 
@@ -153,6 +153,6 @@ services:
 
     prototype.knp_paginator_listener:
         class: Core\PrototypeBundle\EventListener\KnpPaginatorListener
-        arguments: [@service_container]  
+        arguments: ["@service_container"]  
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
