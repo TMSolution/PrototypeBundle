@@ -1,4 +1,4 @@
-{{'{% extends app.request.isXmlHttpRequest() or routeParams.containerName=="element" ? config.get("twig_base_ajax_index") : config.get("twig_base_index") %}  '}}     
+{{' {% extends app.request.isXmlHttpRequest() or routeParams.containerName=="element" ? config.get("base.templates.blank") : config.get("base.templates.index") %} '}}
 {{'{% block content %}'}}    
 
 {{'{% if routeParams.containerName==\'container\' %}'}}   
@@ -37,6 +37,8 @@
                     <a id="{{objectName|lower}}-view-tab" 
                        href="#{{objectName|lower}}-view-pane" 
                        aria-controls="{{objectName|lower}}-view-pane" 
+                       
+                       data-route-link="{{'{{ routeservice.getLink(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "container", "actionId": "default", "entityName":"'}}{{objectName|lower}}{{'", "id":'}}{{'entity.id'}}{{', "states":"\'\'","parentName":"'}}{{objectName|lower}}{{'", "parentId":'}}{{'entity.id'}} }) }}"
                        role="tab"  
                        data-toggle="tab">
                         {{'{{\'Informations\'|lower|trans}}'}}
@@ -48,6 +50,8 @@
                        class="lazy-loaded-tab"
                        href="#{{objectName|lower}}-show-pane" 
                        aria-controls="{{objectName|lower}}-show-pane" 
+                       
+                       data-route-link="{{'{{ routeservice.getLink(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "container", "actionId": "default", "entityName":"'}}{{objectName|lower}}{{'", "id":'}}{{'entity.id'}}{{', "states":"show","parentName":"'}}{{objectName|lower}}{{'", "parentId":'}}{{'entity.id'}} }) }}"
                        role="tab" 
                        data-toggle="tab"
                        data-route="core_prototype_defaultcontroller_read.{{'{{app.request.getLocale()}}'}}" 
@@ -59,14 +63,15 @@
                 {% for  name,field in associations %}
                     {% if field.is_object==true and (field.association=='OneToMany' or field.association=='ManyToMany') %}
 
-                        <li role="presentation" class="{{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}}">
+                        <li role="presentation" class="{{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}">
                             <a id="{{objectName|lower}}-{{name}}-tab" 
                                class="lazy-loaded-tab" 
                                href="#{{objectName|lower}}-{{name}}-pane" 
                                aria-controls="{{objectName|lower}}-{{name}}-pane" 
                                role="tab"  
                                data-toggle="tab"
-                               data-route="core_prototype_associationcontroller_grid.{{'{{app.request.getLocale()}}'}}" 
+                               data-route="core_prototype_associationcontroller_list.{{'{{app.request.getLocale()}}'}}" 
+                               data-route-link="{{'{{ routeservice.getLink(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "container", "actionId": "default", "entityName":"'}}{{objectName|lower}}{{'", "id":'}}{{'entity.id'}}{{', "states":"'}}{{name}}{{'","parentName":"'}}{{objectName|lower}}{{'", "parentId":'}}{{'entity.id'}} }) }}"
                                data-route-params='{ "containerName": "element", "actionId": "default", "parentName":"{{objectName|lower}}" , "parentId": "{{'{{entity.getId()}}'}}", "entityName": "{{classmapperservice.getEntityName(field.object_name_stripslashes,0,'en')}}" }'  
                                data-route-target="#{{objectName|lower}}-{{name}}-pane" >
                                 {{"{{ "}}"{{name}}"{{"|lower|trans}}"}}
@@ -108,14 +113,14 @@
                     {% if field.is_object==true and (field.association=='OneToMany' or field.association=='ManyToMany') %}
                         <div role="tabpanel" class="tab-pane tab-panel-container {{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-{{name}}-pane"  >
                             {{'{% if \''}}{{name}}{{'\' in states %}'}}
-                            {{'{{ render(url(\'core_prototype_associationcontroller_grid.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default", "parentName":"'}}{{objectName|lower}}{{'" , "parentId": entity.getId(), "entityName": "'}}{{classmapperservice.getEntityName(field.object_name_stripslashes,0,'en')}}{{'" } )) }}'}}
+                            {{'{{ render(url(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default", "parentName":"'}}{{objectName|lower}}{{'" , "parentId": entity.getId(), "entityName": "'}}{{classmapperservice.getEntityName(field.object_name_stripslashes,0,'en')}}{{'" } )) }}'}}
                             {{'{% endif %}'}}                        
                         </div>
                     {% endif %}
                 {% endfor %}
             </div>
         </div>
-    
+
     </div>
 </div>
 
@@ -129,11 +134,14 @@
     {{"$('.lazy-loaded-tab').one('click', function (e) {
                 e.preventDefault();
                 e.stopImmediatePropagation()
-                
-                var that=$(this);
-                $().lazyLoader('load', $(this), true, 'tab',function(){
-                    that.tab('show');
-                });
+
+                var that = $(this);
+                var options = {
+                    callback: function () {
+                        that.tab('show');
+                    }
+                }
+                $().lazyLoader('load', {element: $(this), registerAsState: true, type: 'tab', options});
             });"}}
 </script>
 {{'{% endif %}'}}
