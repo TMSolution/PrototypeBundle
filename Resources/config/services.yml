@@ -24,6 +24,7 @@ services:
     prototype.grid_controller:
         class: Core\PrototypeBundle\Controller\GridDefaultController
         arguments: ["@service_container","@request_stack"]
+        shared: false
     
 ################################################################    
     data_collector.prototype:
@@ -31,6 +32,11 @@ services:
         arguments: []
         tags:
            - { name: data_collector, template: "CorePrototypeBundle:Profiler:collector", id: "prototype" }
+    
+
+           
+           
+           
     
     prototype.event:
         class: Core\PrototypeBundle\Event\Event
@@ -142,6 +148,9 @@ services:
         public: true
         tags:
             - { name: twig.extension }
+            
+    
+            
 
     prototype.container_aware_type:
         class: Core\PrototypeBundle\Form\ContainerAwareType

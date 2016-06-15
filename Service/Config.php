@@ -24,6 +24,7 @@ class Config {
 
         if ($this->loaded == false) {
 
+          
             foreach ($this->configComponents as $component) {
                 if (is_array($component)) {
                     $this->mergeComponents($component);

@@ -51,8 +51,8 @@ class DefaultController extends FOSRestController {
     }
 
     protected function init() {
+        
         $this->configService = null;
-
         $this->request = $this->requestStack->getCurrentRequest();
         $this->initBaseRouteName();
         $this->initRoutePrefix();
@@ -87,16 +87,18 @@ class DefaultController extends FOSRestController {
         $baseRoute = $this->getBaseRouteName();     //$this->getRoutePrefix();
         $routeParams = $this->getRouteParams();
 
-        if (array_key_exists('parentName', $routeParams)) {
-            return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['parentName'] . '.' . $routeParams['actionId'];
+        if ($routeParams) {
+            if (array_key_exists('parentName', $routeParams)) {
+                return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['parentName'] . '.' . $routeParams['actionId'];
+            }
+
+
+            if (array_key_exists('actionId', $routeParams)) {
+                return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['actionId'];
+            }
+
+            return $baseRoute . '.' . $routeParams['entityName'];
         }
-
-
-        if (array_key_exists('actionId', $routeParams)) {
-            return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['actionId'];
-        }
-
-        return $baseRoute . '.' . $routeParams['entityName'];
     }
 
     protected function getDispatchName($fireAction) {
@@ -336,7 +338,7 @@ class DefaultController extends FOSRestController {
 
 
         $params = $this->get('prototype.controler.params');
-        
+
 
         $buttonRouteParams = $this->routeParams;
         $buttonRouteParams['containerName'] = 'container';
@@ -351,8 +353,8 @@ class DefaultController extends FOSRestController {
                     'submitType' => $this->getSubmitType($request)
         ]);
 
-        
-        
+
+
 
         $event->setEntity($entity);
         $event->setParams($params);
@@ -361,14 +363,14 @@ class DefaultController extends FOSRestController {
 
 
         $redirectUpdate = $this->getConfig()->get('actions.update.redirect');
-        
-        $isValid = $updateForm->isValid();        
+
+        $isValid = $updateForm->isValid();
         if ($isValid) {
             $this->dispatch('before.update', $event);
             $this->model->update($entity, true);
             $this->dispatch('after.update', $event);
         }
-        
+
         if ($isValid && $redirectUpdate) {
             $this->routeParams['submittype'] = $this->getSubmitType($request);
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
@@ -378,7 +380,7 @@ class DefaultController extends FOSRestController {
         if (!$isValid) {
             $this->dispatch('invalid.update', $event);
         }
-        
+
         $this->dispatch('before.render', $event);
 
         $view = $this->view($params['entity'])
@@ -476,6 +478,41 @@ class DefaultController extends FOSRestController {
                 ->setTemplate($this->getConfig()->get('actions.update.templates.element'))
                 ->setTemplateData($params->getArray())
                 ->setHeader('Location', $this->getLocationUrl('edit'));
+        return $this->handleView($view);
+    }
+
+    /**
+     * read action.
+     * 
+     * @param $id Entity id
+     * @return Response
+     */
+    public function defaultAction(Request $request) {
+
+     
+        $this->configService = null;
+        $this->request = $this->requestStack->getCurrentRequest();
+        $this->initBaseRouteName();
+        $this->initRouteParams();
+
+         
+        $params = $this->get('prototype.controler.params');
+        $params->setArray([
+            'config' => $this->getConfig(),
+            'routeParams' => $this->routeParams,
+            'states' => $this->getStates(),
+            'isMasterRequest' => $this->isMasterRequest(),
+            'containerName' => 'container'
+        ]);
+        
+        $event = $this->get('prototype.event');
+        $event->setParams($params);
+
+       // $this->dispatch('before.show', $event);
+        
+      
+        $view = $this->view()->setTemplate($this->getConfig()->get('actions.default.templates.element'))
+                ->setTemplateData($params->getArray());
         return $this->handleView($view);
     }
 

@@ -189,13 +189,15 @@ class AbstractConfigurator
         if (!$serviceConfig) {
             $serviceConfig = $this->findByBestSuitedRoute($route, $universal);
         }
-        
+
         if (!$serviceConfig) {
             $phrase=$this->divider.$this->divider.$this->divider;
             if (array_key_exists($phrase, $this->servicesConfigs)) {
                 $serviceConfig = $this->servicesConfigs[$phrase];
             }
         }
+        
+     
         if ($serviceConfig) {
             $this->setChosen($serviceConfig);
             return $serviceConfig["service"];
