@@ -155,13 +155,30 @@ class ListConfig
 
         return $this->getQueryBuilder()->getQuery(\Doctrine\ORM\Query::HYDRATE_ARRAY);
     }
+    
+    
+    public function count()
+    {
+        $queryBuilder=$this->getQueryBuilder();
+  
+        $queryBuilder->select("COUNT(".$this->model->getEntityName().") counter");
+        $result=$queryBuilder->getQuery(\Doctrine\ORM\Query::HYDRATE_ARRAY)->getResult();
+        
+        return  $result[0]["counter"];
+      
+     }
+     
+    
 
     public function getQueryBuilder()
     {
 
-
+     
+      
         $analizedFieldsInfo = $this->analizeFieldsInfo($this->model->getFieldsInfo());
+     
         $tableAlias = $this->model->getEntityName();
+        
         $this->prepareFields($tableAlias, $this->model);
         $queryBuilder = $this->model->getQueryBuilder($tableAlias);
         $fieldsSql = implode(',', $this->fields);

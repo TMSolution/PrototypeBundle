@@ -230,6 +230,7 @@ class DefaultController extends FOSRestController {
         $listConfig = $this->getListConfig();
         $formType = $listConfig->getFormType();
         $queryBuilder = $listConfig->getQueryBuilder($request);
+        
         $paginator = $this->container->get('knp_paginator');
         if ($formType) {
             $form = $this->makeForm($formType, $this->model->getEntity(), 'GET', $entityName, $this->getRouteName("list"), $this->getRouteParams());
@@ -266,6 +267,7 @@ class DefaultController extends FOSRestController {
                         'routeName' => $routePrefix . '_new',
                         'defaultRoute' => $this->generateBaseRoute('list'),
                         'pagination' => $pagination,
+                        'allRecordsCount' =>$listConfig->count(),
                         'fieldsNames' => $listConfig->getFieldsNames($this->model),
                         'routePrefix' => $routePrefix,
                         'fieldsAliases' => $listConfig->getFieldsAliases(),
@@ -1002,15 +1004,15 @@ class DefaultController extends FOSRestController {
     protected function getListConfig() {
         $configurator = $this->get("prototype.listconfig.configurator.service");
         $listConfig = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
-
-        $listConfig->setModel($this->model);
+        $listConfig->setModel($this->getModel($this->getEntityClass()));
+     
         return $listConfig;
     }
 
     protected function getViewConfig() {
         $configurator = $this->get("prototype.viewconfig.configurator.service");
         $viewConfig = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
-        $viewConfig->setModel($this->model);
+        $viewConfig->setModel($this->getModel($this->getEntityClass()));
         return $viewConfig;
     }
 

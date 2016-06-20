@@ -36,6 +36,13 @@ class SearchConfig extends ListConfig {
     public function setModel($model) {
         $this->listConfig->setModel($model);
     }
+    
+    public function count()
+    {
+       return  $this->listConfig->count();
+    }
+    
+    
 
     protected function mapField($field) {
         $output = null;
