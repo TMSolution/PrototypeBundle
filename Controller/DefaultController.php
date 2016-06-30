@@ -235,9 +235,10 @@ class DefaultController extends FOSRestController {
         if ($formType) {
             $form = $this->makeForm($formType, $this->model->getEntity(), 'GET', $entityName, $this->getRouteName("list"), $this->getRouteParams());
 
+             
             $lexik = $this->container->get('lexik_form_filter.query_builder_updater');
-            $form->submit($this->request);
-
+            //$form->submit($this->request);
+            $form->submit($this->request->query->get($form->getName()));
             $lexik->addFilterConditions($form, $queryBuilder);
         }
         $query = $queryBuilder->getQuery(); //->getResult();
@@ -298,7 +299,7 @@ class DefaultController extends FOSRestController {
         $this->dispatch('before.list', $event);
         $view = $this->view([
                             "status" => "success",
-                            "totalCount" => $pagination->getPageCount(),
+                            "totalCount" => $pagination->getTotalItemCount(),
                             "page" => $pagination->getCurrentPageNumber(),
                             "items" => $pagination->getItems(),
                             "limit" => $pagination->getItemNumberPerPage()
