@@ -21,13 +21,13 @@ class ConfigPass implements CompilerPassInterface {
         $taggedServices = $container->findTaggedServiceIds(
                 'prototype.config'
         );
-        
-        
+
+
         foreach ($taggedServices as $id => $tags) {
-            
-          
+
+
             foreach ($tags as $attributes) {
- 
+
                 $route = null;
                 if (array_key_exists('route', $attributes)) {
                     $route = $attributes['route'];
@@ -37,22 +37,26 @@ class ConfigPass implements CompilerPassInterface {
                 if (array_key_exists('entity', $attributes)) {
                     $entity = $attributes['entity'];
                 }
-                
-                
+
+
                 $parentEntity = null;
                 if (array_key_exists('parentEntity', $attributes)) {
                     $parentEntity = $attributes['parentEntity'];
                 }
 
-                $actionId = null;
-                if (array_key_exists('actionId', $attributes)) {
-                    $actionId = $attributes['actionId'];
+                $prefix = null;
+                if (array_key_exists('prefix', $attributes)) {
+                    $prefix = $attributes['prefix'];
+                }
+
+                $subPrefix = null;
+                if (array_key_exists('subPrefix', $attributes)) {
+                    $subPrefix = $attributes['subPrefix'];
                 }
 
 
-
                 $definition->addMethodCall(
-                        'addService', array(new Reference($id), $route, $entity, $id, $parentEntity, $actionId)
+                        'addService', array(new Reference($id), $route, $entity, $id, $parentEntity, $prefix, $subPrefix)
                 );
             }
         }

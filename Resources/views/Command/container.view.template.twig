@@ -38,7 +38,7 @@
                        href="#{{objectName|lower}}-view-pane" 
                        aria-controls="{{objectName|lower}}-view-pane" 
                        
-                       data-route-link="{{'{{ routeservice.getLink(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "container", "actionId": "default", "entityName":"'}}{{objectName|lower}}{{'", "id":'}}{{'entity.id'}}{{', "states":"\'\'","parentName":"'}}{{objectName|lower}}{{'", "parentId":'}}{{'entity.id'}} }) }}"
+                       data-route-link="{{'{{ routeservice.getLink(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "container", "prefix": "default", "entityName":"'}}{{objectName|lower}}{{'", "id":'}}{{'entity.id'}}{{', "states":"\'\'","parentName":"'}}{{objectName|lower}}{{'", "parentId":'}}{{'entity.id'}} }) }}"
                        role="tab"  
                        data-toggle="tab">
                         {{'{{\'Informations\'|lower|trans}}'}}
@@ -51,11 +51,11 @@
                        href="#{{objectName|lower}}-show-pane" 
                        aria-controls="{{objectName|lower}}-show-pane" 
                        
-                       data-route-link="{{'{{ routeservice.getLink(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "container", "actionId": "default", "entityName":"'}}{{objectName|lower}}{{'", "id":'}}{{'entity.id'}}{{', "states":"show","parentName":"'}}{{objectName|lower}}{{'", "parentId":'}}{{'entity.id'}} }) }}"
+                       data-route-link="{{'{{ routeservice.getLink(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "container", "prefix": "default", "entityName":"'}}{{objectName|lower}}{{'", "id":'}}{{'entity.id'}}{{', "states":"show","parentName":"'}}{{objectName|lower}}{{'", "parentId":'}}{{'entity.id'}} }) }}"
                        role="tab" 
                        data-toggle="tab"
                        data-route="core_prototype_defaultcontroller_read.{{'{{app.request.getLocale()}}'}}" 
-                       data-route-params='{ "id":"{{'{{entity.getId()}}'}}","containerName": "element", "actionId": "default", "entityName": "{{objectName|lower}}" }'  
+                       data-route-params='{ "id":"{{'{{entity.getId()}}'}}","containerName": "element", "prefix": "default", "entityName": "{{objectName|lower}}" }'  
                        data-route-target="#{{objectName|lower}}-show-pane">
                         {{'{{\''}}{{objectName}}{{'\'|lower|trans}}'}}
                     </a>
@@ -71,8 +71,8 @@
                                role="tab"  
                                data-toggle="tab"
                                data-route="core_prototype_associationcontroller_list.{{'{{app.request.getLocale()}}'}}" 
-                               data-route-link="{{'{{ routeservice.getLink(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "container", "actionId": "default", "entityName":"'}}{{objectName|lower}}{{'", "id":'}}{{'entity.id'}}{{', "states":"'}}{{name}}{{'","parentName":"'}}{{objectName|lower}}{{'", "parentId":'}}{{'entity.id'}} }) }}"
-                               data-route-params='{ "containerName": "element", "actionId": "default", "parentName":"{{objectName|lower}}" , "parentId": "{{'{{entity.getId()}}'}}", "entityName": "{{classmapperservice.getEntityName(field.object_name_stripslashes,0,'en')}}" }'  
+                               data-route-link="{{'{{ routeservice.getLink(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "container", "prefix": "default", "entityName":"'}}{{objectName|lower}}{{'", "id":'}}{{'entity.id'}}{{', "states":"'}}{{name}}{{'","parentName":"'}}{{objectName|lower}}{{'", "parentId":'}}{{'entity.id'}} }) }}"
+                               data-route-params='{ "containerName": "element", "prefix": "default", "parentName":"{{objectName|lower}}" , "parentId": "{{'{{entity.getId()}}'}}", "entityName": "{{classmapperservice.getEntityName(field.object_name_stripslashes,0,'en')}}" }'  
                                data-route-target="#{{objectName|lower}}-{{name}}-pane" >
                                 {{"{{ "}}"{{name}}"{{"|lower|trans}}"}}
                             </a>
@@ -104,7 +104,7 @@
                 <div role="tabpanel" class="tab-pane tab-panel-container parameters-tab {{'{% if \'show\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-show-pane" >
 
                     {{'{% if \'show\' in states %}'}}
-                    {{'{{ render(url(\'core_prototype_defaultcontroller_read.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default","id":entity.id, "entityName": "'}}{{objectName|lower}}{{'" } )) }}'}}
+                    {{'{{ render(url(\'core_prototype_defaultcontroller_read.\'~app.request.getLocale(),{ "containerName": "element", "prefix": "default","id":entity.id, "entityName": "'}}{{objectName|lower}}{{'" } )) }}'}}
                     {{'{% endif %}'}}                    
 
                 </div>
@@ -113,7 +113,7 @@
                     {% if field.is_object==true and (field.association=='OneToMany' or field.association=='ManyToMany') %}
                         <div role="tabpanel" class="tab-pane tab-panel-container {{'{% if \''}}{{name}}{{'\' in states %}active{% endif %}'}}" id="{{objectName|lower}}-{{name}}-pane"  >
                             {{'{% if \''}}{{name}}{{'\' in states %}'}}
-                            {{'{{ render(url(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "element", "actionId": "default", "parentName":"'}}{{objectName|lower}}{{'" , "parentId": entity.getId(), "entityName": "'}}{{classmapperservice.getEntityName(field.object_name_stripslashes,0,'en')}}{{'" } )) }}'}}
+                            {{'{{ render(url(\'core_prototype_associationcontroller_list.\'~app.request.getLocale(),{ "containerName": "element", "prefix": "default", "parentName":"'}}{{objectName|lower}}{{'" , "parentId": entity.getId(), "entityName": "'}}{{classmapperservice.getEntityName(field.object_name_stripslashes,0,'en')}}{{'" } )) }}'}}
                             {{'{% endif %}'}}                        
                         </div>
                     {% endif %}

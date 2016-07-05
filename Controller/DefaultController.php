@@ -38,7 +38,7 @@ class DefaultController extends FOSRestController {
     protected $configLoaded = false;
     protected $actionName = null;
     protected $configService;
-    protected $states = null;
+    protected $state = null;
     protected $dispatcher = null;
     protected $model = null;
     protected $requestStack = null;
@@ -51,7 +51,7 @@ class DefaultController extends FOSRestController {
     }
 
     protected function init() {
-        
+
         $this->configService = null;
         $this->request = $this->requestStack->getCurrentRequest();
         $this->initBaseRouteName();
@@ -89,12 +89,12 @@ class DefaultController extends FOSRestController {
 
         if ($routeParams) {
             if (array_key_exists('parentName', $routeParams)) {
-                return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['parentName'] . '.' . $routeParams['actionId'];
+                return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['parentName'] . '.' . $routeParams['subPrefix'];
             }
 
 
-            if (array_key_exists('actionId', $routeParams)) {
-                return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['actionId'];
+            if (array_key_exists('subPrefix', $routeParams)) {
+                return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['subPrefix'];
             }
 
             return $baseRoute . '.' . $routeParams['entityName'];
@@ -142,11 +142,11 @@ class DefaultController extends FOSRestController {
             'entityName' => $this->entityName,
             'parentName' => $this->getParentName(),
             'parentId' => $this->getParentId(),
-            //'actionId' => $this->getActionId(),
+            //'subPrefix' => $this->getSubPrefix(),
             'model' => $this->model,
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
-            'states' => $this->getStates(),
+            'state' => $this->getStates(),
             'isMasterRequest' => $this->isMasterRequest(),
             'parentEntity' => $this->getParentEntity($this->request),
         ]);
@@ -230,12 +230,12 @@ class DefaultController extends FOSRestController {
         $listConfig = $this->getListConfig();
         $formType = $listConfig->getFormType();
         $queryBuilder = $listConfig->getQueryBuilder($request);
-        
+
         $paginator = $this->container->get('knp_paginator');
         if ($formType) {
             $form = $this->makeForm($formType, $this->model->getEntity(), 'GET', $entityName, $this->getRouteName("list"), $this->getRouteParams());
 
-             
+
             $lexik = $this->container->get('lexik_form_filter.query_builder_updater');
             //$form->submit($this->request);
             $form->submit($this->request->query->get($form->getName()));
@@ -267,13 +267,14 @@ class DefaultController extends FOSRestController {
                     [
                         'routeName' => $routePrefix . '_new',
                         'defaultRoute' => $this->generateBaseRoute('list'),
+                        'prefix' =>$this->getPrefix(),
                         'pagination' => $pagination,
-                        'allRecordsCount' =>$listConfig->count(),
+                        'allRecordsCount' => $listConfig->count(),
                         'fieldsNames' => $listConfig->getFieldsNames($this->model),
                         'routePrefix' => $routePrefix,
                         'fieldsAliases' => $listConfig->getFieldsAliases(),
                         'submitType' => $this->getSubmitType($request),
-                        'states' => $this->getStates()
+                        'state' => $this->getStates()
                     //'form'=>$form
             ]);
 
@@ -492,28 +493,28 @@ class DefaultController extends FOSRestController {
      */
     public function defaultAction(Request $request) {
 
-     
+
         $this->configService = null;
         $this->request = $this->requestStack->getCurrentRequest();
         $this->initBaseRouteName();
         $this->initRouteParams();
 
-         
+
         $params = $this->get('prototype.controler.params');
         $params->setArray([
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
-            'states' => $this->getStates(),
+            'state' => $this->getStates(),
             'isMasterRequest' => $this->isMasterRequest(),
             'containerName' => 'container'
         ]);
-        
+
         $event = $this->get('prototype.event');
         $event->setParams($params);
 
-       // $this->dispatch('before.show', $event);
-        
-      
+        // $this->dispatch('before.show', $event);
+
+
         $view = $this->view()->setTemplate($this->getConfig()->get('actions.default.templates.element'))
                 ->setTemplateData($params->getArray());
         return $this->handleView($view);
@@ -563,9 +564,9 @@ class DefaultController extends FOSRestController {
     }
 
     protected function getLocationUrl($action, $prefix = null) {
-
+            //@todo
         if (!$prefix) {
-            if ($this->getActionId()) {
+            if ($this->getPrefix()) {
                 $prefix = "action";
             } else {
                 $prefix = "simple";
@@ -704,7 +705,7 @@ class DefaultController extends FOSRestController {
 
     protected function generateBaseRoute($action) {
         $params = $this->routeParams;
-        $params['states'] = null;
+        $params['state'] = null;
         return $this->generateUrl($this->getAction($action), $params, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
@@ -789,11 +790,21 @@ class DefaultController extends FOSRestController {
         return $this->model;
     }
 
-    protected function getActionId() {
+    protected function getPrefix() {
         $request = $this->requestStack->getCurrentRequest();
-        $actionId = $request->attributes->get('actionId');
-        if ($actionId && $actionId != 'default') {
-            return $actionId;
+        
+        $prefix = $request->attributes->get('prefix');
+        if (!$prefix) {
+            return new \Exception("Prefix parameter dose'nt send");
+        }
+        return $prefix;
+    }
+
+    protected function getSubPrefix() {
+        $request = $this->requestStack->getCurrentRequest();
+        $subPrefix = $request->attributes->get('subPrefix');
+        if ($subPrefix) {
+            return $subPrefix;
         }
         return null;
     }
@@ -808,7 +819,7 @@ class DefaultController extends FOSRestController {
     protected function getFormType($objectName, $class = null) {
 
         $configurator = $this->get("prototype.formtype.configurator.service");
-        $formType = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
+        $formType = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getPrefix(), $this->getSubPrefix());
         if (get_class($formType) == 'Core\PrototypeBundle\Form\FormType') {
             $formType->setModel($this->getModel($objectName));
         }
@@ -901,7 +912,7 @@ class DefaultController extends FOSRestController {
     protected function loadConfig() {
 
         $configurator = $this->get("prototype.configurator.service");
-        $config = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
+        $config = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getPrefix(), $this->getSubPrefix());
         return $config;
     }
 
@@ -934,16 +945,7 @@ class DefaultController extends FOSRestController {
 
     protected function getStates() {
         $params = $this->getRouteParams();
-        if ($this->states == null) {
-
-            $states = explode("/", $params["states"]);
-            if ($states["0"] == null) {
-                $this->states = [];
-            } else {
-                $this->states = $states;
-            }
-        }
-        return $this->states;
+        return $this->state = $params["state"];
     }
 
     protected function getParentName() {
@@ -976,7 +978,7 @@ class DefaultController extends FOSRestController {
 
     protected function getBasePath() {
         $params = $this->getRouteParams();
-        $params["states"] = null;
+        $params["state"] = null;
         return $this->generateUrl($this->getBaseRouteName(), $params);
     }
 
@@ -1004,15 +1006,17 @@ class DefaultController extends FOSRestController {
 
     protected function getListConfig() {
         $configurator = $this->get("prototype.listconfig.configurator.service");
-        $listConfig = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
-        $listConfig->setModel($this->getModel($this->getEntityClass()));
+    
      
+        $listConfig = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getPrefix(), $this->getSubPrefix());
+        $listConfig->setModel($this->getModel($this->getEntityClass()));
+
         return $listConfig;
     }
 
     protected function getViewConfig() {
         $configurator = $this->get("prototype.viewconfig.configurator.service");
-        $viewConfig = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getActionId());
+        $viewConfig = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getPrefix(), $this->getSubPrefix());
         $viewConfig->setModel($this->getModel($this->getEntityClass()));
         return $viewConfig;
     }

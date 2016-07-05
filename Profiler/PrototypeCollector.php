@@ -65,7 +65,7 @@ class PrototypeCollector implements DataCollectorInterface {
     protected function getConfiguratorService($serviceName) {
         $configuratorService = $this->container->get($serviceName);
         $namesOfServices = $configuratorService->getNamesOfServices();
-        $configuratorService->getService($this->data["route"], $this->data["entityClass"], $this->data["parentEntityClass"], $this->data["actionId"]);
+        $configuratorService->getService($this->data["route"], $this->data["entityClass"], $this->data["parentEntityClass"], $this->data["prefix"]);
         return $configuratorService;
     }
 
@@ -154,7 +154,7 @@ class PrototypeCollector implements DataCollectorInterface {
                 $this->data["locale"] = $route["_locale"];
                 $this->data["entityName"] = $route["entityName"];
                 $this->data["parentName"] = array_key_exists("parentName", $route) ? $route["parentName"] : null;
-                $this->data["actionId"] = array_key_exists("actionId", $route) ? $route["actionId"] : null;
+                $this->data["prefix"] = array_key_exists("prefix", $route) ? $route["prefix"] : null;
                 $this->data["entityClass"] = $classmapper->getEntityClass($route["entityName"], $this->data["locale"]);
 
                 if ($this->data["parentName"]) {

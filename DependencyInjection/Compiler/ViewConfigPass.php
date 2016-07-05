@@ -6,11 +6,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
-class ViewConfigPass implements CompilerPassInterface
-{
+class ViewConfigPass implements CompilerPassInterface {
 
-    public function process(ContainerBuilder $container)
-    {
+    public function process(ContainerBuilder $container) {
 
         if (!$container->has('prototype.viewconfig.configurator.service')) {
             return;
@@ -44,15 +42,20 @@ class ViewConfigPass implements CompilerPassInterface
                     $parentEntity = $attributes['parentEntity'];
                 }
 
-                $actionId = null;
-                if (array_key_exists('actionId', $attributes)) {
-                    $actionId = $attributes['actionId'];
+                $prefix = null;
+                if (array_key_exists('prefix', $attributes)) {
+                    $prefix = $attributes['prefix'];
                 }
 
 
+                $subPrefix = null;
+                if (array_key_exists('subPrefix', $attributes)) {
+                    $subPrefix = $attributes['subPrefix'];
+                }
+
 
                 $definition->addMethodCall(
-                        'addService', array(new Reference($id), $route, $entity, $id, $parentEntity, $actionId)
+                        'addService', array(new Reference($id), $route, $entity, $id, $parentEntity, $prefix, $subPrefix)
                 );
             }
         }
