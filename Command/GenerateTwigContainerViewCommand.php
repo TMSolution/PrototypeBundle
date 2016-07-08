@@ -19,27 +19,41 @@ use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
 
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Application;
+
 /**
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTwigContainerViewCommand extends AbstractGenerateTwigCommand 
-{
+class GenerateTwigContainerViewCommand extends ContainerAwareCommand  {
 
-    
-    protected function configure()
-    {
+    protected function configure() {
         $this->setName('prototype:generate:twig:container:view')
                 ->setDescription('Generate container twig for view action.')
-                ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
-                ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity class name')
-                ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder');
-        
-        $this->viewType=self::Container;
-        $this->templatePath="CorePrototypeBundle:Command:container.view.template.twig";
-        $this->fileName="view.html.twig";        
-        
-        
+                ->addArgument('entity', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
+                ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder')
+                ->addOption("withAssociated", null, InputOption::VALUE_NONE, "Insert associated param");
+
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output) {
+
+        $command = $this->getApplication()->find("prototype:generate:twig");
+
+        $arguments = array(
+            "--entity" => $input->getArgument("entity"),
+            "--rootFolder" => $input->getArgument("rootFolder"),
+            "--viewType" => "Container",
+            "--templatePath" => "CorePrototypeBundle:Command:container.view.template.twig",
+            "--fileName" => "view.html.twig",
+            "--withAssociated" => $input->getOption("withAssociated"),
+        );
+        $inputCommand = new ArrayInput($arguments);
+        $returnCode = $command->run($inputCommand, $output);
     }
 
 }

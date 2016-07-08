@@ -20,12 +20,19 @@ use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
 
+
+use Symfony\Component\Console\Input\ArrayInput;
+
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Application;
+
+
 /**
  * ListdConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTwigElementListCommand extends AbstractGenerateTwigCommand
-{
+class GenerateTwigElementListCommand extends ContainerAwareCommand {
 
     protected function configure()
     {
@@ -35,15 +42,25 @@ class GenerateTwigElementListCommand extends AbstractGenerateTwigCommand
          */
         $this->setName('prototype:generate:twig:element:list')
                 ->setDescription('Generate twig element list template.')
-                ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
-                ->addArgument('entity', InputArgument::OPTIONAL, 'Insert entity class name')
+                ->addArgument('entity', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder')
                 ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
-        
-        $this->viewType=self::Element;
-        $this->templatePath="CorePrototypeBundle:Command:element.list.template.twig";
-        $this->fileName="list.html.twig";
-        
+    }
+    
+     protected function execute(InputInterface $input, OutputInterface $output) {
+
+        $command = $this->getApplication()->find("prototype:generate:twig");
+
+        $arguments = array(
+            "--entity" => $input->getArgument("entity"),
+            "--rootFolder" => $input->getArgument("rootFolder"),
+            "--viewType" => "Element",
+            "--templatePath" => "CorePrototypeBundle:Command:element.list.template.twig",
+            "--fileName" => "list.html.twig",
+            "--withAssociated" => $input->getOption("withAssociated"),
+        );
+        $inputCommand = new ArrayInput($arguments);
+        $returnCode = $command->run($inputCommand, $output);
     }
 
 }

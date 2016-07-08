@@ -20,11 +20,20 @@ use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
 
+
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Application;
+
+
+
+
 /**
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTwigElementReadCommand extends AbstractGenerateTwigCommand
+class GenerateTwigElementReadCommand extends ContainerAwareCommand 
 {
 
     protected function configure()
@@ -35,16 +44,27 @@ class GenerateTwigElementReadCommand extends AbstractGenerateTwigCommand
          */
         $this->setName('prototype:generate:twig:element:read')
                 ->setDescription('Generate twig element read template.')
-                ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
                 ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity class name')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder')
                 ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
         
-        
-           $this->viewType=self::Element;
-        $this->templatePath="CorePrototypeBundle:Command:element.read.template.twig";
-        $this->fileName="read.html.twig";
 
+    }
+    
+     protected function execute(InputInterface $input, OutputInterface $output) {
+
+        $command = $this->getApplication()->find("prototype:generate:twig");
+
+        $arguments = array(
+            "--entity" => $input->getArgument("entity"),
+            "--rootFolder" => $input->getArgument("rootFolder"),
+            "--viewType" => "Element",
+            "--templatePath" => "CorePrototypeBundle:Command:element.read.template.twig",
+            "--fileName" => "read.html.twig",
+            "--withAssociated" => $input->getOption("withAssociated"),
+        );
+        $inputCommand = new ArrayInput($arguments);
+        $returnCode = $command->run($inputCommand, $output);
     }
 
 }

@@ -20,6 +20,12 @@ use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
 
+
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Application;
+
 /**
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
@@ -33,17 +39,25 @@ class GenerateTwigElementViewCommand extends ContainerAwareCommand {
          */
         $this->setName('prototype:generate:twig:element:view')
                 ->setDescription('Generate twig element view template.')
-                ->addArgument('configBundle', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
-                ->addArgument('entity', InputArgument::OPTIONAL, 'Insert entity class name')
+                ->addArgument('entity', InputArgument::REQUIRED, 'Full entity path')
                 ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder')
-                ->addArgument('viewType', InputArgument::REQUIRED, 'Insert view Type')
-                ->addArgument('templatePath', InputArgument::REQUIRED, 'Insert template Path')
-                ->addArgument('fileName', InputArgument::REQUIRED, 'Insert file name for new file')
                 ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
-        
-        $this->viewType=self::Element;
-        $this->templatePath="CorePrototypeBundle:Command:element.view.template.twig";
-        $this->fileName="view.html.twig";
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output) {
+
+        $command = $this->getApplication()->find("prototype:generate:twig");
+
+        $arguments = array(
+            "--entity" => $input->getArgument("entity"),
+            "--rootFolder" => $input->getArgument("rootFolder"),
+            "--viewType" => "Element",
+            "--templatePath" => "CorePrototypeBundle:Command:element.view.template.twig",
+            "--fileName" => "view.html.twig",
+            "--withAssociated" => $input->getOption("withAssociated"),
+        );
+        $inputCommand = new ArrayInput($arguments);
+        $returnCode = $command->run($inputCommand, $output);
     }
 
 }
