@@ -139,6 +139,8 @@ class DefaultController extends FOSRestController {
         /* @todo defaultRoute warto się pozbyć jeśli można */
         $params = $this->get('prototype.controler.params');
         $params->setArray([
+            'query' => $this->request->query->all(),
+            '_route' => $this->request->attributes->get('_route'),
             'entityName' => $this->entityName,
             'parentName' => $this->getParentName(),
             'parentId' => $this->getParentId(),
@@ -194,6 +196,7 @@ class DefaultController extends FOSRestController {
         $form->handleRequest($request);
         $params = $this->getDefaultParameters()
                 ->merge([
+            'actionName' => 'create',
             'entity' => $entity,
             'form' => $form->createView(),
             'defaultRoute' => $this->generateBaseRoute('create'),
@@ -224,6 +227,7 @@ class DefaultController extends FOSRestController {
 
     public function listAction(Request $request) {
 
+      
         $this->init();
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
@@ -265,9 +269,10 @@ class DefaultController extends FOSRestController {
             $params = $this->getDefaultParameters()
                     ->merge(
                     [
+                        'actionName' => 'list',
                         'routeName' => $routePrefix . '_new',
                         'defaultRoute' => $this->generateBaseRoute('list'),
-                        'prefix' =>$this->getPrefix(),
+                        'prefix' => $this->getPrefix(),
                         'pagination' => $pagination,
                         'allRecordsCount' => $listConfig->count(),
                         'fieldsNames' => $listConfig->getFieldsNames($this->model),
@@ -296,6 +301,8 @@ class DefaultController extends FOSRestController {
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
+        
+        
 
         $this->dispatch('before.list', $event);
         $view = $this->view([
@@ -306,7 +313,7 @@ class DefaultController extends FOSRestController {
                             "limit" => $pagination->getItemNumberPerPage()
                         ])
                         ->setTemplate($this->getConfig()->get('actions.list.templates.element'))
-                        ->setTemplateData($params->getArray())->setHeader('Location', $this->getLocationUrl('list'));
+                        ->setTemplateData($params->getArray())->setHeader('Location', $this->getLocationUrl('list',$pagination->getQuery()));
 
         $this->dispatch('after.list', $event);
         return $this->handleView($view);
@@ -350,6 +357,7 @@ class DefaultController extends FOSRestController {
         $params = $this->getDefaultParameters()
                 ->merge(
                 [
+                    'actionName' => 'update',
                     'entity' => $entity,
                     'form' => $updateForm->createView(),
                     'buttonRouteParams' => $buttonRouteParams,
@@ -464,6 +472,7 @@ class DefaultController extends FOSRestController {
         $params = $this->get('prototype.controler.params');
         $params = $this->getDefaultParameters()
                 ->merge([
+            'actionName' => 'edit',
             'entity' => $entity,
             'buttonRouteParams' => $buttonRouteParams,
             'defaultRoute' => $this->generateBaseRoute('edit'),
@@ -502,6 +511,7 @@ class DefaultController extends FOSRestController {
 
         $params = $this->get('prototype.controler.params');
         $params->setArray([
+            'actionName' => 'default',
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
             'state' => $this->getStates(),
@@ -543,6 +553,7 @@ class DefaultController extends FOSRestController {
         $params = $this->getDefaultParameters()
                 ->merge(
                 [
+                    'actionName' => 'read',
                     'entity' => $entity,
                     'properties' => $this->prepareProperties($this->model, $entity),
                     'buttonRouteParams' => $buttonRouteParams,
@@ -563,21 +574,16 @@ class DefaultController extends FOSRestController {
         return $this->handleView($view);
     }
 
-    protected function getLocationUrl($action, $prefix = null) {
-            //@todo
-        if (!$prefix) {
-            if ($this->getPrefix()) {
-                $prefix = "action";
-            } else {
-                $prefix = "simple";
-            }
-        }
+    protected function getLocationUrl($action, $params=[]) {
+        //@todo
+        
 
         $routePrefix = $this->getRoutePrefix();
-        $routeParams = $this->getRouteParams();
-        $routeParams["containerName"] = "container";
+        $routeParams = array_merge($this->getRouteParams(),$params);
+        
+     //wyłączone ekspertymentalinie   $routeParams["containerName"] = "container";
         //@todo
-        $url = $this->generateUrl($routePrefix . '_' . $prefix . $action, $routeParams);
+        $url = $this->generateUrl($routePrefix . '_' . $action, $routeParams);
         if (!$url) {
             $url = $this->generateUrl($this->getBaseRouteName(), $routeParams);
         } else {
@@ -650,6 +656,7 @@ class DefaultController extends FOSRestController {
         $params = $this->getDefaultParameters()
                 ->merge(
                 [
+                    'actionName' => 'new',
                     'entity' => $entity,
                     'form' => $form->createView(),
                     'defaultRoute' => $this->generateBaseRoute('new'),
@@ -686,6 +693,7 @@ class DefaultController extends FOSRestController {
         $params = $this->get('prototype.controler.params');
         $params = $this->getDefaultParameters()
                 ->merge([
+            'actionName' => 'view',
             'entity' => $entity,
             'defaultRoute' => $this->generateBaseRoute('view'),
         ]);
@@ -699,7 +707,9 @@ class DefaultController extends FOSRestController {
 
 
         //Render
-        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('actions.view.templates.element'));
+        $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('actions.view.templates.element'))
+         ->setHeader('Location', $this->getLocationUrl('view'));        
+         ;
         return $this->handleView($view);
     }
 
@@ -792,7 +802,7 @@ class DefaultController extends FOSRestController {
 
     protected function getPrefix() {
         $request = $this->requestStack->getCurrentRequest();
-        
+
         $prefix = $request->attributes->get('prefix');
         if (!$prefix) {
             return new \Exception("Prefix parameter dose'nt send");
@@ -1006,8 +1016,8 @@ class DefaultController extends FOSRestController {
 
     protected function getListConfig() {
         $configurator = $this->get("prototype.listconfig.configurator.service");
-    
-     
+
+
         $listConfig = $configurator->getService($this->getBaseRouteName(), $this->getEntityClass(), $this->getParentEntityClassName(), $this->getPrefix(), $this->getSubPrefix());
         $listConfig->setModel($this->getModel($this->getEntityClass()));
 

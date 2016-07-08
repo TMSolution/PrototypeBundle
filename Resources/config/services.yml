@@ -21,6 +21,11 @@ services:
         class: Core\PrototypeBundle\Controller\ExtendedController
         arguments: ["@service_container","@request_stack"]
     
+    prototype.default_controller:
+        class: Core\PrototypeBundle\Controller\DefaultController
+        arguments: ["@service_container","@request_stack"]
+        shared: false
+    
     prototype.grid_controller:
         class: Core\PrototypeBundle\Controller\GridDefaultController
         arguments: ["@service_container","@request_stack"]
