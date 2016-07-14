@@ -41,9 +41,9 @@ class GenerateTwigElementCreateCommand extends ContainerAwareCommand
          */
         $this->setName('prototype:generate:twig:element:create')
                 ->setDescription('Generate twig element create template.')
-                ->addArgument('entity', InputArgument::REQUIRED, 'Insert config bundle name or entity path')
-                ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder')
-                ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
+                ->addOption('entity', 'ent', InputOption::VALUE_REQUIRED, 'Full Entity Name')
+                ->addOption('rootFolder', 'rf', InputOption::VALUE_OPTIONAL, 'Insert rootFolder')
+                ->addOption('withAssociated', 'wa', InputOption::VALUE_OPTIONAL, 'Insert associated param');
   
     }
     
@@ -53,8 +53,8 @@ class GenerateTwigElementCreateCommand extends ContainerAwareCommand
         $command = $this->getApplication()->find("prototype:generate:twig");
 
         $arguments = array(
-            "--entity" => $input->getArgument("entity"),
-            "--rootFolder" => $input->getArgument("rootFolder"),
+            "--entity" => $input->getOption("entity"),
+            "--rootFolder" => $input->getOption("rootFolder"),
             "--viewType" => "Element",
             "--templatePath" => "CorePrototypeBundle:Command:element.create.template.twig",
             "--fileName" => "create.html.twig",

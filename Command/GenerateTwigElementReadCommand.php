@@ -44,9 +44,9 @@ class GenerateTwigElementReadCommand extends ContainerAwareCommand
          */
         $this->setName('prototype:generate:twig:element:read')
                 ->setDescription('Generate twig element read template.')
-                ->addArgument('entity', InputArgument::REQUIRED, 'Insert entity class name')
-                ->addArgument('rootFolder', InputArgument::OPTIONAL, 'Insert rootFolder')
-                ->addOption('withAssociated', null, InputOption::VALUE_NONE, 'Insert associated param');
+                ->addOption('entity', 'ent', InputOption::VALUE_REQUIRED, 'Full Entity Name')
+                ->addOption('rootFolder', 'rf', InputOption::VALUE_OPTIONAL, 'Insert rootFolder')
+                ->addOption('withAssociated', 'wa', InputOption::VALUE_OPTIONAL, 'Insert associated param');
         
 
     }
@@ -56,8 +56,8 @@ class GenerateTwigElementReadCommand extends ContainerAwareCommand
         $command = $this->getApplication()->find("prototype:generate:twig");
 
         $arguments = array(
-            "--entity" => $input->getArgument("entity"),
-            "--rootFolder" => $input->getArgument("rootFolder"),
+            "--entity" => $input->getOption("entity"),
+            "--rootFolder" => $input->getOption("rootFolder"),
             "--viewType" => "Element",
             "--templatePath" => "CorePrototypeBundle:Command:element.read.template.twig",
             "--fileName" => "read.html.twig",

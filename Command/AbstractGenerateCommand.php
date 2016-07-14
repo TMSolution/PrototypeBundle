@@ -28,30 +28,18 @@ use Symfony\Component\Console\Application;
  * GridConfigCommand generates widget class and his template.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  */
-class GenerateTwigContainerCreateCommand extends ContainerAwareCommand {
+abstract class AbstractGenerateCommand extends ContainerAwareCommand {
 
+  
     protected function configure() {
-        $this->setName("prototype:generate:twig:container:create")
-                ->setDescription("Generate container twig for create action.")
+
+    $this
                 ->addOption('entity', 'ent', InputOption::VALUE_REQUIRED, 'Full Entity Name')
+                ->addOption('templatePath', 'tp', InputOption::VALUE_REQUIRED, 'Twig template Path')
+                ->addOption('fileName', 'fn', InputOption::VALUE_REQUIRED, 'Insert file name for new file')
                 ->addOption('rootFolder', 'rf', InputOption::VALUE_OPTIONAL, 'Insert rootFolder')
                 ->addOption('withAssociated', 'wa', InputOption::VALUE_OPTIONAL, 'Insert associated param');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
-
-        $command = $this->getApplication()->find("prototype:generate:twig");
-
-        $arguments = array(
-            "--entity" => $input->getOption("entity"),
-            "--rootFolder" => $input->getOption("rootFolder"),
-            "--viewType" => "Container",
-            "--templatePath" => "CorePrototypeBundle:Command:container.create.template.twig",
-            "--fileName" => "create.html.twig",
-            "--withAssociated" => $input->getOption("withAssociated"),
-        );
-        $inputCommand = new ArrayInput($arguments);
-        $returnCode = $command->run($inputCommand, $output);
-    }
 
 }
