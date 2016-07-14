@@ -120,7 +120,7 @@ abstract class AbstractGenerator {
             $entityNamespace = $entityReflection->getNamespaceName();
          
             $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($this->getClassPath() . "\\" . $entityNamespace));
-            $this->directory = $this->replaceLast("Entity", $this->getDirectoryPath($this->getEntityShortName()), $directory);
+            $this->directory = $this->replaceLast("Entity", $this->getDirectoryPath(), $directory);
 
                 if ( is_dir($this->directory) == false && mkdir($this->directory, 0777, true) == false) {
                     throw new UnexpectedValueException("Creating directory failed: " . $directory);
@@ -138,7 +138,7 @@ abstract class AbstractGenerator {
 
     protected function isFileNameBusy($fileName) {
         if (file_exists($fileName) == true) {
-            throw new LogicException("File " . $fileName . " exists!");
+            throw  true;
         }
         return false;
     }
@@ -212,7 +212,10 @@ abstract class AbstractGenerator {
     protected function createFile() {
 
         $filePath = $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getFileName();
-        $this->isFileNameBusy($this->getFileName());
+        if($this->isFileNameBusy($this->getFileName()))
+        {
+            new LogicException("File " . $fileName . " exists!");;
+        }
         file_put_contents($filePath, $this->renderFile());
 
         return $filePath;
@@ -224,9 +227,8 @@ abstract class AbstractGenerator {
     }
 
     protected function generateAssociatedFiles() {
-        $associations = [];
-       
         
+        $associations = [];
         $fieldsInfo=$this->getFieldsInfo();
         
         foreach ($fieldsInfo as $key => $value) {
@@ -239,14 +241,11 @@ abstract class AbstractGenerator {
                 $assocObjectFieldsInfo = $model->getFieldsInfo();
 
                 $arr = explode('\\', $value['object_name']);
-                //$path = array_pop($arr);
-
+               
                 $directory = $this->getRootFolder() . DIRECTORY_SEPARATOR . $this->getEntityShortName();
-                
                 $generator= $this->getInstance($value['object_name'],$directory);
                 $generator->generate();
-                
-               // $this->createFile($value['object_name'], $assocObjectFieldsInfo, $this->getRootFolder() . DIRECTORY_SEPARATOR . $entityShortName, $entityName);
+               
             }
         }
     }
