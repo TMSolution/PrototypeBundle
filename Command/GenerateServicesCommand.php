@@ -36,7 +36,7 @@ class GenerateServicesCommand extends ContainerAwareCommand
         $this->setName('prototype:generate:services')
                 ->setDescription('Generate services configuration in bundle prototype.services.yml')
                 ->addOption('entity','ent', InputOption::VALUE_REQUIRED, 'Insert configuration Bundle')
-                ->addOption('rootFolder','ent', InputOption::VALUE_REQUIRED, 'Insert configuration Bundle')
+                ->addOption('rootFolder','rf', InputOption::VALUE_REQUIRED, 'Insert configuration Bundle')
                 ->addOption('applicationName','an', InputOption::VALUE_REQUIRED, 'Application name (ex. cco_callcenter,...)')
                 ->addOption('rootSpace','rs', InputOption::VALUE_REQUIRED, 'Insert rootSpace')
                 ->addOption('tag','t', InputOption::VALUE_REQUIRED, 'Insert tagname (example:prototype.config,prototype.formtype)')

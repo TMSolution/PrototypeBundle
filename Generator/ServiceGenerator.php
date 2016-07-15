@@ -93,11 +93,11 @@ abstract class ServiceGenerator extends AbstractGenerator {
         return "Resources" . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . $this->getRootFolder() . DIRECTORY_SEPARATOR . $this->getEntityShortName() . DIRECTORY_SEPARATOR;
     }
 
-    protected function getConfigFilePath($manager, $input) {
-        $bundle = $this->getApplication()->getKernel()->getBundle($input->getOption('entity'));
-        $bundleMetadata = $manager->getBundleMetadata($bundle);
-        return str_replace('/', DIRECTORY_SEPARATOR, $bundleMetadata->getPath()) . DIRECTORY_SEPARATOR . $bundleMetadata->getNamespace() . DIRECTORY_SEPARATOR . 'Resources/config/prototype.services.yml';
-    }
+//    protected function getConfigFilePath($manager, $input) {
+//        $bundle = $this->getApplication()->getKernel()->getBundle($input->getOption('entity'));
+//        $bundleMetadata = $manager->getBundleMetadata($bundle);
+//        return str_replace('/', DIRECTORY_SEPARATOR, $bundleMetadata->getPath()) . DIRECTORY_SEPARATOR . $bundleMetadata->getNamespace() . DIRECTORY_SEPARATOR . 'Resources/config/prototype.services.yml';
+//    }
 
     protected function readYml($configFullPath) {
         try {
@@ -299,6 +299,10 @@ abstract class ServiceGenerator extends AbstractGenerator {
         return str_replace('.config', '', $parametersName);
     }
 
+    
+    
+    
+    
     protected function createClassName($entity, $tag, $entityName, $associationName = null, $rootSpace = null) {
 
         switch ($tag) {
@@ -382,8 +386,6 @@ abstract class ServiceGenerator extends AbstractGenerator {
     protected function generate() {
 
         $this->readYml($this->getDirectory() . DIRECTORY_SEPARATOR . $this->getEntityShortName());
-        
-        
             $parameterName = $this->addParameters();
             $this->addService();
         
