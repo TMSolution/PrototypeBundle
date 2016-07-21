@@ -19,7 +19,7 @@ namespace  {{namespace}};
  *
  * Generated with {@see TMSolution\PrototypeBundle\Command\GenerateListConfigCommand}.
  */
-class ListConfig extends {% if associated %}AssociationGridConfig{% else %}BaseListConfig{% endif %}
+class {{className}} extends {% if associated %}AssociationGridConfig{% else %}BaseListConfig{% endif %}
 {
  
     public function getQueryBuilder() {

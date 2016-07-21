@@ -43,15 +43,19 @@ abstract class AbstractGenerator {
         return $this->container;
     }
     
+    protected function getFileName()
+    {
+        return $this->fileName;
+        
+    }
+    
     
     protected function getRootFolder() {
         return $this->rootFolder;
     }
     
     
-    protected function getFileName() {
-        return $this->fileName;
-    }
+    
     
     protected function getTemplatePath() {
         return $this->templatePath;
@@ -111,11 +115,6 @@ abstract class AbstractGenerator {
 
         if (!$this->directory) {
         
-            /*
-            if ($path) {
-                $entityNamespace = $entityNamespace . DIRECTORY_SEPARATOR . $path;
-            }*/
-
             $entityReflection = new ReflectionClass($this->getEntityName());
             $entityNamespace = $entityReflection->getNamespaceName();
          
@@ -228,7 +227,7 @@ abstract class AbstractGenerator {
 
     protected function generateAssociatedFiles() {
         
-        $associations = [];
+      
         $fieldsInfo=$this->getFieldsInfo();
         
         foreach ($fieldsInfo as $key => $value) {
@@ -237,10 +236,6 @@ abstract class AbstractGenerator {
             $field = $fieldsInfo[$key];
             if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) {
 
-                $model = $this->getContainer()->get("model_factory")->getModel($value['object_name']);
-                $assocObjectFieldsInfo = $model->getFieldsInfo();
-
-                $arr = explode('\\', $value['object_name']);
                
                 $directory = $this->getRootFolder() . DIRECTORY_SEPARATOR . $this->getEntityShortName();
                 $generator= $this->getInstance($value['object_name'],$directory);

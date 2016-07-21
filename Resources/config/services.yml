@@ -170,3 +170,20 @@ services:
         arguments: ["@service_container"]  
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            
+            
+    prototype.default.service.block.generator.strategy:
+        class: Core\PrototypeBundle\Generator\ServiceStrategy\DefaultStrategy
+        arguments: ["@service_container"]  
+  
+    
+    prototype.config.service.block.generator.strategy:
+        class: Core\PrototypeBundle\Generator\ServiceStrategy\ConfigStrategy
+        arguments: ["@service_container"]  
+        
+    
+    prototype.searchconfig.service.block.generator.strategy:
+        class: Core\PrototypeBundle\Generator\ServiceStrategy\SearchConfigStrategy
+        arguments: ["@service_container"]      
+        
+       

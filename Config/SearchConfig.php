@@ -68,7 +68,7 @@ class SearchConfig extends ListConfig {
                 }
                 
             } else {
-                throw new \Exception('Coś si wywlliło');
+                throw new \Exception('Bad configuration');
             }
         }
     }

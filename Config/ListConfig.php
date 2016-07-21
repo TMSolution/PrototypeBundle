@@ -20,12 +20,13 @@ class ListConfig
     protected $fields;
     protected $prepared;
     protected $fieldsAliases = [];
-    protected $formTypeClass;
+    protected $formTypeObject;
 
-    public function __construct($container, $formTypeClass=null)
+    public function __construct($container, $formTypeObject=null)
     {
         $this->container = $container;
-        $this->formTypeClass = $formTypeClass;
+     
+        $this->formTypeObject = $formTypeObject;
     }
 
     protected function getContainer()
@@ -137,17 +138,14 @@ class ListConfig
 
     public function getFormType()
     {
-        
-        if ($this->formTypeClass) {
-            $formClass = $this->formTypeClass;
-            $formType = new $formClass();
+        if ($this->formTypeObject) {
+         
+            $this->formTypeObject->setModel($this->model);
         } else {
             return false;
         }
 
-        $formType->setModel($this->model);
-       
-        return $formType;
+        return $this->formTypeObject;
     }
 
     public function getQuery()

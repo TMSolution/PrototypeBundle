@@ -47,6 +47,15 @@ abstract class ClassGenerator extends AbstractGenerator {
 //    public function getFilePath() {
 //        return $this->filePath;
 //    }
+    
+    
+    
+    protected function getClassName()
+    {
+        $arr= explode(".",$this->getFileName());
+        return $arr[0]; 
+    }
+    
 
     protected function getDirectoryPath() {
         return "Config" . DIRECTORY_SEPARATOR . $this->getRootFolder() . DIRECTORY_SEPARATOR . $this->getEntityShortName();
@@ -56,7 +65,8 @@ abstract class ClassGenerator extends AbstractGenerator {
 
         $templateData = parent::getTemplateData();
         return array_merge($templateData, [
-            "namespace" => $this->getNamespace()
+            "namespace" => $this->getNamespace(),
+            "className"=>  $this->getClassName()   
         ]);
     }
 

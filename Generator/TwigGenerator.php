@@ -42,5 +42,21 @@ class TwigGenerator extends AbstractGenerator {
     protected function getDirectoryPath() {
         return "Resources" . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . $this->getRootFolder() . DIRECTORY_SEPARATOR . $this->getEntityShortName() . DIRECTORY_SEPARATOR . $this->getViewType();
     }
+    
+    
+    
+    protected function getTwigPath()
+    {
+       $arr=explode("\\Entity\\",$this->getEntityName());
+       $bundleName=implode("",explode("\\",$arr[0]));
+       return $bundleName.":".$this->getRootFolder()."\\".$this->getEntityShortName()."\\".$this->getViewType()."\\".$this->getFileName();                   
+    }
+    
+    
+    public function generate() {
+        parent::generate();
+        return $this->getTwigPath();
+    }
+    
 
 }

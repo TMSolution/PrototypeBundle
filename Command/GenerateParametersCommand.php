@@ -22,29 +22,28 @@ use Core\PrototypeBundle\Component\Yaml\Dumper;
 use ReflectionClass;
 use LogicException;
 use UnexpectedValueException;
-use Core\PrototypeBundle\Generator\ServiceGenerator as ServiceGenerator;
+use Core\PrototypeBundle\Generator\ParametersGenerator as ParametersGenerator;
 
 /**
  * GenerateServicesConfigurationCommand generates services configuration.
  * @author Mariusz Piela <mariuszpiela@gmail.com>
  * @author Jacek Łoziński <jacek.lozinski@tmsolution.pl>
  */
-class GenerateServicesCommand extends ContainerAwareCommand {
+class GenerateParametersCommand extends ContainerAwareCommand {
 
     protected function configure() {
-        $this->setName('prototype:generate:service')
+        $this->setName('prototype:generate:parameters')
                 ->setDescription('Generate services configuration in bundle prototype.services.yml')
                 ->addOption('entity', 'ent', InputOption::VALUE_REQUIRED, 'Insert configuration Bundle')
                 ->addOption('rootFolder', 'rf', InputOption::VALUE_REQUIRED, 'Insert configuration Bundle')
-                ->addOption('tag', 't', InputOption::VALUE_REQUIRED, 'Insert tagname (example:prototype.config,prototype.formtype)')
                 ->addOption('parentEntity', 'pe', InputOption::VALUE_OPTIONAL, 'Insert parentEntity parameter')
                 ->addOption('withAssociated', 'wa', InputOption::VALUE_OPTIONAL, 'Insert associated param');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
 
-        $generator = new ServiceGenerator(
-                $this->getContainer(), $input->getOption('entity'),$input->getOption('rootFolder'),$input->getOption('tag'),$input->getOption('parentEntity'), $input->getOption('withAssociated')
+        $generator = new ParametersGenerator(
+                $this->getContainer(), $input->getOption('entity'),$input->getOption('rootFolder'),$input->getOption('parentEntity'), $input->getOption('withAssociated')
         );
 
         $fileName = $generator->generate();
