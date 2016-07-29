@@ -27,61 +27,71 @@ abstract class AbstractGenerator {
     protected $templatePath;
     protected $fileName;
     protected $rootFolder;
-    protected $withAssociated;
     protected $directory;
+    protected $prefix;
+    protected $subPrefix;
+    protected $parentEntity;
 
-    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $withAssociated) {
+    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null) {
+        
         $this->container = $container;
         $this->entityName = $this->noramlizeEntityName($entityName);
         $this->templatePath = $templatePath;
         $this->fileName = $fileName;
         $this->rootFolder = $rootFolder;
-        $this->withAssociated = $withAssociated;
+        $this->prefix = $prefix;
+        $this->subPrefix = $subPrefix;
+        $this->parentEntity = $parentEntity;
+    
+        
+    }
+
+    protected function getParentEntity() {
+
+        return $this->parentEntity;
+    }
+
+    protected function getPrefix() {
+
+        return $this->prefix;
+    }
+
+    protected function getSubPrefix() {
+
+        return $this->subPrefix;
     }
 
     protected function getContainer() {
         return $this->container;
     }
-    
-    protected function getFileName()
-    {
+
+    protected function getFileName() {
         return $this->fileName;
-        
     }
-    
-    
+
     protected function getRootFolder() {
         return $this->rootFolder;
     }
-    
-    
-    
-    
+
     protected function getTemplatePath() {
         return $this->templatePath;
     }
-    
-    protected function getWithAssociated() {
-        return $this->withAssociated;
+
+    protected function noramlizeEntityName($entityName) {
+        $doctrine = $this->getContainer()->get('doctrine');
+        $entityName = str_replace('/', '\\', $entityName);
+
+        if (($position = strpos($entityName, ':')) !== false) {
+            $entityName = $doctrine->getAliasNamespace(substr($entityName, 0, $position)) . '\\' . substr($entityName, $position + 1);
+        }
+
+        return $entityName;
     }
 
-    protected function noramlizeEntityName($entityName)
-    {
-            $doctrine = $this->getContainer()->get('doctrine');
-            $entityName = str_replace('/', '\\', $entityName);
-           
-            if (($position = strpos($entityName, ':')) !== false) {
-                $entityName = $doctrine->getAliasNamespace(substr($entityName, 0, $position)) . '\\' . substr($entityName, $position + 1);
-            }
-         
-            return $entityName;
-    }
-    
     protected function getEntityName() {
 
-            return $this->entityName;
+        return $this->entityName;
     }
-    
 
     protected function getFieldsInfo() {
         $model = $this->getContainer()->get("model_factory")->getModel($this->getEntityName());
@@ -91,7 +101,7 @@ abstract class AbstractGenerator {
     protected function getEntityShortName() {
 
         $entityReflection = new ReflectionClass($this->getEntityName());
-        return  $shortEntityName = $entityReflection->getShortName();
+        return $shortEntityName = $entityReflection->getShortName();
     }
 
     protected function getClassPath() {
@@ -107,24 +117,21 @@ abstract class AbstractGenerator {
         return implode("\\", $entityNameArr);
     }
 
-
-
     abstract protected function getDirectoryPath();
 
     protected function getDirectory() {
 
         if (!$this->directory) {
-        
+
             $entityReflection = new ReflectionClass($this->getEntityName());
             $entityNamespace = $entityReflection->getNamespaceName();
-         
+
             $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($this->getClassPath() . "\\" . $entityNamespace));
             $this->directory = $this->replaceLast("Entity", $this->getDirectoryPath(), $directory);
 
-                if ( is_dir($this->directory) == false && mkdir($this->directory, 0777, true) == false) {
-                    throw new UnexpectedValueException("Creating directory failed: " . $directory);
-                }
-            
+            if (is_dir($this->directory) == false && mkdir($this->directory, 0777, true) == false) {
+                throw new UnexpectedValueException("Creating directory failed: " . $directory);
+            }
         }
         return $this->directory;
     }
@@ -137,7 +144,7 @@ abstract class AbstractGenerator {
 
     protected function isFileNameBusy($fileName) {
         if (file_exists($fileName) == true) {
-            throw  true;
+            throw true;
         }
         return false;
     }
@@ -170,19 +177,13 @@ abstract class AbstractGenerator {
     public function generate() {
 
         $fileName = $this->createFile();
-
-        if (true === $this->getWithAssociated()) {
-
-            $this->generateAssociatedFiles();
-        }
-
         return $fileName;
     }
 
     protected function getTemplateData() {
 
         $associations = $this->getAssociatedObjects($this->extendFieldsInfo());
-        
+
         $entityReflection = new ReflectionClass($this->getEntityName());
         $entityNamespace = $entityReflection->getNamespaceName();
         $entityShortName = $entityReflection->getShortName();
@@ -190,17 +191,17 @@ abstract class AbstractGenerator {
         $lowerNameSpaceForTranslate = str_replace('bundle.entity', '', str_replace('\\', '.', strtolower($entityNamespace)));
         return
                 [
-                    
                     "entityName" => $this->getEntityName(),
                     "objectName" => $entityShortName,
                     "fieldsInfo" => $this->extendFieldsInfo(),
                     "associations" => $associations,
                     "lowerNameSpaceForTranslate" => $lowerNameSpaceForTranslate, /*                     * @todo do wywalenia */
+                    "prefix" => $this->getPrefix(),
+                    "subPrefix" => $this->getSubPrefix(),
+                    "parentEntity" => $this->getParentEntity(),
                     "that" => $this /* @todo do wywalenia */
         ];
     }
-
-    
 
     protected function renderFile() {
 
@@ -211,38 +212,13 @@ abstract class AbstractGenerator {
     protected function createFile() {
 
         $filePath = $this->getDirectory() . DIRECTORY_SEPARATOR . $this->getFileName();
-        if($this->isFileNameBusy($this->getFileName()))
-        {
-            new LogicException("File " . $fileName . " exists!");;
+        if ($this->isFileNameBusy($this->getFileName())) {
+            new LogicException("File " . $fileName . " exists!");
+            ;
         }
         file_put_contents($filePath, $this->renderFile());
 
         return $filePath;
-    }
-    
-    public function getInstance($entityName,$directory){
-    
-                return new static($this->getContainer(), $entityName , $this->getTemplatePath(), $this->getFileName(), $directory, FALSE);
-    }
-
-    protected function generateAssociatedFiles() {
-        
-      
-        $fieldsInfo=$this->getFieldsInfo();
-        
-        foreach ($fieldsInfo as $key => $value) {
-
-            $associationTypes = ["OneToMany", "ManyToMany"];
-            $field = $fieldsInfo[$key];
-            if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) {
-
-               
-                $directory = $this->getRootFolder() . DIRECTORY_SEPARATOR . $this->getEntityShortName();
-                $generator= $this->getInstance($value['object_name'],$directory);
-                $generator->generate();
-               
-            }
-        }
     }
 
     protected function extendFieldsInfo() {

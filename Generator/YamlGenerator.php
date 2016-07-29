@@ -33,11 +33,14 @@ abstract class YamlGenerator extends AbstractGenerator {
     protected $bundleName;
    
 
-    public function __construct($container, $entityName, $rootFolder) {
+    public function __construct($container, $entityName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null) {
 
         $this->container = $container;
         $this->rootFolder = $rootFolder;
         $this->entityName = $entityName;
+        $this->prefix= $prefix;
+        $this->subPrefix= $subPrefix;
+        $this->parentEntity=$parentEntity;
     }
 
     public function getBundleName() {
@@ -131,28 +134,5 @@ abstract class YamlGenerator extends AbstractGenerator {
         return $yamlArr;
     }
 
-    protected function runAssociatedObjectsRecursively() {
-
-        $associations = [];
-        $fieldsInfo = $this->getFieldsInfo();
-
-        foreach ($fieldsInfo as $key => $value) {
-
-            $associationTypes = ["OneToMany", "ManyToMany"];
-            $field = $fieldsInfo[$key];
-
-            if (array_key_exists("association", $field) && in_array($field["association"], $associationTypes)) {
-
-                $arr = explode('\\', $value['object_name']);
-                $last = array_pop($arr);
-
-                $directory = $this->getRootFolder() . DIRECTORY_SEPARATOR . $this->getEntityShortName();
-
-                $generator = $this->getInstance($value['object_name'], $directory);
-
-                $generator->generate();
-            }
-        }
-    }
 
 }

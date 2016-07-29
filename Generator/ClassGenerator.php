@@ -21,13 +21,6 @@ use UnexpectedValueException;
  */
 abstract class ClassGenerator extends AbstractGenerator {
 
-//    protected $filePath;
-//
-//    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $withAssociated, $filePath) {
-//
-//        parent::__construct($container, $entityName, $templatePath, $fileName, $rootFolder, $withAssociated);
-//        $this->filePath = $filePath;
-//    }
 
     protected function getNamespace() {
 

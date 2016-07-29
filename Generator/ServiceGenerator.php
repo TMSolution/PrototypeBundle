@@ -22,23 +22,25 @@ use UnexpectedValueException;
 class ServiceGenerator extends YamlGenerator {
 
     protected $className;
-    protected $parentEntity;
-    protected $prefix;
-    protected $subPrefix;
     protected $arguments;
     protected $serviceName;
     protected $service;
     protected $sufix;
 
-    public function __construct($container, $entityName, $rootFolder, $className, $prefix = null, $subPrefix = null, $parentEntity = null, $arguments = [], $sufix = null) {
+    public function __construct($container, $entityName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null, $className, $tagName,  $arguments = [], $sufix = null) {
 
-        parent::__construct($container, $entityName, $rootFolder);
+        parent::__construct($container, $entityName, $rootFolder,$prefix, $subPrefix,$parentEntity);
         $this->className = $className;
-        $this->parentEntity = $parentEntity;
-        $this->prefix = $prefix;
-        $this->subPrefix = $subPrefix;
+
+
         $this->arguments = $arguments;
         $this->sufix = $sufix;
+        $this->tagName = $tagName;
+    }
+
+    protected function getTagName() {
+
+        return $this->tagName;
     }
 
     protected function getSufix() {
@@ -56,21 +58,7 @@ class ServiceGenerator extends YamlGenerator {
         return $this->className;
     }
 
-    protected function getParentEntity() {
-
-        return $this->parentEntity;
-    }
-
-    protected function getPrefix() {
-
-        return $this->prefix;
-    }
-
-    protected function getSubPrefix() {
-
-        return $this->subPrefix;
-    }
-
+    
     protected function getServiceName() {
 
 
@@ -113,7 +101,7 @@ class ServiceGenerator extends YamlGenerator {
 
     protected function getDefaultTags() {
 
-        $arguments = ['name' => "'{$this->getClassName()}'", 'prefix' => "'{$this->getPrefix()}'", 'subPrefix' => "'{$this->getSubPrefix()}'", 'entity' => "'{$this->getEntityName()}'", 'parentEntity' => "'{$this->getParentEntity()}'"];
+        $arguments = ['name' => "'{$this->getTagName()}'", 'prefix' => "'{$this->getPrefix()}'", 'subPrefix' => "'{$this->getSubPrefix()}'", 'entity' => "'{$this->getEntityName()}'", 'parentEntity' => "'{$this->getParentEntity()}'"];
         return [$arguments];
     }
 
@@ -135,7 +123,7 @@ class ServiceGenerator extends YamlGenerator {
         $yml = $this->readYml();
         $service = $this->getService($yml);
 
-        if (!array_key_exists($service->name,$yml["services"])) {
+        if (!array_key_exists($service->name, $yml["services"])) {
             $yml["services"][$service->name] = $service->body;
         }
         $this->writeYml($yml, $this->getFileName());

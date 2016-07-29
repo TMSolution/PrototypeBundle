@@ -21,17 +21,13 @@ class TwigGenerator extends AbstractGenerator {
     
     protected $viewType;
 
-    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $withAssociated,$viewType) {
+    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null, $viewType) {
     
-        parent::__construct($container, $entityName, $templatePath, $fileName, $rootFolder, $withAssociated);
+        parent::__construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix, $subPrefix, $parentEntity);
         $this->viewType=$viewType;
         
     }
    
-    public function getInstance($entityName,$directory){
-    
-        return new static($this->getContainer(), $entityName , $this->getTemplatePath(), $this->getFileName(), $directory, FALSE, $this->getViewType());
-    }
     
 
     public function getViewType() {

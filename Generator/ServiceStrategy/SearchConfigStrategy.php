@@ -54,8 +54,14 @@ class SearchConfigStrategy extends DefaultStrategy {
         
         return $filterParameters;
     }
+    
+    
+    public function getTags() {
+        
+        return $this->tags;
+    }
 
-    function getArguments() {
+    public function getArguments() {
         return array_merge($this->arguments, [$this->getFilterParameters()]);
     }
 

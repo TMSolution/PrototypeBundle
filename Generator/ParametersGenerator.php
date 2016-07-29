@@ -24,9 +24,9 @@ class ParametersGenerator extends YamlGenerator {
     protected $value;
     protected $viewType;
 
-    public function __construct($container, $entityName, $rootFolder, $actionName, $viewType, $value) {
+    public function __construct($container, $entityName, $rootFolder, $prefix, $subPrefix, $parentEntity, $actionName, $viewType, $value) {
 
-        parent::__construct($container, $entityName, $rootFolder);
+        parent::__construct($container, $entityName, $rootFolder,$prefix, $subPrefix, $parentEntity);
         $this->actionName = $actionName;
         $this->viewType = $viewType;
         $this->value = $value;
@@ -127,10 +127,5 @@ class ParametersGenerator extends YamlGenerator {
         return $parameter;
     }
 
-    public function getInstance($entityName, $directory) {
-
-
-        return new static($this->getContainer(), $entityName, $directory, FALSE, $this->getActionName(), $this->getViewType(), $this->getValue());
-    }
 
 }
