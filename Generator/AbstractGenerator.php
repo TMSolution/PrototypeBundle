@@ -180,6 +180,14 @@ abstract class AbstractGenerator {
         return $fileName;
     }
 
+    
+    
+    protected function getFormTypeName()
+    {
+        return strtolower(str_replace('\\', '_', $this->getEntityName()) );
+    }
+     
+    
     protected function getTemplateData() {
 
         $associations = $this->getAssociatedObjects($this->extendFieldsInfo());
@@ -192,6 +200,7 @@ abstract class AbstractGenerator {
         return
                 [
                     "entityName" => $this->getEntityName(),
+                    "formTypeName" => $this->getFormTypeName(),
                     "objectName" => $entityShortName,
                     "fieldsInfo" => $this->extendFieldsInfo(),
                     "associations" => $associations,

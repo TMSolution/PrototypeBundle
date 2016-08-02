@@ -41,13 +41,15 @@ class FormTypeGenerator extends ClassGenerator{
      
    
     
+   
+     
     
     protected function getTemplateData() {
 
         $templateData=parent::getTemplateData();
         
         $formTypeNamespaceName = $this->getNamespace();
-        $formTypeName = strtolower(str_replace('\\', '_', $this->getEntityName()) . '_' . $this->getEntityShortName());
+        
     
         $fieldsInfo=$this->getFieldsInfo();
         
@@ -58,7 +60,6 @@ class FormTypeGenerator extends ClassGenerator{
         return array_merge($templateData,
         [
             "formTypeNamespace" => $formTypeNamespaceName,
-            "formTypeName" => $formTypeName,
             "fieldsInfo" => $fieldsInfo
  
         ]);

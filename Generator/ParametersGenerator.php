@@ -75,7 +75,7 @@ class ParametersGenerator extends YamlGenerator {
     }
 
     protected function getChain($parameters) {
-        return array_merge($this->divideParametersChain($this->getActionName() . '.' . $parameters));
+        return array_merge($this->divideParametersChain('actions.'.$this->getActionName() . '.' . $parameters));
     }
 
     protected function createParametersBlock(&$yml) {

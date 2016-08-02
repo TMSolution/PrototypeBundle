@@ -159,6 +159,8 @@ class ListConfig
     {
         $queryBuilder=$this->getQueryBuilder();
   
+        
+        
         $queryBuilder->select("COUNT(".$this->model->getEntityName().") counter");
         $result=$queryBuilder->getQuery(\Doctrine\ORM\Query::HYDRATE_ARRAY)->getResult();
         

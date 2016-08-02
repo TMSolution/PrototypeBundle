@@ -45,7 +45,7 @@ class TwigGenerator extends AbstractGenerator {
     {
        $arr=explode("\\Entity\\",$this->getEntityName());
        $bundleName=implode("",explode("\\",$arr[0]));
-       return $bundleName.":".$this->getRootFolder()."\\".$this->getEntityShortName()."\\".$this->getViewType()."\\".$this->getFileName();                   
+       return $bundleName.":".$this->getRootFolder()."\\".$this->getEntityShortName()."\\".$this->getViewType().":".$this->getFileName();                   
     }
     
     

@@ -13,13 +13,14 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\AbstractType;
 use Lexik\Bundle\FormFilterBundle\Filter\FilterOperands;
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
+use Core\PrototypeBundle\Form\FilterFormType as BaseFilterFormType;
 
 /**
 * FormType  for '{{entityName}}'.
 *
 * Generated with {@see TMSolution\PrototypeBundle\Command\GenerateFormTypeCommand}.
 */
-class {{className}} extends AbstractType
+class {{className}} extends BaseFilterFormType
 {
 
 protected $container;
@@ -94,9 +95,16 @@ $builder
         ])
     {% elseif fieldParam.formType=='entity' %}
         {% if fieldParam.object_name is defined %}{% set defaultFieldName=that.getDefaultField(fieldParam.object_name) %}{% endif %}
+        
+        {% if  defaultFieldName!="id" %}
+        
         {% if fieldParam.association=='ManyToMany' or fieldParam.association=='OneToMany' %}//->add('{{field}}', 'entity', [
-            //'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}',
+            //'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}.all',
             //'class' => '{{fieldParam.object_name}}',
+            // 'query_builder' => function($repository) {
+            // $qb = repository->createQueryBuilder('u');
+            // return $qb->where($qb->expr()->neq('some_value', '?1'));
+            //},
             //'expanded' =>false,
             //'multiple'=>true,
             //'label' => 'Label name',
@@ -107,7 +115,7 @@ $builder
             //    'param2' => 'value2',
             //    'param3' => 'value3'
             //),
-            //'empty_value' =>'{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}',
+            //'empty_value' =>'{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}.all',
             //'choice_translation_domain' => true,
             //'attr' => [
             //    'placeholder' => 'placeholder text',
@@ -115,9 +123,13 @@ $builder
             //]   
             //])
         {% else %}->add('{{field}}', 'entity', [
-            'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}',
+            'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}.all',
             'class' => '{{fieldParam.object_name}}',
-            'empty_value' =>'{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}',
+            // 'query_builder' => function($repository) {
+            // $qb = repository->createQueryBuilder('u');
+            // return $qb->where($qb->expr()->neq('some_value', '?1'));
+            //},
+            'empty_value' =>'{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}.all',
             'choice_translation_domain' => true,
             //'label' => 'Label name',
             //'widget' => 'widget name',
@@ -132,9 +144,9 @@ $builder
             //    'class' => 'css class name',
             //]   
             ])
-        {% endif %} 
+        {% endif %} {% endif%}
     {% elseif fieldParam.formType=='Filters\\BooleanFilterType::class' %}->add('{{field}}', {{fieldParam.formType}}, [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}'
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.all'
         //'widget' => 'widget name',
         //'required' => true,
         //'attr' => [
@@ -142,7 +154,7 @@ $builder
         //]   
         ]) 
     {% else %}->add('{{field}}', '{{fieldParam.formType}}', [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}'
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.all'
         //'widget' => 'widget name',
         //'required' => true,
         //'attr' => [

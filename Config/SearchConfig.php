@@ -27,6 +27,8 @@ class SearchConfig extends ListConfig {
         $fieldFromRequest = $request->get('field');
         
         $field = $this->mapField($fieldFromRequest);
+        
+        if(!$field) throw new \Exception("\"field\" parameter has not been set");
         $queryBuilder = $this->listConfig->getQueryBuilder();
         $queryBuilder->resetDQLPart('select');
         $queryBuilder->select("DISTINCT $field as value ");
