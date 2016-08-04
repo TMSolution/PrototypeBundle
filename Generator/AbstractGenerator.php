@@ -179,7 +179,17 @@ abstract class AbstractGenerator {
         $fileName = $this->createFile();
         return $fileName;
     }
-
+    
+    
+    protected function getTranslationPrefix()
+    {
+   
+        
+        $arr=explode("Entity",$this->getEntityName());
+        //można zgrabniej, z substr
+        return strtolower(str_replace("Bundle","",str_replace("\\",".", $arr[0])));
+        
+    }
     
     
     protected function getFormTypeName()
@@ -190,7 +200,7 @@ abstract class AbstractGenerator {
     
     protected function getTemplateData() {
 
-        $associations = $this->getAssociatedObjects($this->extendFieldsInfo());
+        $associations = $this->getAssociatedObjects($this->getExtendedFieldsInfo());
 
         $entityReflection = new ReflectionClass($this->getEntityName());
         $entityNamespace = $entityReflection->getNamespaceName();
@@ -202,13 +212,14 @@ abstract class AbstractGenerator {
                     "entityName" => $this->getEntityName(),
                     "formTypeName" => $this->getFormTypeName(),
                     "objectName" => $entityShortName,
-                    "fieldsInfo" => $this->extendFieldsInfo(),
+                    "fieldsInfo" => $this->getExtendedFieldsInfo(),
                     "associations" => $associations,
                     "lowerNameSpaceForTranslate" => $lowerNameSpaceForTranslate, /*                     * @todo do wywalenia */
                     "prefix" => $this->getPrefix(),
                     "subPrefix" => $this->getSubPrefix(),
                     "parentEntity" => $this->getParentEntity(),
-                    "that" => $this /* @todo do wywalenia */
+                    "that" => $this, /* @todo do wywalenia */
+                    "translationPrefix" => $this->getTranslationPrefix()
         ];
     }
 
@@ -230,7 +241,7 @@ abstract class AbstractGenerator {
         return $filePath;
     }
 
-    protected function extendFieldsInfo() {
+    protected function getExtendedFieldsInfo() {
 
         $fieldsInfo = $this->getFieldsInfo();
 

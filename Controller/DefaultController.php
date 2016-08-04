@@ -237,6 +237,7 @@ class DefaultController extends FOSRestController {
 
         $paginator = $this->container->get('knp_paginator');
         if ($formType) {
+            
             $form = $this->makeForm($formType, $this->model->getEntity(), 'GET', $entityName, $this->getRouteName("list"), $this->getRouteParams());
 
 
@@ -581,9 +582,10 @@ class DefaultController extends FOSRestController {
         $routePrefix = $this->getRoutePrefix();
         $routeParams = array_merge($this->getRouteParams(),$params);
         
+        //die($routePrefix);
      //wyłączone ekspertymentalinie   $routeParams["containerName"] = "container";
         //@todo
-        $url = $this->generateUrl($routePrefix . '_' . $action, $routeParams);
+        $url = $this->generateUrl($routePrefix . '-' . $action, $routeParams);
         if (!$url) {
             $url = $this->generateUrl($this->getBaseRouteName(), $routeParams);
         } else {
@@ -901,8 +903,8 @@ class DefaultController extends FOSRestController {
      * @return string Current route
      */
     protected function initRoutePrefix() {
-        $routeStringArray = explode("_", $this->getBaseRouteName());
-        $this->routePrefix = implode("_", array_slice($routeStringArray, 0, -1));
+        $routeStringArray = explode("-", $this->getBaseRouteName());
+        $this->routePrefix = implode("-", array_slice($routeStringArray, 0, -1));
     }
 
     protected function getRoutePrefix() {
@@ -916,7 +918,7 @@ class DefaultController extends FOSRestController {
      * @return string Custom route
      */
     protected function getAction($actionName) {
-        return $this->getRoutePrefix() . "_" . $actionName;
+        return $this->getRoutePrefix() . "-" . $actionName;
     }
 
     protected function loadConfig() {

@@ -55,12 +55,12 @@ class RouteService {
             $routings = $config->get('routings');
             $routeConfig = $routings[$name];
             $routeName = $routeConfig["route"];
-            $routeName = str_replace('*', $this->getRoutePrefix() . '_', $routeName);
+            $routeName = str_replace('*', $this->getRoutePrefix() . '-', $routeName);
         } else {
 
-            $routeName = $this->getRoutePrefix() . '_' . $name;
+            $routeName = $this->getRoutePrefix() . '-' . $name;
         }
-        $router = $this->container->get('router');
+        //$router = $this->container->get('router');
 
 
         /*
@@ -73,8 +73,9 @@ class RouteService {
     }
 
     public function getRoutePrefix() {
-        $routeStringArray = explode("_", $this->getBaseRouteName());
-        $this->routePrefix = implode("_", array_slice($routeStringArray, 0, -1));
+  
+        $routeStringArray = explode("-", $this->getBaseRouteName());
+        $this->routePrefix = implode("-", array_slice($routeStringArray, 0, -1));
 
         return $this->routePrefix;
     }

@@ -35,32 +35,32 @@ $builder
     
     
 {% if field !='id' %}{% if fieldParam.formType=='Filters\\TextFilterType::class' %}->add('{{field}}', {{fieldParam.formType}}, [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}',
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}',
         //'widget' => 'widget name',
         //'required' => true,
         'condition_pattern' => FilterOperands::STRING_BOTH,
         'attr' => [
-              'placeholder' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}',
+              'placeholder' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}',
         //    'class' => 'css class name',
         ]
         ])
     {% elseif fieldParam.formType=='Filters\\NumberRangeFilterType::class' %}->add('{{field}}', {{fieldParam.formType}}, [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}',
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}',
         //'widget' => 'widget name',
         //'required' => true,
        'attr' => [
-            'placeholder' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}',
+            'placeholder' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}',
         //    'class' => 'css class name',
         ]   
         ])
     {% elseif fieldParam.formType=='Filters\\DateTimeRangeFilterType::class' %}->add('{{field}}', {{fieldParam.formType}}, [
         'left_datetime_options' =>[
-                        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.min',
+                        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.min',
                         'widget' => 'single_text',
                         'format' => 'dd.MM.yyyy'
                     ],
          'right_datetime_options' => [
-                        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.max',
+                        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.max',
                         'widget' => 'single_text',
                         'format' => 'dd.MM.yyyy'
                     ]
@@ -69,18 +69,18 @@ $builder
     {% elseif fieldParam.formType=='Filters\\DateRangeFilterType::class' %}->add('{{field}}', {{fieldParam.formType}}, [
         
          'left_date_options' =>[
-                        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.min',
+                        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.min',
                         'widget' => 'single_text',
                         'format' => 'dd.MM.yyyy'
                     ],
          'right_date_options' => [
-                        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.max',
+                        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.max',
                         'widget' => 'single_text',
                         'format' => 'dd.MM.yyyy'
                     ]
         ])  
     {% elseif fieldParam.formType=='array' %}->add('{{field}}', 'choice', [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}'
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}'
         //'widget' => 'widget name',
         //'required' => true,
         //'choices' => array(
@@ -99,7 +99,7 @@ $builder
         {% if  defaultFieldName!="id" %}
         
         {% if fieldParam.association=='ManyToMany' or fieldParam.association=='OneToMany' %}//->add('{{field}}', 'entity', [
-            //'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}.all',
+            //'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.{{defaultFieldName|lower}}_all',
             //'class' => '{{fieldParam.object_name}}',
             // 'query_builder' => function($repository) {
             // $qb = repository->createQueryBuilder('u');
@@ -115,7 +115,7 @@ $builder
             //    'param2' => 'value2',
             //    'param3' => 'value3'
             //),
-            //'empty_value' =>'{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}.all',
+            //'empty_value' =>'{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.{{defaultFieldName|lower}}_all',
             //'choice_translation_domain' => true,
             //'attr' => [
             //    'placeholder' => 'placeholder text',
@@ -123,13 +123,13 @@ $builder
             //]   
             //])
         {% else %}->add('{{field}}', 'entity', [
-            'label' => '{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}.all',
+            'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.{{defaultFieldName|lower}}_all',
             'class' => '{{fieldParam.object_name}}',
             // 'query_builder' => function($repository) {
             // $qb = repository->createQueryBuilder('u');
             // return $qb->where($qb->expr()->neq('some_value', '?1'));
             //},
-            'empty_value' =>'{{lowerNameSpaceForTranslate}}.{{objectName}}.{{field|lower}}.{{defaultFieldName|lower}}.all',
+            'empty_value' =>'{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.{{defaultFieldName|lower}}_all',
             'choice_translation_domain' => true,
             //'label' => 'Label name',
             //'widget' => 'widget name',
@@ -146,7 +146,7 @@ $builder
             ])
         {% endif %} {% endif%}
     {% elseif fieldParam.formType=='Filters\\BooleanFilterType::class' %}->add('{{field}}', {{fieldParam.formType}}, [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.all'
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}_all'
         //'widget' => 'widget name',
         //'required' => true,
         //'attr' => [
@@ -154,7 +154,7 @@ $builder
         //]   
         ]) 
     {% else %}->add('{{field}}', '{{fieldParam.formType}}', [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}.all'
+        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}_all'
         //'widget' => 'widget name',
         //'required' => true,
         //'attr' => [

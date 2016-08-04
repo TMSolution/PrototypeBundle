@@ -19,15 +19,22 @@ class TwigGenerator extends AbstractGenerator {
 
     
     
+    protected $additionalParams=[];
     protected $viewType;
 
-    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null, $viewType) {
+    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null, $viewType, $additionalParams=[]) {
     
         parent::__construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix, $subPrefix, $parentEntity);
         $this->viewType=$viewType;
-        
+        $this->additionalParams=$additionalParams;
     }
    
+    
+    
+    public function getAddtionalParams()
+    {
+        return $this->additionalParams;
+    }
     
 
     public function getViewType() {
@@ -40,6 +47,11 @@ class TwigGenerator extends AbstractGenerator {
     }
     
     
+    protected function getTemplateData() {
+    
+      
+        return array_merge(parent::getTemplateData(),$this->getAddtionalParams());
+    }
     
     protected function getTwigPath()
     {
