@@ -80,7 +80,7 @@ class RouteService {
         return $this->routePrefix;
     }
 
-    protected function getBaseRouteName() {
+    public function getBaseRouteName() {
 
         $request = $this->container->get('request_stack')->getCurrentRequest();
         return $request->attributes->get('_route');
