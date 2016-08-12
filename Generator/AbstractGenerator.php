@@ -264,7 +264,7 @@ abstract class AbstractGenerator {
                     $fieldsInfo[$key]["default_field_type"] = "Number";
                 }
             } elseif (array_key_exists("association", $fieldsInfo[$key]) && ( $fieldsInfo[$key]["association"] == "ManyToMany" || $fieldsInfo[$key]["association"] == "OneToMany" )) {
-                unset($fieldsInfo[$key]);
+                //unset($fieldsInfo[$key]);
             }
         }
 

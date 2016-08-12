@@ -42,11 +42,13 @@ class EntityTranslationGenerator extends TranslationGenerator {
 
             $label = strtolower(sprintf("%s.%s", $prefix, $field));
             if (in_array($parameters['type'], ["date", "datetime"])) {
+                
+                $phrases[$label ]= ucfirst($field);
                 $phrases[$label . "_date_from"] = "Date from";
                 $phrases[$label . "_date_to"] = "Date to ";
             } else
 
-            if ($parameters['is_object']) {
+            if ($parameters['is_object'] && $parameters["association"] != "ManyToMany" && $parameters["association"] != "OneToMany") {
 
                 if ($parameters["default_field"] == "name") {
                     
@@ -58,11 +60,12 @@ class EntityTranslationGenerator extends TranslationGenerator {
                     { 
                         $value= sprintf("All %ss", strtolower($field));
                     }
-                    $phrases[sprintf("%s.%s_all", $label, strtolower($parameters["default_field"]))] = $value ;
+                    $phrases[sprintf("%s.%s", $label, strtolower($parameters["default_field"]))] = ucfirst($field) ;
+                    $phrases[sprintf("%s.%s_all", $label, strtolower($parameters["default_field"]))] = ucfirst($value) ;
                    // dump(sprintf("%s.%s_all", $label, $parameters["default_field"]));
                 }
             } else {
-                    $phrases[strtolower($label)] = $field;
+                    $phrases[strtolower($label)] = ucfirst($field);
             }
         }
 

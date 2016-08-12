@@ -144,6 +144,7 @@ class DefaultController extends FOSRestController {
             'entityName' => $this->entityName,
             'parentName' => $this->getParentName(),
             'parentId' => $this->getParentId(),
+            'prefix' => $this->getPrefix(),
             //'subPrefix' => $this->getSubPrefix(),
             'model' => $this->model,
             'config' => $this->getConfig(),
@@ -151,6 +152,7 @@ class DefaultController extends FOSRestController {
             'state' => $this->getStates(),
             'isMasterRequest' => $this->isMasterRequest(),
             'parentEntity' => $this->getParentEntity($this->request),
+            'targetContainer' => $this->getTargetContainer($this->request),
         ]);
         return $params;
     }
@@ -273,16 +275,17 @@ class DefaultController extends FOSRestController {
                         'actionName' => 'list',
                         'routeName' => $routePrefix . '_new',
                         'defaultRoute' => $this->generateBaseRoute('list'),
-                        'prefix' => $this->getPrefix(),
                         'pagination' => $pagination,
                         'allRecordsCount' => $listConfig->count(),
                         'fieldsNames' => $listConfig->getFieldsNames($this->model),
                         'routePrefix' => $routePrefix,
                         'fieldsAliases' => $listConfig->getFieldsAliases(),
-                        'submitType' => $this->getSubmitType($request),
+                        'submitType' => $this->getSubmitType($this->request),
                         'state' => $this->getStates()
                     //'form'=>$form
             ]);
+            
+            dump($params);
 
 
             if (isset($form)) {
@@ -294,6 +297,8 @@ class DefaultController extends FOSRestController {
             $params['buttonRouteParams'] = $buttonRouteParams;
         }
 
+//        $pagination->setParam('targetContainer', $this->getTargetContainer($this->request));
+//        $pagination->setParam('entityName', $entityName);
         $this->setRouteParam('pagination', $pagination);
 
 
@@ -303,8 +308,7 @@ class DefaultController extends FOSRestController {
         $event->setParams($params);
         $event->setModel($this->model);
         
-        
-
+       
         $this->dispatch('before.list', $event);
         $view = $this->view([
                             "status" => "success",
@@ -1016,6 +1020,13 @@ class DefaultController extends FOSRestController {
         return $submitType = $request->get('submittype') != null ? $request->get('submittype') : 'read';
     }
 
+    protected function getTargetContainer($request) {
+        
+        
+        return  $request->get('targetContainer');
+    }
+    
+    
     protected function getListConfig() {
         $configurator = $this->get("prototype.listconfig.configurator.service");
 
