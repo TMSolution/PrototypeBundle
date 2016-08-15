@@ -34,17 +34,7 @@ $builder
 {% for field, fieldParam in fieldsInfo %}
     
     
-{% if field !='id' %}{% if fieldParam.formType=='Filters\\TextFilterType::class' %}->add('{{field}}', {{fieldParam.formType}}, [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}',
-        //'widget' => 'widget name',
-        //'required' => true,
-        'condition_pattern' => FilterOperands::STRING_BOTH,
-        'attr' => [
-              'placeholder' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}',
-        //    'class' => 'css class name',
-        ]
-        ])
-    {% elseif fieldParam.formType=='Filters\\NumberRangeFilterType::class' %}->add('{{field}}', {{fieldParam.formType}}, [
+{% if field !='id' %}{% if fieldParam.formType=='Filters\\NumberRangeFilterType::class' %}->add('{{field}}', {{fieldParam.formType}}, [
         'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}',
         //'widget' => 'widget name',
         //'required' => true,
@@ -160,15 +150,7 @@ $builder
         //    'class' => 'css class name',
         //]   
         ]) 
-    {% else %}->add('{{field}}', '{{fieldParam.formType}}', [
-        'label' => '{{lowerNameSpaceForTranslate}}.{{objectName|lower}}.{{field|lower}}_all'
-        //'widget' => 'widget name',
-        //'required' => true,
-        //'attr' => [
-        //    'placeholder' => 'placeholder text',
-        //    'class' => 'css class name',
-        //]   
-        ])
+    
 {% endif %}{% if loop.last %};{% endif %}{% endif %}{% endfor %}
 
 }

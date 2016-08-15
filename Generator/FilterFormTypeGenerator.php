@@ -32,7 +32,7 @@ class FilterFormTypeGenerator extends FormTypeGenerator{
         "decimal" => "Filters\NumberRangeFilterType::class",
         "float" => "Filters\NumberRangeFilterType::class",
         "duble" => "Filters\NumberRangeFilterType::class",
-        "boolean" => "Filters\Filters\BooleanFilterType",
+        "boolean" => "Filters\BooleanFilterType::class",
         "datetime" => "Filters\DateTimeRangeFilterType::class",
         "datetimetz" => "Filters\DateTimeRangeFilterType::class",
         "date" => "Filters\DateRangeFilterType::class",

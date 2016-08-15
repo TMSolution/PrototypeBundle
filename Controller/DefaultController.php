@@ -81,6 +81,14 @@ class DefaultController extends FOSRestController {
         return null;
     }
 
+    protected function addSubPrefix($routeParams, $route) {
+        if (array_key_exists('subPrefix', $routeParams)) {
+
+            return $route . '.' . $routeParams['subPrefix'];
+        } else
+            return $route;
+    }
+
     protected function getRouteSymbol() {
 
 
@@ -89,15 +97,11 @@ class DefaultController extends FOSRestController {
 
         if ($routeParams) {
             if (array_key_exists('parentName', $routeParams)) {
-                return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['parentName'] . '.' . $routeParams['subPrefix'];
+
+                return $this->addSubPrefix($routeParams, $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['parentName']);
             }
 
-
-            if (array_key_exists('subPrefix', $routeParams)) {
-                return $baseRoute . '.' . $routeParams['entityName'] . '.' . $routeParams['subPrefix'];
-            }
-
-            return $baseRoute . '.' . $routeParams['entityName'];
+            return $this->addSubPrefix($routeParams, $baseRoute . '.' . $routeParams['entityName']); 
         }
     }
 
@@ -229,7 +233,7 @@ class DefaultController extends FOSRestController {
 
     public function listAction(Request $request) {
 
-      
+
         $this->init();
         $entityName = $this->getEntityName();
         $routePrefix = $this->getRoutePrefix();
@@ -239,7 +243,7 @@ class DefaultController extends FOSRestController {
 
         $paginator = $this->container->get('knp_paginator');
         if ($formType) {
-            
+
             $form = $this->makeForm($formType, $this->model->getEntity(), 'GET', $entityName, $this->getRouteName("list"), $this->getRouteParams());
 
 
@@ -258,8 +262,8 @@ class DefaultController extends FOSRestController {
 
 
 
-        $buttonRouteParams = $this->getRouteParams();
-        $buttonRouteParams['containerName'] = 'container';
+     //   $buttonRouteParams = $this->getRouteParams();
+      //  $buttonRouteParams['containerName'] = 'container';
 
 
         $buttonRouteParams = $this->getRouteParams();
@@ -284,16 +288,16 @@ class DefaultController extends FOSRestController {
                         'state' => $this->getStates()
                     //'form'=>$form
             ]);
-            
-            dump($params);
+
+         
 
 
             if (isset($form)) {
                 $params['form'] = $form->createView();
             }
 
-            $buttonRouteParams = $this->getRouteParams();
-            $buttonRouteParams['containerName'] = 'container';
+            //$buttonRouteParams = $this->getRouteParams();
+            //$buttonRouteParams['containerName'] = 'container';
             $params['buttonRouteParams'] = $buttonRouteParams;
         }
 
@@ -307,8 +311,8 @@ class DefaultController extends FOSRestController {
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
-        
-       
+
+
         $this->dispatch('before.list', $event);
         $view = $this->view([
                             "status" => "success",
@@ -318,7 +322,7 @@ class DefaultController extends FOSRestController {
                             "limit" => $pagination->getItemNumberPerPage()
                         ])
                         ->setTemplate($this->getConfig()->get('actions.list.templates.element'))
-                        ->setTemplateData($params->getArray())->setHeader('Location', $this->getLocationUrl('list',$pagination->getQuery()));
+                        ->setTemplateData($params->getArray())->setHeader('Location', $this->getLocationUrl('list', $pagination->getQuery()));
 
         $this->dispatch('after.list', $event);
         return $this->handleView($view);
@@ -579,15 +583,15 @@ class DefaultController extends FOSRestController {
         return $this->handleView($view);
     }
 
-    protected function getLocationUrl($action, $params=[]) {
+    protected function getLocationUrl($action, $params = []) {
         //@todo
-        
+
 
         $routePrefix = $this->getRoutePrefix();
-        $routeParams = array_merge($this->getRouteParams(),$params);
-        
+        $routeParams = array_merge($this->getRouteParams(), $params);
+
         //die($routePrefix);
-     //wyłączone ekspertymentalinie   $routeParams["containerName"] = "container";
+        //wyłączone ekspertymentalinie   $routeParams["containerName"] = "container";
         //@todo
         $url = $this->generateUrl($routePrefix . '-' . $action, $routeParams);
         if (!$url) {
@@ -714,8 +718,8 @@ class DefaultController extends FOSRestController {
 
         //Render
         $view = $this->view($params->getArray())->setTemplate($this->getConfig()->get('actions.view.templates.element'))
-         ->setHeader('Location', $this->getLocationUrl('view'));        
-         ;
+                ->setHeader('Location', $this->getLocationUrl('view'));
+        ;
         return $this->handleView($view);
     }
 
@@ -1021,12 +1025,11 @@ class DefaultController extends FOSRestController {
     }
 
     protected function getTargetContainer($request) {
-        
-        
-        return  $request->get('targetContainer');
+
+
+        return $request->get('targetContainer');
     }
-    
-    
+
     protected function getListConfig() {
         $configurator = $this->get("prototype.listconfig.configurator.service");
 

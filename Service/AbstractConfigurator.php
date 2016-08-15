@@ -58,6 +58,8 @@ class AbstractConfigurator {
     }
 
     protected function compare($params, $tags) {
+        
+  
         return count(array_intersect($params, $tags));
     }
 

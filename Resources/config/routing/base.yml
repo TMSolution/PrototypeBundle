@@ -5,8 +5,8 @@ base_subprefix-list:
     requirements: {"containerName": main|container|element ,  "state": ".+"}
     options:
         expose: true
+ 
   
-
 base_subprefix-ajaxlist:
     locales:  { en: "{subPrefix}/{entityName}/ajaxlist/{state}", pl: "{subPrefix}/{entityName}/listaajax/{state}" } 
     defaults: { _controller: "prototype.default_controller:ajaxlistAction", state: "", format: ~,"containerName": "container", prefix: "system" }
