@@ -33,7 +33,7 @@ abstract class AbstractGenerator {
     protected $parentEntity;
 
     public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null) {
-        
+
         $this->container = $container;
         $this->entityName = $this->noramlizeEntityName($entityName);
         $this->templatePath = $templatePath;
@@ -42,8 +42,6 @@ abstract class AbstractGenerator {
         $this->prefix = $prefix;
         $this->subPrefix = $subPrefix;
         $this->parentEntity = $parentEntity;
-    
-        
     }
 
     protected function getParentEntity() {
@@ -179,25 +177,19 @@ abstract class AbstractGenerator {
         $fileName = $this->createFile();
         return $fileName;
     }
-    
-    
-    protected function getTranslationPrefix()
-    {
-   
-        
-        $arr=explode("Entity",$this->getEntityName());
+
+    protected function getTranslationPrefix() {
+
+
+        $arr = explode("Entity", $this->getEntityName());
         //można zgrabniej, z substr
-        return strtolower(str_replace("Bundle","",str_replace("\\",".", $arr[0])));
-        
+        return strtolower(str_replace("Bundle", "", str_replace("\\", ".", $arr[0])));
     }
-    
-    
-    protected function getFormTypeName()
-    {
-        return strtolower(str_replace('\\', '_', $this->getEntityName()) );
+
+    protected function getFormTypeName() {
+        return strtolower(str_replace('\\', '_', $this->getEntityName()));
     }
-     
-    
+
     protected function getTemplateData() {
 
         $associations = $this->getAssociatedObjects($this->getExtendedFieldsInfo());
@@ -253,8 +245,11 @@ abstract class AbstractGenerator {
                 if ($fieldsInfo[$key]["association"] == "ManyToMany") {
                     $this->manyToManyRelationExists = true;
                 }
+            } elseif (array_key_exists("association", $fieldsInfo[$key]) && ( $fieldsInfo[$key]["association"] == "ManyToMany" || $fieldsInfo[$key]["association"] == "OneToMany" )) {
+                //unset($fieldsInfo[$key]);
+            }
 
-
+            if ($fieldsInfo[$key]['is_object']) {
                 $model = $this->getContainer()->get("model_factory")->getModel($fieldsInfo[$key]["object_name"]);
                 if ($model->checkPropertyByName("name")) {
                     $fieldsInfo[$key]["default_field"] = "name";
@@ -263,8 +258,6 @@ abstract class AbstractGenerator {
                     $fieldsInfo[$key]["default_field"] = "id";
                     $fieldsInfo[$key]["default_field_type"] = "Number";
                 }
-            } elseif (array_key_exists("association", $fieldsInfo[$key]) && ( $fieldsInfo[$key]["association"] == "ManyToMany" || $fieldsInfo[$key]["association"] == "OneToMany" )) {
-                //unset($fieldsInfo[$key]);
             }
         }
 

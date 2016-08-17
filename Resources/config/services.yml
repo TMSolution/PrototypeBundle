@@ -147,6 +147,10 @@ services:
             -  { name: prototype.config, route: core_prototype_ajaxcontroller_ }
 
 
+    prototype.chart.service:
+        class: Core\PrototypeBundle\Service\ChartService
+        arguments: ["@service_container"]        
+
 
     prototype.twig_extension:
         class: Core\PrototypeBundle\Twig\UcWordsExtension

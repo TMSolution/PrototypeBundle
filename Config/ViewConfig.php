@@ -54,7 +54,7 @@ class ViewConfig
             }
         }
 
-        return $chartsArr;
+        return  ;
     }
 
     protected function getSparklineMiniChart($i, $key, $objectName)

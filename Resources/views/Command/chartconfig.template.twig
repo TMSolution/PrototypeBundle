@@ -1,0 +1,92 @@
+<?php 
+/**
+ * Copyright (c) 2014, TMSolution
+ * All rights reserved.
+ *
+ * For the full copyright and license information, please view
+ * the file LICENSE.md that was distributed with this source code.
+ */
+namespace  {{namespace}};
+
+
+/**
+ * ViewConifg  for '{{entityName}}'.
+ *
+ * Generated with {@see TMSolution\PrototypeBundle\Command\GenerateViewConfigCommand}.
+ */
+class {{field|ucwords}} 
+{
+
+    protected function getChart()
+    {
+
+             $miniChart= $this->getContainer()->get('charts.sparkline.line.generate');//you can change the chart type on 'line', 'bar' or 'pie'
+                $miniChartValues=$this->getValueData();
+                $miniChartOptions = [
+                    'type' => 'mini', //or panel
+                    //'listData' => $this->getListArrayData(), //for panel only
+                    'htmlContainerId' => '{{field}}',
+                    'title' => '{{field|lower}}',
+                    'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
+                    'value' =>  $miniChartValues,
+                    'data' => $this->getChartArrayData()
+                ];
+                $miniChart->setOptions($miniChartOptions);
+                return $miniChart->render();
+
+                /*
+                $chartPanel = $this->getContainer()->get('charts.easy.pie.generate');
+                $chartPanelValues=$this->getValueData();
+                $chartPanelOptions = [
+                    'type' => "panel",
+                    'htmlContainerId' => '{{field}}',
+                    'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
+                    'title' => '{{field|lower}}',
+                    'value' => $chartPanelValues,
+                    'listData' => $this->getListArrayData(),
+                    'trackColor' => 'rgba(255,255,255,0.2)',
+                    'scaleColor' => 'rgba(255,255,255,0.5)',
+                    'barColor' => 'rgba(255,255,255,0.7)',
+                    'lineWidth' => 7,
+                    'lineCap' => 'butt'
+                ];
+                $chartPanel->setOptions($chartPanelOptions{{field|ucwords}});
+                return  $chartPanel->render();
+                */
+        
+    }
+
+    protected function getValueData()
+    {
+
+        $model = $this->getContainer()->get("model_factory")->getModel('{{entityName}}');
+        $queryBuilder = $model->getQueryBuilder('u');
+        $queryBuilder->select("count(_{{field}}.id) as counter");
+        $queryBuilder->leftJoin("u.{{field}}", "_{{field}}");
+        $result = $queryBuilder->getQuery()->getSingleScalarResult();
+
+        return $result;
+    } 
+
+    protected function getListArrayData()
+    {
+    
+      
+        $model = $this->getContainer()->get("model_factory")->getModel('{{entityName}}');
+        $queryBuilder = $model->getQueryBuilder('u');
+        $queryBuilder->select("_{{field}}.{{fieldParam.default_field}} as title, count(_{{field}}.{{fieldParam.default_field}}) as value");
+        $queryBuilder->leftJoin("u.{{field}}", "_{{field}}");
+        $queryBuilder->groupBy("_{{field}}.{{fieldParam.default_field}}");
+        $queryBuilder->orderBy("_{{field}}.{{fieldParam.default_field}}","ASC");
+        $result = $queryBuilder->getQuery()->getScalarResult();
+        return $result;
+
+    } 
+
+    protected function getChartArrayData()
+    {
+        return [1,3,2,5,4,7];
+    } 
+
+}
+
