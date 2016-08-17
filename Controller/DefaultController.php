@@ -254,7 +254,7 @@ class DefaultController extends FOSRestController {
         }
         $query = $queryBuilder->getQuery(); //->getResult();
         
-        dump($query->getSQL());
+       
 
         $query->setHydrationMode($this->getConfig()->get('actions.list.hydrateMode'));
 
