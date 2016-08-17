@@ -253,6 +253,8 @@ class DefaultController extends FOSRestController {
             $lexik->addFilterConditions($form, $queryBuilder);
         }
         $query = $queryBuilder->getQuery(); //->getResult();
+        
+       
 
         $query->setHydrationMode($this->getConfig()->get('actions.list.hydrateMode'));
 
