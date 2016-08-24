@@ -25,7 +25,11 @@ class ChartConfigGenerator extends ClassGenerator {
     }
 
     protected function getNamespace() {
-        return  "Config" .DIRECTORY_SEPARATOR. $this->getRootFolder();
+        
+        $arr=explode(DIRECTORY_SEPARATOR,parent::getNamespace());
+        unset($arr[count($arr)-1]);
+        return implode(DIRECTORY_SEPARATOR,$arr);
+        //return  "Config" .DIRECTORY_SEPARATOR. $this->getRootFolder();
     }
 
     protected function getDirectoryPath() {
@@ -35,11 +39,12 @@ class ChartConfigGenerator extends ClassGenerator {
     protected function getTemplateData() {
 
         $fieldsInfo = $this->getExtendedFieldsInfo();
-        dump($fieldsInfo);
+   
         $templateData = parent::getTemplateData();
         return array_merge($templateData, [
             "field" => $this->fieldName,
             "fieldParam" => $fieldsInfo[$this->fieldName]
+              
         ]);
     }
 

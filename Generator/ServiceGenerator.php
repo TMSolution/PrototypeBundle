@@ -64,26 +64,47 @@ class ServiceGenerator extends YamlGenerator {
 
         if (!$this->serviceName) {
             $this->serviceName = sprintf("%s.%s.%s", $this->convertSeparatorsToDots(), strtolower($this->getEntityShortName()), strtolower($this->getClassName()));
+            
 
             if ($this->getSufix()) {
                 $this->serviceName = $this->serviceName . "." . $this->getSufix();
             }
         }
 
+        dump($this->serviceName);
         return $this->serviceName;
     }
+    
+    protected function getServiceStrategy()
+    {
+        $primaryStrategyName = strtolower($this->getTagName()).'.'.strtolower($this->getClassName()) . '.service.block.generator.strategy';
+
+        //dump($primaryStrategyName);
+        $secondaryStrategyName = strtolower($this->getTagName()).'.any.service.block.generator.strategy';
+       // dump($secondaryStrategyName);
+        
+        if ($this->getContainer()->has($primaryStrategyName)) {
+
+            $strategy = $this->getContainer()->get($primaryStrategyName);
+        }
+        else if($this->getContainer()->has($secondaryStrategyName))
+        {
+           $strategy = $this->getContainer()->get($secondaryStrategyName);       
+        }
+        else {
+            $strategy = $this->getContainer()->get("prototype.default.any.service.block.generator.strategy");
+        }
+     //   dump($strategy);
+        
+        $strategy->setGenerator($this);
+        return $strategy;
+   }
+    
 
     protected function getService(&$yml) {
 
-        $strategyName = 'prototype.' . strtolower($this->getClassName()) . '.service.block.generator.strategy';
-
-        if ($this->getContainer()->has($strategyName)) {
-
-            $strategy = $this->getContainer()->get($strategyName);
-        } else {
-            $strategy = $this->getContainer()->get("prototype.default.service.block.generator.strategy");
-        }
-
+        $strategy=$this->getServiceStrategy();
+    
         if (!array_key_exists($this->getServiceName(), $yml['services'])) {
 
             $strategy->setEntityName($this->getEntityName());
@@ -94,7 +115,7 @@ class ServiceGenerator extends YamlGenerator {
         }
 
         $service = new \stdClass();
-        $service->name = $this->getServiceName();
+        $service->name = $strategy->getServiceName();
         $service->body = $this->createServiceBlock($strategy->getClassNamespace(), $strategy->getArguments(), $strategy->getTags());
         return $service;
     }

@@ -13,6 +13,8 @@ namespace Core\PrototypeBundle\Generator\ServiceStrategy;
 
 class DefaultStrategy {
 
+    
+    protected $generator;
     protected $entityName;
     protected $classNamespace;
     protected $arguments=[];
@@ -26,6 +28,16 @@ class DefaultStrategy {
         $this->container=$container;
         
     }
+    
+    
+    
+    public function setGenerator($generator)
+    {
+        
+        $this->generator=$generator;
+    }
+    
+    
     
     public function getContainer() {
         

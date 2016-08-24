@@ -695,9 +695,9 @@ class DefaultController extends FOSRestController {
         $this->init();
         $entity = $this->model->findOneById($id);
 
-        $viewConfig = $this->getViewConfig();
+       // $viewConfig = $this->getViewConfig();
 
-        $viewConfig->setModel($this->model);
+       // $viewConfig->setModel($this->model);
 
 
 
@@ -710,7 +710,7 @@ class DefaultController extends FOSRestController {
             'defaultRoute' => $this->generateBaseRoute('view'),
         ]);
 
-        $viewConfig->getView($params);
+        //$viewConfig->getView($params);
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);

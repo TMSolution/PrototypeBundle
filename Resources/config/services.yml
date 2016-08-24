@@ -176,18 +176,23 @@ services:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
             
             
-    prototype.default.service.block.generator.strategy:
+    prototype.default.any.service.block.generator.strategy:
         class: Core\PrototypeBundle\Generator\ServiceStrategy\DefaultStrategy
         arguments: ["@service_container"]  
   
     
-    prototype.config.service.block.generator.strategy:
+    prototype.config.config.service.block.generator.strategy:
         class: Core\PrototypeBundle\Generator\ServiceStrategy\ConfigStrategy
         arguments: ["@service_container"]  
         
     
-    prototype.searchconfig.service.block.generator.strategy:
+    prototype.listconfig.searchconfig.service.block.generator.strategy:
         class: Core\PrototypeBundle\Generator\ServiceStrategy\SearchConfigStrategy
+        arguments: ["@service_container"]  
+        
+    prototype.chart.any.service.block.generator.strategy:
+        class: Core\PrototypeBundle\Generator\ServiceStrategy\ChartStrategy
         arguments: ["@service_container"]      
+        
         
        
