@@ -69,7 +69,15 @@ abstract class YamlGenerator extends AbstractGenerator {
 
     protected function getDirectoryPath() {
 
-        return "Resources" . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . "services" . DIRECTORY_SEPARATOR . strtolower($this->getRootFolder()) . DIRECTORY_SEPARATOR . strtolower($this->getEntityShortName());
+
+        $path= "Resources" . DIRECTORY_SEPARATOR . "config" . DIRECTORY_SEPARATOR . "services" . DIRECTORY_SEPARATOR . strtolower($this->getRootFolder());
+        
+        if(!$this->getParentEntity())
+        {
+         $path.= DIRECTORY_SEPARATOR . strtolower($this->getEntityShortName());
+        }
+        
+       return $path; 
     }
 
     protected function getDirectory() {
