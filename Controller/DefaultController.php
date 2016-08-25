@@ -160,7 +160,7 @@ class DefaultController extends FOSRestController
             'parentName' => $this->getParentName(),
             'parentId' => $this->getParentId(),
             'prefix' => $this->getPrefix(),
-            //'subPrefix' => $this->getSubPrefix(),
+            'subPrefix' => $this->getSubPrefix(),
             'model' => $this->model,
             'config' => $this->getConfig(),
             'routeParams' => $this->routeParams,
@@ -224,6 +224,8 @@ class DefaultController extends FOSRestController
         ]);
 
         $event = $this->get('prototype.event')->setParams($params)->setModel($this->model)->setForm($form);
+        
+        dump($form);
         if ($form->isValid()) {
 
 
