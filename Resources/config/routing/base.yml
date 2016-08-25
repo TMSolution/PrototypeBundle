@@ -1,4 +1,3 @@
-
 base_subprefix-list:
     locales:  { en: "{subPrefix}/{entityName}/list/{state}", pl: "{subPrefix}/{entityName}/lista/{state}" } 
     defaults: { _controller: "prototype.default_controller:listAction", state: "", format: ~,"containerName": "container", prefix: "system" }

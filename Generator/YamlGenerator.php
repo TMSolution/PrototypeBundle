@@ -31,9 +31,10 @@ abstract class YamlGenerator extends AbstractGenerator {
     protected $rootFolder;
     protected $directory;
     protected $bundleName;
+    protected $subFolder=false;
    
 
-    public function __construct($container, $entityName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null) {
+    public function __construct($container, $entityName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null, $subFolder=false) {
 
         $this->container = $container;
         $this->rootFolder = $rootFolder;
@@ -41,6 +42,7 @@ abstract class YamlGenerator extends AbstractGenerator {
         $this->prefix= $prefix;
         $this->subPrefix= $subPrefix;
         $this->parentEntity=$parentEntity;
+        $this->subFolder=$subFolder;
     }
 
     public function getBundleName() {

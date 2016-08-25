@@ -71,7 +71,6 @@ class ServiceGenerator extends YamlGenerator {
             }
         }
 
-        dump($this->serviceName);
         return $this->serviceName;
     }
     

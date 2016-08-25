@@ -33,7 +33,8 @@ class PrototypeCollector implements DataCollectorInterface {
         'edit' => 'update',
         'list' => 'list',
         'grid' => 'grid',
-        'error' => 'error'
+        'error' => 'error',
+        'delete' => 'delete'
     ];
     protected $usedConfigParams = [];
 
