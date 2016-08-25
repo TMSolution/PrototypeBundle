@@ -12,7 +12,7 @@ parameters:
         
 services:
     
-    form_service:
+    prototype.formservice:
         class: Core\PrototypeBundle\Service\FormService
         arguments: ["@service_container"] 
 

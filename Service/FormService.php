@@ -18,7 +18,7 @@ class FormService
         $this->formFactory = $this->container->get('form.factory');
     }
 
-    public function getFormView($formTypeClass, $entity, $formParams)
+    public function getFormView($formTypeClass, $entity, $formParams=[])
     {
         if (is_string($entity)) {
             $entity = $this->container->get("model_factory")->getModel($entity)->getEntity();
