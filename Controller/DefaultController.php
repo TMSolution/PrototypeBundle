@@ -376,9 +376,7 @@ class DefaultController extends FOSRestController
 
 //                dump($updateForm);
 //        exit();
-
-
-     //  $params = $this->get('prototype.controler.params');
+        //  $params = $this->get('prototype.controler.params');
 
 
         $buttonRouteParams = $this->routeParams;
@@ -452,9 +450,9 @@ class DefaultController extends FOSRestController
 
         $event->setParams($this->routeParams);
         $event->setModel($this->model);
-        
+
         $params = $this->getDefaultParameters()->merge($this->routeParams);
-        $response=[];
+        $response = [];
         //@todo grid jest juz nie używany
         //$params['redirectUrl'] = $this->generateUrl($routePrefix . '_grid', $this->routeParams);
 
@@ -475,7 +473,7 @@ class DefaultController extends FOSRestController
             }
             $this->dispatch('after.delete', $event);
         }
-        
+
         $view = $this->view($response)
                 ->setTemplateData($params->getArray())
                 ->setTemplate($this->getConfig()->get('actions.delete.templates.element'));
@@ -716,7 +714,6 @@ class DefaultController extends FOSRestController
 
 //Render
         $view = $this->view($params->getArray())
-                
                 ->setTemplate($this->getConfig()->get('actions.create.templates.element'))
                 ->setHeader('Location', $this->getLocationUrl('new'));
         return $this->handleView($view);
@@ -728,9 +725,8 @@ class DefaultController extends FOSRestController
         $this->init();
         $entity = $this->model->findOneById($id);
 
-        $viewConfig = $this->getViewConfig();
-
-        $viewConfig->setModel($this->model);
+        //$viewConfig = $this->getViewConfig();
+        // $viewConfig->setModel($this->model);
 
 
 
@@ -743,7 +739,7 @@ class DefaultController extends FOSRestController
             'defaultRoute' => $this->generateBaseRoute('view'),
         ]);
 
-        $viewConfig->getView($params);
+        //$viewConfig->getView($params);
         $event = $this->get('prototype.event');
         $event->setParams($params);
         $event->setModel($this->model);
