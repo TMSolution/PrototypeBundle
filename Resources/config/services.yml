@@ -11,6 +11,10 @@ parameters:
       
         
 services:
+    
+    form_service:
+        class: Core\PrototypeBundle\Service\FormService
+        arguments: ["@service_container"] 
 
     prototype.routeservice:
         class: Core\PrototypeBundle\Service\RouteService
