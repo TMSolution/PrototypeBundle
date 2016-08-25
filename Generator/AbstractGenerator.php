@@ -210,6 +210,7 @@ abstract class AbstractGenerator {
                     "prefix" => $this->getPrefix(),
                     "subPrefix" => $this->getSubPrefix(),
                     "parentEntity" => $this->getParentEntity(),
+                    "rootAddress" =>  strtolower(implode(".", explode(DIRECTORY_SEPARATOR,$this->getRootFolder()))),
                     "that" => $this, /* @todo do wywalenia */
                     "translationPrefix" => $this->getTranslationPrefix()
         ];

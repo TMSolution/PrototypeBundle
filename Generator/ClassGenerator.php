@@ -25,21 +25,10 @@ abstract class ClassGenerator extends AbstractGenerator {
     protected function getNamespace() {
 
         $directory = "Config\\" . $this->getRootFolder();
-//        if ($this->getFilePath()) {
-//            $directory = str_replace(DIRECTORY_SEPARATOR, "\\", "Config\\" . $this->getRootFolder() . "\\" . $this->getFilePath());
-//        }
         $entityNameArr = explode("\\", str_replace("Entity", $directory, $this->getEntityName()));
-        //  unset($entityNameArr[count($entityNameArr) - 1]);
         return implode("\\", $entityNameArr);
     }
-//
-//    public function setFilePath($filePath) {
-//        $this->filePath = $filePath;
-//    }
-//
-//    public function getFilePath() {
-//        return $this->filePath;
-//    }
+
     
     
     

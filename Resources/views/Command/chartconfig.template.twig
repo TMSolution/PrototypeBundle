@@ -7,20 +7,34 @@
  * the file LICENSE.md that was distributed with this source code.
  */
 namespace  {{namespace}};
-
+use Core\PrototypeBundle\Config\ChartConfig;
 
 /**
  * ViewConifg  for '{{entityName}}'.
  *
  * Generated with {@see TMSolution\PrototypeBundle\Command\GenerateViewConfigCommand}.
  */
-class {{field|ucwords}} 
+class {{field|ucwords}} extends  ChartConfig
 {
 
-    protected function getChart()
+    public function getChart()
     {
 
-             $miniChart= $this->getContainer()->get('charts.sparkline.line.generate');//you can change the chart type on 'line', 'bar' or 'pie'
+    /*
+    charts.morrisjs.bar
+    charts.morrisjs.line
+    charts.morrisjs.area
+    charts.morrisjs.donut
+    
+    charts.sparkline.line
+    charts.sparkline.pie
+    charts.sparkline.bar
+    
+    charts.easy.pie
+    */
+    
+    
+             $miniChart= $this->getContainer()->get('charts.sparkline.line');//you can change the chart type on 'line', 'bar' or 'pie'
                 $miniChartValues=$this->getValueData();
                 $miniChartOptions = [
                     'type' => 'mini', //or panel
@@ -35,7 +49,7 @@ class {{field|ucwords}}
                 return $miniChart->render();
 
                 /*
-                $chartPanel = $this->getContainer()->get('charts.easy.pie.generate');
+                $chartPanel = $this->getContainer()->get('charts.easy.pie');
                 $chartPanelValues=$this->getValueData();
                 $chartPanelOptions = [
                     'type' => "panel",
