@@ -16,6 +16,10 @@ services:
         class: Core\PrototypeBundle\Service\FormService
         arguments: ["@service_container"] 
 
+    prototype.objectservice:
+        class: Core\PrototypeBundle\Service\ObjectService
+        arguments: ["@service_container"]    
+
     prototype.routeservice:
         class: Core\PrototypeBundle\Service\RouteService
         arguments: ["@service_container"]
