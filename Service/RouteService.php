@@ -83,6 +83,7 @@ class RouteService {
     public function getBaseRouteName() {
 
         $request = $this->container->get('request_stack')->getCurrentRequest();
+      
         return $request->attributes->get('_route');
     }
 
