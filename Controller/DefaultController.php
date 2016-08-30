@@ -218,6 +218,7 @@ class DefaultController extends FOSRestController {
         $routeName = $this->getRouteService()->getRouteName($this->getConfig(), $name);
         $params = $event->getParams();
         $routeParams = $this->getRouteService()->getRouteParams($this->getConfig(), $name, $params['routeParams']);
+        dump($this->generateUrl($routeName, $routeParams));
         return $this->generateUrl($routeName, $routeParams);
     }
 
@@ -247,7 +248,6 @@ class DefaultController extends FOSRestController {
 
         $event = $this->get('prototype.event')->setParams($params)->setModel($this->model)->setForm($form);
 
-        dump($form);
         if ($form->isValid()) {
 
 
@@ -256,8 +256,8 @@ class DefaultController extends FOSRestController {
             $entity = $this->model->create($entity, true);
             $this->model->flush();
             $event->setEntity($entity);
-            $this->getRouteParams()['id'] = $entity->getId();
-            $this->getRouteParams()['submittype'] = $this->getSubmitType($request);
+            $this->setRouteParam('id',$entity->getId());
+            $this->setRouteParam('submittype',$this->getSubmitType($request));
             $this->dispatch('after.create', $event);
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
             return $this->handleView($view);
@@ -434,7 +434,7 @@ class DefaultController extends FOSRestController {
         }
 
         if ($isValid && $redirectUpdate) {
-            $this->getRouteParams()['submittype'] = $this->getSubmitType($request);
+            $this->setRouteParam('submittype', $this->getSubmitType($request));
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
             return $this->handleView($view);
         }
@@ -1010,6 +1010,9 @@ class DefaultController extends FOSRestController {
 
     public function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH) {
         try {
+            
+            dump($route);
+            dump($parameters);
             return $this->container->get('router')->generate($route, $parameters, $referenceType);
         } catch (\Exception $e) {
             
