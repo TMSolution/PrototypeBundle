@@ -25,7 +25,7 @@ class ListConfigGenerator extends ClassGenerator{
         $templateData=parent::getTemplateData();
         return array_merge($templateData,
         [
-            "lcObjectName" => lcfirst($this->getEntityShortName()),
+            "lcObjectName" => strtolower($this->getEntityShortName()),
             "listConfigNamespaceName" => "@to do",
             "associated" => $templateData["associations"]
         ]);
