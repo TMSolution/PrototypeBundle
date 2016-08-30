@@ -23,33 +23,28 @@ class {{className}} extends {% if associated %}AssociationGridConfig{% else %}Ba
 {
  
     public function getQueryBuilder() {
-
-        {% if associated %}  
+{% if associated %}  
           $parentId=$this->request->get("parentId");
           $parentFieldName=$this->getParentFieldNameFromRequest();
           $fieldsArr = [];
-        {% endif %}
-    
-        $tableAlias=$this->model->getEntityName();
-        $this->prepareFields($tableAlias,$this->model);
-        $queryBuilder = $this->model->getQueryBuilder($tableAlias);
-        $queryBuilder->select({% for field, fieldParam in fieldsInfo %}{% if  fieldParam.association is defined and ( fieldParam.association == 'ManyToOne' or fieldParam.association == 'OneToOne' )  %} '_{{field}}.{{fieldParam.default_field}} as {{field}}__{{fieldParam.default_field}} {% if fieldParam.default_field!='id' %},'.'_{{field}}.id as {{field}}__id {% endif %}{% if not loop.last %},'.{% else %}'{% endif %}{% else %}$tableAlias.'.{{field}}{% if  not loop.last %},'.{% else %}'{% endif %}{% endif %}{% endfor %});
-        {% for field, fieldParam in fieldsInfo %}{% if  fieldParam.association is defined and ( fieldParam.association == 'ManyToOne' or fieldParam.association == 'OneToOne' ) %}{% if associated %}$fieldsArr[] = "{{field}}";{% endif %}
-                $queryBuilder->leftJoin("$tableAlias.{{field}}","_{{field}}");{% endif %}
-        {%  endfor %}
+{% endif %}
+        $queryBuilder = $this->model->getQueryBuilder("{{lcObjectName}}");
+        $queryBuilder->select(
+{% for field, fieldParam in fieldsInfo %}               {% if  fieldParam.association is defined and ( fieldParam.association == 'ManyToOne' or fieldParam.association == 'OneToOne' )  %}'_{{field}}.{{fieldParam.default_field}} as {{field}}__{{fieldParam.default_field}}{% if fieldParam.default_field!='id' %},'.
+               '_{{field}}.id as {{field}}__id {% endif %}{% if not loop.last %},'.
+{% else %}'{% endif %}{% else %}'{{lcObjectName}}.{{field}}{% if  not loop.last %},'.
+{% else %}'{% endif %}{% endif %}{% endfor %});
+{% for field, fieldParam in fieldsInfo %}{% if  fieldParam.association is defined and ( fieldParam.association == 'ManyToOne' or fieldParam.association == 'OneToOne' ) %}{% if associated %}$fieldsArr[] = "{{field}}";{% endif %}
+        $queryBuilder->leftJoin("{{lcObjectName}}.{{field}}","_{{field}}");
+{% endif %}{%  endfor %}
         {% if associated %}
             if (!in_array($parentFieldName, $fieldsArr)) {
-                $queryBuilder->leftJoin("$tableAlias.$parentFieldName", "_{$parentFieldName}");
+                $queryBuilder->leftJoin("{{lcObjectName}}.$parentFieldName", "_{$parentFieldName}");
             }
             $queryBuilder->Where("_$parentFieldName.id=:$parentFieldName");        
             $queryBuilder->setParameter("$parentFieldName", (int)$parentId);
-        {%  endif %}
-        
-        {% if  many_to_many_relation_exists is defined and many_to_many_relation_exists == true  %} 
-            $queryBuilder->addGroupBy($tableAlias.'.id');
-        {% endif %} 
-   
-        return $queryBuilder;
+        {%  endif %}{% if  many_to_many_relation_exists is defined and many_to_many_relation_exists == true  %} 
+         $queryBuilder->addGroupBy("{{lcObjectName}}.id");{% endif %}return $queryBuilder;
     }
     
     
