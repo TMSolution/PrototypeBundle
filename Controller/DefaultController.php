@@ -79,22 +79,22 @@ class DefaultController extends FOSRestController {
 
     protected function getParents() {
 
+        
         if (!count($this->parents)) {
             $entityPath = $this->getEntityPath();
-            $entityPathArr = explode("-", $entityPath);
+     
+            $entityPathArr = explode("/", $entityPath);
             array_pop($entityPathArr);
 
             foreach ($entityPathArr as $key => $value) {
                 if ($key % 2 == 0 ) {
                     
-                    /*shoud be entityName*/
                     $className = $this->container->get("classmapperservice")->getEntityClass($value, $this->getRequest()->getLocale());
                     $entityContainer = new \stdClass();
                     $entityContainer->id = $this->getValidId($entityPathArr[$key + 1]);
-                    $model = $this->container->get("model_factory")->getModel($className);
-                    
-                    $entityContainer->entity= $model->findOneById($entityContainer->id);
+                    $entityContainer->entity=$this->container->get("prototype.objectservice")->getEntity($className,$entityContainer->id);
                     $entityContainer->entityName = $value;
+                    $entityContainer->path=implode("/",array_slice($entityPathArr,0,$key+1));
                     $entityContainer->className = $className;
                     $this->parents[] = $entityContainer;
                 }
@@ -332,7 +332,7 @@ class DefaultController extends FOSRestController {
             ]);
 
 
-            dump($params);
+           
 
             if (isset($form)) {
                 $params['form'] = $form->createView();
@@ -802,7 +802,8 @@ class DefaultController extends FOSRestController {
 
 
             $entityPath = $this->getEntityPath();
-            $entityPathArr = explode("-", $entityPath);
+            dump($entityPath);
+            $entityPathArr = explode("/", $entityPath);
             $entityName = array_pop($entityPathArr);
             $this->getRequest()->attributes->set('entityName', $entityName);
             $this->entityName = $entityName;

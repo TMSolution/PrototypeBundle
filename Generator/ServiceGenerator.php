@@ -104,8 +104,11 @@ class ServiceGenerator extends YamlGenerator {
 
         $strategy=$this->getServiceStrategy();
     
+        
+        
         if (!array_key_exists($this->getServiceName(), $yml['services'])) {
 
+            
             $strategy->setEntityName($this->getEntityName());
             $strategy->setServiceName($this->getServiceName());
             $strategy->setClassNamespace($this->getClassNamespace($this->getClassName()));

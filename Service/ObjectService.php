@@ -13,27 +13,12 @@ class ObjectService {
         $this->container=$container;
     }   
  
-    protected function getParent($entity,$methods,&$parents) {
+    public function getEntity($className,$id) {
         
-        $method = array_shift($methods);
-        $parents[]=$entity=$entity->$method();
-        
-        if (count($methods) == 0) {
-
-            return null;
-        }
-        else
-        {
-           return $this->getParent($entity->$method(),$methods,$parents);
-        }
+         $model = $this->container->get("model_factory")->getModel($className);
+         return $model->findOneById($id); 
+         
     }
-    
-    public function getParents($entity,$methods) {
-       $parents=[];
-       $this->getParent($entity,$methods,$parents);
-       return array_reverse($parents);
-    }
-    
     
     
 
