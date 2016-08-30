@@ -20,54 +20,186 @@ class {{field|ucwords}} extends  ChartConfig
     public function getChart()
     {
 
-    /*
-    charts.morrisjs.bar
-    charts.morrisjs.line
-    charts.morrisjs.area
-    charts.morrisjs.donut
-    
-    charts.sparkline.line
-    charts.sparkline.pie
-    charts.sparkline.bar
-    
-    charts.easy.pie
-    */
-    
-    
-             $miniChart= $this->getContainer()->get('charts.sparkline.line');//you can change the chart type on 'line', 'bar' or 'pie'
-                $miniChartValues=$this->getValueData();
-                $miniChartOptions = [
-                    'type' => 'mini', //or panel
-                    //'listData' => $this->getListArrayData(), //for panel only
-                    'htmlContainerId' => '{{field}}',
-                    'title' => '{{field|lower}}',
-                    'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
-                    'value' =>  $miniChartValues,
-                    'data' => $this->getChartArrayData()
-                ];
-                $miniChart->setOptions($miniChartOptions);
-                return $miniChart->render();
-
-                /*
-                $chartPanel = $this->getContainer()->get('charts.easy.pie');
-                $chartPanelValues=$this->getValueData();
-                $chartPanelOptions = [
-                    'type' => "panel",
-                    'htmlContainerId' => '{{field}}',
-                    'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
-                    'title' => '{{field|lower}}',
-                    'value' => $chartPanelValues,
-                    'listData' => $this->getListArrayData(),
-                    'trackColor' => 'rgba(255,255,255,0.2)',
-                    'scaleColor' => 'rgba(255,255,255,0.5)',
-                    'barColor' => 'rgba(255,255,255,0.7)',
-                    'lineWidth' => 7,
-                    'lineCap' => 'butt'
-                ];
-                $chartPanel->setOptions($chartPanelOptions{{field|ucwords}});
-                return  $chartPanel->render();
-                */
+        /*
+        SPARKLINE CHARTS
+        sevices:
+            charts.sparkline.line
+            charts.sparkline.bar
+            charts.sparkline.pie
+        parameters:
+            type:                   mini or panel
+            title:                  title field
+            backgroundColorClass:   css colour class
+            htmlContainerId:        html container to render chart
+            listData:               for type panel ONLY !!!!!!
+            data:                   array data ex. [['label'=>'Tile 1','value'=>'Value 1']...]
+            value:                  values for minichart
+        */
+       
+        $chart= $this->getContainer()->get('charts.sparkline.line');
+        $options = [
+            'type' => 'mini',
+            //'listData' => $this->getListArrayData(),
+            'htmlContainerId' => '{{field}}',
+            'title' => '{{field|lower}}',
+            'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
+            'value' =>  $this->getValueData(),
+            'data' => [1,3,2,5,4,7]
+        ];
+        $chart->setOptions($options);
+        return $chart->render();
         
+        
+        
+        /*
+        EASY PIE CHARTS
+        sevices:
+            charts.easy.pie
+        parameters:
+            type:                   mini or panel
+            title:                  title field
+            backgroundColorClass:   css colour class
+            htmlContainerId:        html container to render chart
+            listData:               for type panel ONLY !!!!!!
+            data:                   array data ex. [['label'=>'Tile 1','value'=>'Value 1']...]
+            value:                  values for minichart
+        */
+        /*
+        $chart = $this->getContainer()->get('charts.easy.pie');
+        $options = [
+            'type' => "mini",
+            'htmlContainerId' => '{{field}}',
+            'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
+            'title' => '{{field|lower}}',
+            'value' => $this->getValueData(),
+            //'listData' => $this->getListArrayData(),
+            'trackColor' => 'rgba(255,255,255,0.2)',
+            'scaleColor' => 'rgba(255,255,255,0.5)',
+            'barColor' => 'rgba(255,255,255,0.7)',
+            'lineWidth' => 7,
+            'lineCap' => 'butt'
+        ];
+        $chart->setOptions($options);
+        return  $chart->render();
+        */
+        
+        
+        /*
+        MORRIS CHARTS
+        sevices:
+            charts.morrisjs.line
+            charts.morrisjs.bar
+            charts.morrisjs.area
+            charts.morrisjs.donut
+        parameters:
+            htmlContainerId : html container to render chart
+            backgroundColorClass: css colour class
+            lineWidth: 
+            labels:
+            data: 
+            xkey: null,
+            ykeys:
+            xLabelFormatFn: 
+            yLabelFormatFn: 
+            hideHover
+            hoverCallback
+            fillOpacity
+            lineColors
+            download:
+            downloadFileName:
+            downloadButtonId:
+            pointSize:
+            grid:
+            isMasterRequest:
+            legend: false 
+        */
+        /*
+        $chart = $this->getContainer()->get('charts.morrisjs.line');
+        $data = $this->getListArrayData();
+        
+        $options = [
+            'htmlContainerId'  => '{{field}}',
+            'download' => false,
+            'downloadFileName' => 'chart',
+            'downloadButtonId' => 'chart-button-download-{{field}}',
+            'data' => $data,
+            'isMasterRequest' => true,
+            //'hoverCallback' => null,
+            'legend' => true,
+        ];
+        
+        $lineOptions = [
+            'labels' => ['Group 1'],
+            'xkey' => 'label',
+            'ykeys' => ['value'],
+            'xLabelFormatFn' => "function(x){return ' '}",
+            'lineColors' => [$this->colors[rand(0, 18)]],
+        ];
+        
+        $areaOptions = [
+            'labels' => ['Serie 1'],
+            'xkey' => 'label',
+            'ykeys' => ['value'],
+            'lineColors' => [$this->colors[rand(0, 18)]],
+            'backgroundColorClass' => $this->backgroundColorClass[rand(0, 18)],
+            'lineWidth' => 0,
+            'grid' => 'false',
+            'hideHover' =>'auto',
+            'fillOpacity' => '1.0',
+            'pointSize' => 0,
+            'xLabelFormatFn' => "function(x){return x.label.toString()}",
+            'yLabelFormatFn' => "function(y){return y;}",
+                      
+        ];
+        
+        $barOptions = [
+            'xkey' => 'label',
+            'ykeys' => ['value'],
+            'labels' => $this->getLabels($data),
+            'stacked' => 'false',
+            'hideHover' => 'auto',
+            'barColors' => $this->colors[rand(0, 18)],
+        ];
+        
+        $donutOptions = [
+            'formatter' => "function (y, data) { return y; }",
+            'colors' => $this->getColors($data),
+            'labels' => $this->getLabels($data)
+        ];
+        
+        $chart->setOptions(array_merge( $options, $lineOptions  ));//$lineOptions, $areaOptions, $barOptions, $donutOptions
+        return  $chart->render();
+        */
+    }
+    
+    protected function getLabels($data){
+    
+        $arr=[];
+        foreach($data as $element){
+             $arr[]=$element['label'];
+        }
+        return $arr;
+    
+    }
+    
+    protected function getColors($data){
+    
+        $arr=[];
+        for($i=0;$i<count($data);$i++){
+            $arr[]=$this->colors[rand(0, 18)];
+        }
+        return $arr;
+    
+    }
+    
+    protected function getClassColors($data){
+    
+        $arr=[];
+        for($i=0;$i<count($data);$i++){
+            $arr[]=$this->backgroundColorClass[rand(0, 18)];
+        }
+        return $arr;
+    
     }
 
     protected function getValueData()
@@ -84,23 +216,15 @@ class {{field|ucwords}} extends  ChartConfig
 
     protected function getListArrayData()
     {
-    
-      
         $model = $this->getContainer()->get("model_factory")->getModel('{{entityName}}');
         $queryBuilder = $model->getQueryBuilder('u');
-        $queryBuilder->select("_{{field}}.{{fieldParam.default_field}} as title, count(_{{field}}.{{fieldParam.default_field}}) as value");
-        $queryBuilder->leftJoin("u.{{field}}", "_{{field}}");
+        $queryBuilder->select("_{{field}}.{{fieldParam.default_field}} as label, count(_{{field}}.{{fieldParam.default_field}}) as value");
+        $queryBuilder->join("u.{{field}}", "_{{field}}");
         $queryBuilder->groupBy("_{{field}}.{{fieldParam.default_field}}");
         $queryBuilder->orderBy("_{{field}}.{{fieldParam.default_field}}","ASC");
+        $queryBuilder->setMaxResults(3);
         $result = $queryBuilder->getQuery()->getScalarResult();
         return $result;
-
     } 
-
-    protected function getChartArrayData()
-    {
-        return [1,3,2,5,4,7];
-    } 
-
 }
 
