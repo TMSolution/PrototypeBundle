@@ -48,8 +48,6 @@ class DefaultController extends FOSRestController {
 
     public function __construct($container, RequestStack $requestStack) {
 
-
-
         $this->container = $container;
         $this->requestStack = $requestStack;
         $this->model = $this->getModel($this->getEntityClass());
@@ -79,22 +77,22 @@ class DefaultController extends FOSRestController {
 
     protected function getParents() {
 
-        
+
         if (!count($this->parents)) {
             $entityPath = $this->getEntityPath();
-     
+
             $entityPathArr = explode("/", $entityPath);
             array_pop($entityPathArr);
 
             foreach ($entityPathArr as $key => $value) {
-                if ($key % 2 == 0 ) {
-                    
+                if ($key % 2 == 0) {
+
                     $className = $this->container->get("classmapperservice")->getEntityClass($value, $this->getRequest()->getLocale());
                     $entityContainer = new \stdClass();
                     $entityContainer->id = $this->getValidId($entityPathArr[$key + 1]);
-                    $entityContainer->entity=$this->container->get("prototype.objectservice")->getEntity($className,$entityContainer->id);
+                    $entityContainer->entity = $this->container->get("prototype.objectservice")->getEntity($className, $entityContainer->id);
                     $entityContainer->entityName = $value;
-                    $entityContainer->path=implode("/",array_slice($entityPathArr,0,$key+1));
+                    $entityContainer->path = implode("/", array_slice($entityPathArr, 0, $key + 1));
                     $entityContainer->className = $className;
                     $this->parents[] = $entityContainer;
                 }
@@ -108,7 +106,7 @@ class DefaultController extends FOSRestController {
     }
 
     protected function getParentEntityClassName() {
-        
+
         if ($this->getRequest()->attributes->get('parentName')) {
             return $this->parentEntityClassName = $this->container->get("classmapperservice")->getEntityClass($this->getRequest()->attributes->get('parentName'), $this->getRequest()->getLocale());
         }
@@ -148,9 +146,6 @@ class DefaultController extends FOSRestController {
         if (null === $this->dispatcher) {
             $this->dispatcher = $this->get('event_dispatcher');
         }
-
-        //dump($this->getDispatchName($name));die();
-
         $this->dispatcher->dispatch($this->getDispatchName($name), $event);
     }
 
@@ -218,7 +213,6 @@ class DefaultController extends FOSRestController {
         $routeName = $this->getRouteService()->getRouteName($this->getConfig(), $name);
         $params = $event->getParams();
         $routeParams = $this->getRouteService()->getRouteParams($this->getConfig(), $name, $params['routeParams']);
-        dump($this->generateUrl($routeName, $routeParams));
         return $this->generateUrl($routeName, $routeParams);
     }
 
@@ -256,16 +250,18 @@ class DefaultController extends FOSRestController {
             $entity = $this->model->create($entity, true);
             $this->model->flush();
             $event->setEntity($entity);
-            $this->setRouteParam('id',$entity->getId());
-            $this->setRouteParam('submittype',$this->getSubmitType($request));
+            $this->setRouteParam('id', $entity->getId());
+            $this->setRouteParam('submittype', $this->getSubmitType($request));
             $this->dispatch('after.create', $event);
             $view = $this->redirectView($this->getNextRoute($this->getSubmitType($request)), 301);
             return $this->handleView($view);
+        } else {
+            $response = ["success" => false, "entity" => $params['entity']];
         }
 
 
         $this->dispatch('on.invalidcreate', $event);
-        $view = $this->view($params['entity'])
+        $view = $this->view($response)
                 ->setTemplateData($params->getArray())
                 ->setTemplate($this->getConfig()->get('actions.create.templates.element'))
                 ->setHeader('Location', $this->getLocationUrl('create'));
@@ -332,7 +328,7 @@ class DefaultController extends FOSRestController {
             ]);
 
 
-           
+
 
             if (isset($form)) {
                 $params['form'] = $form->createView();
@@ -481,7 +477,7 @@ class DefaultController extends FOSRestController {
             $this->dispatch('before.delete', $event);
             try {
                 $this->model->delete($entity, true);
-                $response['status'] = 'success';
+                $response['success'] = true;
                 $response['message'] = 'ok';
             } catch (\Exception $e) {
 
@@ -489,7 +485,7 @@ class DefaultController extends FOSRestController {
 //                    $response['status'] = 'fail';
 //                    $response['message'] = $e->getMessage();
 //                }
-                $response['status'] = 'fail';
+                $response['success'] = false;
                 $response['message'] = $e->getMessage();
             }
             $this->dispatch('after.delete', $event);
@@ -616,9 +612,11 @@ class DefaultController extends FOSRestController {
 
         $this->dispatch('on.read', $event);
 
-
+       $response = ["success" => true, "entity" => $params['entity']];
+        
+        
         //Render
-        $view = $this->view($params['entity'])->setTemplate($this->getConfig()->get('actions.read.templates.element'))
+        $view = $this->view($response)->setTemplate($this->getConfig()->get('actions.read.templates.element'))
                 ->setTemplateData($params->getArray())
                 ->setHeader('Location', $this->getLocationUrl('read'));
         return $this->handleView($view);
@@ -762,6 +760,8 @@ class DefaultController extends FOSRestController {
     protected function generateBaseRoute($action) {
         $params = $this->getRouteParams();
         $params['state'] = null;
+        
+        dump( $this->generateUrl($this->getAction($action), $params, UrlGeneratorInterface::ABSOLUTE_URL));    
         return $this->generateUrl($this->getAction($action), $params, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
@@ -1011,7 +1011,7 @@ class DefaultController extends FOSRestController {
 
     public function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH) {
         try {
-            
+
             dump($route);
             dump($parameters);
             return $this->container->get('router')->generate($route, $parameters, $referenceType);
