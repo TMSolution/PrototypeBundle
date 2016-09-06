@@ -91,27 +91,47 @@ class {{field|ucwords}} extends  ChartConfig
             charts.morrisjs.bar
             charts.morrisjs.area
             charts.morrisjs.donut
-        parameters:
-            htmlContainerId : html container to render chart
-            backgroundColorClass: css colour class
-            lineWidth: 
-            labels:
-            data: 
-            xkey: null,
-            ykeys:
-            xLabelFormatFn: 
-            yLabelFormatFn: 
-            hideHover
-            hoverCallback
-            fillOpacity
-            lineColors
-            download:
-            downloadFileName:
-            downloadButtonId:
-            pointSize:
-            grid:
-            isMasterRequest:
-            legend: false 
+        default parameters:
+            htmlContainerId:            html container to render chart
+            backgroundColorClass:       css colour class
+            download:                   enable or disable download button (ex. true/false)
+            downloadFileName:           name downloaded file (default 'chart')
+            downloadButtonId:           chart button id
+            data:                       array data ex. [['label'=>'Tile 1','value'=>'Value 1']...]
+            isMasterRequest:            render method (true or false)
+            hoverCallback:              hover callbacj function
+            legend:                     display legend (true or false)
+        line chart parameters:    
+            labels:                     A list of strings containing labels for the data series to be plotted (corresponding to the values in the ykeys option). 
+            xkey:                       A string containing the name of the attribute that contains X labels. ,
+            ykeys:                      A list array of strings containing names of attributes that contain Y values (one for each series of data to be plotted). 
+            xLabelFormatFn:             function label format ex."function(x){return ' '}",
+            lineColors:                 Array containing colors
+        area chart parameters:  
+            labels:                     A list of strings containing labels for the data series to be plotted (corresponding to the values in the ykeys option). 
+            xkey:                       A string containing the name of the attribute that contains X labels. ,
+            ykeys:                      A list array of strings containing names of attributes that contain Y values (one for each series of data to be plotted). 
+            lineColors:                 Array containing colors
+            lineWidth:                  Width of the series lines, in pixels. 
+            grid:                       Show grid (true/false)
+            hideHover:                  Set to false to always show a hover legend.
+                                        Set to true or 'auto' to only show the hover legend when the mouse cursor is over the chart.
+                                        Set to 'always' to never show a hover legend.  
+            fillOpacity:                Fill opacity default '1.0',
+            pointSize:                  Diameter of the series points, in pixels. 
+            xLabelFormatFn:             A function that accepts Date objects and formats them for display as x-axis labels. Overrides the default formatter chosen by the automatic labeller or the xLabels option.  ex."function(x){return ' '}",
+            yLabelFormatFn:             A function that accepts y-values and formats them for display as y-axis labels. ex."function(y){return ' '}",
+        bar chart parameters:  
+            xkey:                       A string containing the name of the attribute that contains X labels. ,
+            ykeys:                      A list array of strings containing names of attributes that contain Y values (one for each series of data to be plotted). 
+            labels:                     A list of strings containing labels for the data series to be plotted (corresponding to the values in the ykeys option). 
+            stacked:                    Set to true to draw bars stacked vertically. 
+            hideHover:                  Set to false to always show a hover legend.
+                                        Set to true or 'auto' to only show the hover legend when the mouse cursor is over the chart.
+                                        Set to 'always' to never show a hover legend.  
+            barColors:                  Array containing colors for the series bars. 
+            
+         
         */
         /*
         $chart = $this->getContainer()->get('charts.morrisjs.line');
