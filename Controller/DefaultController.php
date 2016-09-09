@@ -147,23 +147,30 @@ class DefaultController extends FOSRestController
         }
     }
 
-    protected function getDispatchName($fireAction)
+    
+    protected function getActionPrefix()
     {
         $parent = $this->getParent();
         $routeParams = $this->getRouteParams();
 
-        $dispatchName = '';
-        $dispatchName.=$routeParams['prefix'];
+        $actionAddress = '';
+        $actionAddress.=$routeParams['prefix'];
         if (array_key_exists('subPrefix', $routeParams)) {
-            $dispatchName.= '.' . $routeParams['subPrefix'];
+            $actionAddress.= '.' . $routeParams['subPrefix'];
         }
         if ($parent) {
-            $dispatchName.='.' . $parent->entityName;
+            $actionAddress.='.' . $parent->entityName;
         }
-        $dispatchName.='.' . $this->getEntityName();
-        dump($dispatchName . '.' . $fireAction);
-        return $dispatchName . '.' . $fireAction;
+        $actionAddress.='.' . $this->getEntityName();
+        return str_replace("-","_",$actionAddress);
     }
+    
+    protected function getDispatchName($firedAction)
+    {
+        dump($this->getActionPrefix() . '.' . $firedAction);
+        return sprintf("%s.%s",$this->getActionPrefix(),$firedAction);
+    }
+    
 
     protected function dispatch($name, $event)
     {
@@ -213,7 +220,8 @@ class DefaultController extends FOSRestController
             'isMasterRequest' => $this->isMasterRequest(),
             'parentEntity' => $this->getParentEntity($this->getRequest()),
             'targetContainer' => $this->getTargetContainer($this->getRequest()),
-            'containerName' => $this->getContainerName()
+            'containerName' => $this->getContainerName(),
+            'actionPrefix' => $this->getActionPrefix()
         ]);
         return $params;
     }
