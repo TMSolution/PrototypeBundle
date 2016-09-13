@@ -1,80 +1,80 @@
-base_subprefix-list:
-    locales:  { en: "{subPrefix}/app/{entityPath}/list/{state}", pl: "{subPrefix}/app/{entityPath}/lista/{state}" } 
-    defaults: { _controller: "prototype.default_controller:listAction", state: "", format: ~,"containerName": "container", prefix: "system" }
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
-    options:
-        expose: true
- 
-  
-base_subprefix-ajaxlist:
-    locales:  { en: "{subPrefix}/app/{entityPath}/ajaxlist/{state}", pl: "{subPrefix}/app/{entityPath}/listaajax/{state}" } 
-    defaults: { _controller: "prototype.default_controller:ajaxlistAction", state: "", format: ~,"containerName": "container", prefix: "system" }
-    options:
-        expose: true   
-        
-base_subprefix-grid:
-    locales:  { en: "{subPrefix}/app/{entityPath}/grid/{state}", pl: "{subPrefix}/app/{entityPath}/grid/{state}" } 
-    defaults: { _controller: "prototype.default_controller:gridAction", state: "", format: ~,"containerName": "container", prefix: "system" }
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
-    options:
-        expose: true
-  
-
-base_subprefix-ajaxgrid:
-    locales:  { en: "{subPrefix}/app/{entityPath}/ajaxgrid/{state}", pl: "{subPrefix}/app/{entityPath}/listagrid/{state}" } 
-    defaults: { _controller: "prototype.default_controller:ajaxgridAction", state: "", format: ~,"containerName": "container", prefix: "system" }
-    options:
-        expose: true   
-   
-base_subprefix-read:
-    locales:  { en: "{subPrefix}/app/{entityPath}/read/{id}/{state}", pl: "{subPrefix}/app/{entityPath}/pokaz/{id}/{state}"}
-    defaults: { _controller: "prototype.default_controller:readAction", state: "", format: ~,"containerName": "container", prefix: "system" }   
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
-    options:
-        expose: true
-
-
-base_subprefix-new:
-    locales:  { en: "{subPrefix}/app/{entityPath}/new/{state}", pl: "{subPrefix}/app/{entityPath}/nowy/{state}"}
-    defaults: { _controller: "prototype.default_controller:newAction", state: "", format: ~,"containerName": "container", prefix: "system" }   
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
-    options:
-        expose: true
-
-base_subprefix-create:
-    locales:  { en: "{subPrefix}/app/{entityPath}/create/{state}", pl: "{subPrefix}/app/{entityPath}/utworz/{state}" }
-    defaults: { _controller: "prototype.default_controller:createAction", state: "", format: ~,"containerName": "container", prefix: "system" }   
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
-    options:
-        expose: true       
-
-base_subprefix-delete:
-    locales:  { en: "{subPrefix}/app/{entityPath}/delete/{id}/{state}", pl: "{subPrefix}/app/{entityPath}/usun/{id}/{state}"}
-    defaults: { _controller: "prototype.default_controller:deleteAction", state: "", format: ~,"containerName": "container", prefix: "system" }       
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
-    options:
-        expose: true
-
-base_subprefix-edit:
-    locales:  { en: "{subPrefix}/app/{entityPath}/edit/{id}/{state}", pl: "{subPrefix}/app/{entityPath}/edytuj/{id}/{state}"}
-    defaults: { _controller: "prototype.default_controller:editAction", state: "", format: ~,"containerName": "container", prefix: "system" }
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
-    options:
-        expose: true    
-        
-base_subprefix-update:
-    locales:  { en: "{subPrefix}/app/{entityPath}/update/{id}/{state}", pl: "{subPrefix}/app/{entityPath}/aktualizuj/{id}/{state}"}
-    defaults: { _controller: "prototype.default_controller:updateAction", state: "", format: ~,"containerName": "container", prefix: "system" }   
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
-    options:
-        expose: true
-        
-base_subprefix-view:
-    locales:  { en: "{subPrefix}/app/{entityPath}/view/{id}/{state}", pl: "{subPrefix}/app/{entityPath}/podglad/{id}/{state}"}
-    defaults: { _controller: "prototype.default_controller:viewAction", state: "", format: ~,"containerName": "container", prefix: "system" }   
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
-    options:
-        expose: true  
+#base_subprefix-list:
+#    locales:  { en: "{subPrefix}/app/{entityPath}/list/{state}", pl: "{subPrefix}/app/{entityPath}/lista/{state}" } 
+#    defaults: { _controller: "prototype.default_controller:listAction", state: "", format: ~,"containerName": "container", prefix: "system" }
+#    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
+#    options:
+#        expose: true
+# 
+#  
+#base_subprefix-ajaxlist:
+#    locales:  { en: "{subPrefix}/app/{entityPath}/ajaxlist/{state}", pl: "{subPrefix}/app/{entityPath}/listaajax/{state}" } 
+#    defaults: { _controller: "prototype.default_controller:ajaxlistAction", state: "", format: ~,"containerName": "container", prefix: "system" }
+#    options:
+#        expose: true   
+#        
+#base_subprefix-grid:
+#    locales:  { en: "{subPrefix}/app/{entityPath}/grid/{state}", pl: "{subPrefix}/app/{entityPath}/grid/{state}" } 
+#    defaults: { _controller: "prototype.default_controller:gridAction", state: "", format: ~,"containerName": "container", prefix: "system" }
+#    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
+#    options:
+#        expose: true
+#  
+#
+#base_subprefix-ajaxgrid:
+#    locales:  { en: "{subPrefix}/app/{entityPath}/ajaxgrid/{state}", pl: "{subPrefix}/app/{entityPath}/listagrid/{state}" } 
+#    defaults: { _controller: "prototype.default_controller:ajaxgridAction", state: "", format: ~,"containerName": "container", prefix: "system" }
+#    options:
+#        expose: true   
+#   
+#base_subprefix-read:
+#    locales:  { en: "{subPrefix}/app/{entityPath}/read/{id}/{state}", pl: "{subPrefix}/app/{entityPath}/pokaz/{id}/{state}"}
+#    defaults: { _controller: "prototype.default_controller:readAction", state: "", format: ~,"containerName": "container", prefix: "system" }   
+#    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
+#    options:
+#        expose: true
+#
+#
+#base_subprefix-new:
+#    locales:  { en: "{subPrefix}/app/{entityPath}/new/{state}", pl: "{subPrefix}/app/{entityPath}/nowy/{state}"}
+#    defaults: { _controller: "prototype.default_controller:newAction", state: "", format: ~,"containerName": "container", prefix: "system" }   
+#    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
+#    options:
+#        expose: true
+#
+#base_subprefix-create:
+#    locales:  { en: "{subPrefix}/app/{entityPath}/create/{state}", pl: "{subPrefix}/app/{entityPath}/utworz/{state}" }
+#    defaults: { _controller: "prototype.default_controller:createAction", state: "", format: ~,"containerName": "container", prefix: "system" }   
+#    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
+#    options:
+#        expose: true       
+#
+#base_subprefix-delete:
+#    locales:  { en: "{subPrefix}/app/{entityPath}/delete/{id}/{state}", pl: "{subPrefix}/app/{entityPath}/usun/{id}/{state}"}
+#    defaults: { _controller: "prototype.default_controller:deleteAction", state: "", format: ~,"containerName": "container", prefix: "system" }       
+#    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
+#    options:
+#        expose: true
+#
+#base_subprefix-edit:
+#    locales:  { en: "{subPrefix}/app/{entityPath}/edit/{id}/{state}", pl: "{subPrefix}/app/{entityPath}/edytuj/{id}/{state}"}
+#    defaults: { _controller: "prototype.default_controller:editAction", state: "", format: ~,"containerName": "container", prefix: "system" }
+#    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
+#    options:
+#        expose: true    
+#        
+#base_subprefix-update:
+#    locales:  { en: "{subPrefix}/app/{entityPath}/update/{id}/{state}", pl: "{subPrefix}/app/{entityPath}/aktualizuj/{id}/{state}"}
+#    defaults: { _controller: "prototype.default_controller:updateAction", state: "", format: ~,"containerName": "container", prefix: "system" }   
+#    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
+#    options:
+#        expose: true
+#        
+#base_subprefix-view:
+#    locales:  { en: "{subPrefix}/app/{entityPath}/view/{id}/{state}", pl: "{subPrefix}/app/{entityPath}/podglad/{id}/{state}"}
+#    defaults: { _controller: "prototype.default_controller:viewAction", state: "", format: ~,"containerName": "container", prefix: "system" }   
+#    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
+#    options:
+#        expose: true  
         
         
 #####################################
@@ -82,35 +82,34 @@ base_subprefix-view:
 base-list:
     locales:  { en: "app/{entityPath}/list/{state}", pl: "app/{entityPath}/lista/{state}" } 
     defaults: { _controller: "prototype.default_controller:listAction", state: "", "containerName": "container",  format: ~ , prefix: "system"}
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
+    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
     options:
         expose: true
-  
 
-base-ajaxlist:
-    locales:  { en: "app/{entityPath}/ajaxlist/{state}", pl: "app/{entityPath}/listaajax/{state}" } 
-    defaults: { _controller: "prototype.default_controller:ajaxlistAction", state: "", "containerName": "container",  format: ~ , prefix: "system"}
-    options:
-        expose: true   
-        
-base-grid:
-    locales:  { en: "app/{entityPath}/grid/{state}", pl: "app/{entityPath}/grid/{state}" } 
-    defaults: { _controller: "prototype.default_controller:gridAction", state: "", "containerName": "container",  format: ~, prefix: "system" }
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
-    options:
-        expose: true
-  
-
-base-ajaxgrid:
-    locales:  { en: "app/{entityPath}/ajaxgrid/{state}", pl: "app/{entityPath}/listagrid/{state}" } 
-    defaults: { _controller: "prototype.default_controller:ajaxgridAction", state: "", "containerName": "container",  format: ~ , prefix: "system"}
-    options:
-        expose: true   
+#base-ajaxlist:
+#    locales:  { en: "app/{entityPath}/ajaxlist/{state}", pl: "app/{entityPath}/listaajax/{state}" } 
+#    defaults: { _controller: "prototype.default_controller:ajaxlistAction", state: "", "containerName": "container",  format: ~ , prefix: "system"}
+#    options:
+#        expose: true   
+#        
+#base-grid:
+#    locales:  { en: "app/{entityPath}/grid/{state}", pl: "app/{entityPath}/grid/{state}" } 
+#    defaults: { _controller: "prototype.default_controller:gridAction", state: "", "containerName": "container",  format: ~, prefix: "system" }
+#    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
+#    options:
+#        expose: true
+#  
+#
+#base-ajaxgrid:
+#    locales:  { en: "app/{entityPath}/ajaxgrid/{state}", pl: "app/{entityPath}/listagrid/{state}" } 
+#    defaults: { _controller: "prototype.default_controller:ajaxgridAction", state: "", "containerName": "container",  format: ~ , prefix: "system"}
+#    options:
+#        expose: true   
    
 base-read:
     locales:  { en: "app/{entityPath}/read/{id}/{state}", pl: "app/{entityPath}/pokaz/{id}/{state}"}
     defaults: { _controller: "prototype.default_controller:readAction", state: "", "containerName": "container",  format: ~, prefix: "system" }   
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
+    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
     options:
         expose: true
 
@@ -118,42 +117,42 @@ base-read:
 base-new:
     locales:  { en: "app/{entityPath}/new/{state}", pl: "app/{entityPath}/nowy/{state}"}
     defaults: { _controller: "prototype.default_controller:newAction", state: "",  "containerName": "container",  format: ~ , prefix: "system"}   
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
+    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
     options:
         expose: true
 
 base-create:
     locales:  { en: "app/{entityPath}/create/{state}", pl: "app/{entityPath}/utworz/{state}" }
     defaults: { _controller: "prototype.default_controller:createAction", state: "",  "containerName": "container",   format: ~ , prefix: "system"}   
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
+    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
     options:
         expose: true       
 
 base-delete:
     locales:  { en: "app/{entityPath}/delete/{id}/{state}", pl: "app/{entityPath}/usun/{id}/{state}"}
     defaults: { _controller: "prototype.default_controller:deleteAction", state: "", "containerName": "container",   format: ~, prefix: "system" }       
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
+    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
     options:
         expose: true
 
 base-edit:
     locales:  { en: "app/{entityPath}/edit/{id}/{state}", pl: "app/{entityPath}/edytuj/{id}/{state}"}
     defaults: { _controller: "prototype.default_controller:editAction", state: "", "containerName": "container",   format: ~ , prefix: "system"}
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
+    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
     options:
         expose: true    
         
 base-update:
     locales:  { en: "app/{entityPath}/update/{id}/{state}", pl: "app/{entityPath}/aktualizuj/{id}/{state}"}
     defaults: { _controller: "prototype.default_controller:updateAction", state: "", "containerName": "container",   format: ~ , prefix: "system"}   
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
+    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
     options:
         expose: true
         
 base-view:
     locales:  { en: "app/{entityPath}/view/{id}/{state}", pl: "app/{entityPath}/podglad/{id}/{state}"}
     defaults: { _controller: "prototype.default_controller:viewAction", state: "", "containerName": "container",  format: ~ , prefix: "system"}   
-    requirements: {"containerName": main|container|element ,  "entityPath": ".+"}
+    requirements: {"containerName": main|container|element ,  "entityPath": ".+", "prefix": ".+" }
     options:
         expose: true 
 #########################################################

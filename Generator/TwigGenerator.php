@@ -22,9 +22,9 @@ class TwigGenerator extends AbstractGenerator {
     protected $additionalParams=[];
     protected $viewType;
 
-    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null, $viewType, $additionalParams=[]) {
+    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix = null,  $parentEntity = null, $viewType, $additionalParams=[]) {
     
-        parent::__construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix, $subPrefix, $parentEntity);
+        parent::__construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix, $parentEntity);
         $this->viewType=$viewType;
         $this->additionalParams=$additionalParams;
     }

@@ -19,8 +19,8 @@ class ChartConfigGenerator extends ClassGenerator {
 
     protected $fieldName;
 
-    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null, $fieldName) {
-        parent::__construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix, $subPrefix, $parentEntity);
+    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix = null,  $parentEntity = null, $fieldName) {
+        parent::__construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix, $parentEntity);
         $this->fieldName = $fieldName;
     }
 
@@ -38,7 +38,7 @@ class ChartConfigGenerator extends ClassGenerator {
 
     protected function getTemplateData() {
 
-        $fieldsInfo = $this->getExtendedFieldsInfo();
+        $fieldsInfo = $this->getExtendedFieldsInfo($this->getFieldsInfo());
    
         $templateData = parent::getTemplateData();
         return array_merge($templateData, [

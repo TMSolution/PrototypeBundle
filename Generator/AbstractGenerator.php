@@ -29,19 +29,35 @@ abstract class AbstractGenerator {
     protected $rootFolder;
     protected $directory;
     protected $prefix;
-    protected $subPrefix;
+
     protected $parentEntity;
 
-    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null) {
+    public function __construct($container, $entityName, $templatePath, $fileName, $rootFolder, $prefix = null,$parentEntity = null) {
 
+        dump("prefix");
+        dump($prefix);
         $this->container = $container;
         $this->entityName = $this->noramlizeEntityName($entityName);
         $this->templatePath = $templatePath;
         $this->fileName = $fileName;
         $this->rootFolder = $rootFolder;
-        $this->prefix = $prefix;
-        $this->subPrefix = $subPrefix;
+        $this->prefix = $this->convertPrefix($prefix);
+        dump("prefix po konwersji");
+        dump( $this->prefix);
+        
         $this->parentEntity = $parentEntity;
+    }
+    
+    
+    protected function convertPrefix($prefix)
+    {
+       $prefixArr = explode("/",$prefix);
+       for($i=0; $i<count($prefixArr); $i++){
+           $prefixArr[$i]=  ucfirst($prefixArr[$i]);
+       }
+       
+       return implode("\\",$prefixArr); 
+        
     }
 
     protected function getParentEntity() {
@@ -54,10 +70,7 @@ abstract class AbstractGenerator {
         return $this->prefix;
     }
 
-    protected function getSubPrefix() {
-
-        return $this->subPrefix;
-    }
+  
 
     protected function getContainer() {
         return $this->container;
@@ -95,6 +108,12 @@ abstract class AbstractGenerator {
         $model = $this->getContainer()->get("model_factory")->getModel($this->getEntityName());
         return $model->getFieldsInfo();
     }
+    
+    
+    protected function getParentFieldsInfo() {
+        $model = $this->getContainer()->get("model_factory")->getModel($this->getParentEntity());
+        return $model->getFieldsInfo();
+    }
 
     protected function getEntityShortName() {
 
@@ -125,8 +144,11 @@ abstract class AbstractGenerator {
             $entityNamespace = $entityReflection->getNamespaceName();
 
             $directory = str_replace("\\", DIRECTORY_SEPARATOR, ($this->getClassPath() . "\\" . $entityNamespace));
+           
+            
             $this->directory = $this->replaceLast("Entity", $this->getDirectoryPath(), $directory);
 
+        
             if (is_dir($this->directory) == false && mkdir($this->directory, 0777, true) == false) {
                 throw new UnexpectedValueException("Creating directory failed: " . $directory);
             }
@@ -192,7 +214,7 @@ abstract class AbstractGenerator {
 
     protected function getTemplateData() {
 
-        $associations = $this->getAssociatedObjects($this->getExtendedFieldsInfo());
+        $associations = $this->getAssociatedObjects($this->getExtendedFieldsInfo($this->getFieldsInfo()));
 
         $entityReflection = new ReflectionClass($this->getEntityName());
         $entityNamespace = $entityReflection->getNamespaceName();
@@ -204,12 +226,12 @@ abstract class AbstractGenerator {
                     "entityName" => $this->getEntityName(),
                     "formTypeName" => $this->getFormTypeName(),
                     "objectName" => $entityShortName,
-                    "fieldsInfo" => $this->getExtendedFieldsInfo(),
+                    "fieldsInfo" => $this->getExtendedFieldsInfo($this->getFieldsInfo()),
                     "associations" => $associations,
                     "lowerNameSpaceForTranslate" => $lowerNameSpaceForTranslate, /*                     * @todo do wywalenia */
                     "prefix" => $this->getPrefix(),
-                    "subPrefix" => $this->getSubPrefix(),
                     "parentEntity" => $this->getParentEntity(),
+                    "parentFieldsInfo" => $this->getParentEntity()? $this->getExtendedFieldsInfo($this->getParentFieldsInfo()):null,
                     "rootAddress" =>  strtolower(implode(".", explode(DIRECTORY_SEPARATOR,$this->getRootFolder()))),
                     "that" => $this, /* @todo do wywalenia */
                     "translationPrefix" => $this->getTranslationPrefix()
@@ -234,9 +256,9 @@ abstract class AbstractGenerator {
         return $filePath;
     }
 
-    protected function getExtendedFieldsInfo() {
+    protected function getExtendedFieldsInfo($fieldsInfo) {
 
-        $fieldsInfo = $this->getFieldsInfo();
+       // $fieldsInfo = $this->getFieldsInfo();
 
         foreach ($fieldsInfo as $key => $value) {
 

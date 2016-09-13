@@ -24,9 +24,9 @@ class ParametersGenerator extends YamlGenerator {
     protected $value;
     protected $viewType;
 
-    public function __construct($container, $entityName, $rootFolder, $prefix, $subPrefix, $parentEntity, $actionName, $viewType, $value) {
+    public function __construct($container, $entityName, $rootFolder, $prefix,  $parentEntity, $actionName, $viewType, $value) {
 
-        parent::__construct($container, $entityName, $rootFolder,$prefix, $subPrefix, $parentEntity);
+        parent::__construct($container, $entityName, $rootFolder,$prefix,  $parentEntity);
         $this->actionName = $actionName;
         $this->viewType = $viewType;
         $this->value = $value;

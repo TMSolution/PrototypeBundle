@@ -86,7 +86,7 @@ class AbstractConfigurator {
         }
     }
 
-    public function getService($route, $entity, $parentEntity = null, $prefix = null, $subPrefix = null) {
+    public function getService($route, $entity, $parentEntity = null, $prefix = null) {
 
         $params = [];
         //$params['route'] = $route;
@@ -94,7 +94,6 @@ class AbstractConfigurator {
         $params['entity'] = $entity;
         $params['parentEntity'] = $parentEntity;
         $params['prefix'] = $prefix;
-        $params['subPrefix'] = $subPrefix;
 
      
         $serviceConfig = $this->findServiceConfig($params);
@@ -115,12 +114,12 @@ class AbstractConfigurator {
         $this->dev = $dev;
     }
 
-    public function addService($service, $route, $entity, $id, $parentEntity = null, $prefix = null, $subPrefix = null) {
+    public function addService($service, $route, $entity, $id, $parentEntity = null, $prefix = null) {
 
-        $phrase = $route . $this->divider . $entity . $this->divider . $parentEntity . $this->divider . $prefix . $this->divider . $subPrefix;
-        $this->servicesConfigs[$phrase] = ["phrase" => $phrase, "route" => $route, "tags" => [ "entity" => $entity, 'parentEntity' => $parentEntity, 'prefix' => $prefix, 'subPrefix' => $subPrefix], "serviceid" => $id, "service" => $service];
+        $phrase = $route . $this->divider . $entity . $this->divider . $parentEntity . $this->divider . $prefix ;
+        $this->servicesConfigs[$phrase] = ["phrase" => $phrase, "route" => $route, "tags" => [ "entity" => $entity, 'parentEntity' => $parentEntity, 'prefix' => $prefix], "serviceid" => $id, "service" => $service];
 
-        if (!$route and ! $entity and ! $parentEntity and ! $prefix and ! $subPrefix) {
+        if (!$route and ! $entity and ! $parentEntity and ! $prefix ) {
             $this->defualtServiceConfig = $this->servicesConfigs[$phrase];
         }
     }

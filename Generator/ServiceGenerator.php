@@ -27,9 +27,9 @@ class ServiceGenerator extends YamlGenerator {
     protected $service;
     protected $sufix;
 
-    public function __construct($container, $entityName, $rootFolder, $prefix = null, $subPrefix = null, $parentEntity = null, $className, $tagName,  $arguments = [], $sufix = null) {
+    public function __construct($container, $entityName, $rootFolder, $prefix = null,  $parentEntity = null, $className, $tagName,  $arguments = [], $sufix = null) {
 
-        parent::__construct($container, $entityName, $rootFolder,$prefix, $subPrefix,$parentEntity);
+        parent::__construct($container, $entityName, $rootFolder,$prefix,$parentEntity);
         $this->className = $className;
 
 
@@ -117,14 +117,14 @@ class ServiceGenerator extends YamlGenerator {
         }
 
         $service = new \stdClass();
-        $service->name = $strategy->getServiceName();
+        $service->name = str_replace("\\",".",$strategy->getServiceName());
         $service->body = $this->createServiceBlock($strategy->getClassNamespace(), $strategy->getArguments(), $strategy->getTags());
         return $service;
     }
 
     protected function getDefaultTags() {
 
-        $arguments = ['name' => "'{$this->getTagName()}'", 'prefix' => "'{$this->getPrefix()}'", 'subPrefix' => "'{$this->getSubPrefix()}'", 'entity' => "'{$this->getEntityName()}'", 'parentEntity' => "'{$this->getParentEntity()}'"];
+        $arguments = ['name' => "'{$this->getTagName()}'", 'prefix' => str_replace("\\","/",strtolower("'{$this->getPrefix()}'")),  'entity' => "'{$this->getEntityName()}'", 'parentEntity' => "'{$this->getParentEntity()}'"];
         return [$arguments];
     }
 

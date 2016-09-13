@@ -38,7 +38,7 @@ class EntityTranslationGenerator extends TranslationGenerator {
 
 
 
-        foreach ($this->getExtendedFieldsInfo() as $field => $parameters) {
+        foreach ($this->getExtendedFieldsInfo($this->getFieldsInfo()) as $field => $parameters) {
 
             $label = strtolower(sprintf("%s.%s", $prefix, $field));
 

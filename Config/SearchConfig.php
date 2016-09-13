@@ -37,10 +37,11 @@ class SearchConfig extends ListConfig
         $request = $this->getContainer()->get('request_stack')->getCurrentRequest();
         $fieldFromRequest = $request->get('field');
         $field = $this->mapField($fieldFromRequest);
-        $queryValueFromRequest = $this->getQueryValue($request, $field);
+        
 
         if (!$field)
             throw new \Exception("\"field\" parameter has not been set");
+        $queryValueFromRequest = $this->getQueryValue($request, $field);
         $queryBuilder = $this->listConfig->getQueryBuilder();
 
         $queryBuilder->resetDQLPart('select');

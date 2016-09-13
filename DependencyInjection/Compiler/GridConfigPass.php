@@ -48,14 +48,10 @@ class GridConfigPass implements CompilerPassInterface {
                 }
 
 
-                $subPrefix = null;
-                if (array_key_exists('subPrefix', $attributes)) {
-                    $subPrefix = $attributes['subPrefix'];
-                }
 
 
                 $definition->addMethodCall(
-                        'addService', array(new Reference($id), $route, $entity, $id, $parentEntity, $prefix, $subPrefix)
+                        'addService', array(new Reference($id), $route, $entity, $id, $parentEntity, $prefix)
                 );
             }
         }
